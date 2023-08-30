@@ -5,14 +5,14 @@ CLayer::CLayer()
 {
 }
 
-CComponent * CLayer::Get_ComponentPtr(const _tchar * pComponentTag, _uint iLayerIndex)
+CComponent * CLayer::Get_ComponentPtr(const wstring& strComponentTag, _uint iLayerIndex)
 {
 	auto	iter = m_GameObjects.begin();
 
 	for (_uint i = 0; i < iLayerIndex; ++i)
 		++iter;
 
-	return (*iter)->Get_ComponentPtr(pComponentTag);	
+	return (*iter)->Get_ComponentPtr(strComponentTag);	
 }
 
 HRESULT CLayer::Add_GameObject(CGameObject * pGameObject)

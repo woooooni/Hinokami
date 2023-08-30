@@ -29,17 +29,17 @@ private:
 
 public:
 	HRESULT Reserve_Container(_uint iNumLevels);
-	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
-	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg);
+	HRESULT Add_Prototype(_uint iLevelIndex, const wstring& strPrototypeTag, class CComponent* pPrototype);
+	class CComponent* Clone_Component(_uint iLevelIndex, const wstring& strPrototypeTag, void* pArg);
 
 private:
 	_uint												m_iNumLevels = 0;
 
-	map<const _tchar*, class CComponent*>*				m_pPrototypes = nullptr;
-	typedef map<const _tchar*, class CComponent*>		PROTOTYPES;
+	map<const wstring, class CComponent*>*				m_pPrototypes = nullptr;
+	typedef map<const wstring, class CComponent*>		PROTOTYPES;
 
 private:
-	class CComponent* Find_Component(_uint iLevelIndex, const _tchar* pPrototypeTag);
+	class CComponent* Find_Component(_uint iLevelIndex, const wstring& strPrototypeTag);
 
 public:
 	virtual void Free() override;

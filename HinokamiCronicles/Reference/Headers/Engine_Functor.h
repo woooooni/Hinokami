@@ -5,10 +5,10 @@ namespace Engine
 	class CTag_Finder
 	{
 	private:
-		const wchar_t*	m_pStr;
+		std::wstring	m_pStr;
 
 	public:
-		CTag_Finder(const wchar_t* pStr)
+		CTag_Finder(const std::wstring& pStr)
 			: m_pStr(pStr)
 		{
 
@@ -18,7 +18,7 @@ namespace Engine
 		template<typename T>
 		bool	operator()(T& Pair)
 		{
-			if (!lstrcmp(m_pStr, Pair.first))
+			if (m_pStr == Pair.first)
 				return true;
 
 			return false;

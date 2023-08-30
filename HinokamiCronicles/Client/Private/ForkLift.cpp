@@ -24,7 +24,7 @@ HRESULT CForkLift::Initialize(void * pArg)
 
 	m_pModelCom->Set_AnimIndex(rand() % 20);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(_float(rand() % 10), 0.f, _float(rand() % 10), 1.f));
 
 
 	return S_OK;

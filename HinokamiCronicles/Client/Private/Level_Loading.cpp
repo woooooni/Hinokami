@@ -68,7 +68,7 @@ HRESULT CLevel_Loading::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
+	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText().c_str());
 
 	return S_OK;
 }

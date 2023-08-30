@@ -15,13 +15,13 @@ private:
 	virtual ~CObject_Manager() = default;
 
 public:
-	class CComponent* Get_ComponentPtr(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pComponentTag, _uint iLayerIndex);
+	class CComponent* Get_ComponentPtr(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strComponentTag, _uint iLayerIndex);
 
 public:
 	HRESULT Reserve_Container(_uint iNumLevels);
-	class CGameObject* Clone_GameObject(const _tchar* pPrototypeTag, void* pArg = nullptr);
-	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
-	HRESULT Add_GameObjectToLayer(const _tchar* pPrototypeTag, _uint iLevelIndex, const _tchar* pLayerTag, void* pArg = nullptr);
+	class CGameObject* Clone_GameObject(const wstring& strPrototypeTag, void* pArg = nullptr);
+	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype);
+	HRESULT Add_GameObjectToLayer(const wstring& strPrototypeTag, _uint iLevelIndex, const wstring& strLayerTag, void* pArg = nullptr);
 
 public:
 	void Tick(_float fTimeDelta);
@@ -30,18 +30,18 @@ public:
 	
 
 private: /* 원형객체들을 보관할 커넽이너ㅣ */
-	map<const _tchar*, class CGameObject*>			m_Prototypes;
-	typedef map<const _tchar*, class CGameObject*>	PROTOTYPES;
+	map<const wstring, class CGameObject*>			m_Prototypes;
+	typedef map<const wstring, class CGameObject*>	PROTOTYPES;
 
 
 private: /* 사본객체들을 보관할 커넽이너ㅣ */
 	_uint											m_iNumLevels = 0;
-	map<const _tchar*, class CLayer*>*				m_pLayers = nullptr;
-	typedef map<const _tchar*, class CLayer*>		LAYERS;
+	map<const wstring, class CLayer*>*				m_pLayers = nullptr;
+	typedef map<const wstring, class CLayer*>		LAYERS;
 
 private:
-	class CGameObject* Find_Prototype(const _tchar* pPrototypeTag);
-	class CLayer* Find_Layer(_uint iLevelIndex, const _tchar* pLayerTag);
+	class CGameObject* Find_Prototype(const wstring& strPrototypeTag);
+	class CLayer* Find_Layer(_uint iLevelIndex, const wstring& strLayerTag);
 
 
 

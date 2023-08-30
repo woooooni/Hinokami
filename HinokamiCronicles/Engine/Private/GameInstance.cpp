@@ -131,74 +131,74 @@ HRESULT CGameInstance::Render_Level()
 	return m_pLevel_Manager->Render();	
 }
 
-CComponent * CGameInstance::Get_ComponentPtr(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pComponentTag, _uint iLayerIndex)
+CComponent * CGameInstance::Get_ComponentPtr(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strComponentTag, _uint iLayerIndex)
 {
 	if (nullptr == m_pObject_Manager)
 		return nullptr;
 
-	return m_pObject_Manager->Get_ComponentPtr(iLevelIndex, pLayerTag, pComponentTag, iLayerIndex);	
+	return m_pObject_Manager->Get_ComponentPtr(iLevelIndex, strLayerTag, strComponentTag, iLayerIndex);	
 }
 
-CGameObject * CGameInstance::Clone_GameObject(const _tchar * pPrototypeTag, void * pArg)
+CGameObject * CGameInstance::Clone_GameObject(const wstring& strPrototypeTag, void * pArg)
 {
 	if (nullptr == m_pObject_Manager)
 		return nullptr;
 
-	return m_pObject_Manager->Clone_GameObject(pPrototypeTag, pArg);	
+	return m_pObject_Manager->Clone_GameObject(strPrototypeTag, pArg);	
 }
 
-HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject * pPrototype)
+HRESULT CGameInstance::Add_Prototype(const wstring& strPrototypeTag, CGameObject * pPrototype)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
 
-	return m_pObject_Manager->Add_Prototype(pPrototypeTag, pPrototype);	
+	return m_pObject_Manager->Add_Prototype(strPrototypeTag, pPrototype);	
 }
 
-HRESULT CGameInstance::Add_GameObjectToLayer(const _tchar * pPrototypeTag, _uint iLevelIndex, const _tchar * pLayerTag, void * pArg)
+HRESULT CGameInstance::Add_GameObjectToLayer(const wstring& strPrototypeTag, _uint iLevelIndex, const wstring& strLayerTag, void * pArg)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
 
-	return m_pObject_Manager->Add_GameObjectToLayer(pPrototypeTag, iLevelIndex, pLayerTag, pArg);
+	return m_pObject_Manager->Add_GameObjectToLayer(strPrototypeTag, iLevelIndex, strLayerTag, pArg);
 }
 
-HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _tchar * pPrototypeTag, CComponent * pPrototype)
+HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring& strPrototypeTag, CComponent * pPrototype)
 {
 	if (nullptr == m_pComponent_Manager)
 		return E_FAIL;
 
-	return m_pComponent_Manager->Add_Prototype(iLevelIndex, pPrototypeTag, pPrototype);	
+	return m_pComponent_Manager->Add_Prototype(iLevelIndex, strPrototypeTag, pPrototype);	
 }
 
-CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar * pPrototypeTag, void * pArg)
+CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const wstring& strPrototypeTag, void * pArg)
 {
 	if (nullptr == m_pComponent_Manager)
 		return nullptr;
 
-	return m_pComponent_Manager->Clone_Component(iLevelIndex, pPrototypeTag, pArg);	
+	return m_pComponent_Manager->Clone_Component(iLevelIndex, strPrototypeTag, pArg);	
 }
 
-_float CGameInstance::Get_TimeDelta(const _tchar * pTimerTag)
+_float CGameInstance::Get_TimeDelta(const wstring& strTimerTag)
 {
 	if (nullptr == m_pTimer_Manager)
 		return 0.0f;
-	return m_pTimer_Manager->Get_TimeDelta(pTimerTag);
+	return m_pTimer_Manager->Get_TimeDelta(strTimerTag);
 }
 
-HRESULT CGameInstance::Add_Timer(const _tchar * pTimerTag)
+HRESULT CGameInstance::Add_Timer(const wstring& strTimerTag)
 {
 	if (nullptr == m_pTimer_Manager)
 		return E_FAIL;
-	return m_pTimer_Manager->Add_Timer(pTimerTag);
+	return m_pTimer_Manager->Add_Timer(strTimerTag);
 }
 
-HRESULT CGameInstance::Update_Timer(const _tchar * pTimerTag)
+HRESULT CGameInstance::Update_Timer(const wstring& strTimerTag)
 {
 	if (nullptr == m_pTimer_Manager)
 		return E_FAIL;
 
-	return m_pTimer_Manager->Update_Timer(pTimerTag);
+	return m_pTimer_Manager->Update_Timer(strTimerTag);
 }
 
 _char CGameInstance::Get_DIKState(_uchar eKeyID)
@@ -290,28 +290,28 @@ _bool CGameInstance::isIn_Frustum_WorldSpace(_fvector vWorldPos, float fRadius)
 	return m_pFrustum->isIn_WorldSpace(vWorldPos, fRadius);
 }
 
-HRESULT CGameInstance::Add_Fonts(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar * pFontTag, const _tchar * pFontFilePath)
+HRESULT CGameInstance::Add_Fonts(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strFontTag, const wstring& strFontFilePath)
 {
 	if (nullptr == m_pFont_Manager)
 		return E_FAIL;
 
-	return m_pFont_Manager->Add_Fonts(pDevice, pContext, pFontTag, pFontFilePath);	
+	return m_pFont_Manager->Add_Fonts(pDevice, pContext, strFontTag, strFontFilePath);	
 }
 
-HRESULT CGameInstance::Render_Fonts(const _tchar * pFontTag, const _tchar * pTextm, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
+HRESULT CGameInstance::Render_Fonts(const wstring& strFontTag, const wstring& strText, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
 {
 	if (nullptr == m_pFont_Manager)
 		return E_FAIL;
 
-	return m_pFont_Manager->Render_Fonts(pFontTag, pTextm, vPosition, vColor, fAngle, vOrigin, vScale);	
+	return m_pFont_Manager->Render_Fonts(strFontTag, strText, vPosition, vColor, fAngle, vOrigin, vScale);
 }
 
-HRESULT CGameInstance::Bind_RenderTargetSRV(const _tchar * pTargetTag, CShader * pShader, const char * pConstantName)
+HRESULT CGameInstance::Bind_RenderTargetSRV(const wstring& strTargetTag, CShader * pShader, const char * pConstantName)
 {
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
 
-	return m_pTarget_Manager->Bind_SRV(pTargetTag, pShader, pConstantName);	
+	return m_pTarget_Manager->Bind_SRV(strTargetTag, pShader, pConstantName);	
 }
 
 void CGameInstance::Release_Engine()

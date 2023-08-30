@@ -16,13 +16,13 @@ CNavigation::CNavigation(const CNavigation & rhs)
 		Safe_AddRef(pCell);
 }
 
-HRESULT CNavigation::Initialize_Prototype(const _tchar * pNavigationDataFilePath)
+HRESULT CNavigation::Initialize_Prototype(const wstring& strNavigationDataFilePath)
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
 	_ulong			dwByte = 0;
-	HANDLE			hFile = CreateFile(pNavigationDataFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE			hFile = CreateFile(strNavigationDataFilePath.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (0 == hFile)
 		return E_FAIL;
 
@@ -159,11 +159,11 @@ HRESULT CNavigation::Ready_Neighbor()
 	return S_OK;
 }
 
-CNavigation * CNavigation::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar * pNavigationDataFilePath)
+CNavigation * CNavigation::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strNavigationDataFilePath)
 {
 	CNavigation*			pInstance = new CNavigation(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pNavigationDataFilePath)))
+	if (FAILED(pInstance->Initialize_Prototype(strNavigationDataFilePath)))
 	{
 		MSG_BOX(TEXT("Failed To Created : CNavigation"));
 		Safe_Release(pInstance);

@@ -10,7 +10,7 @@ public:
 	CLayer();
 	virtual ~CLayer() = default;
 public:
-	class CComponent* Get_ComponentPtr(const _tchar* pComponentTag, _uint iLayerIndex);
+	class CComponent* Get_ComponentPtr(const wstring& strComponentTag, _uint iLayerIndex);
 
 public:
 	HRESULT Add_GameObject(class CGameObject* pGameObject);

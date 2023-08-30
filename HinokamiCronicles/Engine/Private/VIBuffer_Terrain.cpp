@@ -18,10 +18,10 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain & rhs)
 	Safe_AddRef(m_pQuadTree);
 }
 
-HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeighitMapFilePath)
+HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& pHeighitMapFilePath)
 {
 	_ulong			dwByte = 0;
-	HANDLE			hFile = CreateFile(pHeighitMapFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE			hFile = CreateFile(pHeighitMapFilePath.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (0 == hFile)
 		return E_FAIL;
 
@@ -54,7 +54,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeighitMapFilePat
 		{
 			_uint		iIndex = i * m_iNumVerticesX + j;
 
-			pVertices[iIndex].vPosition = m_pVerticesPos[iIndex] = _float3(j, (pPixel[iIndex] & 0x000000ff) / 10.0f, i);
+			pVertices[iIndex].vPosition = m_pVerticesPos[iIndex] = _float3(_float(j), _float(pPixel[iIndex] & 0x000000ff) / 10.0f, _float(i));
 			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			pVertices[iIndex].vTexture = _float2(j / _float(m_iNumVerticesX - 1), i / _float(m_iNumVerticesZ - 1));
 		}
@@ -261,7 +261,7 @@ void CVIBuffer_Terrain::Culling(const CTransform* pTransform)
 	RELEASE_INSTANCE(CFrustum);
 }
 
-CVIBuffer_Terrain * CVIBuffer_Terrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar* pHeighitMapFilePath)
+CVIBuffer_Terrain * CVIBuffer_Terrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& pHeighitMapFilePath)
 {
 	CVIBuffer_Terrain*			pInstance = new CVIBuffer_Terrain(pDevice, pContext);
 

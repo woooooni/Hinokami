@@ -17,9 +17,9 @@ CGameObject::CGameObject(const CGameObject & rhs)
 	Safe_AddRef(m_pContext);
 }
 
-CComponent * CGameObject::Get_ComponentPtr(const _tchar * pComponentTag)
+CComponent * CGameObject::Get_ComponentPtr(const wstring& strComponentTag)
 {
-	CComponent*		pComponent = Find_Component(pComponentTag);
+	CComponent*		pComponent = Find_Component(strComponentTag);
 
 	if (nullptr == pComponent)
 		return nullptr;
@@ -50,19 +50,19 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
-HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar * pPrototypeTag, const _tchar * pComponentTag, CComponent** ppOut, void* pArg)
+HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring& strPrototypeTag, const wstring& strComponentTag, CComponent** ppOut, void* pArg)
 {
-	if (nullptr != Find_Component(pComponentTag))
+	if (nullptr != Find_Component(strComponentTag))
 		return E_FAIL;
 
 	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 	
-	CComponent*			pComponent = pGameInstance->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
+	CComponent*			pComponent = pGameInstance->Clone_Component(iLevelIndex, strPrototypeTag, pArg);
 	if (nullptr == pComponent)
 		return E_FAIL;
 
-	m_Components.emplace(pComponentTag, pComponent);
+	m_Components.emplace(strComponentTag, pComponent);
 
 	*ppOut = pComponent;
 
@@ -88,9 +88,9 @@ HRESULT CGameObject::Compute_CamZ(_fvector vWorldPos)
 }
 
 
-CComponent * CGameObject::Find_Component(const _tchar * pComponentTag)
+CComponent * CGameObject::Find_Component(const wstring& strComponentTag)
 {
-	auto	iter = find_if(m_Components.begin(), m_Components.end(), CTag_Finder(pComponentTag));
+	auto	iter = find_if(m_Components.begin(), m_Components.end(), CTag_Finder(strComponentTag));
 
 	if (iter == m_Components.end())
 		return nullptr;

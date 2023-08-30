@@ -44,19 +44,19 @@ public: /* For.Level_Manager */
 	HRESULT Render_Level();
 
 public: /* For.Object_Manager */
-	class CComponent* Get_ComponentPtr(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pComponentTag, _uint iLayerIndex);
-	class CGameObject* Clone_GameObject(const _tchar* pPrototypeTag, void* pArg = nullptr);
-	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
-	HRESULT Add_GameObjectToLayer(const _tchar* pPrototypeTag, _uint iLevelIndex, const _tchar* pLayerTag, void* pArg = nullptr);
+	class CComponent* Get_ComponentPtr(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strComponentTag, _uint iLayerIndex);
+	class CGameObject* Clone_GameObject(const wstring& strPrototypeTag, void* pArg = nullptr);
+	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype);
+	HRESULT Add_GameObjectToLayer(const wstring& strPrototypeTag, _uint iLevelIndex, const wstring& strLayerTag, void* pArg = nullptr);
 
 public: /*For.Component_Manager*/
-	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
-	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);
+	HRESULT Add_Prototype(_uint iLevelIndex, const wstring& strPrototypeTag, class CComponent* pPrototype);
+	class CComponent* Clone_Component(_uint iLevelIndex, const wstring& strPrototypeTag, void* pArg = nullptr);
 
 public: /* for.Timer_Manager */
-	_float Get_TimeDelta(const _tchar* pTimerTag);
-	HRESULT Add_Timer(const _tchar* pTimerTag);
-	HRESULT Update_Timer(const _tchar* pTimerTag);	
+	_float Get_TimeDelta(const wstring& pTimerTag);
+	HRESULT Add_Timer(const wstring& pTimerTag);
+	HRESULT Update_Timer(const wstring& pTimerTag);	
 
 public: /* For.Input_Device */
 	_char Get_DIKState(_uchar eKeyID);
@@ -78,12 +78,12 @@ public: /* For.Frustum */
 	_bool isIn_Frustum_WorldSpace(_fvector vWorldPos, float fRadius = 0.f);
 
 public: /* For.Font_Manager */
-	HRESULT Add_Fonts(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontTag, const _tchar* pFontFilePath);
-	HRESULT Render_Fonts(const _tchar* pFontTag, const _tchar* pTextm, _float2 vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f),
+	HRESULT Add_Fonts(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strFontTag, const wstring& strFontFilePath);
+	HRESULT Render_Fonts(const wstring& strFontTag, const wstring& strText, _float2 vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f),
 		_float fAngle = 0.f, _float2 vOrigin = _float2(0.f, 0.f), _float2 vScale = _float2(1.f, 1.f));
 
 public:  /* For.Target_Manager*/ 
-	HRESULT Bind_RenderTargetSRV(const _tchar* pTargetTag, class CShader* pShader, const char* pConstantName);
+	HRESULT Bind_RenderTargetSRV(const wstring& strTargetTag, class CShader* pShader, const char* pConstantName);
 
 private:
 	CGraphic_Device*				m_pGraphic_Device = nullptr;

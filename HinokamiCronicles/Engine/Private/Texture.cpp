@@ -16,7 +16,7 @@ CTexture::CTexture(const CTexture & rhs)
 		Safe_AddRef(pSRV);
 }
 
-HRESULT CTexture::Initialize_Prototype(const _tchar * pTextureFilePath, _uint iNumTextures)
+HRESULT CTexture::Initialize_Prototype(const wstring& strTextureFilePath, _uint iNumTextures)
 {
 	m_iNumTextures = iNumTextures;
 
@@ -24,7 +24,7 @@ HRESULT CTexture::Initialize_Prototype(const _tchar * pTextureFilePath, _uint iN
 	{
 		_tchar			szFullPath[MAX_PATH] = TEXT("");
 
-		wsprintf(szFullPath, pTextureFilePath, i);
+		wsprintf(szFullPath, strTextureFilePath.c_str(), i);
 
 		_tchar			szDrive[MAX_PATH] = TEXT("");
 		_tchar			szExt[MAX_PATH] = TEXT("");
@@ -67,11 +67,11 @@ HRESULT CTexture::Set_SRV(CShader * pShader, const char * pConstantName, _uint i
 
 }
 
-CTexture * CTexture::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar * pTextureFilePath, _uint iNumTextures)
+CTexture * CTexture::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strTextureFilePath, _uint iNumTextures)
 {
 	CTexture*			pInstance = new CTexture(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pTextureFilePath, iNumTextures)))
+	if (FAILED(pInstance->Initialize_Prototype(strTextureFilePath, iNumTextures)))
 	{
 		MSG_BOX(TEXT("Failed To Created : CTexture"));
 		Safe_Release(pInstance);

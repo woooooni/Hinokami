@@ -19,7 +19,7 @@ public:
 		return m_eNextLevelID;
 	}
 
-	const _tchar* Get_LoadingText() const {
+	const wstring& Get_LoadingText() const {
 		return m_szLoadingText;
 	}
 

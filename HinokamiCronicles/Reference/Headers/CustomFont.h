@@ -11,8 +11,8 @@ private:
 	virtual ~CCustomFont() = default;
 
 public:
-	HRESULT Initialize(const _tchar* pFontFilePath);
-	HRESULT Render(const _tchar* pTextm, _float2 vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f), 
+	HRESULT Initialize(const wstring& strFontFilePath);
+	HRESULT Render(const wstring& strText, _float2 vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f), 
 		_float fAngle = 0.f, _float2 vOrigin = _float2(0.f, 0.f), _float2 vScale = _float2(1.f, 1.f));
 
 private:
@@ -24,7 +24,7 @@ private:
 	SpriteFont*					m_pFont = nullptr;
 
 public:
-	static CCustomFont* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontFilePath);
+	static CCustomFont* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strFontFilePath);
 	virtual void Free() override;
 };
 

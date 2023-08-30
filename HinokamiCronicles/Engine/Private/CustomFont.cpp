@@ -8,35 +8,34 @@ CCustomFont::CCustomFont(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	Safe_AddRef(m_pContext);
 }
 
-HRESULT CCustomFont::Initialize(const _tchar * pFontFilePath)
+HRESULT CCustomFont::Initialize(const wstring& strFontFilePath)
 {
-	m_pFont = new SpriteFont(m_pDevice, pFontFilePath);
+	m_pFont = new SpriteFont(m_pDevice, strFontFilePath.c_str());
 
 	m_pBatch = new SpriteBatch(m_pContext);
 
 	return S_OK;
 }
 
-HRESULT CCustomFont::Render(const _tchar * pText, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
+HRESULT CCustomFont::Render(const wstring& strText, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
 {
-	if (nullptr == m_pFont ||
-		nullptr == m_pBatch)
+	if (nullptr == m_pFont || nullptr == m_pBatch)
 		return E_FAIL;
 
 	m_pBatch->Begin();
 
-	m_pFont->DrawString(m_pBatch, pText, vPosition, vColor, fAngle, vOrigin, vScale);
+	m_pFont->DrawString(m_pBatch, strText.c_str(), vPosition, vColor, fAngle, vOrigin, vScale);
 
 	m_pBatch->End();
 
 	return S_OK;
 }
 
-CCustomFont * CCustomFont::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar * pFontFilePath)
+CCustomFont * CCustomFont::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strFontFilePath)
 {
 	CCustomFont*			pInstance = new CCustomFont(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(pFontFilePath)))
+	if (FAILED(pInstance->Initialize(strFontFilePath)))
 	{
 		MSG_BOX(TEXT("Failed To Created : CCustomFont"));
 		Safe_Release(pInstance);

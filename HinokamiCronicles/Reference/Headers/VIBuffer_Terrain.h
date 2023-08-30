@@ -12,7 +12,7 @@ private:
 	virtual ~CVIBuffer_Terrain() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(const _tchar* pHeighitMapFilePath);
+	virtual HRESULT Initialize_Prototype(const wstring& pHeighitMapFilePath);
 	virtual HRESULT Initialize(void* pArg);
 
 public:
@@ -25,7 +25,7 @@ private:
 	class CQuadTree*		m_pQuadTree = nullptr;
 
 public:
-	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pHeighitMapFilePath);
+	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& pHeighitMapFilePath);
 	virtual CComponent* Clone(void* pArg);
 	virtual void Free();
 };
