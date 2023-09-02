@@ -17,7 +17,7 @@ public:
 	wstring string_to_wstring(const string& strS);
 
 public:
-	virtual void	Free() override;
+	virtual void	Free();
 };
 
 END

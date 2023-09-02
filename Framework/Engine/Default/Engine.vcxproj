@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="..\public\Base.h" />
     <ClInclude Include="..\public\Component.h" />
+    <ClInclude Include="..\Public\Component_Manager.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
     <ClInclude Include="..\Public\Engine_Function.h" />
     <ClInclude Include="..\Public\Engine_Macro.h" />
@@ -178,6 +179,7 @@
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
+    <ClCompile Include="..\Private\Component_Manager.cpp" />
     <ClCompile Include="..\private\GameInstance.cpp" />
     <ClCompile Include="..\private\GameObject.cpp" />
     <ClCompile Include="..\Private\Graphic_Device.cpp" />

@@ -52,26 +52,29 @@
     <Filter Include="01.Utiltiy\04.Component">
       <UniqueIdentifier>{2f7b0f55-c192-41e7-bb1e-3795db1aeefc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\04.Component\Renderer">
-      <UniqueIdentifier>{15fe4fbd-6c18-467c-9742-0006c1b4371d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\VIBuffer">
-      <UniqueIdentifier>{eb0138e8-590d-4bd6-bc94-809ce0e0d5af}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\VIBuffer\Terrain">
-      <UniqueIdentifier>{9d04d116-5d72-4285-9207-214bf7487f84}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\VIBuffer\Terrain\QuadTree">
-      <UniqueIdentifier>{64fbde0d-8ecd-4c28-a410-cd1f80d04432}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\Shader">
-      <UniqueIdentifier>{ae1b5658-3515-477e-aa12-9972107b50c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\Texture">
-      <UniqueIdentifier>{445db20a-a830-4dc1-bdf8-7a3a9cbb45e1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utiltiy\98. Utils">
       <UniqueIdentifier>{ede3a70d-ed37-4bef-b5c7-5b7d814980f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\04.Component\00. Manager">
+      <UniqueIdentifier>{8bbd81a9-95ab-4f92-bc4d-ac853884e638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\04.Component\01. Renderer">
+      <UniqueIdentifier>{15fe4fbd-6c18-467c-9742-0006c1b4371d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\04.Component\02. VIBuffer">
+      <UniqueIdentifier>{eb0138e8-590d-4bd6-bc94-809ce0e0d5af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\04.Component\02. VIBuffer\Terrain">
+      <UniqueIdentifier>{9d04d116-5d72-4285-9207-214bf7487f84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\04.Component\02. VIBuffer\Terrain\QuadTree">
+      <UniqueIdentifier>{64fbde0d-8ecd-4c28-a410-cd1f80d04432}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\04.Component\03. Shader">
+      <UniqueIdentifier>{ae1b5658-3515-477e-aa12-9972107b50c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\04.Component\04. Texture">
+      <UniqueIdentifier>{445db20a-a830-4dc1-bdf8-7a3a9cbb45e1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -124,19 +127,22 @@
       <Filter>01.Utiltiy\04.Component</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Renderer.h">
-      <Filter>01.Utiltiy\04.Component\Renderer</Filter>
+      <Filter>01.Utiltiy\04.Component\01. Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer.h">
-      <Filter>01.Utiltiy\04.Component\VIBuffer</Filter>
+      <Filter>01.Utiltiy\04.Component\02. VIBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Shader.h">
-      <Filter>01.Utiltiy\04.Component\Shader</Filter>
+      <Filter>01.Utiltiy\04.Component\03. Shader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Texture.h">
-      <Filter>01.Utiltiy\04.Component\Texture</Filter>
+      <Filter>01.Utiltiy\04.Component\04. Texture</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Utils.h">
       <Filter>01.Utiltiy\98. Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Component_Manager.h">
+      <Filter>01.Utiltiy\04.Component\00. Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -174,19 +180,22 @@
       <Filter>01.Utiltiy\04.Component</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Renderer.cpp">
-      <Filter>01.Utiltiy\04.Component\Renderer</Filter>
+      <Filter>01.Utiltiy\04.Component\01. Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer.cpp">
-      <Filter>01.Utiltiy\04.Component\VIBuffer</Filter>
+      <Filter>01.Utiltiy\04.Component\02. VIBuffer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Shader.cpp">
-      <Filter>01.Utiltiy\04.Component\Shader</Filter>
+      <Filter>01.Utiltiy\04.Component\03. Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Texture.cpp">
-      <Filter>01.Utiltiy\04.Component\Texture</Filter>
+      <Filter>01.Utiltiy\04.Component\04. Texture</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Utils.cpp">
       <Filter>01.Utiltiy\98. Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Component_Manager.cpp">
+      <Filter>01.Utiltiy\04.Component\00. Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

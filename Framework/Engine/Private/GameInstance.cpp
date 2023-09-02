@@ -4,6 +4,8 @@
 #include "Level_Manager.h"
 #include "Object_Manager.h"
 #include "Renderer.h"
+#include "Component_Manager.h"
+
 #include "Utils.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
@@ -13,12 +15,15 @@ CGameInstance::CGameInstance()
 	, m_pGraphic_Device(CGraphic_Device::GetInstance())
 	, m_pLevel_Manager(CLevel_Manager::GetInstance())
 	, m_pObject_Manager(CObject_Manager::GetInstance())
+	, m_pComponent_Manager(CComponent_Manager::GetInstance())
 	, m_pUtilities(CUtils::GetInstance())
 {
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pTimer_Manager);
+	Safe_AddRef(m_pComponent_Manager);
+
 	Safe_AddRef(m_pUtilities);
 }
 
@@ -36,7 +41,10 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& G
 		return E_FAIL;
 
 	/* 컴포넌트 매니져의 예약 처리. */
-	m_pRenderer = CRenderer::Create(*ppDevice, *ppContext);
+	if (FAILED(m_pComponent_Manager->Reserve_Manager(iNumLevels)))
+		return E_FAIL;
+
+	// m_pRenderer = CRenderer::Create(*ppDevice, *ppContext);
 	
 
 	return S_OK;
@@ -136,11 +144,35 @@ wstring CGameInstance::string_to_wstring(const string& strS)
 	return m_pUtilities->string_to_wstring(strS);
 }
 
+HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring& strProtoTypeTag, CComponent* pPrototype)
+{
+	if (nullptr == m_pComponent_Manager)
+		return E_FAIL;
+
+	return m_pComponent_Manager->Add_Prototype(iLevelIndex, strProtoTypeTag, pPrototype);
+}
+
+CComponent* CGameInstance::Clone_Component(_uint iLevelIndex, const wstring& strProtoTypeTag, void* pArg)
+{
+	if (nullptr == m_pComponent_Manager)
+		return nullptr;
+
+	return m_pComponent_Manager->Clone_Component(iLevelIndex, strProtoTypeTag, pArg);
+}
+
+HRESULT CGameInstance::Check_Prototype(_uint iLevelIndex, const wstring& strProtoTypeTag)
+{
+	if (nullptr == m_pComponent_Manager)
+		return E_FAIL;
+	return m_pComponent_Manager->Check_Prototype(iLevelIndex, strProtoTypeTag);
+}
+
 void CGameInstance::Release_Engine()
 {
 	CGameInstance::GetInstance()->DestroyInstance();
 	CLevel_Manager::GetInstance()->DestroyInstance();
 	CObject_Manager::GetInstance()->DestroyInstance();
+	CComponent_Manager::GetInstance()->DestroyInstance();
 	CTimer_Manager::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
 	CUtils::GetInstance()->DestroyInstance();
@@ -149,6 +181,7 @@ void CGameInstance::Release_Engine()
 void CGameInstance::Free()
 {
 	Safe_Release(m_pObject_Manager);
+	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pTimer_Manager);

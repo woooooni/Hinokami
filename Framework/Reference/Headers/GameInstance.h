@@ -35,13 +35,20 @@ public: /* For.Object_Manager */
 	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, void* pArg = nullptr);
 
-
 public:/* For.Renderer */
 	HRESULT Draw();
 
 public: /* For.Utilities */
 	string wstring_to_string(const wstring & strW);
 	wstring string_to_wstring(const string & strS);
+
+public: /* For. Componenet_Manager */
+
+public:
+	HRESULT Add_Prototype(_uint iLevelIndex, const wstring & strProtoTypeTag, class CComponent* pPrototype);
+	class CComponent* Clone_Component(_uint iLevelIndex, const wstring & strProtoTypeTag, void* pArg);
+	HRESULT Check_Prototype(_uint iLevelIndex, const wstring & strProtoTypeTag);
+
 
 
 private:
@@ -50,6 +57,7 @@ private:
 	class CLevel_Manager*			m_pLevel_Manager = { nullptr };
 	class CObject_Manager*			m_pObject_Manager = { nullptr };
 	class CRenderer*				m_pRenderer = { nullptr };
+	class CComponent_Manager*		m_pComponent_Manager = { nullptr };
 	class CUtils*					m_pUtilities = { nullptr };
 
 public:
