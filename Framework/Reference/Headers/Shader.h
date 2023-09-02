@@ -18,15 +18,15 @@ private:
 	virtual ~CShader() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(const _tchar * pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC * pElements, _uint iNumElements);
+	virtual HRESULT Initialize_Prototype(const wstring& strShaderFilePath, const D3D11_INPUT_ELEMENT_DESC * pElements, _uint iNumElements);
 	virtual HRESULT Initialize(void* pArg);
 
 public:
 	/* 셰이더 전역변수에 데이터를 던진다. */
-	HRESULT Set_RawValue(const char* pContantName, const void* pData, _uint iByteLength);
-	HRESULT Set_MatrixArray(const char* pConstantName, const _float4x4 * pData, _uint iNumMatrices);
-	HRESULT Set_ShaderResourceView(const char* pContantName, ID3D11ShaderResourceView * pSRV);
-	HRESULT Set_ShaderResourceViewArray(const char* pConstantName, ID3D11ShaderResourceView * *ppSRV, _uint iNumTexture);
+	HRESULT Set_RawValue(const wstring& strConstantName, const void* pData, _uint iByteLength);
+	HRESULT Set_MatrixArray(const wstring& strConstantName, const _float4x4 * pData, _uint iNumMatrices);
+	HRESULT Set_ShaderResourceView(const wstring& strConstantName, ID3D11ShaderResourceView * pSRV);
+	HRESULT Set_ShaderResourceViewArray(const wstring& strConstantName, ID3D11ShaderResourceView * *ppSRV, _uint iNumTexture);
 
 public: /* 이 셰이더의 특정 패스로 그린다. */
 	HRESULT Begin(_uint iPassIndex);
@@ -36,7 +36,7 @@ private:
 	vector<PASSDESC>			m_Passes;
 
 public:
-	static CShader* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar * pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC * pElements, _uint iNumElements);
+	static CShader* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strShaderFilePath, const D3D11_INPUT_ELEMENT_DESC * pElements, _uint iNumElements);
 	virtual CComponent* Clone(void* pArg);
 	virtual void Free() override;
 };

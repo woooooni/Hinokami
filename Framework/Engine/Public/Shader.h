@@ -23,10 +23,10 @@ public:
 
 public:
 	/* 셰이더 전역변수에 데이터를 던진다. */
-	HRESULT Set_RawValue(const char* pConstantName, const void* pData, _uint iByteLength);
-	HRESULT Set_MatrixArray(const char* pConstantName, const _float4x4 * pData, _uint iNumMatrices);
-	HRESULT Set_ShaderResourceView(const char* pConstantName, ID3D11ShaderResourceView * pSRV);
-	HRESULT Set_ShaderResourceViewArray(const char* pConstantName, ID3D11ShaderResourceView * *ppSRV, _uint iNumTexture);
+	HRESULT Set_RawValue(const wstring& strConstantName, const void* pData, _uint iByteLength);
+	HRESULT Set_MatrixArray(const wstring& strConstantName, const _float4x4 * pData, _uint iNumMatrices);
+	HRESULT Set_ShaderResourceView(const wstring& strConstantName, ID3D11ShaderResourceView * pSRV);
+	HRESULT Set_ShaderResourceViewArray(const wstring& strConstantName, ID3D11ShaderResourceView * *ppSRV, _uint iNumTexture);
 
 public: /* 이 셰이더의 특정 패스로 그린다. */
 	HRESULT Begin(_uint iPassIndex);
