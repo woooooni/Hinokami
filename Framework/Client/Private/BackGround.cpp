@@ -67,5 +67,4 @@ CGameObject * CBackGround::Clone(void* pArg)
 void CBackGround::Free()
 {
 	__super::Free();
-
 }

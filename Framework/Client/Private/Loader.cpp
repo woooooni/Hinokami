@@ -78,13 +78,13 @@ HRESULT CLoader::Loading_For_Level_Logo()
 
 	/* For.Mesh */
 	m_strLoading = TEXT("메시를 로딩 중 입니다.");
-	Assimp::Importer* importer = new Assimp::Importer;
-	wstring strFilePath = L"../Bin/Res/Model/Kyoguro/Kyoguro.fbx";
+	//Assimp::Importer* importer = new Assimp::Importer;
+	//wstring strFilePath = L"../Bin/Res/Model/Kyoguro/Kyoguro.fbx";
 
-	const aiScene* pScene = importer->ReadFile(string(strFilePath.begin(), strFilePath.end()),
-		aiProcess_ConvertToLeftHanded | aiProcess_CalcTangentSpace);
+	//const aiScene* pScene = importer->ReadFile(string(strFilePath.begin(), strFilePath.end()),
+	//	aiProcess_ConvertToLeftHanded | aiProcess_CalcTangentSpace);
 
-	assert(pScene != nullptr);
+	//assert(pScene != nullptr);
 
 	/* For.Shader */
 	m_strLoading = TEXT("셰이더를 로딩 중 입니다.");

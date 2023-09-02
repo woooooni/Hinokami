@@ -4,6 +4,7 @@
 #include "Level_Manager.h"
 #include "Object_Manager.h"
 #include "Renderer.h"
+#include "Utils.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -12,11 +13,13 @@ CGameInstance::CGameInstance()
 	, m_pGraphic_Device(CGraphic_Device::GetInstance())
 	, m_pLevel_Manager(CLevel_Manager::GetInstance())
 	, m_pObject_Manager(CObject_Manager::GetInstance())
+	, m_pUtilities(CUtils::GetInstance())
 {
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pTimer_Manager);
+	Safe_AddRef(m_pUtilities);
 }
 
 HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, _Inout_ ID3D11Device** ppDevice, _Inout_ ID3D11DeviceContext** ppContext)
@@ -117,7 +120,20 @@ HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, const wstring & strLaye
 
 HRESULT CGameInstance::Draw()
 {
+	if (nullptr == m_pRenderer)
+		return E_FAIL;
+
 	return m_pRenderer->Draw();
+}
+
+string CGameInstance::wstring_to_string(const wstring& strW)
+{
+	return m_pUtilities->wstring_to_string(strW);
+}
+
+wstring CGameInstance::string_to_wstring(const string& strS)
+{
+	return m_pUtilities->string_to_wstring(strS);
 }
 
 void CGameInstance::Release_Engine()
@@ -127,6 +143,7 @@ void CGameInstance::Release_Engine()
 	CObject_Manager::GetInstance()->DestroyInstance();
 	CTimer_Manager::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
+	CUtils::GetInstance()->DestroyInstance();
 }
 
 void CGameInstance::Free()
@@ -135,4 +152,5 @@ void CGameInstance::Free()
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_pUtilities);
 }

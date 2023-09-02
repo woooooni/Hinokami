@@ -39,12 +39,19 @@ public: /* For.Object_Manager */
 public:/* For.Renderer */
 	HRESULT Draw();
 
+public: /* For.Utilities */
+	string wstring_to_string(const wstring & strW);
+	wstring string_to_wstring(const string & strS);
+
+
 private:
 	class CTimer_Manager*			m_pTimer_Manager = { nullptr };
 	class CGraphic_Device*			m_pGraphic_Device = { nullptr };
 	class CLevel_Manager*			m_pLevel_Manager = { nullptr };
 	class CObject_Manager*			m_pObject_Manager = { nullptr };
 	class CRenderer*				m_pRenderer = { nullptr };
+	class CUtils*					m_pUtilities = { nullptr };
+
 public:
 	static void Release_Engine();
 	virtual void Free() override;

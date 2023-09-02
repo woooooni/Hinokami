@@ -55,6 +55,4 @@ void CTimer_Manager::Free(void)
 		Safe_Release(Pair.second);
 	}
 	m_Timers.clear();
-
-
 }
