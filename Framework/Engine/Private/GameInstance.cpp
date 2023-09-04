@@ -3,9 +3,8 @@
 #include "Graphic_Device.h"
 #include "Level_Manager.h"
 #include "Object_Manager.h"
-#include "Renderer.h"
 #include "Component_Manager.h"
-
+#include "Light_Manager.h"
 #include "Utils.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
@@ -17,12 +16,16 @@ CGameInstance::CGameInstance()
 	, m_pObject_Manager(CObject_Manager::GetInstance())
 	, m_pComponent_Manager(CComponent_Manager::GetInstance())
 	, m_pUtilities(CUtils::GetInstance())
+	, m_pPipeLine(CPipeLine::GetInstance())
+	, m_pLight_Manager(CLight_Manager::GetInstance())
 {
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pTimer_Manager);
 	Safe_AddRef(m_pComponent_Manager);
+	Safe_AddRef(m_pPipeLine);
+	Safe_AddRef(m_pLight_Manager);
 
 	Safe_AddRef(m_pUtilities);
 }
@@ -44,9 +47,6 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& G
 	if (FAILED(m_pComponent_Manager->Reserve_Manager(iNumLevels)))
 		return E_FAIL;
 
-	// m_pRenderer = CRenderer::Create(*ppDevice, *ppContext);
-	
-
 	return S_OK;
 }
 
@@ -54,6 +54,8 @@ void CGameInstance::Tick(_float fTimeDelta)
 {
 	m_pObject_Manager->Tick(fTimeDelta);
 	m_pLevel_Manager->Tick(fTimeDelta);
+	m_pPipeLine->Update();
+
 
 	m_pObject_Manager->LateTick(fTimeDelta);
 	m_pLevel_Manager->LateTick(fTimeDelta);
@@ -61,6 +63,9 @@ void CGameInstance::Tick(_float fTimeDelta)
 
 void CGameInstance::Clear(_uint iLevelIndex)
 {
+	if (nullptr == m_pObject_Manager)
+		return;
+
 	m_pObject_Manager->Clear(iLevelIndex);
 	// m_pComponent_Manager->Clear(iLevelIndex);
 }
@@ -126,13 +131,11 @@ HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, const wstring & strLaye
 	return m_pObject_Manager->Add_GameObject(iLevelIndex, strLayerTag, strPrototypeTag, pArg);
 }
 
-HRESULT CGameInstance::Draw()
+CGameObject* CGameInstance::Clone_GameObject(const wstring& strPrototypeTag, void* pArg)
 {
-	if (nullptr == m_pRenderer)
-		return E_FAIL;
-
-	return m_pRenderer->Draw();
+	return m_pObject_Manager->Clone_GameObject(strPrototypeTag, pArg);
 }
+
 
 string CGameInstance::wstring_to_string(const wstring& strW)
 {
@@ -167,6 +170,70 @@ HRESULT CGameInstance::Check_Prototype(_uint iLevelIndex, const wstring& strProt
 	return m_pComponent_Manager->Check_Prototype(iLevelIndex, strProtoTypeTag);
 }
 
+const LIGHTDESC* CGameInstance::Get_LightDesc(_uint iIndex)
+{
+	if (nullptr == m_pLight_Manager)
+		return nullptr;
+
+	return m_pLight_Manager->Get_LightDesc(iIndex);
+}
+
+HRESULT CGameInstance::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHTDESC& LightDesc)
+{
+	if (nullptr == m_pLight_Manager)
+		return E_FAIL;
+
+	return m_pLight_Manager->Add_Light(pDevice, pContext, LightDesc);
+}
+
+void CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eTransformState, _fmatrix TransformMatrix)
+{
+	if (nullptr == m_pPipeLine)
+		return;
+
+	m_pPipeLine->Set_Transform(eTransformState, TransformMatrix);
+}
+
+_matrix CGameInstance::Get_TransformMatrix(CPipeLine::TRANSFORMSTATE eTransformState) const
+{
+	if (nullptr == m_pPipeLine)
+		return XMMatrixIdentity();
+
+	return m_pPipeLine->Get_TransformMatrix(eTransformState);
+}
+
+_float4x4 CGameInstance::Get_TransformFloat4x4(CPipeLine::TRANSFORMSTATE eTransformState) const
+{
+	if (nullptr == m_pPipeLine)
+		return _float4x4();
+
+	return m_pPipeLine->Get_TransformFloat4x4(eTransformState);
+
+}
+
+_float4x4 CGameInstance::Get_TransformFloat4x4_TP(CPipeLine::TRANSFORMSTATE eTransformState) const
+{
+	if (nullptr == m_pPipeLine)
+		return _float4x4();
+
+	return m_pPipeLine->Get_TransformFloat4x4_TP(eTransformState);
+}
+
+_float4 CGameInstance::Get_CamPosition()
+{
+	if (nullptr == m_pPipeLine)
+		return _float4();
+
+	return m_pPipeLine->Get_CamPosition();
+}
+
+
+
+
+
+
+
+
 void CGameInstance::Release_Engine()
 {
 	CGameInstance::GetInstance()->DestroyInstance();
@@ -174,7 +241,10 @@ void CGameInstance::Release_Engine()
 	CObject_Manager::GetInstance()->DestroyInstance();
 	CComponent_Manager::GetInstance()->DestroyInstance();
 	CTimer_Manager::GetInstance()->DestroyInstance();
+	CPipeLine::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
+	CLight_Manager::GetInstance()->DestroyInstance();
+	
 	CUtils::GetInstance()->DestroyInstance();
 }
 
@@ -186,4 +256,6 @@ void CGameInstance::Free()
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pUtilities);
+	Safe_Release(m_pPipeLine);
+	Safe_Release(m_pLight_Manager);
 }

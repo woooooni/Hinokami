@@ -2,7 +2,10 @@
 #include "..\Public\Loader.h"
 #include "GameInstance.h"
 #include "BackGround.h"
-
+#include "Player.h"
+#include "Sword.h"
+#include "ForkLift.h"
+#include "Camera_Free.h"
 
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -18,6 +21,7 @@ CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 _uint APIENTRY ThreadEntry(void* pArg)
 {
 	
+	CoInitializeEx(nullptr, 0);
 
 	/* 새롭게 생성된 스레드가 일한다. */
 	CLoader*		pLoader = (CLoader*)pArg;
@@ -74,17 +78,6 @@ HRESULT CLoader::Loading_For_Level_Logo()
 
 	/* For.Texture */
 	m_strLoading = TEXT("텍스쳐를 로딩 중 입니다.");
-	
-
-	/* For.Mesh */
-	m_strLoading = TEXT("메시를 로딩 중 입니다.");
-	//Assimp::Importer* importer = new Assimp::Importer;
-	//wstring strFilePath = L"../Bin/Res/Model/Kyoguro/Kyoguro.fbx";
-
-	//const aiScene* pScene = importer->ReadFile(string(strFilePath.begin(), strFilePath.end()),
-	//	aiProcess_ConvertToLeftHanded | aiProcess_CalcTangentSpace);
-
-	//assert(pScene != nullptr);
 
 	/* For.Shader */
 	m_strLoading = TEXT("셰이더를 로딩 중 입니다.");
@@ -92,9 +85,9 @@ HRESULT CLoader::Loading_For_Level_Logo()
 	/* For.GameObject */
 	m_strLoading = TEXT("객체원형을 로딩 중 입니다.");
 
-	/* For.Prototype_GameObject_BackGround */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGround::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	///* For.Prototype_GameObject_BackGround */
+	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGround::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
 	
 	Safe_Release(pGameInstance);
 
@@ -106,6 +99,9 @@ HRESULT CLoader::Loading_For_Level_Logo()
 
 HRESULT CLoader::Loading_For_Level_GamePlay()
 {
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
 	/* For.Texture */
 	m_strLoading = TEXT("텍스쳐를 로딩 중 입니다.");
 	
@@ -116,10 +112,57 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 	/* For.Shader */
 	m_strLoading = TEXT("셰이더를 로딩 중 입니다.");
+
+	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
+
+	/* For.Prototype_GameObject_Camera_Free */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
+		CCamera_Free::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ForkLift */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ForkLift"),
+		CForkLift::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
+		CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Sword */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sword"),
+		CSword::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+	m_strLoading = TEXT("모델을 로딩 중 입니다.");
+	_matrix		PivotMatrix = XMMatrixIdentity();
+
+	/* For.Prototype_Component_Model_Fiona */
+	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ForkLift"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Meshes/ForkLift/", "ForkLift.fbx", PivotMatrix))))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Kyojuro"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Meshes/Kyojuro/", "Kyojuro.fbx", PivotMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_Model */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Model"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModel.hlsl"), VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_AnimModel */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_AnimModel"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
 
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }

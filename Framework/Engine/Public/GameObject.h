@@ -22,9 +22,30 @@ public:
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
 
+public:
+	class CComponent* Get_Component(const wstring & strComponentTag);
+
+public:
+	virtual HRESULT SetUp_State(_fmatrix StateMatrix) { return S_OK; }
+
+protected:
+	virtual HRESULT Ready_Components() PURE;
+	HRESULT Add_Component(_uint iLevelIndex, const wstring& pPrototypeTag, const wstring& pComponentTag, CComponent** ppOut, void* pArg = nullptr);
+	HRESULT Compute_CamZ(_fvector vWorldPos);
+
+
 protected:
 	ID3D11Device*			m_pDevice = { nullptr };
 	ID3D11DeviceContext*	m_pContext = { nullptr };
+
+protected:
+	map<wstring, class CComponent*> m_Components;
+
+protected:
+	_float				m_fCamDistance = 0.f;
+
+private:
+	CComponent* CGameObject::Find_Component(const wstring & strComponentTag);
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

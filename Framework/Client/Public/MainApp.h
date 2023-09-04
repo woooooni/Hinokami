@@ -36,6 +36,7 @@ public:
 
 BEGIN(Engine)
 class CGameInstance;
+class CRenderer;
 END
 
 BEGIN(Client)
@@ -57,9 +58,13 @@ private:
 
 	ID3D11Device*			m_pDevice = { nullptr };
 	ID3D11DeviceContext*	m_pContext = { nullptr };
+	CRenderer*				m_pRenderer_Com = { nullptr };
 
 private:
 	HRESULT Open_Level(LEVELID eLevelID);
+
+private:
+	HRESULT Ready_Prototype_Component();
 
 public:
 	static CMainApp* Create();

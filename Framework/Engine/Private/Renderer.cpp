@@ -47,7 +47,10 @@ HRESULT CRenderer::Render_Priority()
 	{
 		if (FAILED(iter->Render()))
 			return E_FAIL;
+		Safe_Release(iter);
 	}
+	m_RenderObjects[RENDER_PRIORITY].clear();
+
 	return S_OK;
 }
 
@@ -57,7 +60,10 @@ HRESULT CRenderer::Render_NonAlphaBlend()
 	{
 		if (FAILED(iter->Render()))
 			return E_FAIL;
+		Safe_Release(iter);
 	}
+	m_RenderObjects[RENDER_NONBLEND].clear();
+
 	return S_OK;
 }
 
@@ -67,12 +73,23 @@ HRESULT CRenderer::Render_Lights()
 	{
 		if (FAILED(iter->Render()))
 			return E_FAIL;
+		Safe_Release(iter);
 	}
+	m_RenderObjects[RENDER_LIGHT].clear();
+
 	return S_OK;
 }
 
 HRESULT CRenderer::Render_Blend()
 {
+	for (auto& iter : m_RenderObjects[RENDERGROUP::RENDER_BLEND])
+	{
+		if (FAILED(iter->Render()))
+			return E_FAIL;
+		Safe_Release(iter);
+	}
+	m_RenderObjects[RENDER_BLEND].clear();
+
 	return S_OK;
 }
 
@@ -82,7 +99,10 @@ HRESULT CRenderer::Render_NonLight()
 	{
 		if (FAILED(iter->Render()))
 			return E_FAIL;
+		Safe_Release(iter);
 	}
+	m_RenderObjects[RENDER_NONLIGHT].clear();
+
 	return S_OK;
 }
 
@@ -92,7 +112,10 @@ HRESULT CRenderer::Render_AlphaBlend()
 	{
 		if (FAILED(iter->Render()))
 			return E_FAIL;
+		Safe_Release(iter);
 	}
+	m_RenderObjects[RENDER_ALPHABLEND].clear();
+
 	return S_OK;
 }
 
@@ -102,7 +125,10 @@ HRESULT CRenderer::Render_UI()
 	{
 		if (FAILED(iter->Render()))
 			return E_FAIL;
+		Safe_Release(iter);
 	}
+	m_RenderObjects[RENDER_UI].clear();
+
 	return S_OK;
 }
 

@@ -11,6 +11,7 @@ class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
 	enum RENDERGROUP { RENDER_PRIORITY, RENDER_NONLIGHT, RENDER_LIGHT, RENDER_NONBLEND, RENDER_BLEND, RENDER_ALPHABLEND, RENDER_UI, RENDER_END };
+
 private:
 	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);	
 	CRenderer(const CRenderer& rhs) = delete;

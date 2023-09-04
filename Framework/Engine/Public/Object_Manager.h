@@ -19,9 +19,13 @@ public:
 	HRESULT Reserve_Manager(_uint iNumLevels);
 	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, void* pArg);
+	class CGameObject* Clone_GameObject(const wstring& strPrototypeTag, void* pArg = nullptr);
+
+public:
 	void Tick(_float fTimeDelta);
 	void LateTick(_float fTimeDelta);
 	void Clear(_uint iLevelIndex);
+
 private:
 	/* 원형객체들을 레벨별로 보관할까?! */
 	map<const wstring, class CGameObject*>			m_Prototypes;

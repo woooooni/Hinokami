@@ -1,11 +1,16 @@
 #pragma once
 
-#include "Engine_Defines.h"
-#include "Base.h"
+#include "PipeLine.h"
+#include "Renderer.h"
+#include "Transform.h"
+#include "Texture.h"
+#include "Model.h"
+#include "Shader.h"
+#include "VIBuffer_Rect.h"
+
 
 BEGIN(Engine)
-class CComponent_Manager :
-    public CBase
+class CComponent_Manager : public CBase
 {
     DECLARE_SINGLETON(CComponent_Manager)
 

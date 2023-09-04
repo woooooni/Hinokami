@@ -20,6 +20,9 @@ HRESULT CBackGround::Initialize_Prototype()
 
 HRESULT CBackGround::Initialize(void* pArg)
 {
+	if (FAILED(Ready_Components()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -34,6 +37,11 @@ void CBackGround::LateTick(_float fTimeDelta)
 }
 
 HRESULT CBackGround::Render()
+{
+	return S_OK;
+}
+
+HRESULT CBackGround::Ready_Components()
 {
 	return S_OK;
 }

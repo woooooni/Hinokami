@@ -1,5 +1,4 @@
 #include "Component_Manager.h"
-#include "Component.h"
 
 IMPLEMENT_SINGLETON(CComponent_Manager)
 
@@ -60,6 +59,8 @@ CComponent* CComponent_Manager::Find_Component(_uint iLevelIndex, const wstring&
 
     return iter->second;
 }
+
+
 
 void CComponent_Manager::Free()
 {

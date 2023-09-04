@@ -4,6 +4,14 @@
 #include "GameObject.h"
 
 BEGIN(Engine)
+class CModel;
+class CShader;
+class CTexture;
+class CRenderer;
+class CTransform;
+class CPipeLine;
+
+class CHierarchyNode;
 END
 
 
@@ -12,6 +20,7 @@ class CPlayer final : public CGameObject
 {
 public:
 	enum STATE { STATE_IDLE, STATE_WALK, STATE_RUN, STATE_JUMP, STATE_END };
+	enum PARTTYPE { PART_WEAPON, PART_END };
 
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -25,6 +34,32 @@ public:
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
 
+private: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
+	CShader* m_pShaderCom = nullptr;
+
+	CRenderer* m_pRendererCom = nullptr;
+	CTransform* m_pTransformCom = nullptr;
+	CModel* m_pModelCom = nullptr;
+
+private:
+	vector<CGameObject*>				m_Parts;
+	typedef vector<CGameObject*>		PARTS;
+
+	vector<class CHierarchyNode*>		m_Sockets;
+
+protected:
+	virtual HRESULT Ready_Components() override;
+
+private:
+	HRESULT Ready_Sockets();
+	HRESULT Ready_PlayerParts();
+
+	HRESULT Update_Weapon();
+
+public:
+	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg);
+	virtual void Free() override;
 
 
 };
