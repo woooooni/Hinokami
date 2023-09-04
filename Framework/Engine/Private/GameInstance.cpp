@@ -5,6 +5,7 @@
 #include "Object_Manager.h"
 #include "Component_Manager.h"
 #include "Light_Manager.h"
+#include "Key_Manager.h"
 #include "Utils.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
@@ -18,6 +19,7 @@ CGameInstance::CGameInstance()
 	, m_pUtilities(CUtils::GetInstance())
 	, m_pPipeLine(CPipeLine::GetInstance())
 	, m_pLight_Manager(CLight_Manager::GetInstance())
+	, m_pKey_Manager(CKey_Manager::GetInstance())
 {
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pLevel_Manager);
@@ -26,11 +28,12 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pPipeLine);
 	Safe_AddRef(m_pLight_Manager);
+	Safe_AddRef(m_pKey_Manager);
 
 	Safe_AddRef(m_pUtilities);
 }
 
-HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, _Inout_ ID3D11Device** ppDevice, _Inout_ ID3D11DeviceContext** ppContext)
+HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, _Inout_ ID3D11Device** ppDevice, _Inout_ ID3D11DeviceContext** ppContext, _In_ HWND hWnd)
 {
 	/* 그래픽디바이스 초기화 처리. */
 	if (FAILED(m_pGraphic_Device->Ready_Graphic_Device(GraphicDesc.hWnd, GraphicDesc.eWinMode, GraphicDesc.iWinSizeX, GraphicDesc.iWinSizeY, ppDevice, ppContext)))
@@ -47,11 +50,15 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& G
 	if (FAILED(m_pComponent_Manager->Reserve_Manager(iNumLevels)))
 		return E_FAIL;
 
+	if (FAILED(m_pKey_Manager->Reserve_Manager(*ppDevice, *ppContext, hWnd)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void CGameInstance::Tick(_float fTimeDelta)
 {
+	m_pKey_Manager->Tick(fTimeDelta);
 	m_pObject_Manager->Tick(fTimeDelta);
 	m_pLevel_Manager->Tick(fTimeDelta);
 	m_pPipeLine->Update();
@@ -227,6 +234,20 @@ _float4 CGameInstance::Get_CamPosition()
 	return m_pPipeLine->Get_CamPosition();
 }
 
+KEY_STATE CGameInstance::GetKeyState(KEY _eKey)
+{
+	if (nullptr == m_pKey_Manager)
+		return KEY_STATE::NONE;
+
+	return m_pKey_Manager->GetKeyState(_eKey);
+}
+
+const POINT& CGameInstance::GetMousePos()
+{
+
+	return POINT();
+}
+
 
 
 
@@ -245,6 +266,8 @@ void CGameInstance::Release_Engine()
 	CGraphic_Device::GetInstance()->DestroyInstance();
 	CLight_Manager::GetInstance()->DestroyInstance();
 	
+
+	CKey_Manager::GetInstance()->DestroyInstance();
 	CUtils::GetInstance()->DestroyInstance();
 }
 
@@ -255,7 +278,9 @@ void CGameInstance::Free()
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pTimer_Manager);
-	Safe_Release(m_pUtilities);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pLight_Manager);
+
+	Safe_Release(m_pKey_Manager);
+	Safe_Release(m_pUtilities);
 }

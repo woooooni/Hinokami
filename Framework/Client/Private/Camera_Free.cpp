@@ -56,6 +56,12 @@ void CCamera_Free::Tick(_float fTimeDelta)
 		m_pTransformCom->Go_Right(fTimeDelta * 100.f);
 	}
 
+	if (GetAsyncKeyState('R') & 0x8000)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_CameraDesc.vEye));
+		m_pTransformCom->LookAt(XMLoadFloat4(&m_CameraDesc.vAt));
+	}
+
 	//_long	MouseMove = 0;
 
 	//if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_X))

@@ -15,7 +15,7 @@ private:
 	virtual ~CGameInstance() = default;
 
 public: /* For.GameInstance */
-	HRESULT Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, _Inout_ ID3D11Device** ppDevice, _Inout_ ID3D11DeviceContext** ppContext);
+	HRESULT Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, _Inout_ ID3D11Device** ppDevice, _Inout_ ID3D11DeviceContext** ppContext, _In_ HWND hWnd);
 	void Tick(_float fTimeDelta);
 	void Clear(_uint iLevelIndex);
 
@@ -58,6 +58,12 @@ public: /* For.PipeLine */
 	_float4x4 Get_TransformFloat4x4_TP(CPipeLine::TRANSFORMSTATE eTransformState) const;
 	_float4 Get_CamPosition();
 
+/* For. KeyManager */
+public:
+	KEY_STATE GetKeyState(KEY _eKey);
+	const POINT& GetMousePos();
+
+
 private:
 	class CTimer_Manager*			m_pTimer_Manager = { nullptr };
 	class CGraphic_Device*			m_pGraphic_Device = { nullptr };
@@ -66,6 +72,9 @@ private:
 	class CComponent_Manager*		m_pComponent_Manager = { nullptr };
 	class CPipeLine*				m_pPipeLine = { nullptr };
 	class CLight_Manager*			m_pLight_Manager = { nullptr };
+
+
+	class CKey_Manager*				m_pKey_Manager = { nullptr };
 	class CUtils*					m_pUtilities = { nullptr };
 
 public:

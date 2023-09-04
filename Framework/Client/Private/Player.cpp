@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "HierarchyNode.h"
+#include "Key_Manager.h"
 
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -24,7 +25,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimIndex(3);
+	m_pModelCom->Set_AnimIndex(0);
 
 	if (FAILED(Ready_Sockets()))
 		return E_FAIL;
@@ -56,23 +57,23 @@ void CPlayer::Tick(_float fTimeDelta)
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
 
-	if (GetAsyncKeyState('O') & 0x0001)
+	if (KEY_TAP(KEY::O))
 	{
 		_uint iCurrAnimIdx = m_pModelCom->Get_CurAnimationIndex();
-		if (--iCurrAnimIdx <= 0)
+		if (iCurrAnimIdx <= 0)
 			m_pModelCom->Set_AnimIndex(0);
 		else
-			m_pModelCom->Set_AnimIndex(iCurrAnimIdx);
+			m_pModelCom->Set_AnimIndex(--iCurrAnimIdx);
 	}
 
-	if (GetAsyncKeyState('P') & 0x0001)
+	if (KEY_TAP(KEY::P))
 	{
 		_uint iCurrAnimIdx = m_pModelCom->Get_CurAnimationIndex();
 
-		if ((++iCurrAnimIdx) >= m_pModelCom->Get_MaxAnimIndex())
+		if (iCurrAnimIdx >= m_pModelCom->Get_MaxAnimIndex())
 			m_pModelCom->Set_AnimIndex(m_pModelCom->Get_MaxAnimIndex());
 		else
-			m_pModelCom->Set_AnimIndex(iCurrAnimIdx);
+			m_pModelCom->Set_AnimIndex(++iCurrAnimIdx);
 	}
 
 	// Update_Weapon();
@@ -100,8 +101,7 @@ void CPlayer::LateTick(_float fTimeDelta)
 
 HRESULT CPlayer::Render()
 {
-	if (nullptr == m_pModelCom ||
-		nullptr == m_pShaderCom)
+	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
