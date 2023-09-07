@@ -73,12 +73,17 @@ private:
 	_uint								m_iNumAnimations = 0;
 	vector<class CAnimation*>			m_Animations;
 
+private:
+	ID3D11Texture1D* m_pMatixTexture = nullptr;
+	ID3D11ShaderResourceView* m_pMatrixSRV = nullptr;
+
 
 private:
 	HRESULT Ready_MeshContainers(_fmatrix PivotMatrix);
 	HRESULT Ready_Materials(const char* pModelFilePath);
 	HRESULT Ready_HierarchyNodes(aiNode* pNode, class CHierarchyNode* pParent, _uint iDepth);
 	HRESULT Ready_Animations();
+
 
 
 public:

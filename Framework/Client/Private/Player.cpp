@@ -158,19 +158,19 @@ HRESULT CPlayer::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Kyojuro"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Deer"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 
 
 	Safe_Release(pGameInstance);
 
-	_vector vScale;
-	vScale.m128_f32[0] = 0.1f;
-	vScale.m128_f32[1] = 0.1f;
-	vScale.m128_f32[2] = 0.1f;
+	//_vector vScale;
+	//vScale.m128_f32[0] = 0.1f;
+	//vScale.m128_f32[1] = 0.1f;
+	//vScale.m128_f32[2] = 0.1f;
 
-	m_pTransformCom->Set_Scale(vScale);
+	//m_pTransformCom->Set_Scale(vScale);
 
     return S_OK;
 }

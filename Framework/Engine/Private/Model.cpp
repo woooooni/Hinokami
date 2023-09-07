@@ -24,6 +24,8 @@ CModel::CModel(const CModel & rhs)
 	, m_iCurrentAnimIndex(rhs.m_iCurrentAnimIndex)
 	, m_PivotMatrix(rhs.m_PivotMatrix)
 	, m_iNumAnimations(rhs.m_iNumAnimations)
+	, m_pMatixTexture(rhs.m_pMatixTexture)
+	, m_pMatrixSRV(rhs.m_pMatrixSRV)
 	
 {
 	for (auto& pMeshContainer : m_Meshes)
@@ -38,6 +40,9 @@ CModel::CModel(const CModel & rhs)
 
 	for (auto& pAnimation : m_Animations)
 		Safe_AddRef(pAnimation);
+
+	Safe_AddRef(m_pMatixTexture);
+	Safe_AddRef(m_pMatrixSRV);
 
 }
 
@@ -109,6 +114,32 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath, co
 	/* keyframe : 어떤시간?, 상태(vScale, vRotation, vPosition) */
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
+
+
+#pragma region MatrixTexture
+	D3D11_TEXTURE1D_DESC	TextureDesc;
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE1D_DESC));
+
+	TextureDesc.Width = 4096;
+	// TextureDesc.Height = 4096;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+	TextureDesc.Usage = D3D11_USAGE_DYNAMIC;
+	TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	TextureDesc.MiscFlags = 0;
+
+	if (FAILED(m_pDevice->CreateTexture1D(&TextureDesc, nullptr, &m_pMatixTexture)))
+		return E_FAIL;
+
+	
+	if (FAILED(m_pDevice->CreateShaderResourceView(m_pMatixTexture, nullptr, &m_pMatrixSRV)))
+		return E_FAIL;
+
+
+#pragma endregion
 
 	return S_OK;
 }
@@ -201,17 +232,27 @@ HRESULT CModel::Play_Animation(_float fTimeDelta)
 
 HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 {
-	_float4x4		BoneMatrices[1000];
+	// _float4x4		BoneMatrices[1000];
 
 	if (TYPE_ANIM == m_eModelType) 
 	{
-		m_Meshes[iMeshIndex]->SetUp_BoneMatrices(BoneMatrices, XMLoadFloat4x4(&m_PivotMatrix));
+		_uint iMatricesWidth = 0;
+		
+		_float4x4 IdentityMatrix;
+		XMStoreFloat4x4(&IdentityMatrix, XMMatrixIdentity());
+
+		if (FAILED(pShader->Set_RawValue(L"g_IdentityMatrix", &IdentityMatrix, sizeof(_float4x4))))
+			return E_FAIL;
+
+		m_Meshes[iMeshIndex]->SetUp_BoneMatrices(m_pMatixTexture, XMLoadFloat4x4(&m_PivotMatrix), &iMatricesWidth);
+
+		if (FAILED(pShader->Set_RawValue(L"g_iMatricesWidth", &iMatricesWidth, sizeof(_uint))))
+			return E_FAIL;
 
 		/* 모델 정점의 스키닝. */
-		if (FAILED(pShader->Set_RawValue(L"g_BoneMatrices", BoneMatrices, sizeof(_float4x4) * 1000)))
+		if (FAILED(pShader->Set_ShaderResourceView(L"g_MatrixTexture", m_pMatrixSRV)))
 			return E_FAIL;
 	}
-
 	pShader->Begin(0);
 	
 	m_Meshes[iMeshIndex]->Render();
@@ -386,4 +427,7 @@ void CModel::Free()
 	m_Animations.clear();
 
 	m_Importer.FreeScene();
+
+	Safe_Release(m_pMatixTexture);
+	Safe_Release(m_pMatrixSRV);
 }

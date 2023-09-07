@@ -131,8 +131,8 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	_matrix		PivotMatrix = XMMatrixIdentity();
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Kyojuro"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Meshes/Kyojuro/", "Kyojuro.fbx", PivotMatrix))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Deer"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Meshes/Deer/", "Deer.fbx", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_Model */
@@ -177,8 +177,8 @@ HRESULT CLoader::Loading_For_Level_Tool()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Meshes/ForkLift/", "ForkLift.fbx", PivotMatrix))))
 		return E_FAIL;*/
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Kyojuro"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Meshes/Kyojuro/", "Kyojuro.fbx", PivotMatrix))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Deer"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Meshes/Deer/", "Deer.fbx", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_Model */
