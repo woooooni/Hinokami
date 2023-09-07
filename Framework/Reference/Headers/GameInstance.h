@@ -15,7 +15,13 @@ private:
 	virtual ~CGameInstance() = default;
 
 public: /* For.GameInstance */
-	HRESULT Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, _Inout_ ID3D11Device** ppDevice, _Inout_ ID3D11DeviceContext** ppContext, _In_ HWND hWnd);
+	HRESULT Initialize_Engine(_uint iNumLevels, _uint iNumLayerType, 
+		const GRAPHIC_DESC& GraphicDesc, 
+		_Inout_ ID3D11Device** ppDevice, 
+		_Inout_ ID3D11DeviceContext** ppContext, 
+		_In_ HWND hWnd,
+		_In_ HINSTANCE hInst);
+
 	void Tick(_float fTimeDelta);
 	void Clear(_uint iLevelIndex);
 
@@ -27,14 +33,23 @@ public: /* For.Graphic_Device */
 	HRESULT Clear_BackBuffer_View(_float4 vClearColor);	
 	HRESULT Clear_DepthStencil_View();	
 	HRESULT Present();
+	
+public: /* For.Input_Device */
+	_char Get_DIKState(_uchar eKeyID);
+	_char Get_DIMKeyState(DIMK eMouseKeyID);
+	_long Get_DIMMoveState(DIMM eMouseMoveID);
+
 
 public: /* For.Level_Manager */
 	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
+	HRESULT Render_Debug();
 
 public: /* For.Object_Manager */
 	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype);
-	HRESULT Add_GameObject(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, void* pArg = nullptr);
+	HRESULT Add_GameObject(_uint iLevelIndex, _uint iNumLayerType, const wstring& strPrototypeTag, void* pArg = nullptr);
 	class CGameObject* Clone_GameObject(const wstring & strPrototypeTag, void* pArg = nullptr);
+	class CGameObject* Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring & strObjectTag);
+	list<CGameObject*>& Find_GameObjects(_uint iLevelIndex, const _uint iLayerType);
 
 public: /* For.Utilities */
 	string wstring_to_string(const wstring & strW);
@@ -48,7 +63,7 @@ public: /* For. Componenet_Manager */
 public: /* For.Light_Manager */
 	const LIGHTDESC* Get_LightDesc(_uint iIndex);
 	HRESULT Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const LIGHTDESC & LightDesc);
-
+	HRESULT Reset_Lights();
 
 
 public: /* For.PipeLine */
@@ -67,6 +82,7 @@ public:
 private:
 	class CTimer_Manager*			m_pTimer_Manager = { nullptr };
 	class CGraphic_Device*			m_pGraphic_Device = { nullptr };
+	class CInput_Device*			m_pInput_Device = { nullptr };
 	class CLevel_Manager*			m_pLevel_Manager = { nullptr };
 	class CObject_Manager*			m_pObject_Manager = { nullptr };
 	class CComponent_Manager*		m_pComponent_Manager = { nullptr };

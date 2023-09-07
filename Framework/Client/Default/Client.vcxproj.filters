@@ -34,12 +34,6 @@
     <Filter Include="02.GameObjects\Player">
       <UniqueIdentifier>{d26bf6ee-8989-439a-89bb-3c4c11da2bdc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Sword">
-      <UniqueIdentifier>{2b5c704f-7654-4b7a-bdfa-1905b33ddcd8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\ForkLift">
-      <UniqueIdentifier>{d1df3f81-92d5-481b-962f-227014ee30c7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97. ShaderFiles">
       <UniqueIdentifier>{97b53119-8317-43a4-a8ee-44ae8e440ad2}</UniqueIdentifier>
     </Filter>
@@ -48,6 +42,18 @@
     </Filter>
     <Filter Include="96. Manager">
       <UniqueIdentifier>{c37011bc-5412-406d-a7cf-28e2a3b42769}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. Manager\ImGui">
+      <UniqueIdentifier>{bae7db16-1d51-4a5c-a0e3-bc34069d9acd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. Manager\ImGui\Libs">
+      <UniqueIdentifier>{13a1723b-7fbe-4476-8b56-eb612d652727}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\98. Tool">
+      <UniqueIdentifier>{68e03805-ac5d-4811-8d75-d88895ad5614}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Logo">
+      <UniqueIdentifier>{93a319e0-2584-42f0-a95b-75033f74c5ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,17 +96,41 @@
     <ClInclude Include="..\Public\Player.h">
       <Filter>02.GameObjects\Player</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Sword.h">
-      <Filter>02.GameObjects\Sword</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ForkLift.h">
-      <Filter>02.GameObjects\ForkLift</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Camera_Free.h">
       <Filter>02.GameObjects\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ImGuiMgr.h">
-      <Filter>96. Manager</Filter>
+    <ClInclude Include="..\Public\ImGui_Manager.h">
+      <Filter>96. Manager\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imconfig.h">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imgui.h">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imgui_impl_dx11.h">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imgui_impl_win32.h">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imgui_internal.h">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imgui_stdlib.h">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imstb_rectpack.h">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imstb_textedit.h">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imstb_truetype.h">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Tool.h">
+      <Filter>01.Levels\98. Tool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -131,17 +161,38 @@
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02.GameObjects\Player</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Sword.cpp">
-      <Filter>02.GameObjects\Sword</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ForkLift.cpp">
-      <Filter>02.GameObjects\ForkLift</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Camera_Free.cpp">
       <Filter>02.GameObjects\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ImGuiMgr.cpp">
-      <Filter>96. Manager</Filter>
+    <ClCompile Include="..\Private\ImGui_Manager.cpp">
+      <Filter>96. Manager\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui.cpp">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_demo.cpp">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_draw.cpp">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_impl_dx11.cpp">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_impl_win32.cpp">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_stdlib.cpp">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_tables.cpp">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_widgets.cpp">
+      <Filter>96. Manager\ImGui\Libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tool.cpp">
+      <Filter>01.Levels\98. Tool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

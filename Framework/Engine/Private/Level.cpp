@@ -23,6 +23,7 @@ HRESULT CLevel::LateTick(_float fTimeDelta)
 	return S_OK;
 }
 
+
 void CLevel::Free()
 {
 	Safe_Release(m_pDevice);

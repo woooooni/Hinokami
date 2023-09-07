@@ -17,7 +17,7 @@ public:
 	virtual HRESULT LateTick(_float fTimeDelta) override;
 
 private:
-	HRESULT Ready_Layer_BackGround(const wstring& strLayerTag);
+	HRESULT Ready_Layer_BackGround();
 
 public:
 	static class CLevel_Logo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

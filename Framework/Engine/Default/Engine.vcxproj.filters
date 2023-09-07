@@ -219,6 +219,9 @@
     <ClInclude Include="..\Public\Engine_Enum.h">
       <Filter>99.Defines</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Input_Device.h">
+      <Filter>00.System\01.Device\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -310,6 +313,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Key_Manager.cpp">
       <Filter>00.System\04. Key</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Input_Device.cpp">
+      <Filter>00.System\01.Device\Input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

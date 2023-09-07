@@ -17,6 +17,11 @@ public:
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
 	void Tick(_float fTimeDelta);
 	void LateTick(_float fTimeDelta);
+	
+
+public:
+	list<class CGameObject*>& Find_GameObjects() { return m_GameObjects; }
+	CGameObject* Find_GameObject(const wstring& strObjectTag);
 
 private:
 	list<class CGameObject*>	m_GameObjects;

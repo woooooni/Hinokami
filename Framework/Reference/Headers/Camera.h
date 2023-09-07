@@ -19,7 +19,7 @@ public:
 	}CAMERADESC;
 
 protected:
-	CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjTag);
 	CCamera(const CCamera& rhs, CTransform::TRANSFORMDESC* pArg);
 	virtual ~CCamera() = default;
 

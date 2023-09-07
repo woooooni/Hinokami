@@ -1,6 +1,7 @@
 #include "..\Public\GameInstance.h"
 #include "Timer_Manager.h"
 #include "Graphic_Device.h"
+#include "Input_Device.h"
 #include "Level_Manager.h"
 #include "Object_Manager.h"
 #include "Component_Manager.h"
@@ -13,6 +14,7 @@ IMPLEMENT_SINGLETON(CGameInstance)
 CGameInstance::CGameInstance()
 	: m_pTimer_Manager(CTimer_Manager::GetInstance())
 	, m_pGraphic_Device(CGraphic_Device::GetInstance())
+	, m_pInput_Device(CInput_Device::GetInstance())
 	, m_pLevel_Manager(CLevel_Manager::GetInstance())
 	, m_pObject_Manager(CObject_Manager::GetInstance())
 	, m_pComponent_Manager(CComponent_Manager::GetInstance())
@@ -24,6 +26,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pGraphic_Device);
+	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pTimer_Manager);
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pPipeLine);
@@ -33,7 +36,12 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pUtilities);
 }
 
-HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& GraphicDesc, _Inout_ ID3D11Device** ppDevice, _Inout_ ID3D11DeviceContext** ppContext, _In_ HWND hWnd)
+HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, _uint iNumLayerType, 
+	const GRAPHIC_DESC& GraphicDesc, 
+	_Inout_ ID3D11Device** ppDevice, 
+	_Inout_ ID3D11DeviceContext** ppContext, 
+	_In_ HWND hWnd,
+	_In_ HINSTANCE hInst)
 {
 	/* 그래픽디바이스 초기화 처리. */
 	if (FAILED(m_pGraphic_Device->Ready_Graphic_Device(GraphicDesc.hWnd, GraphicDesc.eWinMode, GraphicDesc.iWinSizeX, GraphicDesc.iWinSizeY, ppDevice, ppContext)))
@@ -43,7 +51,7 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& G
 	/* 입력디바이스 초기화 처리. */
 
 	/* 오브젝트 매니져의 예약 처리. */
-	if (FAILED(m_pObject_Manager->Reserve_Manager(iNumLevels)))
+	if (FAILED(m_pObject_Manager->Reserve_Manager(iNumLevels, iNumLayerType)))
 		return E_FAIL;
 
 	/* 컴포넌트 매니져의 예약 처리. */
@@ -53,11 +61,15 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& G
 	if (FAILED(m_pKey_Manager->Reserve_Manager(*ppDevice, *ppContext, hWnd)))
 		return E_FAIL;
 
+	if (FAILED(m_pInput_Device->Initialize(hInst, hWnd)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void CGameInstance::Tick(_float fTimeDelta)
 {
+	m_pInput_Device->Update();
 	m_pKey_Manager->Tick(fTimeDelta);
 	m_pObject_Manager->Tick(fTimeDelta);
 	m_pLevel_Manager->Tick(fTimeDelta);
@@ -115,11 +127,43 @@ HRESULT CGameInstance::Present()
 	return m_pGraphic_Device->Present();
 }
 
+_char CGameInstance::Get_DIKState(_uchar eKeyID)
+{
+	if (nullptr == m_pInput_Device)
+		return 0;
+
+	return m_pInput_Device->Get_DIKState(eKeyID);
+}
+
+_char CGameInstance::Get_DIMKeyState(DIMK eMouseKeyID)
+{
+	if (nullptr == m_pInput_Device)
+		return 0;
+
+	return m_pInput_Device->Get_DIMKeyState(eMouseKeyID);
+}
+
+_long CGameInstance::Get_DIMMoveState(DIMM eMouseMoveID)
+{
+	if (nullptr == m_pInput_Device)
+		return 0;
+
+	return m_pInput_Device->Get_DIMMoveState(eMouseMoveID);
+}
+
 HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 {
 	if (nullptr == m_pLevel_Manager)
 		return E_FAIL;
 	return m_pLevel_Manager->Open_Level(iLevelIndex, pNewLevel);
+}
+
+HRESULT CGameInstance::Render_Debug()
+{
+	if (nullptr == m_pLevel_Manager)
+		return E_FAIL;
+
+	return m_pLevel_Manager->Render_Debug();
 }
 
 HRESULT CGameInstance::Add_Prototype(const wstring & strPrototypeTag, CGameObject * pPrototype)
@@ -130,17 +174,27 @@ HRESULT CGameInstance::Add_Prototype(const wstring & strPrototypeTag, CGameObjec
 	return m_pObject_Manager->Add_Prototype(strPrototypeTag, pPrototype);	
 }
 
-HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, const wstring & strLayerTag, const wstring & strPrototypeTag, void * pArg)
+HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, _uint iNumLayerType, const wstring & strPrototypeTag, void * pArg)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
 
-	return m_pObject_Manager->Add_GameObject(iLevelIndex, strLayerTag, strPrototypeTag, pArg);
+	return m_pObject_Manager->Add_GameObject(iLevelIndex, iNumLayerType, strPrototypeTag, pArg);
 }
 
 CGameObject* CGameInstance::Clone_GameObject(const wstring& strPrototypeTag, void* pArg)
 {
 	return m_pObject_Manager->Clone_GameObject(strPrototypeTag, pArg);
+}
+
+CGameObject* CGameInstance::Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring& strObjectTag)
+{
+	return m_pObject_Manager->Find_GameObejct(iLevelIndex, iLayerType, strObjectTag);
+}
+
+list<CGameObject*>& CGameInstance::Find_GameObjects(_uint iLevelIndex, const _uint iLayerType)
+{
+	return m_pObject_Manager->Find_GameObjects(iLevelIndex, iLayerType);
 }
 
 
@@ -191,6 +245,11 @@ HRESULT CGameInstance::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 		return E_FAIL;
 
 	return m_pLight_Manager->Add_Light(pDevice, pContext, LightDesc);
+}
+
+HRESULT CGameInstance::Reset_Lights()
+{
+	return m_pLight_Manager->Reset_Lights();
 }
 
 void CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eTransformState, _fmatrix TransformMatrix)
@@ -263,6 +322,7 @@ void CGameInstance::Release_Engine()
 	CComponent_Manager::GetInstance()->DestroyInstance();
 	CTimer_Manager::GetInstance()->DestroyInstance();
 	CPipeLine::GetInstance()->DestroyInstance();
+	CInput_Device::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
 	CLight_Manager::GetInstance()->DestroyInstance();
 	
@@ -277,6 +337,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pGraphic_Device);
+	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pLight_Manager);

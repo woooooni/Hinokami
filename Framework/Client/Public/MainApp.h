@@ -34,6 +34,7 @@ public:
 
 #include "Base.h"
 
+
 BEGIN(Engine)
 class CGameInstance;
 class CRenderer;
@@ -64,6 +65,7 @@ private:
 	HRESULT Open_Level(LEVELID eLevelID);
 
 private:
+	HRESULT Initialize_Client();
 	HRESULT Ready_Prototype_Component();
 
 public:

@@ -8,7 +8,7 @@ BEGIN(Client)
 class CCamera_Free final : public CCamera
 {
 private:
-	CCamera_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CCamera_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjTag);
 	CCamera_Free(const CCamera_Free& rhs, CTransform::TRANSFORMDESC* pArg);
 	virtual ~CCamera_Free() = default;
 
@@ -23,7 +23,7 @@ protected:
 	virtual HRESULT Ready_Components() override;
 
 public:
-	static CCamera_Free* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CCamera_Free* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjTag);
 	virtual CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 };

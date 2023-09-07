@@ -11,7 +11,7 @@ CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
-	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+	if (FAILED(Ready_Layer_BackGround()))
 		return E_FAIL;
 
 	return S_OK;
@@ -42,7 +42,7 @@ HRESULT CLevel_Logo::LateTick(_float fTimeDelta)
 	return S_OK;
 }
 
-HRESULT CLevel_Logo::Ready_Layer_BackGround(const wstring & strLayerTag)
+HRESULT CLevel_Logo::Ready_Layer_BackGround()
 {
 	/* 원형객체를 복제하여 사본객체를 생성하고 레이어에 추가한다. */
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();

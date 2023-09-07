@@ -6,7 +6,7 @@
 
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject(pDevice, pContext)
+	: CGameObject(pDevice, pContext, L"Player")
 {
 }
 
@@ -38,21 +38,21 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Tick(_float fTimeDelta)
 {
-	if (GetAsyncKeyState(VK_DOWN) < 0)
+	if (KEY_HOLD(KEY::DOWN_ARROW))
 	{
 		m_pTransformCom->Go_Backward(fTimeDelta);
 	}
 
-	if (GetAsyncKeyState(VK_LEFT) < 0)
+	if (KEY_HOLD(KEY::LEFT_ARROW))
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -1.f);
 	}
 
-	if (GetKeyState(VK_RIGHT) < 0)
+	if (KEY_HOLD(KEY::RIGHT_ARROW))
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
 	}
-	if (GetKeyState(VK_UP) < 0)
+	if (KEY_HOLD(KEY::UP_ARROW))
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
@@ -154,11 +154,11 @@ HRESULT CPlayer::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_AnimModel"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_AnimModel"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Kyojuro"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Kyojuro"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 
@@ -209,20 +209,20 @@ HRESULT CPlayer::Ready_PlayerParts()
 
 HRESULT CPlayer::Update_Weapon()
 {
-	if (nullptr == m_Sockets[PART_WEAPON])
-		return E_FAIL;
+	//if (nullptr == m_Sockets[PART_WEAPON])
+	//	return E_FAIL;
 
-	/* 행렬. */
-	/*_matrix			WeaponMatrix = 뼈의 스페이스 변환(OffsetMatrix)
-		* 뼈의 행렬(CombinedTransformation)
-		* 모델의 PivotMatrix * 프렐이어의월드행렬. ;*/
+	///* 행렬. */
+	///*_matrix			WeaponMatrix = 뼈의 스페이스 변환(OffsetMatrix)
+	//	* 뼈의 행렬(CombinedTransformation)
+	//	* 모델의 PivotMatrix * 프렐이어의월드행렬. ;*/
 
-	_matrix WeaponMatrix = m_Sockets[PART_WEAPON]->Get_OffSetMatrix()
-		* m_Sockets[PART_WEAPON]->Get_CombinedTransformation()
-		* m_pModelCom->Get_PivotMatrix()
-		* m_pTransformCom->Get_WorldMatrix();
+	//_matrix WeaponMatrix = m_Sockets[PART_WEAPON]->Get_OffSetMatrix()
+	//	* m_Sockets[PART_WEAPON]->Get_CombinedTransformation()
+	//	* m_pModelCom->Get_PivotMatrix()
+	//	* m_pTransformCom->Get_WorldMatrix();
 
-	m_Parts[PART_WEAPON]->SetUp_State(WeaponMatrix);
+	//m_Parts[PART_WEAPON]->SetUp_State(WeaponMatrix);
 
 	return S_OK;
 }

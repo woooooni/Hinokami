@@ -34,9 +34,16 @@ public:
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
 
+public:
+	CShader* Get_ShaderCom() { return m_pShaderCom; }
+	CTransform* Get_TransformCom() { return m_pTransformCom; }
+	CModel* Get_ModelCom() { return m_pModelCom; }
+
+protected:
+	virtual HRESULT Ready_Components() override;
+
 private: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CShader* m_pShaderCom = nullptr;
-
 	CRenderer* m_pRendererCom = nullptr;
 	CTransform* m_pTransformCom = nullptr;
 	CModel* m_pModelCom = nullptr;
@@ -47,13 +54,11 @@ private:
 
 	vector<class CHierarchyNode*>		m_Sockets;
 
-protected:
-	virtual HRESULT Ready_Components() override;
+
 
 private:
 	HRESULT Ready_Sockets();
 	HRESULT Ready_PlayerParts();
-
 	HRESULT Update_Weapon();
 
 public:

@@ -36,6 +36,12 @@ HRESULT CLight_Manager::Render(CShader * pShader, CVIBuffer_Rect * pVIBuffer)
 	return S_OK;
 }
 
+HRESULT CLight_Manager::Reset_Lights()
+{
+	Free();
+	return S_OK;
+}
+
 void CLight_Manager::Free()
 {
 	for (auto& pLight : m_Lights)

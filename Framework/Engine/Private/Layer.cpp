@@ -38,6 +38,21 @@ void CLayer::LateTick(_float fTimeDelta)
 	}
 }
 
+CGameObject* CLayer::Find_GameObject(const wstring& strObjectTag)
+{
+	CGameObject* pObj = nullptr;
+	auto iter = find_if(m_GameObjects.begin(), m_GameObjects.end(), [&](CGameObject* pObj) 
+	{
+		return pObj->Get_ObjectTag() == strObjectTag;
+	});
+
+	if (iter == m_GameObjects.end())
+		return nullptr;
+
+	return *iter;
+}
+
+
 CLayer * CLayer::Create()
 {
 	CLayer*	pInstance = new CLayer();

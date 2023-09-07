@@ -74,6 +74,7 @@ namespace Engine
 	private:
 		const _tchar*		m_pTargetTag = nullptr;
 	};
+
 }
 
 #endif // Engine_Function_h__

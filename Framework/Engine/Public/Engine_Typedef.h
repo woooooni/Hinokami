@@ -9,10 +9,13 @@ namespace Engine
 	typedef		unsigned char				_ubyte;
 
 	typedef		char						_char;
+	typedef		unsigned char				_uchar;
 	typedef		wchar_t						_tchar;
 	
 	typedef		signed short				_short;
 	typedef		unsigned short				_ushort;
+
+	
 
 	typedef		signed int					_int;
 	typedef		unsigned int				_uint;
