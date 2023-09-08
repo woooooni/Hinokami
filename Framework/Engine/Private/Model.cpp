@@ -115,13 +115,11 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath, co
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-
-#pragma region MatrixTexture
 	D3D11_TEXTURE1D_DESC	TextureDesc;
 	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE1D_DESC));
 
-	TextureDesc.Width = 4096;
-	// TextureDesc.Height = 4096;
+	TextureDesc.Width = 2048;
+	
 	TextureDesc.MipLevels = 1;
 	TextureDesc.ArraySize = 1;
 	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -134,12 +132,11 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath, co
 	if (FAILED(m_pDevice->CreateTexture1D(&TextureDesc, nullptr, &m_pMatixTexture)))
 		return E_FAIL;
 
-	
+
 	if (FAILED(m_pDevice->CreateShaderResourceView(m_pMatixTexture, nullptr, &m_pMatrixSRV)))
 		return E_FAIL;
 
 
-#pragma endregion
 
 	return S_OK;
 }
@@ -232,7 +229,7 @@ HRESULT CModel::Play_Animation(_float fTimeDelta)
 
 HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 {
-	// _float4x4		BoneMatrices[1000];
+	// _float4x4		BoneMatrices[500];
 
 	if (TYPE_ANIM == m_eModelType) 
 	{
@@ -379,7 +376,7 @@ CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, 
 
 	if (FAILED(pInstance->Initialize_Prototype(eType, pModelFilePath, pModelFileName, PivotMatrix)))
 	{
-		MSG_BOX("Failed To Created : CTexture");
+		MSG_BOX("Failed To Created : CModel");
 		Safe_Release(pInstance);
 		return nullptr;
 	}

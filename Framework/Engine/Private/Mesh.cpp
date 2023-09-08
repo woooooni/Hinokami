@@ -141,21 +141,22 @@ void CMesh::SetUp_BoneMatrices(ID3D11Texture1D* pMatrixTexture, _fmatrix PivotMa
 		return;
 	}
 
-	_float4x4		BoneMatrices[500];
+	else
+	{
+		_float4x4* BoneMatrices = new _float4x4[1000];
+		for (_uint i = 0; i < m_iNumBones; ++i)
+			XMStoreFloat4x4(&BoneMatrices[i], XMMatrixTranspose(m_Bones[i]->Get_OffSetMatrix() * m_Bones[i]->Get_CombinedTransformation() * PivotMatrix));
 
-	for (_uint i = 0; i < m_iNumBones; ++i)
-		XMStoreFloat4x4(&BoneMatrices[i], XMMatrixTranspose(m_Bones[i]->Get_OffSetMatrix() * m_Bones[i]->Get_CombinedTransformation() * PivotMatrix));
+		D3D11_MAPPED_SUBRESOURCE		SubResource;
+		ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
-	D3D11_MAPPED_SUBRESOURCE		SubResource;
-	ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+		m_pContext->Map(pMatrixTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
+		memcpy(SubResource.pData, BoneMatrices, sizeof(_float4x4) * m_iNumBones);
+		m_pContext->Unmap(pMatrixTexture, 0);
 
-	m_pContext->Map(pMatrixTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
-	memcpy(SubResource.pData, &BoneMatrices, sizeof(_float4x4) * m_iNumBones - 1);
-	_float4x4* pData = (_float4x4*)SubResource.pData;
-	m_pContext->Unmap(pMatrixTexture, 0);
-
-	
-	*pMatricesWidth = sizeof(_float4x4) * m_iNumBones;
+		*pMatricesWidth = sizeof(_float4x4) * m_iNumBones;
+		Safe_Delete_Array(BoneMatrices);
+	}
 }
 
 HRESULT CMesh::Ready_Vertices(const aiMesh* pAIMesh, _fmatrix PivotMatrix)
@@ -165,7 +166,6 @@ HRESULT CMesh::Ready_Vertices(const aiMesh* pAIMesh, _fmatrix PivotMatrix)
 	m_iStride = sizeof(VTXMODEL);
 
 	ZeroMemory(&m_BufferDesc, sizeof(D3D11_BUFFER_DESC));
-	m_BufferDesc.ByteWidth = m_iNumVertices * m_iStride;
 	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_BufferDesc.CPUAccessFlags = 0;
