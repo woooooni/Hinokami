@@ -316,19 +316,17 @@ const POINT& CGameInstance::GetMousePos()
 
 void CGameInstance::Release_Engine()
 {
-	CGameInstance::GetInstance()->DestroyInstance();
 	CLevel_Manager::GetInstance()->DestroyInstance();
 	CObject_Manager::GetInstance()->DestroyInstance();
 	CComponent_Manager::GetInstance()->DestroyInstance();
 	CTimer_Manager::GetInstance()->DestroyInstance();
 	CPipeLine::GetInstance()->DestroyInstance();
 	CInput_Device::GetInstance()->DestroyInstance();
-	CGraphic_Device::GetInstance()->DestroyInstance();
 	CLight_Manager::GetInstance()->DestroyInstance();
-	
-
 	CKey_Manager::GetInstance()->DestroyInstance();
 	CUtils::GetInstance()->DestroyInstance();
+	CGraphic_Device::GetInstance()->DestroyInstance();
+	CGameInstance::GetInstance()->DestroyInstance();
 }
 
 void CGameInstance::Free()
@@ -341,7 +339,6 @@ void CGameInstance::Free()
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pLight_Manager);
-
 	Safe_Release(m_pKey_Manager);
 	Safe_Release(m_pUtilities);
 }

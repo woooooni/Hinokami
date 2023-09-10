@@ -26,6 +26,7 @@ CModel::CModel(const CModel & rhs)
 	, m_iNumAnimations(rhs.m_iNumAnimations)
 	, m_pMatixTexture(rhs.m_pMatixTexture)
 	, m_pMatrixSRV(rhs.m_pMatrixSRV)
+	, m_MatricesMatrix(rhs.m_MatricesMatrix)
 	
 {
 	for (auto& pMeshContainer : m_Meshes)
@@ -43,7 +44,7 @@ CModel::CModel(const CModel & rhs)
 
 	Safe_AddRef(m_pMatixTexture);
 	Safe_AddRef(m_pMatrixSRV);
-
+	
 }
 
 CHierarchyNode * CModel::Get_HierarchyNode(const char * pNodeName)
@@ -135,6 +136,8 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath, co
 
 	if (FAILED(m_pDevice->CreateShaderResourceView(m_pMatixTexture, nullptr, &m_pMatrixSRV)))
 		return E_FAIL;
+
+	m_MatricesMatrix.resize(600);
 
 
 
@@ -241,7 +244,7 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 		if (FAILED(pShader->Set_RawValue(L"g_IdentityMatrix", &IdentityMatrix, sizeof(_float4x4))))
 			return E_FAIL;
 
-		m_Meshes[iMeshIndex]->SetUp_BoneMatrices(m_pMatixTexture, XMLoadFloat4x4(&m_PivotMatrix), &iMatricesWidth);
+		m_Meshes[iMeshIndex]->SetUp_BoneMatrices(m_pMatixTexture, XMLoadFloat4x4(&m_PivotMatrix), &m_MatricesMatrix[0], &iMatricesWidth);
 
 		if (FAILED(pShader->Set_RawValue(L"g_iMatricesWidth", &iMatricesWidth, sizeof(_uint))))
 			return E_FAIL;
@@ -427,4 +430,5 @@ void CModel::Free()
 
 	Safe_Release(m_pMatixTexture);
 	Safe_Release(m_pMatrixSRV);
+	// Safe_Release(m_MatricesMatrix);
 }

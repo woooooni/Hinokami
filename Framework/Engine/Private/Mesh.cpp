@@ -125,7 +125,7 @@ HRESULT CMesh::SetUp_HierarchyNodes(CModel * pModel, aiMesh* pAIMesh)
 }
 
 /* 메시의 정점을 그리기위해 셰이더에 넘기기위한 뼈행렬의 배열을 구성한다. */
-void CMesh::SetUp_BoneMatrices(ID3D11Texture1D* pMatrixTexture, _fmatrix PivotMatrix, _uint* pMatricesWidth)
+void CMesh::SetUp_BoneMatrices(ID3D11Texture1D* pMatrixTexture, _fmatrix PivotMatrix, _float4x4* pArrBoneMatrices, _uint* pMatricesWidth)
 {
 	if (0 == m_iNumBones)
 	{
@@ -143,19 +143,17 @@ void CMesh::SetUp_BoneMatrices(ID3D11Texture1D* pMatrixTexture, _fmatrix PivotMa
 
 	else
 	{
-		_float4x4* BoneMatrices = new _float4x4[1000];
 		for (_uint i = 0; i < m_iNumBones; ++i)
-			XMStoreFloat4x4(&BoneMatrices[i], XMMatrixTranspose(m_Bones[i]->Get_OffSetMatrix() * m_Bones[i]->Get_CombinedTransformation() * PivotMatrix));
+			XMStoreFloat4x4(&pArrBoneMatrices[i], XMMatrixTranspose(m_Bones[i]->Get_OffSetMatrix() * m_Bones[i]->Get_CombinedTransformation() * PivotMatrix));
 
 		D3D11_MAPPED_SUBRESOURCE		SubResource;
 		ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 		m_pContext->Map(pMatrixTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
-		memcpy(SubResource.pData, BoneMatrices, sizeof(_float4x4) * m_iNumBones);
+		memcpy(SubResource.pData, pArrBoneMatrices, sizeof(_float4x4) * m_iNumBones);
 		m_pContext->Unmap(pMatrixTexture, 0);
 
 		*pMatricesWidth = sizeof(_float4x4) * m_iNumBones;
-		Safe_Delete_Array(BoneMatrices);
 	}
 }
 

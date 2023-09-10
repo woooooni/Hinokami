@@ -146,7 +146,6 @@ void Client::CMainApp::Free()
 	Safe_Release(m_pContext);
 
 
-
 	CImGui_Manager::GetInstance()->DestroyInstance();
 
 

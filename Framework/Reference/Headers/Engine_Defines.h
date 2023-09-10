@@ -52,6 +52,7 @@ using namespace DirectX;
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+//#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console") // 디버그 모드에서 콘솔창 출력.
 
 #ifndef DBG_NEW 
 

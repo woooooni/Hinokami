@@ -28,7 +28,7 @@ public:
 
 public:
 	HRESULT SetUp_HierarchyNodes(class CModel* pModel, aiMesh* pAIMesh);
-	void SetUp_BoneMatrices(ID3D11Texture1D* pMatrixTexture, _fmatrix PivotMatrix, _uint* iMatricesWidth);
+	void SetUp_BoneMatrices(ID3D11Texture1D* pMatrixTexture, _fmatrix PivotMatrix, _float4x4* pArrBoneMatrices, _uint* iMatricesWidth);
 
 
 private:

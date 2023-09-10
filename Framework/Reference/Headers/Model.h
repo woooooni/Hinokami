@@ -72,6 +72,7 @@ private:
 	_uint								m_iCurrentAnimIndex = 0;
 	_uint								m_iNumAnimations = 0;
 	vector<class CAnimation*>			m_Animations;
+	vector<_float4x4>					m_MatricesMatrix;
 
 private:
 	ID3D11Texture1D* m_pMatixTexture = nullptr;

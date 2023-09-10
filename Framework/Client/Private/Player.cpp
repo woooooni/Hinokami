@@ -27,11 +27,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_pModelCom->Set_AnimIndex(0);
 
-	if (FAILED(Ready_Sockets()))
+	/*if (FAILED(Ready_Sockets()))
 		return E_FAIL;
 
 	if (FAILED(Ready_PlayerParts()))
-		return E_FAIL;
+		return E_FAIL;*/
 
     return S_OK;
 }
@@ -158,7 +158,7 @@ HRESULT CPlayer::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Giyu"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Tenshinhan"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 
@@ -177,14 +177,14 @@ HRESULT CPlayer::Ready_Components()
 
 HRESULT CPlayer::Ready_Sockets()
 {
-	/*if (nullptr == m_pModelCom)
+	if (nullptr == m_pModelCom)
 		return E_FAIL;
 
 	CHierarchyNode* pWeaponSocket = m_pModelCom->Get_HierarchyNode("SWORD");
 	if (nullptr == pWeaponSocket)
 		return E_FAIL;
 
-	m_Sockets.push_back(pWeaponSocket);*/
+	m_Sockets.push_back(pWeaponSocket);
 
 	return S_OK;
 }
@@ -195,12 +195,12 @@ HRESULT CPlayer::Ready_PlayerParts()
 	Safe_AddRef(pGameInstance);
 
 	/* For.Sword */
-	//CGameObject* pGameObject = pGameInstance->Clone_GameObject(TEXT("Prototype_GameObject_Sword"));
+	CGameObject* pGameObject = pGameInstance->Clone_GameObject(TEXT("Prototype_GameObject_Sword"));
 
-	//if (nullptr == pGameObject)
-	//	return E_FAIL;
+	if (nullptr == pGameObject)
+		return E_FAIL;
 
-	//m_Parts.push_back(pGameObject);
+	m_Parts.push_back(pGameObject);
 
 	Safe_Release(pGameInstance);
 
@@ -209,20 +209,20 @@ HRESULT CPlayer::Ready_PlayerParts()
 
 HRESULT CPlayer::Update_Weapon()
 {
-	//if (nullptr == m_Sockets[PART_WEAPON])
-	//	return E_FAIL;
+	if (nullptr == m_Sockets[PART_WEAPON])
+		return E_FAIL;
 
-	///* 행렬. */
-	///*_matrix			WeaponMatrix = 뼈의 스페이스 변환(OffsetMatrix)
-	//	* 뼈의 행렬(CombinedTransformation)
-	//	* 모델의 PivotMatrix * 프렐이어의월드행렬. ;*/
+	/* 행렬. */
+	/*_matrix			WeaponMatrix = 뼈의 스페이스 변환(OffsetMatrix)
+		* 뼈의 행렬(CombinedTransformation)
+		* 모델의 PivotMatrix * 프렐이어의월드행렬. ;*/
 
-	//_matrix WeaponMatrix = m_Sockets[PART_WEAPON]->Get_OffSetMatrix()
-	//	* m_Sockets[PART_WEAPON]->Get_CombinedTransformation()
-	//	* m_pModelCom->Get_PivotMatrix()
-	//	* m_pTransformCom->Get_WorldMatrix();
+	_matrix WeaponMatrix = m_Sockets[PART_WEAPON]->Get_OffSetMatrix()
+		* m_Sockets[PART_WEAPON]->Get_CombinedTransformation()
+		* m_pModelCom->Get_PivotMatrix()
+		* m_pTransformCom->Get_WorldMatrix();
 
-	//m_Parts[PART_WEAPON]->SetUp_State(WeaponMatrix);
+	m_Parts[PART_WEAPON]->SetUp_State(WeaponMatrix);
 
 	return S_OK;
 }
@@ -266,4 +266,5 @@ void CPlayer::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
+	
 }
