@@ -51,7 +51,7 @@ protected:
 	_float				m_fCamDistance = 0.f;
 	wstring				m_strObjectTag = L"";
 
-private:
+protected:
 	CComponent* CGameObject::Find_Component(const wstring & strComponentTag);
 
 public:

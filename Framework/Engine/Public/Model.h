@@ -36,7 +36,7 @@ public:
 
 	
 public:
-	virtual HRESULT Initialize_Prototype(TYPE eType, const char* pModelFilePath, const char* pModelFileName, _fmatrix PivotMatrix);
+	virtual HRESULT Initialize_Prototype(TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix);
 	virtual HRESULT Initialize(void* pArg);
 
 
@@ -53,6 +53,11 @@ private:
 	const aiScene*				m_pAIScene = nullptr;
 	Assimp::Importer			m_Importer;
 
+//private:
+//	const DATA_SCENE* m_pDataScene = nullptr;
+//	_bool m_bBinData = false;
+	
+private:
 	_float4x4					m_PivotMatrix;
 	TYPE						m_eModelType = TYPE_END;
 
@@ -72,7 +77,8 @@ private:
 	_uint								m_iCurrentAnimIndex = 0;
 	_uint								m_iNumAnimations = 0;
 	vector<class CAnimation*>			m_Animations;
-	vector<_float4x4>					m_MatricesMatrix;
+	vector<_float4x4>	m_Matrices;
+	
 
 private:
 	ID3D11Texture1D* m_pMatixTexture = nullptr;
@@ -81,14 +87,15 @@ private:
 
 private:
 	HRESULT Ready_MeshContainers(_fmatrix PivotMatrix);
-	HRESULT Ready_Materials(const char* pModelFilePath);
+	HRESULT Ready_Materials(const wstring& strModelFilePath);
 	HRESULT Ready_HierarchyNodes(aiNode* pNode, class CHierarchyNode* pParent, _uint iDepth);
 	HRESULT Ready_Animations();
-
+	// HRESULT Ready_VTF_Texture();
 
 
 public:
-	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType, const char* pModelFilePath, const char* pModelFileName, _fmatrix PivotMatrix = XMMatrixIdentity());
+	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix = XMMatrixIdentity());
+	
 	virtual CComponent* Clone(void* pArg = nullptr);
 	virtual void Free() override;
 };

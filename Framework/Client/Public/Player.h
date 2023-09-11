@@ -51,7 +51,6 @@ private: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 private:
 	vector<CGameObject*>				m_Parts;
 	typedef vector<CGameObject*>		PARTS;
-
 	vector<class CHierarchyNode*>		m_Sockets;
 
 

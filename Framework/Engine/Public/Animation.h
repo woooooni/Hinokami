@@ -16,6 +16,16 @@ public:
 	HRESULT Initialize(class CModel* pModel);
 	HRESULT Play_Animation(_float fTimeDelta);
 
+public:
+	const vector<class CChannel*>& Get_Channels() { return m_Channels; }
+	_uint Get_ChannelCount() { return m_iNumChannels; }
+
+	const vector<class CHierarchyNode*>& Get_HierachyNodes() { return m_HierarchyNodes; }
+	const vector<_uint>& Get_ChannelKeyFrames() { return m_ChannelKeyFrames; }
+
+	const _float Get_Duration() { return m_fDuration; }
+	const _float Get_CurrPlayTime() { return m_fPlayTime; }
+
 private:
 	/* 이 애니메이션을 구동하기위해 사용되는 뼈의 갯수. */
 	_uint						m_iNumChannels = 0;
@@ -26,7 +36,6 @@ private:
 
 	/* 애니메이션의 초당 재생 속도. */
 	_float						m_fTickPerSecond = 0.f;
-
 	_float						m_fPlayTime = 0.f;
 
 private: /* 복제된 애니메이션 마다 따로 가진다. */

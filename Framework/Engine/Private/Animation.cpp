@@ -18,7 +18,7 @@ CAnimation::CAnimation(const CAnimation & rhs)
 		Safe_AddRef(pChannel);
 }
 
-HRESULT CAnimation::Initialize_Prototype(aiAnimation * pAIAnimation)
+HRESULT CAnimation::Initialize_Prototype(aiAnimation* pAIAnimation)
 {
 	m_fDuration = pAIAnimation->mDuration;
 	m_fTickPerSecond = pAIAnimation->mTicksPerSecond;
@@ -78,11 +78,11 @@ HRESULT CAnimation::Play_Animation(_float fTimeDelta)
 		}
 	}
 
-	_uint		iChannelIndex = 0;
 
 	/* 이 애니메이션 구동을 위한 모든 뼈들을 순회하며 뼈들의 행렬을 갱신해준다. */
 	/* Transformation : 전달된 시간에 따른 키프레임(시간, 스케일, 회전, 이동)정보를 이용하여 Transformation을 만든다. */
 	/* 하이어라키 노드에 저장해준다. */
+	_uint iChannelIndex = 0;
 	for (auto& pChannel : m_Channels)
 	{
 		m_ChannelKeyFrames[iChannelIndex] = pChannel->Update_Transformation(m_fPlayTime, m_ChannelKeyFrames[iChannelIndex], m_HierarchyNodes[iChannelIndex]);

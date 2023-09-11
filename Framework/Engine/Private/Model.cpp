@@ -1,17 +1,17 @@
-#include "..\Public\Model.h"
+ï»¿#include "..\Public\Model.h"
 #include "Mesh.h"
 #include "Texture.h"
 #include "HierarchyNode.h"
 #include "Animation.h"
 #include "Shader.h"
+#include "Utils.h"
 
-
-CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
 {
 }
 
-CModel::CModel(const CModel & rhs)
+CModel::CModel(const CModel& rhs)
 	: CComponent(rhs)
 	, m_pAIScene(rhs.m_pAIScene)
 	, m_iNumMeshes(rhs.m_iNumMeshes)
@@ -26,8 +26,8 @@ CModel::CModel(const CModel & rhs)
 	, m_iNumAnimations(rhs.m_iNumAnimations)
 	, m_pMatixTexture(rhs.m_pMatixTexture)
 	, m_pMatrixSRV(rhs.m_pMatrixSRV)
-	, m_MatricesMatrix(rhs.m_MatricesMatrix)
-	
+	, m_Matrices(rhs.m_Matrices)
+
 {
 	for (auto& pMeshContainer : m_Meshes)
 		Safe_AddRef(pMeshContainer);
@@ -44,20 +44,20 @@ CModel::CModel(const CModel & rhs)
 
 	Safe_AddRef(m_pMatixTexture);
 	Safe_AddRef(m_pMatrixSRV);
-	
+
 }
 
-CHierarchyNode * CModel::Get_HierarchyNode(const char * pNodeName)
+CHierarchyNode* CModel::Get_HierarchyNode(const char* pNodeName)
 {
-	auto	iter = find_if(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [&](CHierarchyNode* pNode) 
-	{
-		return !strcmp(pNodeName, pNode->Get_Name());
-	});
+	auto	iter = find_if(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [&](CHierarchyNode* pNode)
+		{
+			return !strcmp(pNodeName, pNode->Get_Name());
+		});
 
 	if (iter == m_HierarchyNodes.end())
 		return nullptr;
 
-	return *iter;	
+	return *iter;
 }
 
 _uint CModel::Get_MaterialIndex(_uint iMeshIndex)
@@ -70,49 +70,50 @@ _uint CModel::Get_MaxAnimIndex()
 	return m_Animations.size() - 1;
 }
 
-HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath, const char * pModelFileName, _fmatrix PivotMatrix)
+HRESULT CModel::Initialize_Prototype(TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix)
 {
 	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
 
 	char		szFullPath[MAX_PATH] = "";
 
-	strcpy_s(szFullPath, pModelFilePath);
-	strcat_s(szFullPath, pModelFileName);
+
+	strcpy_s(szFullPath, CUtils::GetInstance()->wstring_to_string(strModelFilePath).c_str());
+	strcat_s(szFullPath, CUtils::GetInstance()->wstring_to_string(strModelFileName).c_str());
 
 	_uint		iFlag = 0;
 
 	m_eModelType = eType;
 
-	// aiProcess_PreTransformVertices : ¸ğµ¨À» ±¸¼ºÇÏ´Â ¸Ş½Ã Áß, ÀÌ ¸Ş½ÃÀÇ ÀÌ¸§°ú »ÀÀÇ ÀÌ¸§ÀÌ °°Àº »óÈ²ÀÌ¶ó¸é ÀÌ »ÀÀÇ Çà·ÄÀ» ¸Ş½ÃÀÇ Á¤Á¡¿¡ ´Ù °öÇØ¼­ ·ÎµåÇÑ´Ù. 
-	// ¸ğµç ¾Ö´Ï¸ŞÀÌ¼Ç Á¤º¸´Â Æó±âµÈ´Ù. 
+	// aiProcess_PreTransformVertices : ëª¨ë¸ì„ êµ¬ì„±í•˜ëŠ” ë©”ì‹œ ì¤‘, ì´ ë©”ì‹œì˜ ì´ë¦„ê³¼ ë¼ˆì˜ ì´ë¦„ì´ ê°™ì€ ìƒí™©ì´ë¼ë©´ ì´ ë¼ˆì˜ í–‰ë ¬ì„ ë©”ì‹œì˜ ì •ì ì— ë‹¤ ê³±í•´ì„œ ë¡œë“œí•œë‹¤. 
+	// ëª¨ë“  ì• ë‹ˆë©”ì´ì…˜ ì •ë³´ëŠ” íê¸°ëœë‹¤. 
 	if (TYPE_NONANIM == eType)
 		iFlag |= aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcess_CalcTangentSpace;
 	else
 		iFlag |= aiProcess_ConvertToLeftHanded | aiProcess_CalcTangentSpace;
 
-	/* ÆÄÀÏÀÇ Á¤º¸¸¦ ÀĞ¾î¼­ aiScene¾È¿¡ º¸°üÇÑ´Ù.  */
+	/* íŒŒì¼ì˜ ì •ë³´ë¥¼ ì½ì–´ì„œ aiSceneì•ˆì— ë³´ê´€í•œë‹¤.  */
 	m_pAIScene = m_Importer.ReadFile(szFullPath, iFlag);
 
 	if (nullptr == m_pAIScene)
 		return E_FAIL;
 
-	/* ¸ğµ¨À» ±¸¼ºÇÏ´Â ¸Ş½ÃµéÀ» ¸¸µç´Ù. */
-	/* ¸ğµ¨Àº ¿©·¯°³ÀÇ ¸Ş½Ã·Î ±¸¼ºµÇ¾îÀÖ´Ù. */
-	/* °¢ ¸Ş½ÃÀÇ Á¤Á¡µé°ú ÀÎµ¦½ºµéÀ» ±¸¼ºÇÑ´Ù. */
+	/* ëª¨ë¸ì„ êµ¬ì„±í•˜ëŠ” ë©”ì‹œë“¤ì„ ë§Œë“ ë‹¤. */
+	/* ëª¨ë¸ì€ ì—¬ëŸ¬ê°œì˜ ë©”ì‹œë¡œ êµ¬ì„±ë˜ì–´ìˆë‹¤. */
+	/* ê° ë©”ì‹œì˜ ì •ì ë“¤ê³¼ ì¸ë±ìŠ¤ë“¤ì„ êµ¬ì„±í•œë‹¤. */
 	if (FAILED(Ready_MeshContainers(PivotMatrix)))
 		return E_FAIL;
 
-	/* ¸ÓÅ×¸®¾óÁ¤º¸´Ù.(ºûÀ» ¹Ş¾ÒÀ»¶§ ¸®ÅÏÇØ¾ßÇÒ »ö»óÁ¤º¸.) */
-	/* ¸ğµ¨¸¶´ÙÁ¤ÀÇ?, Á¤Á¡¸¶´ÙÁ¤ÀÇ? ÇÈ¼¿¸¶´Ù Á¤ÀÇ(o) ÅØ½ºÃÄ·Î Ç¥ÇöµÈ´Ù. */
-	if (FAILED(Ready_Materials(pModelFilePath)))
+	/* ë¨¸í…Œë¦¬ì–¼ì •ë³´ë‹¤.(ë¹›ì„ ë°›ì•˜ì„ë•Œ ë¦¬í„´í•´ì•¼í•  ìƒ‰ìƒì •ë³´.) */
+	/* ëª¨ë¸ë§ˆë‹¤ì •ì˜?, ì •ì ë§ˆë‹¤ì •ì˜? í”½ì…€ë§ˆë‹¤ ì •ì˜(o) í…ìŠ¤ì³ë¡œ í‘œí˜„ëœë‹¤. */
+	if (FAILED(Ready_Materials(strModelFilePath)))
 		return E_FAIL;
 
 
-	/* ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ Á¤º¸¸¦ ÀĞ¾î¼­ ÀúÀåÇÑ´Ù.  */
-	/* ¾Ö´Ï¸ŞÀÌ¼Ç Á¤º¸ : ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ Àç»ıµÇ´Âµ¥ °É¸®´Â ÃÑ ½Ã°£(Duration),  ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ Àç»ı¼Óµµ( mTickPerSecond), ¸î°³ÀÇ Ã¤³Î(mNumChannels) ¿¡ ¿µÇâ¸£ ÁÖ´Â°¡. °¢Ã¤³ÎÀÇ Á¤º¸(aiNodeAnim)(mChannels) */
-	/* mChannel(aiNodeAnim, ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ¿òÁ÷ÀÌ´Â »À) ¿¡ ´ëÇÑ Á¤º¸¸¦ ±¸¼ºÇÏ¿© °´Ã¼È­ÇÑ´Ù.(CChannel) */
-	/* Ã¤³Î : »À. ÀÌ »À´Â ÇÑ ¾Ö´Ï¸ŞÀÌ¼Ç ¾È¿¡¼­ »ç¿ëµÈ´Ù. ±× ¾Ö´Ï¸ŞÀÌ¼Ç ¾È¿¡¼­ ¾î¶² ½Ã°£, ½Ã°£, ½Ã°£, ½Ã°£´ë¿¡ ¾î¶² »óÅÂ¸¦ Ç¥ÇöÇÏ¸é µÇ´ÂÁö¿¡ ´ëÇÑ Á¤º¸(keyframe)µéÀ» ´Ù¹Ç³®. */
-	/* keyframe : ¾î¶²½Ã°£?, »óÅÂ(vScale, vRotation, vPosition) */
+	/* ì• ë‹ˆë©”ì´ì…˜ì˜ ì •ë³´ë¥¼ ì½ì–´ì„œ ì €ì¥í•œë‹¤.  */
+	/* ì• ë‹ˆë©”ì´ì…˜ ì •ë³´ : ì• ë‹ˆë©”ì´ì…˜ì´ ì¬ìƒë˜ëŠ”ë° ê±¸ë¦¬ëŠ” ì´ ì‹œê°„(Duration),  ì• ë‹ˆë©”ì´ì…˜ì˜ ì¬ìƒì†ë„( mTickPerSecond), ëª‡ê°œì˜ ì±„ë„(mNumChannels) ì— ì˜í–¥ë¥´ ì£¼ëŠ”ê°€. ê°ì±„ë„ì˜ ì •ë³´(aiNodeAnim)(mChannels) */
+	/* mChannel(aiNodeAnim, ì• ë‹ˆë©”ì´ì…˜ì´ ì›€ì§ì´ëŠ” ë¼ˆ) ì— ëŒ€í•œ ì •ë³´ë¥¼ êµ¬ì„±í•˜ì—¬ ê°ì²´í™”í•œë‹¤.(CChannel) */
+	/* ì±„ë„ : ë¼ˆ. ì´ ë¼ˆëŠ” í•œ ì• ë‹ˆë©”ì´ì…˜ ì•ˆì—ì„œ ì‚¬ìš©ëœë‹¤. ê·¸ ì• ë‹ˆë©”ì´ì…˜ ì•ˆì—ì„œ ì–´ë–¤ ì‹œê°„, ì‹œê°„, ì‹œê°„, ì‹œê°„ëŒ€ì— ì–´ë–¤ ìƒíƒœë¥¼ í‘œí˜„í•˜ë©´ ë˜ëŠ”ì§€ì— ëŒ€í•œ ì •ë³´(keyframe)ë“¤ì„ ë‹¤ë¯€ë‚Ÿ. */
+	/* keyframe : ì–´ë–¤ì‹œê°„?, ìƒíƒœ(vScale, vRotation, vPosition) */
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
@@ -120,7 +121,7 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath, co
 	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE1D_DESC));
 
 	TextureDesc.Width = 2048;
-	
+
 	TextureDesc.MipLevels = 1;
 	TextureDesc.ArraySize = 1;
 	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -137,21 +138,21 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const char * pModelFilePath, co
 	if (FAILED(m_pDevice->CreateShaderResourceView(m_pMatixTexture, nullptr, &m_pMatrixSRV)))
 		return E_FAIL;
 
-	m_MatricesMatrix.resize(600);
+	m_Matrices.resize(600);
 
 
 
 	return S_OK;
 }
 
-HRESULT CModel::Initialize(void * pArg)
+HRESULT CModel::Initialize(void* pArg)
 {
-	/* »À´ë Á¤º¼¸£ ·ÎµåÇÏ³®. */
-	/* ÀÌ ¸ğµ¨ ÀüÃ¼ÀÇ »ÀÀÇ Á¤º¸¸¦ ·ÎµåÇÑ´Ù. */
-	/* HierarchyNode : »ÀÀÇ »óÅÂ¸¦ °¡Áø´Ù.(offSetMatrix, Transformation, CombinedTransformation */
+	/* ë¼ˆëŒ€ ì •ë³¼ë¥´ ë¡œë“œí•˜ë‚Ÿ. */
+	/* ì´ ëª¨ë¸ ì „ì²´ì˜ ë¼ˆì˜ ì •ë³´ë¥¼ ë¡œë“œí•œë‹¤. */
+	/* HierarchyNode : ë¼ˆì˜ ìƒíƒœë¥¼ ê°€ì§„ë‹¤.(offSetMatrix, Transformation, CombinedTransformation */
 	Ready_HierarchyNodes(m_pAIScene->mRootNode, nullptr, 0);
 
-	/* µª½º·Î Á¤·ÄÇÑ´Ù. */
+	/* ëìŠ¤ë¡œ ì •ë ¬í•œë‹¤. */
 	/*sort(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [](CHierarchyNode* pSour, CHierarchyNode* pDest)
 	{
 		return pSour->Get_Depth() < pDest->Get_Depth();
@@ -165,7 +166,7 @@ HRESULT CModel::Initialize(void * pArg)
 
 		for (auto& pPrototype : m_Meshes)
 		{
-			CMesh*		pMeshContainer = (CMesh*)pPrototype->Clone();
+			CMesh* pMeshContainer = (CMesh*)pPrototype->Clone();
 			if (nullptr == pMeshContainer)
 				return E_FAIL;
 
@@ -189,7 +190,7 @@ HRESULT CModel::Initialize(void * pArg)
 
 	for (auto& pPrototype : m_Animations)
 	{
-		CAnimation*		pAnimation = pPrototype->Clone(this);
+		CAnimation* pAnimation = pPrototype->Clone(this);
 		if (nullptr == pAnimation)
 			return E_FAIL;
 
@@ -205,7 +206,7 @@ HRESULT CModel::Initialize(void * pArg)
 	return S_OK;
 }
 
-HRESULT CModel::SetUp_OnShader(CShader * pShader, _uint iMaterialIndex, aiTextureType eTextureType, const wstring& strConstantName)
+HRESULT CModel::SetUp_OnShader(CShader* pShader, _uint iMaterialIndex, aiTextureType eTextureType, const wstring& strConstantName)
 {
 	if (iMaterialIndex >= m_iNumMaterials)
 		return E_FAIL;
@@ -218,10 +219,10 @@ HRESULT CModel::Play_Animation(_float fTimeDelta)
 	if (m_iCurrentAnimIndex >= m_iNumAnimations)
 		return E_FAIL;
 
-	/* ÇöÀç Àç»ıÇÏ°íÀÚÇÏ´Â ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ Á¦¾îÇØ¾ßÇÒ »ÀµéÀÇ Áö¿ªÇà·ÄÀ» °»½ÅÇØ³½´Ù. */
+	/* í˜„ì¬ ì¬ìƒí•˜ê³ ìí•˜ëŠ” ì• ë‹ˆë©”ì´ì…˜ì´ ì œì–´í•´ì•¼í•  ë¼ˆë“¤ì˜ ì§€ì—­í–‰ë ¬ì„ ê°±ì‹ í•´ë‚¸ë‹¤. */
 	m_Animations[m_iCurrentAnimIndex]->Play_Animation(fTimeDelta);
 
-	/* Áö¿ªÇà·ÄÀ» ¼øÂ÷ÀûÀ¸·Î(ºÎ¸ğ¿¡¼­ ÀÚ½ÄÀ¸·Î) ´©ÀûÇÏ¿© m_CombinedTransformation¸¦ ¸¸µç´Ù.  */
+	/* ì§€ì—­í–‰ë ¬ì„ ìˆœì°¨ì ìœ¼ë¡œ(ë¶€ëª¨ì—ì„œ ìì‹ìœ¼ë¡œ) ëˆ„ì í•˜ì—¬ m_CombinedTransformationë¥¼ ë§Œë“ ë‹¤.  */
 	for (auto& pHierarchyNode : m_HierarchyNodes)
 	{
 		pHierarchyNode->Set_CombinedTransformation();
@@ -232,29 +233,24 @@ HRESULT CModel::Play_Animation(_float fTimeDelta)
 
 HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 {
-	// _float4x4		BoneMatrices[500];
-
-	if (TYPE_ANIM == m_eModelType) 
+	if (TYPE_ANIM == m_eModelType)
 	{
 		_uint iMatricesWidth = 0;
-		
+
 		_float4x4 IdentityMatrix;
 		XMStoreFloat4x4(&IdentityMatrix, XMMatrixIdentity());
 
 		if (FAILED(pShader->Set_RawValue(L"g_IdentityMatrix", &IdentityMatrix, sizeof(_float4x4))))
 			return E_FAIL;
 
-		m_Meshes[iMeshIndex]->SetUp_BoneMatrices(m_pMatixTexture, XMLoadFloat4x4(&m_PivotMatrix), &m_MatricesMatrix[0], &iMatricesWidth);
+		m_Meshes[iMeshIndex]->SetUp_BoneMatrices(m_pMatixTexture, XMLoadFloat4x4(&m_PivotMatrix), &m_Matrices[0], &iMatricesWidth);
 
-		if (FAILED(pShader->Set_RawValue(L"g_iMatricesWidth", &iMatricesWidth, sizeof(_uint))))
-			return E_FAIL;
-
-		/* ¸ğµ¨ Á¤Á¡ÀÇ ½ºÅ°´×. */
+		/* ëª¨ë¸ ì •ì ì˜ ìŠ¤í‚¤ë‹. */
 		if (FAILED(pShader->Set_ShaderResourceView(L"g_MatrixTexture", m_pMatrixSRV)))
 			return E_FAIL;
 	}
 	pShader->Begin(0);
-	
+
 	m_Meshes[iMeshIndex]->Render();
 
 	return S_OK;
@@ -262,12 +258,12 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 
 HRESULT CModel::Ready_MeshContainers(_fmatrix PivotMatrix)
 {
-	/* ¸Ş½ÃÀÇ °¹¼ö¸¦ ¾ò¾î¿Â´Ù. */
+	/* ë©”ì‹œì˜ ê°¯ìˆ˜ë¥¼ ì–»ì–´ì˜¨ë‹¤. */
 	m_iNumMeshes = m_pAIScene->mNumMeshes;
 
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
 	{
-		CMesh*		pMeshContainer = CMesh::Create(m_pDevice, m_pContext, m_eModelType, m_pAIScene->mMeshes[i], this, PivotMatrix);
+		CMesh* pMeshContainer = CMesh::Create(m_pDevice, m_pContext, m_eModelType, m_pAIScene->mMeshes[i], this, PivotMatrix);
 		if (nullptr == pMeshContainer)
 			return E_FAIL;
 
@@ -277,13 +273,13 @@ HRESULT CModel::Ready_MeshContainers(_fmatrix PivotMatrix)
 	return S_OK;
 }
 
-HRESULT CModel::Ready_Materials(const char* pModelFilePath)
+HRESULT CModel::Ready_Materials(const wstring& strModelFilePath)
 {
 	if (nullptr == m_pAIScene)
 		return E_FAIL;
 
-	/* ÀÌ ¸ğµ¨Àº ¸î°³ÀÇ ¸ÓÅ×¸®¾ó Á¤º¸¸¦ ÀÌ¿ëÇÏ´Â°¡. */
-	/* ¸ÓÅ×¸®¾ó(MATERIALDESC) : ÅØ½ºÃÄ[µğÇ»Áîor¾Úºñ¾ğÆ®or³ë¸»orÀÌ¹Ì½Ãºê µîµîµî ] */
+	/* ì´ ëª¨ë¸ì€ ëª‡ê°œì˜ ë¨¸í…Œë¦¬ì–¼ ì •ë³´ë¥¼ ì´ìš©í•˜ëŠ”ê°€. */
+	/* ë¨¸í…Œë¦¬ì–¼(MATERIALDESC) : í…ìŠ¤ì³[ë””í“¨ì¦ˆorì•°ë¹„ì–¸íŠ¸orë…¸ë§orì´ë¯¸ì‹œë¸Œ ë“±ë“±ë“± ] */
 	m_iNumMaterials = m_pAIScene->mNumMaterials;
 
 	for (_uint i = 0; i < m_iNumMaterials; ++i)
@@ -291,16 +287,16 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 		MATERIALDESC		MaterialDesc;
 		ZeroMemory(&MaterialDesc, sizeof(MATERIALDESC));
 
-		aiMaterial*			pAIMaterial = m_pAIScene->mMaterials[i];
+		aiMaterial* pAIMaterial = m_pAIScene->mMaterials[i];
 
-		/* AI_TEXTURE_TYPE_MAX:µğÇ»Áîor¾Úºñ¾ğÆ®or³ë¸»orÀÌ¹Ì½Ãºê µîµîµî */
+		/* AI_TEXTURE_TYPE_MAX:ë””í“¨ì¦ˆorì•°ë¹„ì–¸íŠ¸orë…¸ë§orì´ë¯¸ì‹œë¸Œ ë“±ë“±ë“± */
 		for (_uint j = 0; j < AI_TEXTURE_TYPE_MAX; ++j)
-		{			
-			aiString		strPath;			
+		{
+			aiString		strPath;
 
-			/* ÇØ´ç ÀçÁúÀ» Ç¥ÇöÇÏ±âÀ§ÇÑ ÅØ½ºÃÄÀÇ °æ·Î¸¦ strPath¿¡ ¹Ş¾Æ¿Â´Ù. */
+			/* í•´ë‹¹ ì¬ì§ˆì„ í‘œí˜„í•˜ê¸°ìœ„í•œ í…ìŠ¤ì³ì˜ ê²½ë¡œë¥¼ strPathì— ë°›ì•„ì˜¨ë‹¤. */
 			if (FAILED(pAIMaterial->GetTexture(aiTextureType(j), 0, &strPath)))
-				continue;		
+				continue;
 
 			char			szFullPath[MAX_PATH] = "";
 			char			szFileName[MAX_PATH] = "";
@@ -308,7 +304,7 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 
 			_splitpath_s(strPath.data, nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
 
-			strcpy_s(szFullPath, pModelFilePath);
+			strcpy_s(szFullPath, CUtils::GetInstance()->wstring_to_string(strModelFilePath).c_str());
 			strcat_s(szFullPath, szFileName);
 			strcat_s(szFullPath, szExt);
 
@@ -319,8 +315,8 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 
 			MaterialDesc.pTexture[j] = CTexture::Create(m_pDevice, m_pContext, szWideFullPath);
 			if (nullptr == MaterialDesc.pTexture[j])
-				return E_FAIL;			
-		}	
+				return E_FAIL;
+		}
 
 		m_Materials.push_back(MaterialDesc);
 	}
@@ -330,16 +326,16 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 
 HRESULT CModel::Ready_HierarchyNodes(aiNode* pNode, CHierarchyNode* pParent, _uint iDepth)
 {
-	/* pParent? : ºÎ¸ğ ³ëµå ÁÖ¼Ò. CombinedTransformationÀ¸·Î ±×¸°´Ù. 
-	CombinedTransformation³ğÀ» ¸¸µé·Á¸é ³ªÀÇ Transformation * ºÎ¸ğÀÇCombinedTranfsormation·Î ¸¸µç´Ù. */
-	/* ±×·¡¼­ ºÎ¸ğ°¡ ÇÊ¿äÇØ. */
-	/* iDepth? : Ready_HierarchyNodesÇÔ¼ö¸¦ Àç±ÍÇüÅÂ·Î ºÎ¸£°í¤ÃÀÖ±â¤¨¸Å¤Ì¤¤¿¡ ÇÑÂÊ(±íÀÌ)À¸·Î »ı¼ºÇØ³ª°¡±â ¶§¹®¿¡. */
-	/* ÀÌÈÄ ¾Ö´Ô¿¡¤Ó¼Ç Àç»ıÇÒ¶§ »ÀÀÇ CombinedTransformation¸¦ ¸¸µç´Ù. */
-	/* CombinedTransformation¸¸µé·Á¸é ºÎ¸ğÀÇ »óÅÂ°¡ ¸ğµÎ °»½ÅµÇ¾îÀÖ¾î¾ßµÅ. ¿Ö ºÎ¸ğÀÇ ÄÄ¹ÙÀÎµå ÀÌ¿ëÇÏ´Ï±î.¤¤ == 
-	 ºÎ¸ğºÎÅÍ ÀÚ½ÄÀ¸·Î ¼øÂ÷ÀûÀ¸·Î CombinedTransformation¸¦ ¸¸µé¾î¾ßÇÑ´Ù¶ó´Â °É ÀÇ¹Ì.  */
-	/* m_HierarchyNodesÄÁÅ×ÀÌ³Ê´Â ÃÖ»óÀ§ ºÎ¸ğ°¡ °¡Àå ¾Õ¿¡ ÀÖ¾î¾ßÇÑ´Ù. ÀÌ³ğÀÇ 1Â÷ ÀÚ½ÄµéÀÌ µÎ¹øÂ°¿¡ ÂÓ. »ïÂ÷Â¥½ÄµéÀÌ ±×´ÙÀ½ÂÒ¾Ç. */
-	/* °¢ ³ëµå¸¶´Ù ±íÀÌ°ª(¸îÂ÷ÀÚ½ÄÀÌ³Ä? ) À» ÀúÀåÇØµÎ°í ³ªÁß¿¡ Á¤·ÄÇÑ´Ù. */
-	CHierarchyNode*		pHierarchyNode = CHierarchyNode::Create(pNode, pParent, iDepth++);
+	/* pParent? : ë¶€ëª¨ ë…¸ë“œ ì£¼ì†Œ. CombinedTransformationìœ¼ë¡œ ê·¸ë¦°ë‹¤.
+	CombinedTransformationë†ˆì„ ë§Œë“¤ë ¤ë©´ ë‚˜ì˜ Transformation * ë¶€ëª¨ì˜CombinedTranfsormationë¡œ ë§Œë“ ë‹¤. */
+	/* ê·¸ë˜ì„œ ë¶€ëª¨ê°€ í•„ìš”í•´. */
+	/* iDepth? : Ready_HierarchyNodesí•¨ìˆ˜ë¥¼ ì¬ê·€í˜•íƒœë¡œ ë¶€ë¥´ê³ ã…“ìˆê¸°ã„¸ë§¤ã…œã„´ì— í•œìª½(ê¹Šì´)ìœ¼ë¡œ ìƒì„±í•´ë‚˜ê°€ê¸° ë•Œë¬¸ì—. */
+	/* ì´í›„ ì• ë‹˜ì—ã…£ì…˜ ì¬ìƒí• ë•Œ ë¼ˆì˜ CombinedTransformationë¥¼ ë§Œë“ ë‹¤. */
+	/* CombinedTransformationë§Œë“¤ë ¤ë©´ ë¶€ëª¨ì˜ ìƒíƒœê°€ ëª¨ë‘ ê°±ì‹ ë˜ì–´ìˆì–´ì•¼ë¼. ì™œ ë¶€ëª¨ì˜ ì»´ë°”ì¸ë“œ ì´ìš©í•˜ë‹ˆê¹Œ.ã„´ ==
+	 ë¶€ëª¨ë¶€í„° ìì‹ìœ¼ë¡œ ìˆœì°¨ì ìœ¼ë¡œ CombinedTransformationë¥¼ ë§Œë“¤ì–´ì•¼í•œë‹¤ë¼ëŠ” ê±¸ ì˜ë¯¸.  */
+	 /* m_HierarchyNodesì»¨í…Œì´ë„ˆëŠ” ìµœìƒìœ„ ë¶€ëª¨ê°€ ê°€ì¥ ì•ì— ìˆì–´ì•¼í•œë‹¤. ì´ë†ˆì˜ 1ì°¨ ìì‹ë“¤ì´ ë‘ë²ˆì§¸ì— ì«™. ì‚¼ì°¨ì§œì‹ë“¤ì´ ê·¸ë‹¤ìŒì«˜ì•…. */
+	 /* ê° ë…¸ë“œë§ˆë‹¤ ê¹Šì´ê°’(ëª‡ì°¨ìì‹ì´ëƒ? ) ì„ ì €ì¥í•´ë‘ê³  ë‚˜ì¤‘ì— ì •ë ¬í•œë‹¤. */
+	CHierarchyNode* pHierarchyNode = CHierarchyNode::Create(pNode, pParent, iDepth++);
 
 	if (nullptr == pHierarchyNode)
 		return E_FAIL;
@@ -349,7 +345,7 @@ HRESULT CModel::Ready_HierarchyNodes(aiNode* pNode, CHierarchyNode* pParent, _ui
 	for (_uint i = 0; i < pNode->mNumChildren; ++i)
 	{
 		Ready_HierarchyNodes(pNode->mChildren[i], pHierarchyNode, iDepth);
-	}	
+	}
 
 	return S_OK;
 }
@@ -360,24 +356,24 @@ HRESULT CModel::Ready_Animations()
 
 	for (_uint i = 0; i < m_pAIScene->mNumAnimations; ++i)
 	{
-		aiAnimation*		pAIAnimation = m_pAIScene->mAnimations[i];
+		aiAnimation* pAIAnimation = m_pAIScene->mAnimations[i];
 
-		/*I ¾Ö´Ï¸ŞÀÌ¼Ç ¸¶´Ù °´Ã¼È­ ÇÏ´Â ÀÌÀ¯ : ÇöÀç Àç»ı ½Ã°£¿¡ ¸Â´Â Ã¤³ÎµéÀÇ »À »óÅÂ¸¦ ¼ÂÆÃÇÑ´Ù. (Á¶³­ ºı¼¼´Ù) 
-		ÇÔ¼ö·Î ¸¸µé¾î¾ßÁö¹¹. */
-		CAnimation*			pAnimation = CAnimation::Create(pAIAnimation);
+		/*I ì• ë‹ˆë©”ì´ì…˜ ë§ˆë‹¤ ê°ì²´í™” í•˜ëŠ” ì´ìœ  : í˜„ì¬ ì¬ìƒ ì‹œê°„ì— ë§ëŠ” ì±„ë„ë“¤ì˜ ë¼ˆ ìƒíƒœë¥¼ ì…‹íŒ…í•œë‹¤. (ì¡°ë‚œ ë¹¡ì„¸ë‹¤)
+		í•¨ìˆ˜ë¡œ ë§Œë“¤ì–´ì•¼ì§€ë­. */
+		CAnimation* pAnimation = CAnimation::Create(pAIAnimation);
 		if (nullptr == pAnimation)
 			return E_FAIL;
 
 		m_Animations.push_back(pAnimation);
-	}	
+	}
 	return S_OK;
 }
 
-CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, TYPE eType, const char * pModelFilePath, const char * pModelFileName, _fmatrix PivotMatrix)
+CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType, const wstring& strFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix)
 {
-	CModel*			pInstance = new CModel(pDevice, pContext);
+	CModel* pInstance = new CModel(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eType, pModelFilePath, pModelFileName, PivotMatrix)))
+	if (FAILED(pInstance->Initialize_Prototype(eType, strFilePath, strModelFileName, PivotMatrix)))
 	{
 		MSG_BOX("Failed To Created : CModel");
 		Safe_Release(pInstance);
@@ -387,9 +383,9 @@ CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, 
 	return pInstance;
 }
 
-CComponent * CModel::Clone(void * pArg)
+CComponent* CModel::Clone(void* pArg)
 {
-	CModel*			pInstance = new CModel(*this);
+	CModel* pInstance = new CModel(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{

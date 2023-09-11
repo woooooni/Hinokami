@@ -55,6 +55,18 @@
     <Filter Include="02.GameObjects\Logo">
       <UniqueIdentifier>{93a319e0-2584-42f0-a95b-75033f74c5ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. Manager\Data">
+      <UniqueIdentifier>{ec8bafee-f593-4a3c-8fdf-d0b90ae21adb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Character">
+      <UniqueIdentifier>{68cce55d-7f2c-4b33-a387-09d20e080365}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Character\00. Kyojuro">
+      <UniqueIdentifier>{507885f5-cfcd-484d-a4f5-ff0c17446477}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster">
+      <UniqueIdentifier>{978c82ce-6d25-428d-8f75-f1b25ce61559}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -132,6 +144,12 @@
     <ClInclude Include="..\Public\Level_Tool.h">
       <Filter>01.Levels\98. Tool</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Data_Manager.h">
+      <Filter>96. Manager\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CCharacter.h">
+      <Filter>02.GameObjects\Character</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -193,6 +211,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Tool.cpp">
       <Filter>01.Levels\98. Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Data_Manager.cpp">
+      <Filter>96. Manager\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CCharacter.cpp">
+      <Filter>02.GameObjects\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
