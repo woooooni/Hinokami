@@ -61,11 +61,23 @@
     <Filter Include="02.GameObjects\Character">
       <UniqueIdentifier>{68cce55d-7f2c-4b33-a387-09d20e080365}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Character\00. Kyojuro">
-      <UniqueIdentifier>{507885f5-cfcd-484d-a4f5-ff0c17446477}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Monster">
       <UniqueIdentifier>{978c82ce-6d25-428d-8f75-f1b25ce61559}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Character\00. Tanjiro">
+      <UniqueIdentifier>{507885f5-cfcd-484d-a4f5-ff0c17446477}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Character\01. Nezko">
+      <UniqueIdentifier>{c6df1f2e-e957-4679-a2b2-50efdbeddd66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Character\02. Zenitsu">
+      <UniqueIdentifier>{07bef7e3-df50-4b6a-a898-5325e137510e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Character\03. Kyojuro">
+      <UniqueIdentifier>{2589e047-34fe-4253-8753-f2d83685afd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Character\04. Giyu">
+      <UniqueIdentifier>{471c5856-a3a8-4243-9e9f-b94b15ad18d7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

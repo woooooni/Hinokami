@@ -90,7 +90,7 @@ private:
 	HRESULT Ready_Materials(const wstring& strModelFilePath);
 	HRESULT Ready_HierarchyNodes(aiNode* pNode, class CHierarchyNode* pParent, _uint iDepth);
 	HRESULT Ready_Animations();
-	// HRESULT Ready_VTF_Texture();
+	HRESULT Ready_VTF_Texture();
 
 
 public:

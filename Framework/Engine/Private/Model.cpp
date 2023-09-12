@@ -117,28 +117,9 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const wstring& strModelFilePath
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-	D3D11_TEXTURE1D_DESC	TextureDesc;
-	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE1D_DESC));
-
-	TextureDesc.Width = 2048;
-
-	TextureDesc.MipLevels = 1;
-	TextureDesc.ArraySize = 1;
-	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-
-	TextureDesc.Usage = D3D11_USAGE_DYNAMIC;
-	TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	TextureDesc.MiscFlags = 0;
-
-	if (FAILED(m_pDevice->CreateTexture1D(&TextureDesc, nullptr, &m_pMatixTexture)))
+	
+	if (FAILED(Ready_VTF_Texture()))
 		return E_FAIL;
-
-
-	if (FAILED(m_pDevice->CreateShaderResourceView(m_pMatixTexture, nullptr, &m_pMatrixSRV)))
-		return E_FAIL;
-
-	m_Matrices.resize(600);
 
 
 
@@ -366,6 +347,33 @@ HRESULT CModel::Ready_Animations()
 
 		m_Animations.push_back(pAnimation);
 	}
+	return S_OK;
+}
+
+HRESULT CModel::Ready_VTF_Texture()
+{
+	D3D11_TEXTURE1D_DESC	TextureDesc;
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE1D_DESC));
+
+	TextureDesc.Width = 4096;
+
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+	TextureDesc.Usage = D3D11_USAGE_DYNAMIC;
+	TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	TextureDesc.MiscFlags = 0;
+
+	if (FAILED(m_pDevice->CreateTexture1D(&TextureDesc, nullptr, &m_pMatixTexture)))
+		return E_FAIL;
+
+
+	if (FAILED(m_pDevice->CreateShaderResourceView(m_pMatixTexture, nullptr, &m_pMatrixSRV)))
+		return E_FAIL;
+
+	m_Matrices.resize(1000);
 	return S_OK;
 }
 
