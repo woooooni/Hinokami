@@ -26,7 +26,7 @@ CModel::CModel(const CModel& rhs)
 	, m_iNumAnimations(rhs.m_iNumAnimations)
 	, m_pMatixTexture(rhs.m_pMatixTexture)
 	, m_pMatrixSRV(rhs.m_pMatrixSRV)
-	, m_Matrices(rhs.m_Matrices)
+	, m_MatricesTemp(rhs.m_MatricesTemp)
 
 {
 	for (auto& pMeshContainer : m_Meshes)
@@ -224,7 +224,7 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 		if (FAILED(pShader->Set_RawValue(L"g_IdentityMatrix", &IdentityMatrix, sizeof(_float4x4))))
 			return E_FAIL;
 
-		m_Meshes[iMeshIndex]->SetUp_BoneMatrices(m_pMatixTexture, XMLoadFloat4x4(&m_PivotMatrix), &m_Matrices[0], &iMatricesWidth);
+		m_Meshes[iMeshIndex]->SetUp_BoneMatrices(m_pMatixTexture, XMLoadFloat4x4(&m_PivotMatrix), m_MatricesTemp.data(), &iMatricesWidth);
 
 		/* 모델 정점의 스키닝. */
 		if (FAILED(pShader->Set_ShaderResourceView(L"g_MatrixTexture", m_pMatrixSRV)))
@@ -366,6 +366,7 @@ HRESULT CModel::Ready_VTF_Texture()
 	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	TextureDesc.MiscFlags = 0;
 
+	
 	if (FAILED(m_pDevice->CreateTexture1D(&TextureDesc, nullptr, &m_pMatixTexture)))
 		return E_FAIL;
 
@@ -373,7 +374,7 @@ HRESULT CModel::Ready_VTF_Texture()
 	if (FAILED(m_pDevice->CreateShaderResourceView(m_pMatixTexture, nullptr, &m_pMatrixSRV)))
 		return E_FAIL;
 
-	m_Matrices.resize(1000);
+	m_MatricesTemp.resize(1000);
 	return S_OK;
 }
 
@@ -434,5 +435,6 @@ void CModel::Free()
 
 	Safe_Release(m_pMatixTexture);
 	Safe_Release(m_pMatrixSRV);
-	// Safe_Release(m_MatricesMatrix);
+
+	// Safe_Release(m_MatricesTempMatrix);
 }

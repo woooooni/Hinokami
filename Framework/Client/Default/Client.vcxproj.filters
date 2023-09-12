@@ -159,8 +159,11 @@
     <ClInclude Include="..\Public\Data_Manager.h">
       <Filter>96. Manager\Data</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CCharacter.h">
+    <ClInclude Include="..\Public\Character.h">
       <Filter>02.GameObjects\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tanjiro.h">
+      <Filter>02.GameObjects\Character\00. Tanjiro</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -227,8 +230,11 @@
     <ClCompile Include="..\Private\Data_Manager.cpp">
       <Filter>96. Manager\Data</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CCharacter.cpp">
+    <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObjects\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tanjiro.cpp">
+      <Filter>02.GameObjects\Character\00. Tanjiro</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

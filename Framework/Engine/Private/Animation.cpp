@@ -2,7 +2,7 @@
 #include "Channel.h"
 #include "Model.h"
 #include "HierarchyNode.h"
-
+#include "Utils.h"
 CAnimation::CAnimation()
 {
 }
@@ -13,6 +13,8 @@ CAnimation::CAnimation(const CAnimation & rhs)
 	, m_iNumChannels(rhs.m_iNumChannels)
 	, m_fTickPerSecond(rhs.m_fTickPerSecond)
 	, m_fPlayTime(rhs.m_fPlayTime)
+	, m_bPause(false)
+	, m_strAnimationName(rhs.m_strAnimationName)
 {
 	for (auto& pChannel : m_Channels)
 		Safe_AddRef(pChannel);
@@ -40,6 +42,8 @@ HRESULT CAnimation::Initialize_Prototype(aiAnimation* pAIAnimation)
 		m_Channels.push_back(pChannel);
 	}
 
+	m_strAnimationName = CUtils::GetInstance()->string_to_wstring(string(pAIAnimation->mName.C_Str()));
+
 	return S_OK;
 }
 
@@ -65,7 +69,11 @@ HRESULT CAnimation::Initialize(CModel* pModel)
 
 HRESULT CAnimation::Play_Animation(_float fTimeDelta)
 {
-	m_fPlayTime += m_fTickPerSecond * fTimeDelta;
+
+	if (m_bPause == false)
+		m_fPlayTime += m_fTickPerSecond * fTimeDelta;
+
+	
 
 	if (m_fPlayTime >= m_fDuration)
 	{

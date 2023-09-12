@@ -2,6 +2,8 @@
 #include "ImGui_Manager.h"
 #include "GameObject.h"
 #include "Component_Manager.h"
+#include "Animation.h"
+#include "GameInstance.h"
 
 
 USING(Client)
@@ -91,7 +93,7 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
 
     ImGui::Text("Window Alpha");
     IMGUI_SAME_LINE;
-    if (ImGui::DragFloat("WindowAlphaSlider", &m_fWindowAlpha, 0.1f, 0.1f, 1.f, "%.1f"))
+    if (ImGui::DragFloat("WindowAlphaSlider", &m_fWindowAlpha, 0.01f, 0.1f, 1.f, "%.1f"))
     {
         ImGuiStyle& style = ImGui::GetStyle();
         style.Alpha = m_fWindowAlpha;
@@ -130,20 +132,146 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
 void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
 {
     ImGui::Begin("Model");
-    ImGui::Text("Model Tool");
+    if (nullptr != m_pTarget)
+    {
+
+        ImGui::Text("Name : ");
+        IMGUI_SAME_LINE;
+        ImGui::Text(CGameInstance::GetInstance()->wstring_to_string(m_pTarget->Get_ObjectTag()).c_str());
+
+
+        CTransform* pTransform = dynamic_cast<CTransform*>(m_pTarget->Get_Component(L"Com_Transform"));
+        if (nullptr == pTransform)
+        {
+            ImGui::End();
+            return;
+        }
+        IMGUI_NEW_LINE;
+
+        ImGui::Text("Transform");
+        ImGui::BeginChild("Model");
+        
+
+        IMGUI_NEW_LINE;
+
+    #pragma region Position
+        // Postion
+        _float3 vPos; 
+        XMStoreFloat3(&vPos, pTransform->Get_State(CTransform::STATE_POSITION));
+        
+        ImGui::Text("Position");
+        ImGui::DragFloat3("##Position", (_float*)&vPos, 0.1f, -999.f, 999.f, "%.3f");
+
+        pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&vPos), 1.f));
+    #pragma endregion
+
+        IMGUI_NEW_LINE;
+
+    #pragma region Rotaion_TODO
+        //// Rotation
+        //_vector vRight = pTransform->Get_State(CTransform::STATE::STATE_RIGHT);
+        //_vector vUp = pTransform->Get_State(CTransform::STATE::STATE_UP);
+        //_vector vLook = pTransform->Get_State(CTransform::STATE::STATE_LOOK);
+
+        //
+        //float fRotaionX = XMConvertToDegrees(XMVectorGetX(XMVector4Dot(XMVector4Normalize(vRight), XMVectorSet(1.f, 0.f, 0.f, 0.f))));
+        //float fRotaionY = XMConvertToDegrees(XMVectorGetX(XMVector4Dot(XMVector4Normalize(vUp), XMVectorSet(0.f, 1.f, 0.f, 0.f))));
+        //float fRotaionZ = XMConvertToDegrees(XMVectorGetX(XMVector4Dot(XMVector4Normalize(vLook), XMVectorSet(0.f, 0.f, 1.f, 0.f))));
+
+        //ImGui::Text("Rotaion");
+
+        //ImGui::Text("X : ");
+        //IMGUI_SAME_LINE;
+        //ImGui::DragFloat("##Rotation_x", &fRotaionX, 0.1f, 0.f, 360.f);
+
+        //ImGui::Text("Y : ");
+        //IMGUI_SAME_LINE;
+        //ImGui::DragFloat("##Rotation_y", &fRotaionY, 0.1f, 0.f, 360.f);
+
+        //ImGui::Text("Z : ");
+        //IMGUI_SAME_LINE;
+        //ImGui::DragFloat("##Rotation_z", &fRotaionZ, 0.1f, 0.f, 360.f);
+
+        ///*pTransform->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(fRotaionX));
+        //pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRotaionY));
+        //pTransform->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(fRotaionZ));*/
+    #pragma endregion
+
+        IMGUI_NEW_LINE;
+
+    #pragma region Scale
+        // Scale
+        _float3 vScale = pTransform->Get_Scale();
+
+        ImGui::Text("Scale");
+        ImGui::DragFloat3("##Scale", (_float*)&vScale, 0.1f, 0.1f, 100.f);
+
+        if(vScale.x >= 0.1f 
+            && vScale.y >= 0.1f 
+            && vScale.z >= 0.1f)
+            pTransform->Set_Scale(XMLoadFloat3(&vScale));
+    #pragma endregion
+        ImGui::EndChild();
+        
+    }
     ImGui::End();
 }
 
+
+#pragma region Animation
 void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
 {
     ImGui::Begin("Animation");
     if (nullptr != m_pTarget)
     {
-        m_pTarget->Get_Component(L"Com_Model");
+        CModel* pModel = dynamic_cast<CModel*>(m_pTarget->Get_Component(L"Com_Model"));
+        if (nullptr == pModel)
+        {
+            ImGui::End();
+            return;
+        }
+
+        
+        
+        const vector<CAnimation*>& Animations = pModel->Get_Animations();
+        if (Animations.size() <= 0)
+        {
+            ImGui::End();
+            return;
+        }
+            
+        _int iCurrIndex = pModel->Get_CurrAnimationIndex();
+
+        if (ImGui::BeginListBox("##Animations", ImVec2(400, 0)))
+        {
+            for (size_t i = 0; i < Animations.size(); i++)
+            {
+                if (ImGui::Selectable(CGameInstance::GetInstance()->wstring_to_string(Animations[i]->Get_AnimationName()).c_str(), i == iCurrIndex))
+                    pModel->Set_AnimIndex(i);
+            }
+            ImGui::EndListBox();
+        }
+
+        CAnimation* pAnimation = Animations[iCurrIndex];
+        _float fDuration = pAnimation->Get_Duration();
+        _float fCurrTime = pAnimation->Get_CurrPlayTime();
+
+        ImGui::SliderFloat("##Anim_Slider", &fCurrTime, 0.f, fDuration, "%.1f");
+        pAnimation->Set_PlayTime(fCurrTime);
+
+        if (ImGui::ArrowButton("##Play", ImGuiDir_Right))
+            pAnimation->Set_Pause(false);
+
+        IMGUI_SAME_LINE;
+
+        if(ImGui::Button("ll"))
+            pAnimation->Set_Pause(true);
+        
     }
     ImGui::End();
     
 }
+#pragma endregion
 
 void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 {

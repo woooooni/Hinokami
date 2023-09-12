@@ -26,7 +26,7 @@ public:
 	void Set_AnimIndex(_uint iAnimIndex) {
 		m_iCurrentAnimIndex = iAnimIndex;
 	}
-	_uint Get_CurAnimationIndex() { return m_iCurrentAnimIndex; }
+	_uint Get_CurrAnimationIndex() { return m_iCurrentAnimIndex; }
 
 	_uint Get_MaxAnimIndex();
 
@@ -48,6 +48,9 @@ public:
 	/* 3. 애니메이션에 의해 움직인 뼈들의 CombinedTransfromation을 셋팅한다. */
 	HRESULT Play_Animation(_float fTimeDelta);
 	HRESULT Render(class CShader* pShader, _uint iMeshIndex, _uint iPassIndex = 0);
+
+public:
+	const vector<class CAnimation*>& Get_Animations() { return m_Animations; }
 
 private:
 	const aiScene*				m_pAIScene = nullptr;
@@ -77,12 +80,13 @@ private:
 	_uint								m_iCurrentAnimIndex = 0;
 	_uint								m_iNumAnimations = 0;
 	vector<class CAnimation*>			m_Animations;
-	vector<_float4x4>	m_Matrices;
+	vector<_float4x4>	m_MatricesTemp;
 	
 
 private:
 	ID3D11Texture1D* m_pMatixTexture = nullptr;
 	ID3D11ShaderResourceView* m_pMatrixSRV = nullptr;
+	
 
 
 private:

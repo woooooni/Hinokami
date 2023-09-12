@@ -3,24 +3,10 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
-BEGIN(Engine)
-class CModel;
-class CShader;
-class CTexture;
-class CRenderer;
-class CTransform;
-class CPipeLine;
-
-class CHierarchyNode;
-END
-
 
 BEGIN(Client)
 class CPlayer final : public CGameObject
 {
-public:
-	enum STATE { STATE_IDLE, STATE_WALK, STATE_RUN, STATE_JUMP, STATE_END };
-	enum PARTTYPE { PART_WEAPON, PART_END };
 
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -35,37 +21,24 @@ public:
 	virtual HRESULT Render();
 
 public:
-	CShader* Get_ShaderCom() { return m_pShaderCom; }
-	CTransform* Get_TransformCom() { return m_pTransformCom; }
-	CModel* Get_ModelCom() { return m_pModelCom; }
+	HRESULT Set_MainCharacter(class CCharacter* pCharacter);
+	class CCharacter* Get_CurrCharacter() { return m_pCurrCharacter; }
+	HRESULT Add_Character(class CCharacter* pCharacter) { m_Characters.push_back(pCharacter); }
 
 protected:
 	virtual HRESULT Ready_Components() override;
-
-private: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
-	CShader* m_pShaderCom = nullptr;
-	CRenderer* m_pRendererCom = nullptr;
-	CTransform* m_pTransformCom = nullptr;
-	CModel* m_pModelCom = nullptr;
+	
 
 private:
-	vector<CGameObject*>				m_Parts;
-	typedef vector<CGameObject*>		PARTS;
-	vector<class CHierarchyNode*>		m_Sockets;
-
-
-
-private:
-	HRESULT Ready_Sockets();
-	HRESULT Ready_PlayerParts();
-	HRESULT Update_Weapon();
+	vector<class CCharacter*> m_Characters;
+	class CCharacter* m_pCurrCharacter = nullptr;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 
-
+	
 };
 
 END

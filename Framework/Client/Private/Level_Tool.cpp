@@ -3,8 +3,10 @@
 #include "GameInstance.h"
 #include "Camera.h"
 #include "ImGui_Manager.h"
+#include "Player.h"
+#include "Character.h"
 
-
+USING(Client)
 CLevel_Tool::CLevel_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
 {
@@ -40,6 +42,16 @@ HRESULT CLevel_Tool::Initialize()
 	if (FAILED(Ready_Layer_UI(LAYER_TYPE::LAYER_UI)))
 		return E_FAIL;
 
+
+	CGameObject* pObject = CGameInstance::GetInstance()->Find_GameObejct(LEVEL_STATIC, _uint(LAYER_TYPE::LAYER_PLAYER), L"Player");
+	if (nullptr == pObject)
+		return S_OK;
+
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
+	if (nullptr == pPlayer)
+		return S_OK;
+
+	m_pImGuiManager->Set_Target(pPlayer->Get_CurrCharacter());
 	return S_OK;
 }
 

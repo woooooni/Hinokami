@@ -72,18 +72,20 @@ void CCamera_Free::Tick(_float fTimeDelta)
 		m_pTransformCom->LookAt(XMLoadFloat4(&m_CameraDesc.vAt));
 	}
 
-	_long	MouseMove = 0;
-
-	if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_X))
+	if (KEY_HOLD(KEY::RBTN))
 	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMove * fTimeDelta * 0.05f);		
-	}
+		_long	MouseMove = 0;
 
-	if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_Y))
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMove * fTimeDelta * 0.05f);
-	}
+		if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_X))
+		{
+			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMove * fTimeDelta * 0.05f);
+		}
 
+		if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_Y))
+		{
+			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMove * fTimeDelta * 0.05f);
+		}
+	}
 	
 
 	Safe_Release(pGameInstance);

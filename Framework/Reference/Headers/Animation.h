@@ -25,6 +25,14 @@ public:
 
 	const _float Get_Duration() { return m_fDuration; }
 	const _float Get_CurrPlayTime() { return m_fPlayTime; }
+	void Set_PlayTime(_float fPlayTime) { m_fPlayTime = fPlayTime; }
+
+	void Set_Pause(_bool _bPause) { m_bPause = _bPause; }
+	_bool Is_Pause() { return m_bPause; }
+
+	const wstring& Get_AnimationName() { return m_strAnimationName; }
+
+	
 
 private:
 	/* 이 애니메이션을 구동하기위해 사용되는 뼈의 갯수. */
@@ -37,10 +45,16 @@ private:
 	/* 애니메이션의 초당 재생 속도. */
 	_float						m_fTickPerSecond = 0.f;
 	_float						m_fPlayTime = 0.f;
+	_bool						m_bPause = false;
+
+
+	wstring						m_strAnimationName;
 
 private: /* 복제된 애니메이션 마다 따로 가진다. */
 	vector<class CHierarchyNode*>	m_HierarchyNodes;
 	vector<_uint>					m_ChannelKeyFrames;
+
+	
 
 public:
 	static CAnimation* Create(aiAnimation* pAIAnimation);

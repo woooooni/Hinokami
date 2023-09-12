@@ -136,8 +136,8 @@ void CMesh::SetUp_BoneMatrices(ID3D11Texture1D* pMatrixTexture, _fmatrix PivotMa
 		
 		m_pContext->Map(pMatrixTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
 		memcpy(SubResource.pData, &BoneMatrix, sizeof(_float4x4));
-
 		m_pContext->Unmap(pMatrixTexture, 0);
+
 		return;
 	}
 
