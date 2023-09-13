@@ -15,6 +15,10 @@ public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 
+
+public:
+	class CGameObject* Get_Owner() { return m_pOwner; }
+	void Set_Owner(class CGameObject* pOwner) { m_pOwner = pOwner; }
 #ifdef _DEBUG
 public:
 	virtual HRESULT Render() { return S_OK; }
@@ -25,6 +29,7 @@ protected:
 	ID3D11Device*			m_pDevice = { nullptr };
 	ID3D11DeviceContext*	m_pContext = { nullptr };
 	_bool					m_isCloned = { false };
+	class CGameObject*		m_pOwner = { nullptr };
 
 public:
 	virtual CComponent* Clone(void* pArg) = 0;

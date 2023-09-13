@@ -111,6 +111,11 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CTransform::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_StateMachine */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_StateMachine"),
+		CStateMachine::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"),
 	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTex.hlsl"), VTXCUBETEX_DECLARATION::Elements, VTXCUBETEX_DECLARATION::iNumElements))))
 	//	return E_FAIL;

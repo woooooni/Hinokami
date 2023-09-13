@@ -247,7 +247,10 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
             for (size_t i = 0; i < Animations.size(); i++)
             {
                 if (ImGui::Selectable(CGameInstance::GetInstance()->wstring_to_string(Animations[i]->Get_AnimationName()).c_str(), i == iCurrIndex))
+                {
                     pModel->Set_AnimIndex(i);
+                    iCurrIndex = i;
+                }
             }
             ImGui::EndListBox();
         }
@@ -255,6 +258,8 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
         CAnimation* pAnimation = Animations[iCurrIndex];
         _float fDuration = pAnimation->Get_Duration();
         _float fCurrTime = pAnimation->Get_CurrPlayTime();
+
+        ImGui::Text("%d / %d", iCurrIndex, Animations.size());
 
         ImGui::SliderFloat("##Anim_Slider", &fCurrTime, 0.f, fDuration, "%.1f");
         pAnimation->Set_PlayTime(fCurrTime);
@@ -266,6 +271,11 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
 
         if(ImGui::Button("ll"))
             pAnimation->Set_Pause(true);
+
+        
+        _float fAnimationSpeed = pAnimation->Get_AnimationSpeed();
+        ImGui::DragFloat("##AnimSpeed", &fAnimationSpeed, 0.01f, 0.01f, 24.f);
+        pAnimation->Set_AnimationSpeed(fAnimationSpeed);
         
     }
     ImGui::End();

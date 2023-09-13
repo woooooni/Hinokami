@@ -79,6 +79,12 @@
     <Filter Include="02.GameObjects\Character\04. Giyu">
       <UniqueIdentifier>{471c5856-a3a8-4243-9e9f-b94b15ad18d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. State">
+      <UniqueIdentifier>{35062dd5-e235-43a2-a38d-3e4b2f7300b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. State\Character">
+      <UniqueIdentifier>{96b97e03-5b05-4aa0-885c-f7e365a5268d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -165,6 +171,18 @@
     <ClInclude Include="..\Public\Tanjiro.h">
       <Filter>02.GameObjects\Character\00. Tanjiro</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Nezko.h">
+      <Filter>02.GameObjects\Character\01. Nezko</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Zenitsu.h">
+      <Filter>02.GameObjects\Character\02. Zenitsu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kyojuro.h">
+      <Filter>02.GameObjects\Character\03. Kyojuro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Giyu.h">
+      <Filter>02.GameObjects\Character\04. Giyu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -235,6 +253,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tanjiro.cpp">
       <Filter>02.GameObjects\Character\00. Tanjiro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Nezko.cpp">
+      <Filter>02.GameObjects\Character\01. Nezko</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Zenitsu.cpp">
+      <Filter>02.GameObjects\Character\02. Zenitsu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kyojuro.cpp">
+      <Filter>02.GameObjects\Character\03. Kyojuro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Giyu.cpp">
+      <Filter>02.GameObjects\Character\04. Giyu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

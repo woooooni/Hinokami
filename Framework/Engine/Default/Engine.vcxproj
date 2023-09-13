@@ -188,6 +188,8 @@
     <ClInclude Include="..\Public\PipeLine.h" />
     <ClInclude Include="..\public\Renderer.h" />
     <ClInclude Include="..\Public\Shader.h" />
+    <ClInclude Include="..\Public\State.h" />
+    <ClInclude Include="..\Public\StateMachine.h" />
     <ClInclude Include="..\Public\Texture.h" />
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\Public\Timer_Manager.h" />
@@ -221,6 +223,8 @@
     <ClCompile Include="..\Private\PipeLine.cpp" />
     <ClCompile Include="..\private\Renderer.cpp" />
     <ClCompile Include="..\Private\Shader.cpp" />
+    <ClCompile Include="..\Private\State.cpp" />
+    <ClCompile Include="..\Private\StateMachine.cpp" />
     <ClCompile Include="..\Private\Texture.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\Timer_Manager.cpp" />

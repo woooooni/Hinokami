@@ -32,7 +32,7 @@ public:
 
 public:
 	const wstring& Get_ObjectTag() { return m_strObjectTag; }
-
+	
 
 protected:
 	virtual HRESULT Ready_Components() PURE;

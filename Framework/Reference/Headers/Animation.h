@@ -31,8 +31,9 @@ public:
 	_bool Is_Pause() { return m_bPause; }
 
 	const wstring& Get_AnimationName() { return m_strAnimationName; }
-
 	
+	_float Get_AnimationSpeed() { return m_fTickPerSecond; }
+	void Set_AnimationSpeed(_float _fSpeed) { m_fTickPerSecond = _fSpeed; }
 
 private:
 	/* 이 애니메이션을 구동하기위해 사용되는 뼈의 갯수. */

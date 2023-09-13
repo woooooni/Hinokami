@@ -1,22 +1,22 @@
 #include "stdafx.h"
-#include "Tanjiro.h"
+#include "Kyojuro.h"
 #include "GameInstance.h"
 #include "HierarchyNode.h"
 
 USING(Client)
 
 
-CTanjiro::CTanjiro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
+CKyojuro::CKyojuro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
 	: CCharacter(pDevice, pContext, strObjectTag)
 {
 }
 
-CTanjiro::CTanjiro(const CTanjiro& rhs)
+CKyojuro::CKyojuro(const CKyojuro& rhs)
 	: CCharacter(rhs)
 {
 }
 
-HRESULT CTanjiro::Initialize_Prototype()
+HRESULT CKyojuro::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -25,7 +25,7 @@ HRESULT CTanjiro::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CTanjiro::Initialize(void* pArg)
+HRESULT CKyojuro::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -45,17 +45,17 @@ HRESULT CTanjiro::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CTanjiro::Tick(_float fTimeDelta)
+void CKyojuro::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 }
 
-void CTanjiro::LateTick(_float fTimeDelta)
+void CKyojuro::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
 }
 
-HRESULT CTanjiro::Render()
+HRESULT CKyojuro::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -63,7 +63,7 @@ HRESULT CTanjiro::Render()
 	return S_OK;
 }
 
-HRESULT CTanjiro::Ready_Components()
+HRESULT CKyojuro::Ready_Components()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -87,7 +87,7 @@ HRESULT CTanjiro::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Tanjiro"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Kyojuro"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_StateMachine"), TEXT("Com_StateMachine"), (CComponent**)&m_pStateCom)))
@@ -105,12 +105,12 @@ HRESULT CTanjiro::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CTanjiro::Ready_States()
+HRESULT CKyojuro::Ready_States()
 {
 	return S_OK;
 }
 
-HRESULT CTanjiro::Ready_Sockets()
+HRESULT CKyojuro::Ready_Sockets()
 {
 	if (nullptr == m_pModelCom)
 		return E_FAIL;
@@ -124,7 +124,7 @@ HRESULT CTanjiro::Ready_Sockets()
 	return S_OK;
 }
 
-HRESULT CTanjiro::Ready_Parts()
+HRESULT CKyojuro::Ready_Parts()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -142,7 +142,7 @@ HRESULT CTanjiro::Ready_Parts()
 	return S_OK;
 }
 
-HRESULT CTanjiro::Update_Weapon()
+HRESULT CKyojuro::Update_Weapon()
 {
 	if (nullptr == m_Sockets[PART_WEAPON])
 		return E_FAIL;
@@ -162,31 +162,31 @@ HRESULT CTanjiro::Update_Weapon()
 	return S_OK;
 }
 
-CTanjiro* CTanjiro::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
+CKyojuro* CKyojuro::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
 {
-	CTanjiro* pInstance = new CTanjiro(pDevice, pContext, strObjectTag);
+	CKyojuro* pInstance = new CKyojuro(pDevice, pContext, strObjectTag);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Create Failed : CTanjiro");
+		MSG_BOX("Create Failed : CKyojuro");
 		Safe_Release(pInstance);
 		return nullptr;
 	}
 	return pInstance;
 }
 
-CGameObject* CTanjiro::Clone(void* pArg)
+CGameObject* CKyojuro::Clone(void* pArg)
 {
-	CTanjiro* pInstance = new CTanjiro(*this);
+	CKyojuro* pInstance = new CKyojuro(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CTanjiro");
+		MSG_BOX("Failed to Cloned : CKyojuro");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CTanjiro::Free()
+void CKyojuro::Free()
 {
 }

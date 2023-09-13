@@ -2,12 +2,12 @@
 #include "Character.h"
 
 BEGIN(Client)
-class CTanjiro final : public CCharacter
+class CZenitsu final : public CCharacter
 {
 private:
-	CTanjiro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
-	CTanjiro(const CTanjiro& rhs);
-	virtual ~CTanjiro() = default;
+	CZenitsu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	CZenitsu(const CZenitsu& rhs);
+	virtual ~CZenitsu() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -27,7 +27,7 @@ private:
 	HRESULT Update_Weapon();
 
 public:
-	static CTanjiro* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	static CZenitsu* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

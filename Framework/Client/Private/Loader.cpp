@@ -5,6 +5,11 @@
 #include "Player.h"
 #include "Camera_Free.h"
 #include "Tanjiro.h"
+#include "Nezko.h"
+#include "Zenitsu.h"
+#include "Kyojuro.h"
+#include "Giyu.h"
+
 
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -174,8 +179,8 @@ HRESULT CLoader::Loading_For_Level_Tool()
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Tanjiro"),
-		CTanjiro::Create(m_pDevice, m_pContext, L"Tanjiro"))))
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Giyu"),
+		CGiyu::Create(m_pDevice, m_pContext, L"Giyu"))))
 		return E_FAIL;
 
 	m_strLoading = TEXT("모델을 로딩 중 입니다.");
@@ -192,6 +197,22 @@ HRESULT CLoader::Loading_For_Level_Tool()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Tanjiro"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Tanjiro/"), TEXT("Tanjiro.fbx"), PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Giyu"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Giyu/"), TEXT("Giyu.fbx"), PivotMatrix))))
+		return E_FAIL;
+
+	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Nezko"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Nezko/"), TEXT("Nezko.fbx"), PivotMatrix))))
+		return E_FAIL;*/
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Kyojuro"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Kyojuro/"), TEXT("Kyojuro.fbx"), PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Zenitsu"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Zenitsu/"), TEXT("Zenitsu.fbx"), PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_Model */

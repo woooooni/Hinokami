@@ -30,7 +30,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	CGameInstance* pGameIntance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameIntance);
 
-	CGameObject* pGameObject = pGameIntance->Clone_GameObject(L"Prototype_GameObject_Tanjiro");
+	CGameObject* pGameObject = pGameIntance->Clone_GameObject(L"Prototype_GameObject_Giyu");
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
