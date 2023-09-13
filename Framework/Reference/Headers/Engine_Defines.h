@@ -35,6 +35,7 @@ using namespace DirectX;
 #include <vector>
 #include <list>
 #include <map>
+#include <unordered_map>
 #include <algorithm>
 #include <typeinfo>
 

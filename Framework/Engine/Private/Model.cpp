@@ -171,7 +171,7 @@ HRESULT CModel::Initialize(void* pArg)
 
 	for (auto& pPrototype : m_Animations)
 	{
-		CAnimation* pAnimation = pPrototype->Clone(this);
+		CAnimation* pAnimation = pPrototype->Clone(this, m_pDevice);
 		if (nullptr == pAnimation)
 			return E_FAIL;
 
@@ -341,7 +341,7 @@ HRESULT CModel::Ready_Animations()
 
 		/*I 애니메이션 마다 객체화 하는 이유 : 현재 재생 시간에 맞는 채널들의 뼈 상태를 셋팅한다. (조난 빡세다)
 		함수로 만들어야지뭐. */
-		CAnimation* pAnimation = CAnimation::Create(pAIAnimation);
+		CAnimation* pAnimation = CAnimation::Create(pAIAnimation, XMLoadFloat4x4(&m_PivotMatrix));
 		if (nullptr == pAnimation)
 			return E_FAIL;
 

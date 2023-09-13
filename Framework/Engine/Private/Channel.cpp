@@ -67,7 +67,9 @@ HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel)
 		KeyFrame.vPosition = vPosition;
 
 		m_KeyFrames.push_back(KeyFrame);
-	}	
+	}
+
+	
 
 	return S_OK;
 }

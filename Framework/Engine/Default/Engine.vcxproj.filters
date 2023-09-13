@@ -234,6 +234,9 @@
     <ClInclude Include="..\Public\StateMachine.h">
       <Filter>01.Utiltiy\04.Component\07. StateMachine</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\tinyxml2.h">
+      <Filter>01.Utiltiy\98. Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -334,6 +337,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\StateMachine.cpp">
       <Filter>01.Utiltiy\04.Component\07. StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\tinyxml2.cpp">
+      <Filter>01.Utiltiy\98. Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

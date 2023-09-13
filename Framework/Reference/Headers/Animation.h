@@ -12,8 +12,8 @@ private:
 	virtual ~CAnimation() = default;
 
 public:
-	HRESULT Initialize_Prototype(aiAnimation* pAIAnimation);
-	HRESULT Initialize(class CModel* pModel);
+	HRESULT Initialize_Prototype(aiAnimation* pAIAnimation, _fmatrix PivotMatrix);
+	HRESULT Initialize(class CModel* pModel, ID3D11Device* pDevice);
 	HRESULT Play_Animation(_float fTimeDelta);
 
 public:
@@ -38,6 +38,7 @@ public:
 private:
 	/* 이 애니메이션을 구동하기위해 사용되는 뼈의 갯수. */
 	_uint						m_iNumChannels = 0;
+	_uint						m_iFrameCount = 0;
 	vector<class CChannel*>		m_Channels;
 
 	/* 애니메이션 재생하는데 걸리는 전체시간. */
@@ -51,15 +52,21 @@ private:
 
 	wstring						m_strAnimationName;
 
+	_float4x4					m_PivotMatrix;
+
 private: /* 복제된 애니메이션 마다 따로 가진다. */
 	vector<class CHierarchyNode*>	m_HierarchyNodes;
 	vector<_uint>					m_ChannelKeyFrames;
 
+	ID3D11ShaderResourceView* m_pSRV = nullptr;
+
+private:
+	HRESULT Create_VTF_Texture(ID3D11Device* pDevice);
 	
 
 public:
-	static CAnimation* Create(aiAnimation* pAIAnimation);
-	CAnimation* Clone(class CModel* pModel);
+	static CAnimation* Create(aiAnimation* pAIAnimation, _fmatrix PivotMatrix);
+	CAnimation* Clone(class CModel* pModel, ID3D11Device* pDevice);
 	virtual void Free() override;
 };
 

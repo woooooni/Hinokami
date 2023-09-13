@@ -26,7 +26,9 @@ private:
 	char							m_szName[MAX_PATH] = "";
 
 	_uint							m_iNumKeyFrames = 0;
-	vector<KEYFRAME>				m_KeyFrames;	
+	vector<KEYFRAME>				m_KeyFrames;
+
+	ID3D11ShaderResourceView*		m_pSRV;
 	
 
 public:

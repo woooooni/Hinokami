@@ -38,6 +38,7 @@ public:
 	HRESULT Initialize(aiNode* pAINode, class CHierarchyNode* pParent, _uint iDepth);
 	void Set_CombinedTransformation();
 	void Set_OffsetMatrix(_fmatrix OffsetMatrix);
+
 private:
 	char				m_szName[MAX_PATH] = "";
 	_float4x4			m_OffsetMatrix;
