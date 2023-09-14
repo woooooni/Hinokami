@@ -197,9 +197,9 @@ HRESULT CLoader::Loading_For_Level_Tool()
 
 
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Giyu"),
+	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Giyu"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Giyu/"), TEXT("Giyu.fbx"), PivotMatrix))))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Tanjiro"),
 	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Tanjiro/"), TEXT("Tanjiro.fbx"), PivotMatrix))))

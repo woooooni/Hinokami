@@ -6,13 +6,23 @@ BEGIN(Engine)
 
 class CAnimation final : public CBase
 {
+	struct KEY_FRAME_DESC
+	{
+		_uint iCurrFrame;
+		_uint iNextFrame;
+		_float fRatio;
+		_float fSumTime;
+		_float fSpeed;
+		_float2 fPadding;
+	};
+
 private:
 	CAnimation();
 	CAnimation(const CAnimation& rhs);
 	virtual ~CAnimation() = default;
 
 public:
-	HRESULT Initialize_Prototype(aiAnimation* pAIAnimation, _fmatrix PivotMatrix);
+	HRESULT Initialize_Prototype(aiAnimation* pAIAnimation);
 	HRESULT Initialize(class CModel* pModel, ID3D11Device* pDevice);
 	HRESULT Play_Animation(_float fTimeDelta);
 
@@ -35,6 +45,9 @@ public:
 	_float Get_AnimationSpeed() { return m_fTickPerSecond; }
 	void Set_AnimationSpeed(_float _fSpeed) { m_fTickPerSecond = _fSpeed; }
 
+public:
+	HRESULT SetUp_OnShader(class CShader* pShader, const wstring& strConstNameconst);
+
 private:
 	/* 이 애니메이션을 구동하기위해 사용되는 뼈의 갯수. */
 	_uint						m_iNumChannels = 0;
@@ -51,8 +64,7 @@ private:
 
 
 	wstring						m_strAnimationName;
-
-	_float4x4					m_PivotMatrix;
+	KEY_FRAME_DESC				m_tKeyFrame;
 
 private: /* 복제된 애니메이션 마다 따로 가진다. */
 	vector<class CHierarchyNode*>	m_HierarchyNodes;
@@ -65,7 +77,7 @@ private:
 	
 
 public:
-	static CAnimation* Create(aiAnimation* pAIAnimation, _fmatrix PivotMatrix);
+	static CAnimation* Create(aiAnimation* pAIAnimation);
 	CAnimation* Clone(class CModel* pModel, ID3D11Device* pDevice);
 	virtual void Free() override;
 };

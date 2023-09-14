@@ -17,7 +17,7 @@ public:
 
 public:
 	HRESULT Initialize(aiNodeAnim*	pAIChannel);
-	_uint Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, class CHierarchyNode* pNode);
+	_uint Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, class CHierarchyNode* pNode, __out _float4x4* pOut = nullptr);
 
 public:
 	const vector<KEYFRAME>& Get_KeyFrames() { return m_KeyFrames; }

@@ -28,6 +28,7 @@ public:
 		return XMLoadFloat4x4(&m_CombinedTransformation);
 	}
 
+	_matrix Get_Transformation() { return XMLoadFloat4x4(&m_Transformation); }
 
 public:
 	void Set_Transformation(_fmatrix Transformation) {

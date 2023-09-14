@@ -118,8 +118,8 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const wstring& strModelFilePath
 		return E_FAIL;
 
 	
-	if (FAILED(Ready_VTF_Texture()))
-		return E_FAIL;
+	/*if (FAILED(Ready_VTF_Texture()))
+		return E_FAIL;*/
 
 
 
@@ -224,11 +224,11 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 		if (FAILED(pShader->Set_RawValue(L"g_IdentityMatrix", &IdentityMatrix, sizeof(_float4x4))))
 			return E_FAIL;
 
-		m_Meshes[iMeshIndex]->SetUp_BoneMatrices(m_pMatixTexture, XMLoadFloat4x4(&m_PivotMatrix), m_MatricesTemp.data(), &iMatricesWidth);
+		// m_Meshes[iMeshIndex]->SetUp_BoneMatrices(m_pMatixTexture, XMLoadFloat4x4(&m_PivotMatrix), m_MatricesTemp.data(), &iMatricesWidth);
 
 		/* 모델 정점의 스키닝. */
-		if (FAILED(pShader->Set_ShaderResourceView(L"g_MatrixTexture", m_pMatrixSRV)))
-			return E_FAIL;
+		/*if (FAILED(pShader->Set_ShaderResourceView(L"g_MatrixTexture", m_pMatrixSRV)))
+			return E_FAIL;*/
 	}
 	pShader->Begin(0);
 
@@ -341,7 +341,7 @@ HRESULT CModel::Ready_Animations()
 
 		/*I 애니메이션 마다 객체화 하는 이유 : 현재 재생 시간에 맞는 채널들의 뼈 상태를 셋팅한다. (조난 빡세다)
 		함수로 만들어야지뭐. */
-		CAnimation* pAnimation = CAnimation::Create(pAIAnimation, XMLoadFloat4x4(&m_PivotMatrix));
+		CAnimation* pAnimation = CAnimation::Create(pAIAnimation);
 		if (nullptr == pAnimation)
 			return E_FAIL;
 
@@ -350,33 +350,36 @@ HRESULT CModel::Ready_Animations()
 	return S_OK;
 }
 
-HRESULT CModel::Ready_VTF_Texture()
-{
-	D3D11_TEXTURE1D_DESC	TextureDesc;
-	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE1D_DESC));
+#pragma region !!Deprecated!!
 
-	TextureDesc.Width = 4096;
-
-	TextureDesc.MipLevels = 1;
-	TextureDesc.ArraySize = 1;
-	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-
-	TextureDesc.Usage = D3D11_USAGE_DYNAMIC;
-	TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	TextureDesc.MiscFlags = 0;
-
-	
-	if (FAILED(m_pDevice->CreateTexture1D(&TextureDesc, nullptr, &m_pMatixTexture)))
-		return E_FAIL;
-
-
-	if (FAILED(m_pDevice->CreateShaderResourceView(m_pMatixTexture, nullptr, &m_pMatrixSRV)))
-		return E_FAIL;
-
-	m_MatricesTemp.resize(1000);
-	return S_OK;
-}
+//HRESULT CModel::Ready_VTF_Texture()
+//{
+//	D3D11_TEXTURE1D_DESC	TextureDesc;
+//	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE1D_DESC));
+//
+//	TextureDesc.Width = 4096;
+//
+//	TextureDesc.MipLevels = 1;
+//	TextureDesc.ArraySize = 1;
+//	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+//
+//	TextureDesc.Usage = D3D11_USAGE_DYNAMIC;
+//	TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+//	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+//	TextureDesc.MiscFlags = 0;
+//
+//	
+//	if (FAILED(m_pDevice->CreateTexture1D(&TextureDesc, nullptr, &m_pMatixTexture)))
+//		return E_FAIL;
+//
+//
+//	if (FAILED(m_pDevice->CreateShaderResourceView(m_pMatixTexture, nullptr, &m_pMatrixSRV)))
+//		return E_FAIL;
+//
+//	m_MatricesTemp.resize(1000);
+//	return S_OK;
+//}
+#pragma endregion
 
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType, const wstring& strFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix)
 {
@@ -432,9 +435,6 @@ void CModel::Free()
 	m_Animations.clear();
 
 	m_Importer.FreeScene();
-
-	Safe_Release(m_pMatixTexture);
-	Safe_Release(m_pMatrixSRV);
 
 	// Safe_Release(m_MatricesTempMatrix);
 }

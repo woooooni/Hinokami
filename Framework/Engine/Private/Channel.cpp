@@ -74,7 +74,7 @@ HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel)
 	return S_OK;
 }
 
-_uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, CHierarchyNode* pNode)
+_uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, CHierarchyNode* pNode, __out _float4x4* pOut)
 {
 	_float3			vScale;
 	_float4			vRotation;
@@ -121,6 +121,7 @@ _uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, 
 
 	if (nullptr != pNode)
 		pNode->Set_Transformation(TransformationMatrix);
+	
 
 	return iCurrentKeyFrame;
 }
