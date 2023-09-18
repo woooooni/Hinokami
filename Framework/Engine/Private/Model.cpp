@@ -4,7 +4,11 @@
 #include "HierarchyNode.h"
 #include "Animation.h"
 #include "Shader.h"
-#include "Utils.h"
+#include "AsFileUtils.h"
+#include "AsUtils.h"
+#include <filesystem>
+#include "tinyxml2.h"
+#include "ModelConverter.h"
 
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
@@ -24,10 +28,6 @@ CModel::CModel(const CModel& rhs)
 	, m_iCurrentAnimIndex(rhs.m_iCurrentAnimIndex)
 	, m_PivotMatrix(rhs.m_PivotMatrix)
 	, m_iNumAnimations(rhs.m_iNumAnimations)
-	, m_pMatixTexture(rhs.m_pMatixTexture)
-	, m_pMatrixSRV(rhs.m_pMatrixSRV)
-	, m_MatricesTemp(rhs.m_MatricesTemp)
-
 {
 	for (auto& pMeshContainer : m_Meshes)
 		Safe_AddRef(pMeshContainer);
@@ -41,9 +41,6 @@ CModel::CModel(const CModel& rhs)
 
 	for (auto& pAnimation : m_Animations)
 		Safe_AddRef(pAnimation);
-
-	Safe_AddRef(m_pMatixTexture);
-	Safe_AddRef(m_pMatrixSRV);
 
 }
 
@@ -70,120 +67,18 @@ _uint CModel::Get_MaxAnimIndex()
 	return m_Animations.size() - 1;
 }
 
+
 HRESULT CModel::Initialize_Prototype(TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix)
 {
 	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
-
-	char		szFullPath[MAX_PATH] = "";
-
-
-	strcpy_s(szFullPath, CUtils::GetInstance()->wstring_to_string(strModelFilePath).c_str());
-	strcat_s(szFullPath, CUtils::GetInstance()->wstring_to_string(strModelFileName).c_str());
-
-	_uint		iFlag = 0;
-
-	m_eModelType = eType;
-
-	// aiProcess_PreTransformVertices : 모델을 구성하는 메시 중, 이 메시의 이름과 뼈의 이름이 같은 상황이라면 이 뼈의 행렬을 메시의 정점에 다 곱해서 로드한다. 
-	// 모든 애니메이션 정보는 폐기된다. 
-	if (TYPE_NONANIM == eType)
-		iFlag |= aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcess_CalcTangentSpace;
-	else
-		iFlag |= aiProcess_ConvertToLeftHanded | aiProcess_CalcTangentSpace;
-
-	/* 파일의 정보를 읽어서 aiScene안에 보관한다.  */
-	m_pAIScene = m_Importer.ReadFile(szFullPath, iFlag);
-
-	if (nullptr == m_pAIScene)
-		return E_FAIL;
-
-	/* 모델을 구성하는 메시들을 만든다. */
-	/* 모델은 여러개의 메시로 구성되어있다. */
-	/* 각 메시의 정점들과 인덱스들을 구성한다. */
-	if (FAILED(Ready_MeshContainers(PivotMatrix)))
-		return E_FAIL;
-
-	/* 머테리얼정보다.(빛을 받았을때 리턴해야할 색상정보.) */
-	/* 모델마다정의?, 정점마다정의? 픽셀마다 정의(o) 텍스쳐로 표현된다. */
-	if (FAILED(Ready_Materials(strModelFilePath)))
-		return E_FAIL;
-
-
-	/* 애니메이션의 정보를 읽어서 저장한다.  */
-	/* 애니메이션 정보 : 애니메이션이 재생되는데 걸리는 총 시간(Duration),  애니메이션의 재생속도( mTickPerSecond), 몇개의 채널(mNumChannels) 에 영향르 주는가. 각채널의 정보(aiNodeAnim)(mChannels) */
-	/* mChannel(aiNodeAnim, 애니메이션이 움직이는 뼈) 에 대한 정보를 구성하여 객체화한다.(CChannel) */
-	/* 채널 : 뼈. 이 뼈는 한 애니메이션 안에서 사용된다. 그 애니메이션 안에서 어떤 시간, 시간, 시간, 시간대에 어떤 상태를 표현하면 되는지에 대한 정보(keyframe)들을 다므낟. */
-	/* keyframe : 어떤시간?, 상태(vScale, vRotation, vPosition) */
-	if (FAILED(Ready_Animations()))
-		return E_FAIL;
-
-	
-	/*if (FAILED(Ready_VTF_Texture()))
-		return E_FAIL;*/
-
-
+	m_strFilePath = strModelFilePath;
+	m_strFileName = strModelFileName;
 
 	return S_OK;
 }
 
 HRESULT CModel::Initialize(void* pArg)
 {
-	/* 뼈대 정볼르 로드하낟. */
-	/* 이 모델 전체의 뼈의 정보를 로드한다. */
-	/* HierarchyNode : 뼈의 상태를 가진다.(offSetMatrix, Transformation, CombinedTransformation */
-	Ready_HierarchyNodes(m_pAIScene->mRootNode, nullptr, 0);
-
-	/* 뎁스로 정렬한다. */
-	/*sort(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [](CHierarchyNode* pSour, CHierarchyNode* pDest)
-	{
-		return pSour->Get_Depth() < pDest->Get_Depth();
-	});*/
-
-	if (TYPE_ANIM == m_eModelType)
-	{
-		_uint		iNumMeshes = 0;
-
-		vector<CMesh*>		MeshContainers;
-
-		for (auto& pPrototype : m_Meshes)
-		{
-			CMesh* pMeshContainer = (CMesh*)pPrototype->Clone();
-			if (nullptr == pMeshContainer)
-				return E_FAIL;
-
-			MeshContainers.push_back(pMeshContainer);
-
-			Safe_Release(pPrototype);
-		}
-
-		m_Meshes.clear();
-
-		m_Meshes = MeshContainers;
-
-		for (auto& pMeshContainer : m_Meshes)
-		{
-			if (nullptr != pMeshContainer)
-				pMeshContainer->SetUp_HierarchyNodes(this, m_pAIScene->mMeshes[iNumMeshes++]);
-		}
-	}
-
-	vector<CAnimation*>		Animations;
-
-	for (auto& pPrototype : m_Animations)
-	{
-		CAnimation* pAnimation = pPrototype->Clone(this, m_pDevice);
-		if (nullptr == pAnimation)
-			return E_FAIL;
-
-		Animations.push_back(pAnimation);
-
-		Safe_Release(pPrototype);
-	}
-
-	m_Animations.clear();
-
-	m_Animations = Animations;
-
 	return S_OK;
 }
 
@@ -195,44 +90,482 @@ HRESULT CModel::SetUp_OnShader(CShader* pShader, _uint iMaterialIndex, aiTexture
 	return m_Materials[iMaterialIndex].pTexture[eTextureType]->Set_SRV(pShader, strConstantName);
 }
 
+HRESULT CModel::SetUpAnimation_OnShader(CShader* pShader)
+{
+	KEY_DESC KeyDesc = m_Animations[m_iCurrentAnimIndex]->Get_KeyDesc();
+
+	if (FAILED(pShader->Set_RawValue(L"g_CurrKeyFrame", &KeyDesc, sizeof(KEY_DESC))))
+		return E_FAIL;
+
+	if (FAILED(m_Animations[m_iCurrentAnimIndex]->SetUpAnimation_OnShader(pShader, L"g_CurrAnimMap", L"g_CurrKeyFrame")))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CModel::Play_Animation(_float fTimeDelta)
 {
 	if (m_iCurrentAnimIndex >= m_iNumAnimations)
 		return E_FAIL;
 
-	/* 현재 재생하고자하는 애니메이션이 제어해야할 뼈들의 지역행렬을 갱신해낸다. */
 	m_Animations[m_iCurrentAnimIndex]->Play_Animation(fTimeDelta);
 
-	/* 지역행렬을 순차적으로(부모에서 자식으로) 누적하여 m_CombinedTransformation를 만든다.  */
-	for (auto& pHierarchyNode : m_HierarchyNodes)
-	{
-		pHierarchyNode->Set_CombinedTransformation();
-	}
 
 	return S_OK;
 }
 
 HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 {
-	if (TYPE_ANIM == m_eModelType)
-	{
-		_uint iMatricesWidth = 0;
-
-		_float4x4 IdentityMatrix;
-		XMStoreFloat4x4(&IdentityMatrix, XMMatrixIdentity());
-
-		if (FAILED(pShader->Set_RawValue(L"g_IdentityMatrix", &IdentityMatrix, sizeof(_float4x4))))
-			return E_FAIL;
-
-		// m_Meshes[iMeshIndex]->SetUp_BoneMatrices(m_pMatixTexture, XMLoadFloat4x4(&m_PivotMatrix), m_MatricesTemp.data(), &iMatricesWidth);
-
-		/* 모델 정점의 스키닝. */
-		/*if (FAILED(pShader->Set_ShaderResourceView(L"g_MatrixTexture", m_pMatrixSRV)))
-			return E_FAIL;*/
-	}
 	pShader->Begin(0);
 
 	m_Meshes[iMeshIndex]->Render();
+
+	return S_OK;
+}
+
+HRESULT CModel::Load_AssetFile_FromFBX()
+{
+	m_pConverter = new CModelConverter(m_pDevice, m_pContext, m_strFileName);
+
+	//wstring strFullPath = pFilePath + m_strFileName + L".fbx";
+	//m_pConverter->ReadAssetFile(strFullPath);
+
+	m_pConverter->ImportModelData();
+	m_pConverter->ImportMaterialData();
+	m_pConverter->ImportAnimationData();
+
+	Load_ModelData_FromConverter(XMLoadFloat4x4(&m_PivotMatrix));
+	Load_MaterialData_FromConverter();
+	Load_AnimationData_FromConverter(XMLoadFloat4x4(&m_PivotMatrix));
+
+	return S_OK;
+}
+
+HRESULT CModel::Load_AssetFile_FromBinary()
+{
+
+	if (FAILED(Load_MaterialData_FromFile()))
+		return E_FAIL;
+
+	if (FAILED(Load_ModelData_FromFile(XMLoadFloat4x4(&m_PivotMatrix))))
+		return E_FAIL;
+
+	if (m_eModelType == TYPE::TYPE_ANIM)
+	{
+		if (FAILED(Load_AnimationData_FromFile(XMLoadFloat4x4(&m_PivotMatrix))))
+			return E_FAIL;
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CModel::Export_AssetData()
+{
+	wstring szFilePath = m_strFileName + L"/" + m_strFileName;
+
+	m_pConverter->ExportModelData(szFilePath);
+	m_pConverter->ExportMaterialData(szFilePath);
+	m_pConverter->ExportAnimationData(szFilePath);
+	return S_OK;
+}
+
+HRESULT CModel::Delete_ModelAnimation(_uint iIndex)
+{
+	auto iter = m_Animations.begin() + iIndex;
+
+	if (*iter)
+	{
+		m_pConverter->DeleteAnimation((*iter)->Get_Name());
+
+		Safe_Release(*iter);
+		m_Animations.erase(iter);
+	}
+
+	m_iCurrentAnimIndex = 0;
+	return S_OK;
+}
+
+HRESULT CModel::Load_ModelData_FromFile(_fmatrix PivotMatrix)
+{
+	wstring strfullPath = m_strFilePath + m_strFileName + L".mesh";
+
+	shared_ptr<CAsFileUtils> pFileUtils = make_shared<CAsFileUtils>();
+	pFileUtils->Open(strfullPath, FileMode::Read);
+
+	int32 iAnimationCount = pFileUtils->Read<int32>();
+
+	if (iAnimationCount > 0)
+		m_eModelType = TYPE::TYPE_ANIM;
+	else
+		m_eModelType = TYPE::TYPE_NONANIM;
+
+	uint32 iBoneCount = pFileUtils->Read<uint32>();
+
+	for (uint32 i = 0; i < iBoneCount; i++)
+	{
+		shared_ptr<ModelBone> tBone = make_shared<ModelBone>();
+		tBone->iIndex = pFileUtils->Read<int32>();
+		tBone->strName = CAsUtils::ToWString(pFileUtils->Read<string>());
+		tBone->iParentID = pFileUtils->Read<int32>();
+		tBone->matTransform = pFileUtils->Read<Matrix>();
+
+		m_ModelBones.push_back(tBone);
+	}
+
+	m_iNumMeshes = pFileUtils->Read<uint32>();
+
+	for (_uint i = 0; i < m_iNumMeshes; ++i)
+	{
+		CMesh* pMeshContainer = CMesh::Create(m_pDevice, m_pContext, m_eModelType, nullptr, this, PivotMatrix);
+		if (nullptr == pMeshContainer)
+			return E_FAIL;
+
+		pMeshContainer->LoadData_FromMeshFile(m_eModelType, pFileUtils.get(), PivotMatrix);
+
+		m_Meshes.push_back(pMeshContainer);
+	}
+
+
+	// Bone 계층 정보 채우기
+	if (m_RootBone == nullptr && m_ModelBones.size() > 0)
+	{
+		m_RootBone = m_ModelBones[0];
+
+		for (const auto& Bone : m_ModelBones)
+		{
+			if (Bone->iParentID >= 0)
+			{
+				Bone->tParent = m_ModelBones[Bone->iParentID];
+				Bone->tParent->tChildrens.push_back(Bone);
+			}
+			else
+			{
+				Bone->tParent = nullptr;
+			}
+		}
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CModel::Load_MaterialData_FromFile()
+{
+	wstring strFullPath = m_strFilePath + m_strFileName + L".xml";
+	auto parentPath = filesystem::path(strFullPath).parent_path();
+
+	tinyxml2::XMLDocument* Document = new tinyxml2::XMLDocument();
+	tinyxml2::XMLError error = Document->LoadFile(CAsUtils::ToString(strFullPath).c_str());
+	assert(error == tinyxml2::XML_SUCCESS);
+
+	tinyxml2::XMLElement* Root = Document->FirstChildElement();
+	tinyxml2::XMLElement* MaterialNode = Root->FirstChildElement();
+
+	while (MaterialNode)
+	{
+		MATERIALDESC		MaterialDesc;
+		ZeroMemory(&MaterialDesc, sizeof(MATERIALDESC));
+
+		tinyxml2::XMLElement* Node = nullptr;
+
+		Node = MaterialNode->FirstChildElement();
+
+		strncpy_s(MaterialDesc.strName, Node->GetText(), strlen(Node->GetText()));
+
+		// Diffuse Texture
+		Node = Node->NextSiblingElement();
+		if (Node->GetText())
+		{
+			wstring strTexture = CAsUtils::ToWString(Node->GetText());
+			if (strTexture.length() > 0)
+			{
+				wstring szFullPath = m_strFilePath + strTexture;
+
+				MaterialDesc.pTexture[aiTextureType_DIFFUSE] = CTexture::Create(m_pDevice, m_pContext, szFullPath);
+				if (nullptr == MaterialDesc.pTexture[aiTextureType_DIFFUSE])
+					return E_FAIL;
+			}
+		}
+
+		// Specular Texture
+		Node = Node->NextSiblingElement();
+		if (Node->GetText())
+		{
+			wstring strTexture = CAsUtils::ToWString(Node->GetText());
+			if (strTexture.length() > 0)
+			{
+				wstring szFullPath = m_strFilePath + strTexture;
+
+				MaterialDesc.pTexture[aiTextureType_SPECULAR] = CTexture::Create(m_pDevice, m_pContext, szFullPath);
+				if (nullptr == MaterialDesc.pTexture[aiTextureType_SPECULAR])
+					return E_FAIL;
+			}
+		}
+
+		// Normal Texture
+		Node = Node->NextSiblingElement();
+		if (Node->GetText())
+		{
+			wstring strTexture = CAsUtils::ToWString(Node->GetText());
+			if (strTexture.length() > 0)
+			{
+				wstring szFullPath = m_strFilePath + strTexture;
+
+				MaterialDesc.pTexture[aiTextureType_NORMALS] = CTexture::Create(m_pDevice, m_pContext, szFullPath);
+				if (nullptr == MaterialDesc.pTexture[aiTextureType_NORMALS])
+					return E_FAIL;
+			}
+		}
+
+		// Ambient
+		{
+			Node = Node->NextSiblingElement();
+
+			MaterialDesc.vAmbient.x = Node->FloatAttribute("R");
+			MaterialDesc.vAmbient.y = Node->FloatAttribute("G");
+			MaterialDesc.vAmbient.z = Node->FloatAttribute("B");
+			MaterialDesc.vAmbient.w = Node->FloatAttribute("A");
+		}
+
+		// Diffuse
+		{
+			Node = Node->NextSiblingElement();
+
+			MaterialDesc.vDiffuse.x = Node->FloatAttribute("R");
+			MaterialDesc.vDiffuse.y = Node->FloatAttribute("G");
+			MaterialDesc.vDiffuse.z = Node->FloatAttribute("B");
+			MaterialDesc.vDiffuse.w = Node->FloatAttribute("A");
+		}
+
+		// Specular
+		{
+			Node = Node->NextSiblingElement();
+
+			MaterialDesc.vSpecular.x = Node->FloatAttribute("R");
+			MaterialDesc.vSpecular.y = Node->FloatAttribute("G");
+			MaterialDesc.vSpecular.z = Node->FloatAttribute("B");
+			MaterialDesc.vSpecular.w = Node->FloatAttribute("A");
+		}
+
+		// Emissive
+		{
+			Node = Node->NextSiblingElement();
+
+			MaterialDesc.vEmissive.x = Node->FloatAttribute("R");
+			MaterialDesc.vEmissive.y = Node->FloatAttribute("G");
+			MaterialDesc.vEmissive.z = Node->FloatAttribute("B");
+			MaterialDesc.vEmissive.w = Node->FloatAttribute("A");
+		}
+
+		m_Materials.push_back(MaterialDesc);
+
+		// Next Material
+		MaterialNode = MaterialNode->NextSiblingElement();
+	}
+
+	m_iNumMaterials = m_Materials.size();
+	return S_OK;
+}
+
+HRESULT CModel::Load_AnimationData_FromFile(_fmatrix PivotMatrix)
+{
+	wstring szFullPath = m_strFilePath + m_strFileName + L".anim";
+
+	shared_ptr<CAsFileUtils> pFileUtils = make_shared<CAsFileUtils>();
+	pFileUtils->Open(szFullPath, FileMode::Read);
+
+	m_iNumAnimations = pFileUtils->Read<uint32>();
+
+	for (_uint i = 0; i < m_iNumAnimations; ++i)
+	{
+		CAnimation* pAnimation = CAnimation::Create(nullptr);
+		if (nullptr == pAnimation)
+			return E_FAIL;
+
+		if (FAILED(pAnimation->LoadData_FromAnimationFile(pFileUtils.get(), PivotMatrix)))
+			return E_FAIL;
+
+
+		m_Animations.push_back(pAnimation);
+	}
+
+	/// Ainmation Texture
+
+	if (FAILED(Create_AnimationTexture(PivotMatrix)))
+		return E_FAIL;
+
+
+
+	return S_OK;
+}
+
+HRESULT CModel::Create_AnimationTexture(_fmatrix PivotMatrix)
+{
+	if (m_Animations.size() == 0)
+		return E_FAIL;
+
+	for (_uint i = 0; i < m_iNumAnimations; ++i)
+	{
+		if (FAILED(m_Animations[i]->Create_Transform(m_pDevice, m_ModelBones, PivotMatrix)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel::Load_ModelData_FromConverter(_fmatrix PivotMatrix)
+{
+	vector<shared_ptr<asBone>>* pBones = m_pConverter->Get_Bones();
+
+	if (m_pConverter->Get_Animations()->size() > 0)
+		m_eModelType = TYPE::TYPE_ANIM;
+	else
+		m_eModelType = TYPE::TYPE_NONANIM;
+
+	for (uint32 i = 0; i < pBones->size(); i++)
+	{
+		shared_ptr<ModelBone> tBone = make_shared<ModelBone>();
+		tBone->iIndex = (*pBones)[i]->index;
+		tBone->strName = CAsUtils::ToWString((*pBones)[i]->name);
+		tBone->iParentID = (*pBones)[i]->parent;
+		tBone->matTransform = (*pBones)[i]->transform;
+
+		m_ModelBones.push_back(tBone);
+	}
+
+	vector<shared_ptr<asMesh>>* pMeshes = m_pConverter->Get_Meshes();
+
+	m_iNumMeshes = pMeshes->size();
+
+	for (_uint i = 0; i < m_iNumMeshes; ++i)
+	{
+		CMesh* pMeshContainer = CMesh::Create(m_pDevice, m_pContext, m_eModelType, nullptr, this, PivotMatrix);
+		if (nullptr == pMeshContainer)
+			return E_FAIL;
+
+		pMeshContainer->LoadData_FromConverter(m_eModelType, (*pMeshes)[i], PivotMatrix);
+
+		m_Meshes.push_back(pMeshContainer);
+	}
+
+
+	// Bone 계층 정보 채우기
+	if (m_RootBone == nullptr && m_ModelBones.size() > 0)
+	{
+		m_RootBone = m_ModelBones[0];
+
+		for (const auto& Bone : m_ModelBones)
+		{
+			if (Bone->iParentID >= 0)
+			{
+				Bone->tParent = m_ModelBones[Bone->iParentID];
+				Bone->tParent->tChildrens.push_back(Bone);
+			}
+			else
+			{
+				Bone->tParent = nullptr;
+			}
+		}
+	}
+
+
+	return S_OK;
+}
+
+HRESULT CModel::Load_MaterialData_FromConverter()
+{
+	vector<shared_ptr<asMaterial>>* pMaterials = m_pConverter->Get_Materials();
+
+	for (_uint i = 0; i < pMaterials->size(); ++i)
+	{
+		MATERIALDESC		MaterialDesc;
+		ZeroMemory(&MaterialDesc, sizeof(MATERIALDESC));
+
+		strcpy_s(MaterialDesc.strName, (*pMaterials)[i]->name.c_str());
+		// strncpy_s(MaterialDesc.strName, sizeof(MAX_PATH) ,(*pMaterials)[i]->name.c_str(), (*pMaterials)[i]->name.length() + 1);
+
+
+
+		// Diffuse Texture  복사좀 해줘
+		wstring strDiffuseTexture = CAsUtils::ToWString((*pMaterials)[i]->diffuseFile);
+		if (strDiffuseTexture.length() > 0)
+		{
+			wstring szFullPath = m_strFilePath + strDiffuseTexture;
+
+			MaterialDesc.pTexture[aiTextureType_DIFFUSE] = CTexture::Create(m_pDevice, m_pContext, szFullPath);
+			if (nullptr == MaterialDesc.pTexture[aiTextureType_DIFFUSE])
+				return E_FAIL;
+		}
+
+		// Specular Texture
+		wstring strSpecularTexture = CAsUtils::ToWString((*pMaterials)[i]->specularFile);
+		if (strSpecularTexture.length() > 0)
+		{
+			wstring szFullPath = m_strFilePath + strSpecularTexture;
+
+			MaterialDesc.pTexture[aiTextureType_SPECULAR] = CTexture::Create(m_pDevice, m_pContext, szFullPath);
+			if (nullptr == MaterialDesc.pTexture[aiTextureType_SPECULAR])
+				return E_FAIL;
+		}
+
+		// Normal Texture
+		wstring strNormalTexture = CAsUtils::ToWString((*pMaterials)[i]->normalFile);
+		if (strNormalTexture.length() > 0)
+		{
+			wstring szFullPath = m_strFilePath + strNormalTexture;
+
+			MaterialDesc.pTexture[aiTextureType_NORMALS] = CTexture::Create(m_pDevice, m_pContext, szFullPath);
+			if (nullptr == MaterialDesc.pTexture[aiTextureType_NORMALS])
+				return E_FAIL;
+		}
+
+		// Ambient
+		MaterialDesc.vAmbient = (*pMaterials)[i]->ambient;
+
+		// Diffuse
+		MaterialDesc.vDiffuse = (*pMaterials)[i]->diffuse;
+
+		// Specular
+		MaterialDesc.vSpecular = (*pMaterials)[i]->specular;
+
+		// Emissive
+		MaterialDesc.vEmissive = (*pMaterials)[i]->emissive;
+
+		m_Materials.push_back(MaterialDesc);
+
+	}
+
+	m_iNumMaterials = m_Materials.size();
+
+	return S_OK;
+}
+
+HRESULT CModel::Load_AnimationData_FromConverter(_fmatrix PivotMatrix)
+{
+	map<const string, shared_ptr<asAnimation>>* pAnimations = m_pConverter->Get_Animations();
+
+	m_iNumAnimations = pAnimations->size();
+
+	for (auto& iter : *pAnimations)
+	{
+		CAnimation* pAnimation = CAnimation::Create(nullptr);
+		if (nullptr == pAnimation)
+			return E_FAIL;
+
+		if (FAILED(pAnimation->LoadData_FromConverter(iter.second, PivotMatrix)))
+			return E_FAIL;
+
+
+		m_Animations.push_back(pAnimation);
+	}
+
+	/// Ainmation Texture
+
+	if (FAILED(Create_AnimationTexture(PivotMatrix)))
+		return E_FAIL;
+
+
 
 	return S_OK;
 }
@@ -241,6 +574,7 @@ HRESULT CModel::Ready_MeshContainers(_fmatrix PivotMatrix)
 {
 	/* 메시의 갯수를 얻어온다. */
 	m_iNumMeshes = m_pAIScene->mNumMeshes;
+
 
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
 	{
@@ -254,7 +588,7 @@ HRESULT CModel::Ready_MeshContainers(_fmatrix PivotMatrix)
 	return S_OK;
 }
 
-HRESULT CModel::Ready_Materials(const wstring& strModelFilePath)
+HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 {
 	if (nullptr == m_pAIScene)
 		return E_FAIL;
@@ -285,7 +619,7 @@ HRESULT CModel::Ready_Materials(const wstring& strModelFilePath)
 
 			_splitpath_s(strPath.data, nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
 
-			strcpy_s(szFullPath, CUtils::GetInstance()->wstring_to_string(strModelFilePath).c_str());
+			strcpy_s(szFullPath, pModelFilePath);
 			strcat_s(szFullPath, szFileName);
 			strcat_s(szFullPath, szExt);
 
@@ -350,44 +684,14 @@ HRESULT CModel::Ready_Animations()
 	return S_OK;
 }
 
-#pragma region !!Deprecated!!
 
-//HRESULT CModel::Ready_VTF_Texture()
-//{
-//	D3D11_TEXTURE1D_DESC	TextureDesc;
-//	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE1D_DESC));
-//
-//	TextureDesc.Width = 4096;
-//
-//	TextureDesc.MipLevels = 1;
-//	TextureDesc.ArraySize = 1;
-//	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-//
-//	TextureDesc.Usage = D3D11_USAGE_DYNAMIC;
-//	TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-//	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-//	TextureDesc.MiscFlags = 0;
-//
-//	
-//	if (FAILED(m_pDevice->CreateTexture1D(&TextureDesc, nullptr, &m_pMatixTexture)))
-//		return E_FAIL;
-//
-//
-//	if (FAILED(m_pDevice->CreateShaderResourceView(m_pMatixTexture, nullptr, &m_pMatrixSRV)))
-//		return E_FAIL;
-//
-//	m_MatricesTemp.resize(1000);
-//	return S_OK;
-//}
-#pragma endregion
-
-CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType, const wstring& strFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix)
+CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType, const wstring& strFolderPath, const wstring& strFileName, _fmatrix PivotMatrix)
 {
 	CModel* pInstance = new CModel(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eType, strFilePath, strModelFileName, PivotMatrix)))
+	if (FAILED(pInstance->Initialize_Prototype(eType, strFolderPath, strFileName, PivotMatrix)))
 	{
-		MSG_BOX("Failed To Created : CModel");
+		MSG_BOX("Failed To Created : CTexture");
 		Safe_Release(pInstance);
 		return nullptr;
 	}
@@ -407,6 +711,8 @@ CComponent* CModel::Clone(void* pArg)
 
 	return pInstance;
 }
+
+
 
 void CModel::Free()
 {
@@ -436,5 +742,5 @@ void CModel::Free()
 
 	m_Importer.FreeScene();
 
-	// Safe_Release(m_MatricesTempMatrix);
+	Safe_Delete(m_pConverter);
 }

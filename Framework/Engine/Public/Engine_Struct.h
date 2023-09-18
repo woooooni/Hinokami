@@ -33,6 +33,12 @@ namespace Engine
 
 	typedef struct tagMaterialDesc
 	{
+		char			strName[MAX_PATH];
+
+		XMFLOAT4		vAmbient;
+		XMFLOAT4		vDiffuse;
+		XMFLOAT4		vSpecular;
+		XMFLOAT4		vEmissive;
 		class CTexture* pTexture[AI_TEXTURE_TYPE_MAX];
 	}MATERIALDESC;
 

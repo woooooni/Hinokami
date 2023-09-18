@@ -125,7 +125,7 @@ void CCharacter::Input(_float fTimeDelta)
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
 
-	if (KEY_TAP(KEY::O))
+	/*if (KEY_TAP(KEY::O))
 	{
 		_uint iCurrAnimIdx = m_pModelCom->Get_CurrAnimationIndex();
 		if (iCurrAnimIdx <= 0)
@@ -142,7 +142,7 @@ void CCharacter::Input(_float fTimeDelta)
 			m_pModelCom->Set_AnimIndex(m_pModelCom->Get_MaxAnimIndex());
 		else
 			m_pModelCom->Set_AnimIndex(++iCurrAnimIdx);
-	}
+	}*/
 }
 
 

@@ -8,12 +8,12 @@ CChannel::CChannel()
 {
 }
 
-HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel)
+HRESULT CChannel::Initialize(aiNodeAnim* pAIChannel)
 {
 	/* 특정 애니메이션에서 사용되는 뼈의 정보이다. */
 	/* 이 이름은 모델이 가지고 있는 HierarchyNodes의 뼈대 중 한놈과 이름이 같을 것이다. */
 	/* 이 이름으로 같은 이름을 가진 HierarchyNodes를 채널에 보관해둔다. */
-	/* 왜 보관하니? : 채널이 가진 키프레임중 시간대에 맞는 키플에ㅣㅁ 상태를 만들고. 이걸로 행렬 만들고. 
+	/* 왜 보관하니? : 채널이 가진 키프레임중 시간대에 맞는 키플에ㅣㅁ 상태를 만들고. 이걸로 행렬 만들고.
 	이렇게 만든 행렬을 erarchyNodes에 저장해놔야해. */
 	strcpy_s(m_szName, pAIChannel->mNodeName.data);
 
@@ -32,7 +32,7 @@ HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel)
 	m_iNumKeyFrames = max(pAIChannel->mNumScalingKeys, pAIChannel->mNumRotationKeys);
 	m_iNumKeyFrames = max(m_iNumKeyFrames, pAIChannel->mNumPositionKeys);
 
-	/* 이 변수를 루프 밖에 선언한이유? 없는 상태인 경우 저장해놨던 
+	/* 이 변수를 루프 밖에 선언한이유? 없는 상태인 경우 저장해놨던
 	이전 루프의 상태를 이용해서 키프레임 상태를 만들기 위해. */
 	_float3			vScale;
 	_float4			vRotation;
@@ -43,7 +43,7 @@ HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel)
 		KEYFRAME			KeyFrame;
 		ZeroMemory(&KeyFrame, sizeof(KEYFRAME));
 
-		if(i < pAIChannel->mNumScalingKeys)
+		if (i < pAIChannel->mNumScalingKeys)
 		{
 			memcpy(&vScale, &pAIChannel->mScalingKeys[i].mValue, sizeof(_float3));
 			KeyFrame.fTime = pAIChannel->mScalingKeys[i].mTime;
@@ -69,12 +69,10 @@ HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel)
 		m_KeyFrames.push_back(KeyFrame);
 	}
 
-	
-
 	return S_OK;
 }
 
-_uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, CHierarchyNode* pNode, __out _float4x4* pOut)
+_uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, CHierarchyNode* pNode)
 {
 	_float3			vScale;
 	_float4			vRotation;
@@ -85,7 +83,7 @@ _uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, 
 	{
 		vScale = m_KeyFrames.back().vScale;
 		vRotation = m_KeyFrames.back().vRotation;
-		vPosition = m_KeyFrames.back().vPosition;		
+		vPosition = m_KeyFrames.back().vPosition;
 	}
 
 	/* 특정 키프레임과 키프레임 사이에 존재한다. */
@@ -121,14 +119,13 @@ _uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, 
 
 	if (nullptr != pNode)
 		pNode->Set_Transformation(TransformationMatrix);
-	
 
 	return iCurrentKeyFrame;
 }
 
-CChannel * CChannel::Create(aiNodeAnim * pAIChannel)
+CChannel* CChannel::Create(aiNodeAnim* pAIChannel)
 {
-	CChannel*			pInstance = new CChannel();
+	CChannel* pInstance = new CChannel();
 
 	if (FAILED(pInstance->Initialize(pAIChannel)))
 	{

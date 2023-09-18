@@ -118,6 +118,9 @@
     <Filter Include="01.Utiltiy\04.Component\07. StateMachine\State">
       <UniqueIdentifier>{bbb352f5-f29c-4f9f-b265-a965efb147bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utiltiy\04.Component\06. Model\Model_Importer">
+      <UniqueIdentifier>{2aa65284-064f-4fb0-ae5e-32f4f61813b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -237,6 +240,18 @@
     <ClInclude Include="..\Public\tinyxml2.h">
       <Filter>01.Utiltiy\98. Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AsFileUtils.h">
+      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AsTypes.h">
+      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AsUtils.h">
+      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ModelConverter.h">
+      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -340,6 +355,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\tinyxml2.cpp">
       <Filter>01.Utiltiy\98. Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AsFileUtils.cpp">
+      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AsUtils.cpp">
+      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ModelConverter.cpp">
+      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

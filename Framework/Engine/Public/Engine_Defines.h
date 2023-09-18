@@ -16,6 +16,7 @@
 #include <DirectXTK/VertexTypes.h>
 #include <DirectXTK/SpriteBatch.h>
 #include <DirectXTK/SpriteFont.h>
+#include <DirectXTK/SimpleMath.h>
 
 #include <DirectXCollision.h>
 

@@ -28,7 +28,6 @@ public:
 		return XMLoadFloat4x4(&m_CombinedTransformation);
 	}
 
-	_matrix Get_Transformation() { return XMLoadFloat4x4(&m_Transformation); }
 
 public:
 	void Set_Transformation(_fmatrix Transformation) {
@@ -36,20 +35,19 @@ public:
 	}
 
 public:
-	HRESULT Initialize(aiNode* pAINode, class CHierarchyNode* pParent, _uint iDepth);
+	HRESULT Initialize(aiNode * pAINode, class CHierarchyNode* pParent, _uint iDepth);
 	void Set_CombinedTransformation();
 	void Set_OffsetMatrix(_fmatrix OffsetMatrix);
-
 private:
 	char				m_szName[MAX_PATH] = "";
 	_float4x4			m_OffsetMatrix;
 	_float4x4			m_Transformation;
 	_float4x4			m_CombinedTransformation;
-	CHierarchyNode*		m_pParent = nullptr;
+	CHierarchyNode* m_pParent = nullptr;
 	_uint				m_iDepth = 0;
 
 public:
-	static CHierarchyNode* Create(aiNode* pAINode, class CHierarchyNode* pParent, _uint iDepth);
+	static CHierarchyNode* Create(aiNode * pAINode, class CHierarchyNode* pParent, _uint iDepth);
 	virtual void Free();
 };
 

@@ -1,21 +1,13 @@
 #pragma once
 
 #include "Base.h"
+#include "AsTypes.h"
+#include "AsFileUtils.h"
 
 BEGIN(Engine)
 
 class CAnimation final : public CBase
 {
-	struct KEY_FRAME_DESC
-	{
-		_uint iCurrFrame;
-		_uint iNextFrame;
-		_float fRatio;
-		_float fSumTime;
-		_float fSpeed;
-		_float2 fPadding;
-	};
-
 private:
 	CAnimation();
 	CAnimation(const CAnimation& rhs);
@@ -23,35 +15,31 @@ private:
 
 public:
 	HRESULT Initialize_Prototype(aiAnimation* pAIAnimation);
-	HRESULT Initialize(class CModel* pModel, ID3D11Device* pDevice);
+	HRESULT Initialize(class CModel* pModel);
+	HRESULT	LoadData_FromAnimationFile(CAsFileUtils* pFileUtils, _fmatrix PivotMatrix);
+	HRESULT	LoadData_FromConverter(shared_ptr<asAnimation> pAnimation, _fmatrix PivotMatrix);
+
+
 	HRESULT Play_Animation(_float fTimeDelta);
+	HRESULT Create_Transform(ID3D11Device* pDevice, const vector<shared_ptr<ModelBone>>& Bones, _fmatrix PivotMatrix);
 
-public:
-	const vector<class CChannel*>& Get_Channels() { return m_Channels; }
-	_uint Get_ChannelCount() { return m_iNumChannels; }
+	KEY_DESC Get_KeyDesc() { return m_tKeyDesc; }
+	wstring	 Get_Name() { return m_szName; }
+	_float Get_Duration() { return m_fDuration; }
 
-	const vector<class CHierarchyNode*>& Get_HierachyNodes() { return m_HierarchyNodes; }
-	const vector<_uint>& Get_ChannelKeyFrames() { return m_ChannelKeyFrames; }
+	shared_ptr<ModelKeyframe> GetKeyframe(const wstring& name);
 
-	const _float Get_Duration() { return m_fDuration; }
-	const _float Get_CurrPlayTime() { return m_fPlayTime; }
-	void Set_PlayTime(_float fPlayTime) { m_fPlayTime = fPlayTime; }
+	HRESULT SetUpAnimation_OnShader(class CShader* pShader, const wstring& strMapname, const wstring& strDescName);
 
-	void Set_Pause(_bool _bPause) { m_bPause = _bPause; }
-	_bool Is_Pause() { return m_bPause; }
 
-	const wstring& Get_AnimationName() { return m_strAnimationName; }
-	
-	_float Get_AnimationSpeed() { return m_fTickPerSecond; }
-	void Set_AnimationSpeed(_float _fSpeed) { m_fTickPerSecond = _fSpeed; }
-
-public:
-	HRESULT SetUp_OnShader(class CShader* pShader, const wstring& strConstNameconst);
 
 private:
+
+private:
+	wstring						m_szName;
+
 	/* 이 애니메이션을 구동하기위해 사용되는 뼈의 갯수. */
 	_uint						m_iNumChannels = 0;
-	_uint						m_iFrameCount = 0;
 	vector<class CChannel*>		m_Channels;
 
 	/* 애니메이션 재생하는데 걸리는 전체시간. */
@@ -60,25 +48,28 @@ private:
 	/* 애니메이션의 초당 재생 속도. */
 	_float						m_fTickPerSecond = 0.f;
 	_float						m_fPlayTime = 0.f;
-	_bool						m_bPause = false;
+	_uint						m_iFrameCount;
+	_float						m_fSpeed = 1.f;
 
-
-	wstring						m_strAnimationName;
-	KEY_FRAME_DESC				m_tKeyFrame;
+	KEY_DESC					m_tKeyDesc;
 
 private: /* 복제된 애니메이션 마다 따로 가진다. */
+	_uint							m_iBoneSize;
+
 	vector<class CHierarchyNode*>	m_HierarchyNodes;
 	vector<_uint>					m_ChannelKeyFrames;
 
-	ID3D11ShaderResourceView* m_pSRV = nullptr;
 
-private:
-	HRESULT Create_VTF_Texture(ID3D11Device* pDevice);
-	
+	unordered_map<wstring, shared_ptr<ModelKeyframe>>	m_KeyFrames;
 
+
+
+	//Animation
+	ID3D11ShaderResourceView* m_pAnimTexSRV;
+	vector<vector<Matrix>>			m_AnimTransforms;
 public:
 	static CAnimation* Create(aiAnimation* pAIAnimation);
-	CAnimation* Clone(class CModel* pModel, ID3D11Device* pDevice);
+	CAnimation* Clone(class CModel* pModel);
 	virtual void Free() override;
 };
 

@@ -2,63 +2,59 @@
 #include "Channel.h"
 #include "Model.h"
 #include "HierarchyNode.h"
-#include "Utils.h"
+#include "AsUtils.h"
 #include "Shader.h"
 
 CAnimation::CAnimation()
 {
 }
 
-CAnimation::CAnimation(const CAnimation & rhs)
+CAnimation::CAnimation(const CAnimation& rhs)
 	: m_fDuration(rhs.m_fDuration)
 	, m_Channels(rhs.m_Channels)
 	, m_iNumChannels(rhs.m_iNumChannels)
 	, m_fTickPerSecond(rhs.m_fTickPerSecond)
 	, m_fPlayTime(rhs.m_fPlayTime)
-	, m_bPause(false)
-	, m_strAnimationName(rhs.m_strAnimationName)
 	, m_iFrameCount(rhs.m_iFrameCount)
-	, m_tKeyFrame(rhs.m_tKeyFrame)
-	, m_pSRV(rhs.m_pSRV)
+	, m_fSpeed(rhs.m_fSpeed)
+	, m_KeyFrames(rhs.m_KeyFrames)
+	, m_pAnimTexSRV(rhs.m_pAnimTexSRV)
+	, m_AnimTransforms(m_AnimTransforms)
 {
 	for (auto& pChannel : m_Channels)
 		Safe_AddRef(pChannel);
 
-	Safe_AddRef(m_pSRV);
+	ZeroMemory(&m_tKeyDesc, sizeof(KEY_DESC));
+
+	Safe_AddRef(m_pAnimTexSRV);
 }
 
 HRESULT CAnimation::Initialize_Prototype(aiAnimation* pAIAnimation)
 {
-	m_fDuration = pAIAnimation->mDuration;
-	m_fTickPerSecond = pAIAnimation->mTicksPerSecond;
+	//m_fDuration = pAIAnimation->mDuration;
+	//m_fTickPerSecond = pAIAnimation->mTicksPerSecond;
+
+	///* 현재 애니메이션에서 제어해야할 뼈들의 갯수를 저장한다. */
+	//m_iNumChannels = pAIAnimation->mNumChannels;
 
 
-	/* 현재 애니메이션에서 제어해야할 뼈들의 갯수를 저장한다. */
-	m_iNumChannels = pAIAnimation->mNumChannels;
-	m_iFrameCount = pAIAnimation->mDuration;
+	///* 현재 애니메이션에서 제어해야할 뼈정보들을 생성하여 보관한다. */
+	//for (_uint i = 0; i < m_iNumChannels; ++i)
+	//{
+	//	/* aiNodeAnim : mChannel은 키프레임 정보들을 가지낟. */
+	//	CChannel*		pChannel = CChannel::Create(pAIAnimation->mChannels[i]);
+	//	if (nullptr == pChannel)
+	//		return E_FAIL;
 
-	ZeroMemory(&m_tKeyFrame, sizeof(KEY_FRAME_DESC));
-
-
-	/* 현재 애니메이션에서 제어해야할 뼈정보들을 생성하여 보관한다. */
-	for (_uint i = 0; i < m_iNumChannels; ++i)
-	{
-		/* aiNodeAnim : mChannel은 키프레임 정보들을 가지낟. */
-		CChannel*		pChannel = CChannel::Create(pAIAnimation->mChannels[i]);
-		if (nullptr == pChannel)
-			return E_FAIL;
-
-		/* 왜 모아두는데?> 특정 애님에ㅣ션 상태일때 애니메이션을 재생하면 모든 뼈의 상태를 갱신하는건 빡세. 느려. 
-		현재 애미에시연을 구동하기위한 뼈대만 상태 갱신해주기 위해. */
-		m_Channels.push_back(pChannel);
-	}
-
-	m_strAnimationName = CUtils::GetInstance()->string_to_wstring(string(pAIAnimation->mName.C_Str()));
+	//	/* 왜 모아두는데?> 특정 애님에ㅣ션 상태일때 애니메이션을 재생하면 모든 뼈의 상태를 갱신하는건 빡세. 느려. 
+	//	현재 애미에시연을 구동하기위한 뼈대만 상태 갱신해주기 위해. */
+	//	m_Channels.push_back(pChannel);
+	//}
 
 	return S_OK;
 }
 
-HRESULT CAnimation::Initialize(CModel* pModel, ID3D11Device* pDevice)
+HRESULT CAnimation::Initialize(CModel* pModel)
 {
 	for (_uint i = 0; i < m_iNumChannels; ++i)
 	{
@@ -74,8 +70,63 @@ HRESULT CAnimation::Initialize(CModel* pModel, ID3D11Device* pDevice)
 		Safe_AddRef(pNode);
 	}
 
-	Create_VTF_Texture(pDevice);
-	
+	return S_OK;
+}
+
+HRESULT CAnimation::LoadData_FromAnimationFile(CAsFileUtils* pFileUtils, _fmatrix PivotMatrix)
+{
+	m_szName = CAsUtils::ToWString(pFileUtils->Read<string>());
+	m_fDuration = pFileUtils->Read<_float>();
+	m_fTickPerSecond = pFileUtils->Read<_float>();
+	m_iFrameCount = pFileUtils->Read<uint32>();
+
+	uint32 iKeyframesCount = pFileUtils->Read<uint32>();
+
+	for (uint32 i = 0; i < iKeyframesCount; i++)
+	{
+		shared_ptr<ModelKeyframe> Keyframe = make_shared<ModelKeyframe>();
+		Keyframe->szBoneName = CAsUtils::ToWString(pFileUtils->Read<string>());
+
+		uint32 iSize = pFileUtils->Read<uint32>();
+
+		if (iSize > 0)
+		{
+			Keyframe->KeyData.resize(iSize);
+			void* ptr = &Keyframe->KeyData[0];
+			pFileUtils->Read(&ptr, sizeof(ModelKeyframeData) * iSize);
+		}
+
+		m_KeyFrames[Keyframe->szBoneName] = Keyframe;
+	}
+
+	return S_OK;
+}
+
+HRESULT CAnimation::LoadData_FromConverter(shared_ptr<asAnimation> pAnimation, _fmatrix PivotMatrix)
+{
+	m_szName = CAsUtils::ToWString(pAnimation->name);
+	m_fDuration = pAnimation->duration;
+	m_fTickPerSecond = pAnimation->frameRate;
+	m_iFrameCount = pAnimation->frameCount;
+
+	uint32 iKeyframesCount = pAnimation->keyframes.size();
+
+	for (uint32 i = 0; i < iKeyframesCount; i++)
+	{
+		shared_ptr<ModelKeyframe> Keyframe = make_shared<ModelKeyframe>();
+		Keyframe->szBoneName = CAsUtils::ToWString(pAnimation->keyframes[i]->boneName);
+
+		uint32 iSize = pAnimation->keyframes[i]->transforms.size();
+
+		if (iSize > 0)
+		{
+			Keyframe->KeyData.resize(iSize);
+			void* ptr = &Keyframe->KeyData[0];
+			memcpy(ptr, pAnimation->keyframes[i]->transforms.data(), sizeof(ModelKeyframeData) * iSize);
+		}
+
+		m_KeyFrames[Keyframe->szBoneName] = Keyframe;
+	}
 
 	return S_OK;
 }
@@ -83,168 +134,162 @@ HRESULT CAnimation::Initialize(CModel* pModel, ID3D11Device* pDevice)
 
 HRESULT CAnimation::Play_Animation(_float fTimeDelta)
 {
+	m_tKeyDesc.fSumTime += fTimeDelta;
 
-#pragma region !! Deprecated !!
-
-	//if (m_bPause == false)
-	//	m_fPlayTime += m_fTickPerSecond * fTimeDelta;
-
-	//
-
-	//if (m_fPlayTime >= m_fDuration)
-	//{
-	//	m_fPlayTime = 0.f;
-
-	//	for (auto& pChannel : m_Channels)
-	//	{
-	//		for (auto& iCurrentKeyFrame : m_ChannelKeyFrames)
-	//			iCurrentKeyFrame = 0;
-	//	}
-	//}
-	//}
-
-
-	///* 이 애니메이션 구동을 위한 모든 뼈들을 순회하며 뼈들의 행렬을 갱신해준다. */
-	///* Transformation : 전달된 시간에 따른 키프레임(시간, 스케일, 회전, 이동)정보를 이용하여 Transformation을 만든다. */
-	///* 하이어라키 노드에 저장해준다. */
-	//_uint iChannelIndex = 0;
-	//for (auto& pChannel : m_Channels)
-	//{
-	//	m_ChannelKeyFrames[iChannelIndex] = pChannel->Update_Transformation(m_fPlayTime, m_ChannelKeyFrames[iChannelIndex], m_HierarchyNodes[iChannelIndex]);
-	//	++iChannelIndex;
-	//}
-#pragma endregion
-	
-	if (m_bPause == false)
-		m_tKeyFrame.fSumTime += fTimeDelta;
-
-	float fTimePerFrame = 1.f / (m_fTickPerSecond * 1.f);
-	if (m_tKeyFrame.fSumTime >= fTimePerFrame)
+	float fTimePerFrame = 1.f / (m_fTickPerSecond * m_fSpeed);
+	if (m_tKeyDesc.fSumTime >= fTimePerFrame)
 	{
-		m_tKeyFrame.fSumTime = 0.f;
-		m_fPlayTime = 0.f;
-		m_tKeyFrame.iCurrFrame = (m_tKeyFrame.iCurrFrame + 1) % m_iFrameCount;
-		m_tKeyFrame.iNextFrame = (m_tKeyFrame.iCurrFrame + 1) % m_iFrameCount;
+		m_tKeyDesc.fSumTime = 0.f;
+		m_tKeyDesc.iCurrFrame = (m_tKeyDesc.iCurrFrame + 1) % m_iFrameCount;
+		m_tKeyDesc.iNextFrame = (m_tKeyDesc.iCurrFrame + 1) % m_iFrameCount;
 	}
 
-	m_tKeyFrame.fRatio = (m_tKeyFrame.fSumTime / fTimePerFrame);
-
-
-
+	m_tKeyDesc.fRatio = (m_tKeyDesc.fSumTime / fTimePerFrame);
 
 	return S_OK;
 }
 
-HRESULT CAnimation::SetUp_OnShader(CShader* pShader, const wstring& strConstName)
+HRESULT CAnimation::Create_Transform(ID3D11Device* pDevice, const vector<shared_ptr<ModelBone>>& Bones, _fmatrix PivotMatrix)
 {
-	if(FAILED(pShader->Set_ShaderResourceView(strConstName, m_pSRV)))
-		return E_FAIL;
+	m_AnimTransforms.resize(m_iFrameCount);
+	m_iBoneSize = Bones.size();
 
-	if (FAILED(pShader->Set_RawValue(L"g_KeyFrame", &m_tKeyFrame, sizeof(KEY_FRAME_DESC))))
-		return E_FAIL;
-	
+	for (auto& iter : m_AnimTransforms)
+		iter.reserve(m_iBoneSize);
+
+	vector<Matrix> TempBoneTransforms(m_iBoneSize, Matrix::Identity);
+
+	for (uint32 i = 0; i < m_iFrameCount; i++)
+	{
+		for (uint32 k = 0; k < m_iBoneSize; k++)
+		{
+			shared_ptr<ModelBone> Bone = Bones[k];
+
+			Matrix matAnimation;
+
+			shared_ptr<ModelKeyframe> Frame = m_KeyFrames[Bone->strName];
+			if (Frame != nullptr)
+			{
+				ModelKeyframeData& Data = Frame->KeyData[i];
+
+				Matrix S, R, T;
+				S = Matrix::CreateScale(Data.vScale.x, Data.vScale.y, Data.vScale.z);
+				R = Matrix::CreateFromQuaternion(Data.vRotation);
+				T = Matrix::CreateTranslation(Data.vTranslation.x, Data.vTranslation.y, Data.vTranslation.z);
+
+				matAnimation = S * R * T;
+			}
+			else
+			{
+				matAnimation = Matrix::Identity;
+			}
+
+			// [ !!!!!!! ]
+			Matrix matToRoot = Bone->matTransform;
+			Matrix matInvGlobal = matToRoot.Invert();
+
+			int32 iParentIndex = Bone->iParentID;
+
+			Matrix matParent = Matrix::Identity;
+			if (iParentIndex >= 0)
+				matParent = TempBoneTransforms[iParentIndex];
+
+			TempBoneTransforms[k] = matAnimation * matParent;
+
+			m_AnimTransforms[i].push_back(matInvGlobal * TempBoneTransforms[k] * PivotMatrix);
+		}
+
+		int iTemp = 0;
+	}
+
+	// CreateTexture
+
+	ID3D11Texture2D* pAnimTex = nullptr;
+
+	{
+		D3D11_TEXTURE2D_DESC Desc;
+		ZeroMemory(&Desc, sizeof(D3D11_TEXTURE2D_DESC));
+		Desc.Width = m_iBoneSize * 4;
+		Desc.Height = m_iFrameCount;
+		Desc.ArraySize = 1;
+		Desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT; // 16바이트
+		Desc.Usage = D3D11_USAGE_IMMUTABLE;
+		Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		Desc.MipLevels = 1;
+		Desc.SampleDesc.Count = 1;
+
+
+		const uint32 iLineSize = m_iBoneSize * sizeof(Matrix);
+		const uint32 iPageSize = iLineSize * m_iFrameCount;
+		void* pFullData = nullptr;
+		pFullData = ::malloc(iPageSize);
+
+		uint32 iStartOffset = 0;
+		for (_uint i = 0; i < m_iFrameCount; ++i)
+		{
+			BYTE* iStart = reinterpret_cast<BYTE*>(pFullData) + iStartOffset;
+			void* pData = iStart;
+			::memcpy(pData, m_AnimTransforms[i].data(), iLineSize);
+			iStartOffset += iLineSize;
+		}
+
+
+		// 리소스 만들기
+		D3D11_SUBRESOURCE_DATA Subresource;
+
+		Subresource.pSysMem = pFullData;
+		Subresource.SysMemPitch = m_iBoneSize * sizeof(Matrix);
+
+		if (FAILED(pDevice->CreateTexture2D(&Desc, &Subresource, &pAnimTex)))
+			return E_FAIL;
+
+		::free(pFullData);
+		pFullData = nullptr;
+	}
+
+
+
+	// Create SRV
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC Desc;
+		ZeroMemory(&Desc, sizeof(Desc));
+		Desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		Desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		Desc.Texture2D.MipLevels = 1;
+
+		if (FAILED(pDevice->CreateShaderResourceView(pAnimTex, &Desc, &m_pAnimTexSRV)))
+			return E_FAIL;
+	}
+
+	int iTemp = 0;
+
 	return S_OK;
 }
 
-HRESULT CAnimation::Create_VTF_Texture(ID3D11Device* pDevice)
+shared_ptr<ModelKeyframe> CAnimation::GetKeyframe(const wstring& name)
 {
-	vector<vector<_float4x4>> MatricesTemp;
-	MatricesTemp.resize(m_iFrameCount);
+	auto pKeyFrame = m_KeyFrames.find(name);
+	if (pKeyFrame == m_KeyFrames.end())
+		return nullptr;
 
-	for (_uint i = 0; i < m_iFrameCount; ++i)
-	{
-		_uint iChannelIndex = 0;
-		MatricesTemp.reserve(m_iFrameCount + m_Channels.size());
-		
-		for (auto& pChannel : m_Channels)
-		{
-			m_ChannelKeyFrames[iChannelIndex] = pChannel->Update_Transformation(i, 
-				m_ChannelKeyFrames[iChannelIndex],
-				m_HierarchyNodes[iChannelIndex]);
-
-			// m_HierarchyNodes[iChannelIndex]->Set_CombinedTransformation();
-			++iChannelIndex;
-		}
-
-		for (auto& pHierarchyNode : m_HierarchyNodes)
-		{
-			pHierarchyNode->Set_CombinedTransformation();
-		}
-		
-		iChannelIndex = 0;
-		for (auto& pNode : m_HierarchyNodes)
-		{
-			_float4x4 TempMatrix;
-			_matrix PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
-
-			XMStoreFloat4x4(&TempMatrix, XMMatrixTranspose(
-				m_HierarchyNodes[iChannelIndex]->Get_OffSetMatrix()
-				* m_HierarchyNodes[iChannelIndex]->Get_CombinedTransformation()
-				* PivotMatrix));
-			
-			MatricesTemp[i].push_back(TempMatrix);
-			++iChannelIndex;
-		}
-	}
-
-	const _uint iLineSize = m_iNumChannels * sizeof(_float4x4);
-	const _uint iPageSize = iLineSize * m_iFrameCount;
-	void* pFullData = nullptr;
-	pFullData = ::malloc(iPageSize);
-
-	_uint iStartOffset = 0;
-	for (_uint i = 0; i < m_iFrameCount; ++i)
-	{
-		BYTE* iStart = reinterpret_cast<BYTE*>(pFullData) + iStartOffset;
-		void* pData = iStart;
-		memcpy(pData, MatricesTemp[i].data(), iLineSize);
-		iStartOffset += iLineSize;
-	}
-
-	ID3D11Texture2D* pTexture;
-	D3D11_TEXTURE2D_DESC TextureDesc;
-	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
-
-	TextureDesc.Width = m_iNumChannels * 4;
-	TextureDesc.Height = m_iFrameCount;
-	TextureDesc.MipLevels = 1;
-	TextureDesc.ArraySize = 1;
-	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-
-	TextureDesc.SampleDesc.Quality = 0;
-	TextureDesc.SampleDesc.Count = 1;
-
-	TextureDesc.Usage = D3D11_USAGE_IMMUTABLE;
-	TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	TextureDesc.CPUAccessFlags = 0;
-	TextureDesc.MiscFlags = 0;
-
-
-
-	D3D11_SUBRESOURCE_DATA Subresource;
-	ZeroMemory(&Subresource, sizeof(D3D11_SUBRESOURCE_DATA));
-
-	Subresource.pSysMem = pFullData;
-	Subresource.SysMemPitch = m_iNumChannels * sizeof(_float4x4);
-
-	if (FAILED(pDevice->CreateTexture2D(&TextureDesc, &Subresource, &pTexture)))
-		return E_FAIL;
-	
-	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
-	ZeroMemory(&SRVDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-	SRVDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	SRVDesc.Texture2D.MipLevels = 1;
-
-	if (FAILED(pDevice->CreateShaderResourceView(pTexture, &SRVDesc, &m_pSRV)))
-		return E_FAIL;
-
-	return S_OK;
+	return pKeyFrame->second;
 }
 
-CAnimation * CAnimation::Create(aiAnimation * pAIAnimation)
+HRESULT CAnimation::SetUpAnimation_OnShader(CShader* pShader, const wstring& strMapname, const wstring& strDescName)
 {
-	CAnimation*			pInstance = new CAnimation();
+	if (FAILED(pShader->Set_ShaderResourceView(strMapname, m_pAnimTexSRV)))
+		return E_FAIL;
+
+	if (FAILED(pShader->Set_RawValue(strDescName, &m_tKeyDesc, sizeof(KEY_DESC))))
+
+		return S_OK;
+}
+
+
+
+CAnimation* CAnimation::Create(aiAnimation* pAIAnimation)
+{
+	CAnimation* pInstance = new CAnimation();
 
 	if (FAILED(pInstance->Initialize_Prototype(pAIAnimation)))
 	{
@@ -255,11 +300,11 @@ CAnimation * CAnimation::Create(aiAnimation * pAIAnimation)
 	return pInstance;
 }
 
-CAnimation * CAnimation::Clone(CModel* pModel, ID3D11Device* pDevice)
+CAnimation* CAnimation::Clone(CModel* pModel)
 {
-	CAnimation*			pInstance = new CAnimation(*this);
+	CAnimation* pInstance = new CAnimation(*this);
 
-	if (FAILED(pInstance->Initialize(pModel, pDevice)))
+	if (FAILED(pInstance->Initialize(pModel)))
 	{
 		MSG_BOX("Failed To Created : CAnimation");
 		Safe_Release(pInstance);
@@ -280,6 +325,4 @@ void CAnimation::Free()
 		Safe_Release(pHierarchyNode);
 
 	m_HierarchyNodes.clear();
-
-	Safe_Release(m_pSRV);
 }

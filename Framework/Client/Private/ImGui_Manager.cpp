@@ -222,62 +222,7 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
 void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
 {
     ImGui::Begin("Animation");
-    if (nullptr != m_pTarget)
-    {
-        CModel* pModel = dynamic_cast<CModel*>(m_pTarget->Get_Component(L"Com_Model"));
-        if (nullptr == pModel)
-        {
-            ImGui::End();
-            return;
-        }
 
-        
-        
-        const vector<CAnimation*>& Animations = pModel->Get_Animations();
-        if (Animations.size() <= 0)
-        {
-            ImGui::End();
-            return;
-        }
-            
-        _int iCurrIndex = pModel->Get_CurrAnimationIndex();
-
-        if (ImGui::BeginListBox("##Animations", ImVec2(400, 0)))
-        {
-            for (size_t i = 0; i < Animations.size(); i++)
-            {
-                if (ImGui::Selectable(CGameInstance::GetInstance()->wstring_to_string(Animations[i]->Get_AnimationName()).c_str(), i == iCurrIndex))
-                {
-                    pModel->Set_AnimIndex(i);
-                    iCurrIndex = i;
-                }
-            }
-            ImGui::EndListBox();
-        }
-
-        CAnimation* pAnimation = Animations[iCurrIndex];
-        _float fDuration = pAnimation->Get_Duration();
-        _float fCurrTime = pAnimation->Get_CurrPlayTime();
-
-        ImGui::Text("%d / %d", iCurrIndex, Animations.size());
-
-        ImGui::SliderFloat("##Anim_Slider", &fCurrTime, 0.f, fDuration, "%.1f");
-        pAnimation->Set_PlayTime(fCurrTime);
-
-        if (ImGui::ArrowButton("##Play", ImGuiDir_Right))
-            pAnimation->Set_Pause(false);
-
-        IMGUI_SAME_LINE;
-
-        if(ImGui::Button("ll"))
-            pAnimation->Set_Pause(true);
-
-        
-        _float fAnimationSpeed = pAnimation->Get_AnimationSpeed();
-        ImGui::DragFloat("##AnimSpeed", &fAnimationSpeed, 0.01f, 0.01f, 24.f);
-        pAnimation->Set_AnimationSpeed(fAnimationSpeed);
-        
-    }
     ImGui::End();
     
 }

@@ -5,7 +5,7 @@ CHierarchyNode::CHierarchyNode()
 
 }
 
-HRESULT CHierarchyNode::Initialize(aiNode * pAINode, CHierarchyNode* pParent, _uint iDepth)
+HRESULT CHierarchyNode::Initialize(aiNode* pAINode, CHierarchyNode* pParent, _uint iDepth)
 {
 	/* »À ÀÌ¸§ º¸°ü. */
 	strcpy_s(m_szName, pAINode->mName.data);
@@ -39,9 +39,9 @@ void CHierarchyNode::Set_OffsetMatrix(_fmatrix OffsetMatrix)
 	XMStoreFloat4x4(&m_OffsetMatrix, OffsetMatrix);
 }
 
-CHierarchyNode * CHierarchyNode::Create(aiNode * pAINode, CHierarchyNode* pParent, _uint iDepth)
+CHierarchyNode* CHierarchyNode::Create(aiNode* pAINode, CHierarchyNode* pParent, _uint iDepth)
 {
-	CHierarchyNode*			pInstance = new CHierarchyNode();
+	CHierarchyNode* pInstance = new CHierarchyNode();
 
 	if (FAILED(pInstance->Initialize(pAINode, pParent, iDepth)))
 	{
