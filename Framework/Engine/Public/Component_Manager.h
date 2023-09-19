@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "StateMachine.h"
 #include "VIBuffer_Rect.h"
+#include "VIBuffer_Terrain.h"
 
 
 BEGIN(Engine)

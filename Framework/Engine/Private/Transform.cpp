@@ -1,5 +1,5 @@
 #include "..\Public\Transform.h"
-
+#include "Shader.h"
 
 CTransform::CTransform(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
@@ -39,6 +39,11 @@ HRESULT CTransform::Initialize(void * pArg)
 		memcpy(&m_TransformDesc, pArg, sizeof(TRANSFORMDESC));
 
 	return S_OK;
+}
+
+HRESULT CTransform::Bind_ShaderResources(CShader* pShader, const wstring& strConstantName)
+{
+	return pShader->Set_RawValue(strConstantName, &m_WorldMatrix, sizeof(_float4x4));
 }
 
 void CTransform::Go_Straight(_float fTimeDelta)

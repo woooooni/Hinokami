@@ -35,7 +35,19 @@ public:
 	
 	
 public:
-	void Set_Target(CGameObject* pObj);
+	void Set_Target(CGameObject* pObj)
+	{
+		if (nullptr == pObj)
+			return;
+		m_pTarget = pObj;
+	}
+
+	void Set_Dummy(class CDummy* pDummy) 
+	{
+		if (nullptr == pDummy)
+			return;
+		m_pDummy = pDummy;
+	}
 
 
 private:
@@ -56,9 +68,9 @@ private:
 private:
 
 	_bool m_bShowDemo = true;
-	_bool m_bShowModelWindow = true;
-	_bool m_bShowAnimationWindow = true;
-	_bool m_bShowEffectWindow = true;
+	_bool m_bShowModelWindow = false;
+	_bool m_bShowAnimationWindow = false;
+	_bool m_bShowEffectWindow = false;
 	_bool m_bShowMapWindow = true;
 	_bool m_bShowTerrainWindow = true;
 
@@ -66,8 +78,12 @@ private:
 
 	ImGuiConfigFlags m_temp;
 
+	wstring m_strFilePath = TEXT("../Bin/Resources/Meshes/");
+	wstring m_strFileName;
+	_uint m_iModelType = 0;
 public:
 	CGameObject* m_pTarget = nullptr;
+	class CDummy* m_pDummy = nullptr;
 
 public:
 	virtual void Free() override;

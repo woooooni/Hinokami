@@ -86,6 +86,7 @@ HRESULT CVIBuffer::Create_IndexBuffer()
 	return S_OK;
 }
 
+
 void CVIBuffer::Free()
 {
 	__super::Free();
@@ -95,5 +96,4 @@ void CVIBuffer::Free()
 
 	Safe_Release(m_pVB);
 	Safe_Release(m_pIB);
-
 }

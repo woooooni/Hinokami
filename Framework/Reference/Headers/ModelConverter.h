@@ -10,16 +10,16 @@ public:
 	~CModelConverter();
 
 public:
-	void ReadAssetFile(wstring file);
+	void Read_AssetFile(wstring file);
 	void Set_aiScene(const aiScene* _aiScene) { _scene = _aiScene; }
 
-	void ExportModelData(wstring savePath);
-	void ExportMaterialData(wstring savePath);
-	void ExportAnimationData(wstring savePath);
+	void Export_ModelData(wstring savePath);
+	void Export_MaterialData(wstring savePath);
+	void Export_AnimationData(wstring savePath);
 
-	void ImportModelData();
-	void ImportMaterialData();
-	void ImportAnimationData();
+	void Import_ModelData();
+	void Import_MaterialData();
+	void Import_AnimationData();
 
 
 public:
@@ -33,23 +33,23 @@ public:
 	HRESULT DeleteAnimation(const wstring& strAnimation);
 
 private:
-	void ReadMaterialData();
-	void ReadModelData(aiNode* node, _uint index, int32 parent);
-	void ReadMeshData(aiNode* node, _uint bone);
-	shared_ptr<asAnimation> ReadAnimationData(aiAnimation* srcAnimation);
-	void WriteModelFile(wstring finalPath);
+	void Read_MaterialData();
+	void Read_ModelData(aiNode* node, _uint index, int32 parent);
+	void Read_MeshData(aiNode* node, _uint bone);
+	shared_ptr<asAnimation> Read_AnimationData(aiAnimation* srcAnimation);
+	void Write_ModelFile(wstring finalPath);
 
 	shared_ptr<asAnimation> Find_Animation(const wstring& strAnimation);
 private:
 	
-	void WriteMaterialData(wstring finalPath);
-	string WriteTexture(string saveFolder, string file);
+	void Write_MaterialData(wstring finalPath);
+	string Write_Texture(string saveFolder, string file);
 
 private:
-	void ReadSkinData();
-	shared_ptr<asAnimationNode> ParseAnimationNode(shared_ptr<asAnimation> animation, aiNodeAnim* srcNode);
-	void ReadKeyframeData(shared_ptr<asAnimation> animation, aiNode* srcNode, map<string, shared_ptr<asAnimationNode>>& cache);
-	void WriteAnimationData(wstring finalPath);
+	void Read_SkinData();
+	shared_ptr<asAnimationNode> Parse_AnimationNode(shared_ptr<asAnimation> animation, aiNodeAnim* srcNode);
+	void Read_KeyframeData(shared_ptr<asAnimation> animation, aiNode* srcNode, map<string, shared_ptr<asAnimationNode>>& cache);
+	void Write_AnimationData(wstring finalPath);
 
 	HRESULT Set_BoneOffsetMatrix();
 private:

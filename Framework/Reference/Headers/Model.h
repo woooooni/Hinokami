@@ -27,6 +27,7 @@ public:
 	void Set_AnimIndex(_uint iAnimIndex) {
 		m_iCurrentAnimIndex = iAnimIndex;
 	}
+
 	_uint Get_CurrAnimationIndex() { return m_iCurrentAnimIndex; }
 
 	_uint Get_MaxAnimIndex();
@@ -35,8 +36,28 @@ public:
 		return XMLoadFloat4x4(&m_PivotMatrix);
 	}
 
+	TYPE Get_ModelType() {
+		return m_eModelType;
+	}
+
 	
 	vector<class CAnimation*>& Get_Animations() { return m_Animations; }
+
+public:
+	void Swap_Animation(_uint iSrc, _uint iDest)
+	{
+		if (iDest >= m_Animations.size())
+			iDest = m_Animations.size() - 1;
+		if (iDest < 0)
+			iDest = 0;
+
+		CAnimation* Temp = m_Animations[iSrc];
+		m_Animations[iSrc] = m_Animations[iDest];
+		m_Animations[iDest] = Temp;
+
+		m_iCurrentAnimIndex = iDest;
+	}
+
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix);
 	virtual HRESULT Initialize(void* pArg);
@@ -58,6 +79,7 @@ public:
 
 
 	HRESULT Delete_ModelAnimation(_uint iIndex);
+
 private:
 	HRESULT Load_ModelData_FromFile(_fmatrix PivotMatrix);
 	HRESULT Load_MaterialData_FromFile();
@@ -65,7 +87,6 @@ private:
 	HRESULT Create_AnimationTexture(_fmatrix PivotMatrix);
 
 
-	
 	HRESULT Load_ModelData_FromConverter(_fmatrix PivotMatrix);
 	HRESULT Load_MaterialData_FromConverter();
 	HRESULT Load_AnimationData_FromConverter(_fmatrix PivotMatrix);

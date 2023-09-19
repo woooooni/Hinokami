@@ -28,6 +28,8 @@ CModel::CModel(const CModel& rhs)
 	, m_iCurrentAnimIndex(rhs.m_iCurrentAnimIndex)
 	, m_PivotMatrix(rhs.m_PivotMatrix)
 	, m_iNumAnimations(rhs.m_iNumAnimations)
+	, m_strFilePath(rhs.m_strFilePath)
+	, m_strFileName(rhs.m_strFileName)
 {
 	for (auto& pMeshContainer : m_Meshes)
 		Safe_AddRef(pMeshContainer);
@@ -79,6 +81,12 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const wstring& strModelFilePath
 
 HRESULT CModel::Initialize(void* pArg)
 {
+	if (FAILED(Load_AssetFile_FromBinary()))
+	{
+		if (FAILED(Load_AssetFile_FromFBX()))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -125,18 +133,23 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 
 HRESULT CModel::Load_AssetFile_FromFBX()
 {
-	m_pConverter = new CModelConverter(m_pDevice, m_pContext, m_strFileName);
+	_tchar szFileName[MAX_PATH];
 
-	//wstring strFullPath = pFilePath + m_strFileName + L".fbx";
-	//m_pConverter->ReadAssetFile(strFullPath);
+	_wsplitpath_s(m_strFileName.c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, nullptr, 0);
 
-	m_pConverter->ImportModelData();
-	m_pConverter->ImportMaterialData();
-	m_pConverter->ImportAnimationData();
+	m_pConverter = new CModelConverter(m_pDevice, m_pContext, szFileName);
+	m_pConverter->Read_AssetFile(m_strFilePath + m_strFileName);
 
-	Load_ModelData_FromConverter(XMLoadFloat4x4(&m_PivotMatrix));
-	Load_MaterialData_FromConverter();
-	Load_AnimationData_FromConverter(XMLoadFloat4x4(&m_PivotMatrix));
+	m_pConverter->Import_ModelData();
+	m_pConverter->Import_MaterialData();
+	m_pConverter->Import_AnimationData();
+
+	if (FAILED(Load_ModelData_FromConverter(XMLoadFloat4x4(&m_PivotMatrix))))
+		return E_FAIL;
+	if(FAILED(Load_MaterialData_FromConverter()))
+		return E_FAIL;
+	if(FAILED(Load_AnimationData_FromConverter(XMLoadFloat4x4(&m_PivotMatrix))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -162,11 +175,14 @@ HRESULT CModel::Load_AssetFile_FromBinary()
 
 HRESULT CModel::Export_AssetData()
 {
-	wstring szFilePath = m_strFileName + L"/" + m_strFileName;
+	_tchar szFileName[MAX_PATH];
+	_wsplitpath_s(m_strFileName.c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, nullptr, 0);
 
-	m_pConverter->ExportModelData(szFilePath);
-	m_pConverter->ExportMaterialData(szFilePath);
-	m_pConverter->ExportAnimationData(szFilePath);
+	wstring szFilePath = wstring(szFileName) + L"/" + szFileName;
+
+	m_pConverter->Export_ModelData(szFilePath);
+	m_pConverter->Export_MaterialData(szFilePath);
+	m_pConverter->Export_AnimationData(szFilePath);
 	return S_OK;
 }
 
@@ -176,7 +192,7 @@ HRESULT CModel::Delete_ModelAnimation(_uint iIndex)
 
 	if (*iter)
 	{
-		m_pConverter->DeleteAnimation((*iter)->Get_Name());
+		m_pConverter->DeleteAnimation((*iter)->Get_AnimationName());
 
 		Safe_Release(*iter);
 		m_Animations.erase(iter);
@@ -188,7 +204,11 @@ HRESULT CModel::Delete_ModelAnimation(_uint iIndex)
 
 HRESULT CModel::Load_ModelData_FromFile(_fmatrix PivotMatrix)
 {
-	wstring strfullPath = m_strFilePath + m_strFileName + L".mesh";
+	_tchar szFileName[MAX_PATH];
+	_wsplitpath_s(m_strFileName.c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, nullptr, 0);
+
+	wstring strfullPath = m_strFilePath + szFileName + L".mesh";
+	
 
 	shared_ptr<CAsFileUtils> pFileUtils = make_shared<CAsFileUtils>();
 	pFileUtils->Open(strfullPath, FileMode::Read);
@@ -252,12 +272,18 @@ HRESULT CModel::Load_ModelData_FromFile(_fmatrix PivotMatrix)
 
 HRESULT CModel::Load_MaterialData_FromFile()
 {
-	wstring strFullPath = m_strFilePath + m_strFileName + L".xml";
+
+	_tchar szFileName[MAX_PATH];
+	_wsplitpath_s(m_strFileName.c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, nullptr, 0);
+	
+	wstring strFullPath = m_strFilePath + szFileName + L".xml";
 	auto parentPath = filesystem::path(strFullPath).parent_path();
 
 	tinyxml2::XMLDocument* Document = new tinyxml2::XMLDocument();
 	tinyxml2::XMLError error = Document->LoadFile(CAsUtils::ToString(strFullPath).c_str());
-	assert(error == tinyxml2::XML_SUCCESS);
+
+	if (error != tinyxml2::XML_SUCCESS)
+		return E_FAIL;
 
 	tinyxml2::XMLElement* Root = Document->FirstChildElement();
 	tinyxml2::XMLElement* MaterialNode = Root->FirstChildElement();
@@ -370,7 +396,11 @@ HRESULT CModel::Load_MaterialData_FromFile()
 
 HRESULT CModel::Load_AnimationData_FromFile(_fmatrix PivotMatrix)
 {
-	wstring szFullPath = m_strFilePath + m_strFileName + L".anim";
+
+	_tchar szFileName[MAX_PATH];
+	_wsplitpath_s(m_strFileName.c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, nullptr, 0);
+
+	wstring szFullPath = m_strFilePath + szFileName + L".anim";
 
 	shared_ptr<CAsFileUtils> pFileUtils = make_shared<CAsFileUtils>();
 	pFileUtils->Open(szFullPath, FileMode::Read);

@@ -5,6 +5,7 @@
 #include "ImGui_Manager.h"
 #include "Player.h"
 #include "Character.h"
+#include "Dummy.h"
 
 USING(Client)
 CLevel_Tool::CLevel_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -30,6 +31,8 @@ HRESULT CLevel_Tool::Initialize()
 	if (FAILED(Ready_Layer_BackGround(LAYER_TYPE::LAYER_BACKGROUND)))
 		return E_FAIL;
 
+	
+
 	if (FAILED(Ready_Layer_Player(LAYER_TYPE::LAYER_PLAYER)))
 		return E_FAIL;
 
@@ -43,15 +46,15 @@ HRESULT CLevel_Tool::Initialize()
 		return E_FAIL;
 
 
-	CGameObject* pObject = CGameInstance::GetInstance()->Find_GameObejct(LEVEL_STATIC, _uint(LAYER_TYPE::LAYER_PLAYER), L"Player");
+	CGameObject* pObject = CGameInstance::GetInstance()->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_PLAYER), L"Dummy");
 	if (nullptr == pObject)
 		return S_OK;
 
-	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
-	if (nullptr == pPlayer)
+	CDummy* pDummy = dynamic_cast<CDummy*>(pObject);
+	if (nullptr == pDummy)
 		return S_OK;
 
-	m_pImGuiManager->Set_Target(pPlayer->Get_CurrCharacter());
+	m_pImGuiManager->Set_Dummy(pDummy);
 	return S_OK;
 }
 
@@ -148,7 +151,7 @@ HRESULT CLevel_Tool::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_STATIC, _uint(eLayerType), TEXT("Prototype_GameObject_Player"))))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, _uint(eLayerType), TEXT("Prototype_GameObject_Dummy"))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -161,8 +164,8 @@ HRESULT CLevel_Tool::Ready_Layer_BackGround(const LAYER_TYPE eLayerType)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	/*if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Terrain"), LEVEL_TOOL, _uint(eLayerType))))
-		return E_FAIL;*/
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, _uint(eLayerType), TEXT("Prototype_GameObject_Terrain"))))
+		return E_FAIL;
 
 	Safe_Release(pGameInstance);
 

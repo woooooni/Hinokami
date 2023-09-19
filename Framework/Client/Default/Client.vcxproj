@@ -108,6 +108,7 @@
       <AdditionalIncludeDirectories>../../Reference/Headers/;../Public/;../../ThirdParty/</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -178,6 +179,7 @@
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Data_Manager.h" />
+    <ClInclude Include="..\Public\Dummy.h" />
     <ClInclude Include="..\Public\Giyu.h" />
     <ClInclude Include="..\Public\ImGui_Manager.h" />
     <ClInclude Include="..\Public\Kyojuro.h" />
@@ -190,6 +192,7 @@
     <ClInclude Include="..\Public\Nezko.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Tanjiro.h" />
+    <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Zenitsu.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -225,6 +228,7 @@
     <ClCompile Include="..\Private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Data_Manager.cpp" />
+    <ClCompile Include="..\Private\Dummy.cpp" />
     <ClCompile Include="..\Private\ImGui_Manager.cpp" />
     <ClCompile Include="..\Private\Kyojuro.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
@@ -237,6 +241,7 @@
     <ClCompile Include="..\Private\Nezko.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Tanjiro.cpp" />
+    <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\Zenitsu.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">

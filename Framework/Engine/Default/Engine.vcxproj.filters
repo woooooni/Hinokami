@@ -106,9 +106,6 @@
     <Filter Include="01.Utiltiy\03.GameObjects\00. Manager\Layer">
       <UniqueIdentifier>{8c2666f7-7eb6-4c1f-98fa-b493cdf2443c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\03.GameObjects\Camera">
-      <UniqueIdentifier>{b499766b-d80b-4e53-9576-e6ef0c89bbbc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00.System\04. Key">
       <UniqueIdentifier>{7a87af19-0b8e-444b-99ed-ae323f63834e}</UniqueIdentifier>
     </Filter>
@@ -120,6 +117,9 @@
     </Filter>
     <Filter Include="01.Utiltiy\04.Component\06. Model\Model_Importer">
       <UniqueIdentifier>{2aa65284-064f-4fb0-ae5e-32f4f61813b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.GameObjects\01. Camera">
+      <UniqueIdentifier>{b499766b-d80b-4e53-9576-e6ef0c89bbbc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -208,7 +208,7 @@
       <Filter>01.Utiltiy\04.Component\06. Model\MeshContainer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Camera.h">
-      <Filter>01.Utiltiy\03.GameObjects\Camera</Filter>
+      <Filter>01.Utiltiy\03.GameObjects\01. Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PipeLine.h">
       <Filter>00.System\02. PipeLine</Filter>
@@ -251,6 +251,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\ModelConverter.h">
       <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Terrain.h">
+      <Filter>01.Utiltiy\04.Component\02. VIBuffer\Terrain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -315,7 +318,7 @@
       <Filter>01.Utiltiy\04.Component\06. Model\Animation\Channel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Camera.cpp">
-      <Filter>01.Utiltiy\03.GameObjects\Camera</Filter>
+      <Filter>01.Utiltiy\03.GameObjects\01. Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\HierarchyNode.cpp">
       <Filter>01.Utiltiy\04.Component\06. Model\HierarchyNode</Filter>
@@ -364,6 +367,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ModelConverter.cpp">
       <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Terrain.cpp">
+      <Filter>01.Utiltiy\04.Component\02. VIBuffer\Terrain</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

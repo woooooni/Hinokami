@@ -24,16 +24,31 @@ public:
 	HRESULT Create_Transform(ID3D11Device* pDevice, const vector<shared_ptr<ModelBone>>& Bones, _fmatrix PivotMatrix);
 
 	KEY_DESC Get_KeyDesc() { return m_tKeyDesc; }
-	wstring	 Get_Name() { return m_szName; }
 	_float Get_Duration() { return m_fDuration; }
 
 	shared_ptr<ModelKeyframe> GetKeyframe(const wstring& name);
-
 	HRESULT SetUpAnimation_OnShader(class CShader* pShader, const wstring& strMapname, const wstring& strDescName);
 
 
 
-private:
+public:
+	_float Get_AnimationSpeed() { return m_fSpeed; }
+	void Set_AnimationSpeed(_float fSpeed) { m_fSpeed = fSpeed; }
+	
+	void Set_CurrFrame(_float fFrame) 
+	{ 
+		if (fFrame >= m_fDuration)
+		{
+			m_tKeyDesc.iCurrFrame = m_fDuration;
+		}
+		m_tKeyDesc.iCurrFrame = fFrame;
+	}
+
+	void Set_Pause(_bool bPause) { m_bPause = bPause; }
+	_bool Is_Pause() { return m_bPause; }
+
+	const wstring& Get_AnimationName() { return m_szName; }
+	void Set_AnimationName(const wstring& strName) { m_szName = strName; }
 
 private:
 	wstring						m_szName;
@@ -59,6 +74,7 @@ private: /* 복제된 애니메이션 마다 따로 가진다. */
 	vector<class CHierarchyNode*>	m_HierarchyNodes;
 	vector<_uint>					m_ChannelKeyFrames;
 
+	_bool m_bPause = false;
 
 	unordered_map<wstring, shared_ptr<ModelKeyframe>>	m_KeyFrames;
 

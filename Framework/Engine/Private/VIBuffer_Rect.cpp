@@ -17,7 +17,7 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 #pragma region VERTEXBUFFER
 	m_iNumVertexBuffers = 1;
 	m_iNumVertices = 4;
-	m_iStride = sizeof(VTXTEX);
+	m_iStride = sizeof(VTXPOSTEX);
 
 	ZeroMemory(&m_BufferDesc, sizeof(D3D11_BUFFER_DESC));
 	m_BufferDesc.ByteWidth = m_iNumVertices * m_iStride;
@@ -27,20 +27,20 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	m_BufferDesc.MiscFlags = 0;
 	m_BufferDesc.StructureByteStride = m_iStride;
 
-	VTXTEX*		pVertices = new VTXTEX[4];
-	ZeroMemory(pVertices, sizeof(VTXTEX) * 4);
+	VTXPOSTEX*		pVertices = new VTXPOSTEX[4];
+	ZeroMemory(pVertices, sizeof(VTXPOSTEX) * 4);
 
 	pVertices[0].vPosition = _float3(-0.5f, 0.5f, 0.f);
-	pVertices[0].vTexture = _float2(0.f, 0.f);
+	pVertices[0].vTexcoord = _float2(0.f, 0.f);
 
 	pVertices[1].vPosition = _float3(0.5f, 0.5f, 0.f);
-	pVertices[1].vTexture = _float2(1.f, 0.f);
+	pVertices[1].vTexcoord = _float2(1.f, 0.f);
 
 	pVertices[2].vPosition = _float3(0.5f, -0.5f, 0.f);
-	pVertices[2].vTexture = _float2(1.f, 1.f);
+	pVertices[2].vTexcoord = _float2(1.f, 1.f);
 
 	pVertices[3].vPosition = _float3(-0.5f, -0.5f, 0.f);
-	pVertices[3].vTexture = _float2(0.f, 1.f);
+	pVertices[3].vTexcoord = _float2(0.f, 1.f);
 
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = pVertices;

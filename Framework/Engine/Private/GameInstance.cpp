@@ -73,7 +73,7 @@ void CGameInstance::Tick(_float fTimeDelta)
 	m_pKey_Manager->Tick(fTimeDelta);
 	m_pObject_Manager->Tick(fTimeDelta);
 	m_pLevel_Manager->Tick(fTimeDelta);
-	m_pPipeLine->Update();
+	m_pPipeLine->Tick();
 
 
 	m_pObject_Manager->LateTick(fTimeDelta);
@@ -291,6 +291,11 @@ _float4 CGameInstance::Get_CamPosition()
 		return _float4();
 
 	return m_pPipeLine->Get_CamPosition();
+}
+
+HRESULT CGameInstance::Bind_TransformToShader(CShader* pShader, const wstring& strConstantName, CPipeLine::TRANSFORMSTATE eState)
+{
+	return m_pPipeLine->Bind_TransformToShader(pShader, strConstantName, eState);
 }
 
 KEY_STATE CGameInstance::GetKeyState(KEY _eKey)

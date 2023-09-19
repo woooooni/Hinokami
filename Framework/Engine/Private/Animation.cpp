@@ -134,7 +134,8 @@ HRESULT CAnimation::LoadData_FromConverter(shared_ptr<asAnimation> pAnimation, _
 
 HRESULT CAnimation::Play_Animation(_float fTimeDelta)
 {
-	m_tKeyDesc.fSumTime += fTimeDelta;
+	if(!m_bPause)
+		m_tKeyDesc.fSumTime += fTimeDelta;
 
 	float fTimePerFrame = 1.f / (m_fTickPerSecond * m_fSpeed);
 	if (m_tKeyDesc.fSumTime >= fTimePerFrame)
@@ -281,7 +282,6 @@ HRESULT CAnimation::SetUpAnimation_OnShader(CShader* pShader, const wstring& str
 		return E_FAIL;
 
 	if (FAILED(pShader->Set_RawValue(strDescName, &m_tKeyDesc, sizeof(KEY_DESC))))
-
 		return S_OK;
 }
 

@@ -4,7 +4,7 @@
 #include "Component_Manager.h"
 #include "Animation.h"
 #include "GameInstance.h"
-
+#include "Dummy.h"
 
 USING(Client)
 IMPLEMENT_SINGLETON(CImGui_Manager)
@@ -78,13 +78,10 @@ void CImGui_Manager::Render_ImGui()
     }
 }
 
-void CImGui_Manager::Set_Target(CGameObject* pObj)
-{
-    if (nullptr == pObj)
-        return;
 
-    m_pTarget = pObj;
-}
+
+
+// Progress
 
 void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
 {
@@ -131,16 +128,16 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
 
 void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
 {
+    
     ImGui::Begin("Model");
-    if (nullptr != m_pTarget)
+    if (nullptr != m_pDummy)
     {
-
         ImGui::Text("Name : ");
         IMGUI_SAME_LINE;
-        ImGui::Text(CGameInstance::GetInstance()->wstring_to_string(m_pTarget->Get_ObjectTag()).c_str());
+        ImGui::Text(CGameInstance::GetInstance()->wstring_to_string(m_pDummy->Get_ObjectTag()).c_str());
 
 
-        CTransform* pTransform = dynamic_cast<CTransform*>(m_pTarget->Get_Component(L"Com_Transform"));
+        CTransform* pTransform = dynamic_cast<CTransform*>(m_pDummy->Get_Component(L"Com_Transform"));
         if (nullptr == pTransform)
         {
             ImGui::End();
@@ -149,9 +146,8 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         IMGUI_NEW_LINE;
 
         ImGui::Text("Transform");
-        ImGui::BeginChild("Model");
+        ImGui::BeginChild("##Transform");
         
-
         IMGUI_NEW_LINE;
 
     #pragma region Position
@@ -211,8 +207,63 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
             && vScale.z >= 0.1f)
             pTransform->Set_Scale(XMLoadFloat3(&vScale));
     #pragma endregion
-        ImGui::EndChild();
         
+
+        IMGUI_NEW_LINE;
+        IMGUI_NEW_LINE;
+
+        char szFilePath[MAX_PATH];
+        char szFileName[MAX_PATH];
+        
+
+        sprintf_s(szFilePath, CGameInstance::GetInstance()->wstring_to_string(m_strFilePath).c_str());
+        sprintf_s(szFileName, CGameInstance::GetInstance()->wstring_to_string(m_strFileName).c_str());
+        
+
+
+        ImGui::Text("Path");
+        IMGUI_SAME_LINE;
+        if (ImGui::InputText("##ModelPathText", szFilePath, MAX_PATH))
+        {
+            m_strFilePath = wstring(CGameInstance::GetInstance()->string_to_wstring(string(szFilePath)));
+        }
+        
+        ImGui::Text("File");
+        IMGUI_SAME_LINE;
+        if (ImGui::InputText("##ModelFileText", szFileName, MAX_PATH))
+        {
+            m_strFileName = wstring(CGameInstance::GetInstance()->string_to_wstring(string(szFileName)));
+        }
+
+        
+        const char* items[] = { "NON_ANIM", "ANIM"};
+        static const char* szCurrent = NULL;
+        if (ImGui::BeginCombo("##ModelType", szCurrent))
+        {
+            for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+            {
+                bool is_selected = (szCurrent == items[n]); // You can store your selection however you want, outside or inside your objects
+                if (ImGui::Selectable(items[n], is_selected))
+                {
+                    szCurrent = items[n];
+                    m_iModelType = n;
+                }
+                    
+            }
+
+            ImGui::EndCombo();
+        }
+
+        if (ImGui::Button("Import"))
+        {
+            m_pDummy->Ready_ModelCom(m_iModelType, m_strFilePath, m_strFileName);
+        }
+
+        if (ImGui::Button("Export"))
+        {
+            m_pDummy->Export_Model();
+        }
+        ImGui::EndChild();
     }
     ImGui::End();
 }
@@ -222,7 +273,82 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
 void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
 {
     ImGui::Begin("Animation");
+    if (nullptr != m_pDummy->Get_ModelCom())
+    {
+        CModel* pModelCom = m_pDummy->Get_ModelCom();
+        const vector<CAnimation*>& Animations = pModelCom->Get_Animations();
 
+        // AnimationList
+        if (ImGui::BeginListBox("##Animation_List"))
+        {
+            for(size_t i = 0; i< Animations.size(); ++i)
+            {
+                string AnimationName = CGameInstance::GetInstance()->wstring_to_string(Animations[i]->Get_AnimationName());
+                if (ImGui::Selectable(AnimationName.c_str(), i == pModelCom->Get_CurrAnimationIndex()))
+                {
+                    pModelCom->Set_AnimIndex(i);
+                }
+            }
+
+            ImGui::EndListBox();
+        }
+        IMGUI_SAME_LINE;
+
+        ImGui::BeginGroup();
+        if (ImGui::ArrowButton("##Swap_Animation_Up", ImGuiDir_Up))
+        {
+            pModelCom->Swap_Animation(pModelCom->Get_CurrAnimationIndex(), pModelCom->Get_CurrAnimationIndex() - 1);
+        }
+        IMGUI_SAME_LINE;
+        if (ImGui::ArrowButton("##Swap_Animation_Down", ImGuiDir_Down))
+        {
+            pModelCom->Swap_Animation(pModelCom->Get_CurrAnimationIndex(), pModelCom->Get_CurrAnimationIndex() + 1);
+        }
+
+        char szAnimationName[255];
+        sprintf_s(szAnimationName, CGameInstance::GetInstance()->wstring_to_string(Animations[pModelCom->Get_CurrAnimationIndex()]->Get_AnimationName()).c_str());
+        if (ImGui::InputText("##Animation_Input_Name", szAnimationName, 255))
+        {
+            wstring NewAnimationName = CGameInstance::GetInstance()->string_to_wstring(string(szAnimationName));
+            Animations[pModelCom->Get_CurrAnimationIndex()]->Set_AnimationName(NewAnimationName);
+        }
+        ImGui::EndGroup();
+
+        // Animation Slider
+        CAnimation* pCurrAnimation = Animations[pModelCom->Get_CurrAnimationIndex()];
+
+        _float fDuration = pCurrAnimation->Get_Duration();
+        _float fCurrFrame = pCurrAnimation->Get_KeyDesc().iCurrFrame;
+        if (ImGui::SliderFloat("##Animation_Slider", &fCurrFrame, 0.f, fDuration, "%.2f"))
+        {
+            pCurrAnimation->Set_Pause(true);
+            pCurrAnimation->Set_CurrFrame(fCurrFrame);
+        }
+        else
+        {
+            pCurrAnimation->Set_Pause(false);
+        }
+
+        if (ImGui::ArrowButton("##Play_AnimationButton", ImGuiDir_Right))
+        {
+            pCurrAnimation->Set_Pause(false);
+        }
+
+        IMGUI_SAME_LINE;
+
+        if (ImGui::Button("||"))
+        {
+            pCurrAnimation->Set_Pause(true);
+        }
+
+
+        
+        if (ImGui::Button("Delete"))
+        {
+            pModelCom->Delete_ModelAnimation(pModelCom->Get_CurrAnimationIndex());
+        }
+
+    }
     ImGui::End();
     
 }

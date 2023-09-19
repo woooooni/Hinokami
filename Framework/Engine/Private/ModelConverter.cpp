@@ -10,17 +10,17 @@ CModelConverter::CModelConverter(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 {
 	_importer = make_shared<Assimp::Importer>();
 
+	m_strFileName = strFileName;
 	m_pDevice = pDevice;
 	m_pContext = pContext;
 
-	m_strFileName = strFileName;
 }
 
 CModelConverter::~CModelConverter()
 {
 }
 
-void CModelConverter::ReadAssetFile(wstring file)
+void CModelConverter::Read_AssetFile(wstring file)
 {
 	auto p = std::filesystem::path(file);
 	assert(std::filesystem::exists(p));
@@ -37,7 +37,7 @@ void CModelConverter::ReadAssetFile(wstring file)
 	assert(_scene != nullptr);
 }
 
-void CModelConverter::ExportModelData(wstring savePath)
+void CModelConverter::Export_ModelData(wstring savePath)
 {
 	wstring finalPath = _modelPath + savePath + L".mesh";
 
@@ -75,39 +75,39 @@ void CModelConverter::ExportModelData(wstring savePath)
 	}
 
 
-	WriteModelFile(finalPath);
+	Write_ModelFile(finalPath);
 }
 
-void CModelConverter::ExportMaterialData(wstring savePath)
+void CModelConverter::Export_MaterialData(wstring savePath)
 {
 	wstring finalPath = _texturePath + savePath + L".xml";
-	WriteMaterialData(finalPath);
+	Write_MaterialData(finalPath);
 }
 
-void CModelConverter::ExportAnimationData(wstring savePath)
+void CModelConverter::Export_AnimationData(wstring savePath)
 {
 	_uint iAniCount = _animations.size();
 
 	wstring finalPath = _modelPath + savePath + L".anim";
 	if (iAniCount > 0)
 	{
-		WriteAnimationData(finalPath);
+		Write_AnimationData(finalPath);
 	}
 }
 
-void CModelConverter::ImportModelData()
+void CModelConverter::Import_ModelData()
 {
-	ReadModelData(_scene->mRootNode, -1, -1);
+	Read_ModelData(_scene->mRootNode, -1, -1);
 	Set_BoneOffsetMatrix();
-	ReadSkinData();
+	Read_SkinData();
 }
 
-void CModelConverter::ImportMaterialData()
+void CModelConverter::Import_MaterialData()
 {
-	ReadMaterialData();
+	Read_MaterialData();
 }
 
-void CModelConverter::ImportAnimationData()
+void CModelConverter::Import_AnimationData()
 {
 	_uint iAniCount = _scene->mNumAnimations;
 
@@ -115,14 +115,14 @@ void CModelConverter::ImportAnimationData()
 	{
 		for (_uint i = 0; i < iAniCount; ++i)
 		{
-			shared_ptr<asAnimation> animation = ReadAnimationData(_scene->mAnimations[i]);
+			shared_ptr<asAnimation> animation = Read_AnimationData(_scene->mAnimations[i]);
 
 			_animations.insert({ animation->name, animation });
 		}
 	}
 }
 
-void CModelConverter::ReadModelData(aiNode* node, _uint index, int32 parent)
+void CModelConverter::Read_ModelData(aiNode* node, _uint index, int32 parent)
 {
 	shared_ptr<asBone> bone = make_shared<asBone>();
 	bone->index = index;
@@ -146,14 +146,14 @@ void CModelConverter::ReadModelData(aiNode* node, _uint index, int32 parent)
 	_bones.push_back(bone);
 
 	// Mesh
-	ReadMeshData(node, index);
+	Read_MeshData(node, index);
 
 	// 재귀 함수
 	for (uint32 i = 0; i < node->mNumChildren; i++)
-		ReadModelData(node->mChildren[i], _bones.size(), index);
+		Read_ModelData(node->mChildren[i], _bones.size(), index);
 }
 
-void CModelConverter::ReadMeshData(aiNode* node, _uint bone)
+void CModelConverter::Read_MeshData(aiNode* node, _uint bone)
 {
 	if (node->mNumMeshes < 1)
 		return;
@@ -203,7 +203,7 @@ void CModelConverter::ReadMeshData(aiNode* node, _uint bone)
 	}
 }
 
-void CModelConverter::ReadSkinData()
+void CModelConverter::Read_SkinData()
 {
 	for (uint32 i = 0; i < _scene->mNumMeshes; i++)
 	{
@@ -247,12 +247,12 @@ void CModelConverter::ReadSkinData()
 	_uint iTemp = 0;
 }
 
-void CModelConverter::WriteModelFile(wstring finalPath)
+void CModelConverter::Write_ModelFile(wstring finalPath)
 {
 	auto path = filesystem::path(finalPath);
 
 	// 폴더가 없으면 만든다.
-	filesystem::create_directory(path.parent_path());
+	filesystem::create_directories(path.parent_path());
 
 	shared_ptr<CAsFileUtils> file = make_shared<CAsFileUtils>();
 	file->Open(finalPath, FileMode::Write);
@@ -305,7 +305,7 @@ HRESULT CModelConverter::DeleteAnimation(const wstring& strAnimation)
 	return S_OK;
 }
 
-void CModelConverter::ReadMaterialData()
+void CModelConverter::Read_MaterialData()
 {
 	for (uint32 i = 0; i < _scene->mNumMaterials; i++)
 	{
@@ -384,7 +384,7 @@ void CModelConverter::ReadMaterialData()
 	}
 }
 
-void CModelConverter::WriteMaterialData(wstring finalPath)
+void CModelConverter::Write_MaterialData(wstring finalPath)
 {
 	auto path = filesystem::path(finalPath);
 
@@ -413,15 +413,15 @@ void CModelConverter::WriteMaterialData(wstring finalPath)
 		node->LinkEndChild(element);
 
 		element = document->NewElement("DiffuseFile");
-		element->SetText(WriteTexture(folder, material->diffuseFile).c_str());
+		element->SetText(Write_Texture(folder, material->diffuseFile).c_str());
 		node->LinkEndChild(element);
 
 		element = document->NewElement("SpecularFile");
-		element->SetText(WriteTexture(folder, material->specularFile).c_str());
+		element->SetText(Write_Texture(folder, material->specularFile).c_str());
 		node->LinkEndChild(element);
 
 		element = document->NewElement("NormalFile");
-		element->SetText(WriteTexture(folder, material->normalFile).c_str());
+		element->SetText(Write_Texture(folder, material->normalFile).c_str());
 		node->LinkEndChild(element);
 
 		element = document->NewElement("Ambient");
@@ -456,7 +456,7 @@ void CModelConverter::WriteMaterialData(wstring finalPath)
 	document->SaveFile(CAsUtils::ToString(finalPath).c_str());
 }
 
-string CModelConverter::WriteTexture(string saveFolder, string file)
+string CModelConverter::Write_Texture(string saveFolder, string file)
 {
 	string fileName = filesystem::path(file).filename().string();
 	string folderName = filesystem::path(saveFolder).filename().string();
@@ -514,7 +514,7 @@ string CModelConverter::WriteTexture(string saveFolder, string file)
 	return fileName;
 }
 
-shared_ptr<asAnimation> CModelConverter::ReadAnimationData(aiAnimation* srcAnimation)
+shared_ptr<asAnimation> CModelConverter::Read_AnimationData(aiAnimation* srcAnimation)
 {
 	shared_ptr<asAnimation> animation = make_shared<asAnimation>();
 	animation->name = srcAnimation->mName.C_Str();
@@ -528,7 +528,7 @@ shared_ptr<asAnimation> CModelConverter::ReadAnimationData(aiAnimation* srcAnima
 		aiNodeAnim* srcNode = srcAnimation->mChannels[i];
 
 		// 애니메이션 노드 데이터 파싱
-		shared_ptr<asAnimationNode> node = ParseAnimationNode(animation, srcNode);
+		shared_ptr<asAnimationNode> node = Parse_AnimationNode(animation, srcNode);
 
 		// 현재 찾은 노드 중에 제일 긴 시간으로 애니메이션 시간 갱신
 		animation->duration = max(animation->duration, node->keyframe.back().time);
@@ -536,12 +536,12 @@ shared_ptr<asAnimation> CModelConverter::ReadAnimationData(aiAnimation* srcAnima
 		cacheAnimNodes[srcNode->mNodeName.C_Str()] = node;
 	}
 
-	ReadKeyframeData(animation, _scene->mRootNode, cacheAnimNodes);
+	Read_KeyframeData(animation, _scene->mRootNode, cacheAnimNodes);
 
 	return animation;
 }
 
-shared_ptr<asAnimationNode> CModelConverter::ParseAnimationNode(shared_ptr<asAnimation> animation, aiNodeAnim* srcNode)
+shared_ptr<asAnimationNode> CModelConverter::Parse_AnimationNode(shared_ptr<asAnimation> animation, aiNodeAnim* srcNode)
 {
 	std::shared_ptr<asAnimationNode> node = make_shared<asAnimationNode>();
 	node->name = srcNode->mNodeName;
@@ -651,7 +651,7 @@ shared_ptr<asAnimationNode> CModelConverter::ParseAnimationNode(shared_ptr<asAni
 	return node;
 }
 
-void CModelConverter::ReadKeyframeData(shared_ptr<asAnimation> animation, aiNode* srcNode, map<string, shared_ptr<asAnimationNode>>& cache)
+void CModelConverter::Read_KeyframeData(shared_ptr<asAnimation> animation, aiNode* srcNode, map<string, shared_ptr<asAnimationNode>>& cache)
 {
 	shared_ptr<asKeyframe> keyframe = make_shared<asKeyframe>();
 	keyframe->boneName = srcNode->mName.C_Str();
@@ -681,10 +681,10 @@ void CModelConverter::ReadKeyframeData(shared_ptr<asAnimation> animation, aiNode
 	animation->keyframes.push_back(keyframe);
 
 	for (uint32 i = 0; i < srcNode->mNumChildren; i++)
-		ReadKeyframeData(animation, srcNode->mChildren[i], cache);
+		Read_KeyframeData(animation, srcNode->mChildren[i], cache);
 }
 
-void CModelConverter::WriteAnimationData(wstring finalPath)
+void CModelConverter::Write_AnimationData(wstring finalPath)
 {
 	auto path = filesystem::path(finalPath);
 

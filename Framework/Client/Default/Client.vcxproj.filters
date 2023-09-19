@@ -85,6 +85,12 @@
     <Filter Include="03. State\Character">
       <UniqueIdentifier>{96b97e03-5b05-4aa0-885c-f7e365a5268d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Character\99. Dummy">
+      <UniqueIdentifier>{3b5162f8-31c0-4401-b6d0-d22ac970a862}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Terrain">
+      <UniqueIdentifier>{dec9bd71-23ed-45a4-8928-d0f72663a888}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -183,6 +189,12 @@
     <ClInclude Include="..\Public\Giyu.h">
       <Filter>02.GameObjects\Character\04. Giyu</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Dummy.h">
+      <Filter>02.GameObjects\Character\99. Dummy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Terrain.h">
+      <Filter>02.GameObjects\Terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -265,6 +277,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Giyu.cpp">
       <Filter>02.GameObjects\Character\04. Giyu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Dummy.cpp">
+      <Filter>02.GameObjects\Character\99. Dummy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Terrain.cpp">
+      <Filter>02.GameObjects\Terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,8 @@
 #include "Zenitsu.h"
 #include "Kyojuro.h"
 #include "Giyu.h"
-
+#include "Dummy.h"
+#include "Terrain.h"
 
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -175,13 +176,21 @@ HRESULT CLoader::Loading_For_Level_Tool()
 		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Main_Camera")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
-		CPlayer::Create(m_pDevice, m_pContext))))
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Dummy"),
+		CDummy::Create(m_pDevice, m_pContext, TEXT("Dummy")))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Giyu"),
-		CGiyu::Create(m_pDevice, m_pContext, L"Giyu"))))
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
+		CTerrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
+	//	CPlayer::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
+
+	/*if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Giyu"),
+		CGiyu::Create(m_pDevice, m_pContext, L"Giyu"))))
+		return E_FAIL;*/
 
 	m_strLoading = TEXT("모델을 로딩 중 입니다.");
 	_matrix		PivotMatrix = XMMatrixIdentity();
@@ -191,11 +200,9 @@ HRESULT CLoader::Loading_For_Level_Tool()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Meshes/ForkLift/", "ForkLift.fbx", PivotMatrix))))
 		return E_FAIL;*/
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Deer"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Deer/"), TEXT("Deer.fbx"), PivotMatrix))))
-		return E_FAIL;
-
-
+	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Giyu"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Giyu/"), TEXT("Giyu.fbx"), PivotMatrix))))
+		return E_FAIL;*/
 
 	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Giyu"),
 	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Giyu/"), TEXT("Giyu.fbx"), PivotMatrix))))
@@ -217,7 +224,15 @@ HRESULT CLoader::Loading_For_Level_Tool()
 	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Zenitsu/"), TEXT("Zenitsu.fbx"), PivotMatrix))))
 	//	return E_FAIL;
 
+
+
+
+
+
 	/* For.Prototype_Component_Shader_Model */
+
+	
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Model"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModel.hlsl"), VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;

@@ -69,8 +69,8 @@ namespace Engine
 	typedef struct tagVertexTexture
 	{
 		XMFLOAT3		vPosition;
-		XMFLOAT2		vTexture;
-	}VTXTEX;
+		XMFLOAT2		vTexcoord;
+	}VTXPOSTEX;
 
 	typedef struct ENGINE_DLL tagVertexTexture_Declaration
 	{
@@ -82,7 +82,7 @@ namespace Engine
 	{
 		XMFLOAT3		vPosition;
 		XMFLOAT3		vNormal;
-		XMFLOAT2		vTexture;
+		XMFLOAT2		vTexcoord;
 	}VTXNORTEX;
 
 	typedef struct ENGINE_DLL tagVertexNormalTexture_Declaration
