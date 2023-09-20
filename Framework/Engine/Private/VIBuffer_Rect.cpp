@@ -17,6 +17,8 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 #pragma region VERTEXBUFFER
 	m_iNumVertexBuffers = 1;
 	m_iNumVertices = 4;
+	m_Vertices.reserve(m_iNumVertices);
+
 	m_iStride = sizeof(VTXPOSTEX);
 
 	ZeroMemory(&m_BufferDesc, sizeof(D3D11_BUFFER_DESC));

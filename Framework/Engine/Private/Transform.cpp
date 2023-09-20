@@ -41,9 +41,9 @@ HRESULT CTransform::Initialize(void * pArg)
 	return S_OK;
 }
 
-HRESULT CTransform::Bind_ShaderResources(CShader* pShader, const wstring& strConstantName)
+HRESULT CTransform::Bind_ShaderResources(CShader* pShader, const char* pConstantName)
 {
-	return pShader->Set_RawValue(strConstantName, &m_WorldMatrix, sizeof(_float4x4));
+	return pShader->Bind_Matrix(pConstantName, &m_WorldMatrix);
 }
 
 void CTransform::Go_Straight(_float fTimeDelta)

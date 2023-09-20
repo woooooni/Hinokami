@@ -91,6 +91,9 @@
     <Filter Include="02.GameObjects\Terrain">
       <UniqueIdentifier>{dec9bd71-23ed-45a4-8928-d0f72663a888}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. Manager\ImGui\Libs\Docking">
+      <UniqueIdentifier>{9f636762-d842-4778-89d0-4c71d473c2af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -138,33 +141,6 @@
     <ClInclude Include="..\Public\ImGui_Manager.h">
       <Filter>96. Manager\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\imconfig.h">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\imgui.h">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\imgui_impl_dx11.h">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\imgui_impl_win32.h">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\imgui_internal.h">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\imgui_stdlib.h">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\imstb_rectpack.h">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\imstb_textedit.h">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\imstb_truetype.h">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Level_Tool.h">
       <Filter>01.Levels\98. Tool</Filter>
     </ClInclude>
@@ -194,6 +170,33 @@
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObjects\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imconfig.h">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imgui.h">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imgui_impl_dx11.h">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imgui_impl_win32.h">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imgui_internal.h">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imgui_stdlib.h">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imstb_rectpack.h">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imstb_textedit.h">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\imstb_truetype.h">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -230,30 +233,6 @@
     <ClCompile Include="..\Private\ImGui_Manager.cpp">
       <Filter>96. Manager\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui.cpp">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui_demo.cpp">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui_draw.cpp">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui_impl_dx11.cpp">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui_impl_win32.cpp">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui_stdlib.cpp">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui_tables.cpp">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui_widgets.cpp">
-      <Filter>96. Manager\ImGui\Libs</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Level_Tool.cpp">
       <Filter>01.Levels\98. Tool</Filter>
     </ClCompile>
@@ -284,6 +263,30 @@
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObjects\Terrain</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui.cpp">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_demo.cpp">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_draw.cpp">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_impl_dx11.cpp">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_impl_win32.cpp">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_stdlib.cpp">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_tables.cpp">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui_widgets.cpp">
+      <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -300,6 +303,9 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimModel.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl">

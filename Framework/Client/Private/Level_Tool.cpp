@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Character.h"
 #include "Dummy.h"
+#include "Terrain.h"
 
 USING(Client)
 CLevel_Tool::CLevel_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -55,6 +56,17 @@ HRESULT CLevel_Tool::Initialize()
 		return S_OK;
 
 	m_pImGuiManager->Set_Dummy(pDummy);
+
+
+	CGameObject* pTempObject = CGameInstance::GetInstance()->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_BACKGROUND), L"Terrain");
+	if (nullptr == pTempObject)
+		return S_OK;
+
+	CTerrain* pTerrain = dynamic_cast<CTerrain*>(pTempObject);
+	if (nullptr == pTerrain)
+		return S_OK;
+
+	m_pImGuiManager->Set_Terrain(pTerrain);
 	return S_OK;
 }
 
@@ -133,7 +145,7 @@ HRESULT CLevel_Tool::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
 	CameraDesc.fNear = 0.2f;
-	CameraDesc.fFar = 300.0f;
+	CameraDesc.fFar = 300.f;
 
 	CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
 	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);

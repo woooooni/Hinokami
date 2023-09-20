@@ -42,7 +42,7 @@ HRESULT CAnimation::Initialize_Prototype(aiAnimation* pAIAnimation)
 	//for (_uint i = 0; i < m_iNumChannels; ++i)
 	//{
 	//	/* aiNodeAnim : mChannel은 키프레임 정보들을 가지낟. */
-	//	CChannel*		pChannel = CChannel::Create(pAIAnimation->mChannels[i]);
+	//	CChannel*	d	pChannel = CChannel::Create(pAIAnimation->mChannels[i]);
 	//	if (nullptr == pChannel)
 	//		return E_FAIL;
 
@@ -134,8 +134,11 @@ HRESULT CAnimation::LoadData_FromConverter(shared_ptr<asAnimation> pAnimation, _
 
 HRESULT CAnimation::Play_Animation(_float fTimeDelta)
 {
-	if(!m_bPause)
+	if (!m_bPause)
+	{
 		m_tKeyDesc.fSumTime += fTimeDelta;
+	}
+		
 
 	float fTimePerFrame = 1.f / (m_fTickPerSecond * m_fSpeed);
 	if (m_tKeyDesc.fSumTime >= fTimePerFrame)
@@ -144,6 +147,7 @@ HRESULT CAnimation::Play_Animation(_float fTimeDelta)
 		m_tKeyDesc.iCurrFrame = (m_tKeyDesc.iCurrFrame + 1) % m_iFrameCount;
 		m_tKeyDesc.iNextFrame = (m_tKeyDesc.iCurrFrame + 1) % m_iFrameCount;
 	}
+
 
 	m_tKeyDesc.fRatio = (m_tKeyDesc.fSumTime / fTimePerFrame);
 
@@ -276,12 +280,12 @@ shared_ptr<ModelKeyframe> CAnimation::GetKeyframe(const wstring& name)
 	return pKeyFrame->second;
 }
 
-HRESULT CAnimation::SetUpAnimation_OnShader(CShader* pShader, const wstring& strMapname, const wstring& strDescName)
+HRESULT CAnimation::SetUpAnimation_OnShader(CShader* pShader, const char* pConstantTexturename, const char* pConstantDescName)
 {
-	if (FAILED(pShader->Set_ShaderResourceView(strMapname, m_pAnimTexSRV)))
+	if (FAILED(pShader->Bind_Texture(pConstantTexturename, m_pAnimTexSRV)))
 		return E_FAIL;
 
-	if (FAILED(pShader->Set_RawValue(strDescName, &m_tKeyDesc, sizeof(KEY_DESC))))
+	if (FAILED(pShader->Bind_RawValue(pConstantDescName, &m_tKeyDesc, sizeof(KEY_DESC))))
 		return S_OK;
 }
 

@@ -51,7 +51,7 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 
 public:
-	HRESULT Bind_ShaderResources(class CShader* pShader, const wstring& strConstantName);
+	HRESULT Bind_ShaderResources(class CShader* pShader, const char* pConstantName);
 
 public:
 	void Go_Straight(_float fTimeDelta);

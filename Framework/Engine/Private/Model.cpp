@@ -90,22 +90,22 @@ HRESULT CModel::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CModel::SetUp_OnShader(CShader* pShader, _uint iMaterialIndex, aiTextureType eTextureType, const wstring& strConstantName)
+HRESULT CModel::SetUp_OnShader(CShader* pShader, _uint iMaterialIndex, aiTextureType eTextureType, const char* pConstantName)
 {
 	if (iMaterialIndex >= m_iNumMaterials)
 		return E_FAIL;
 
-	return m_Materials[iMaterialIndex].pTexture[eTextureType]->Set_SRV(pShader, strConstantName);
+	return m_Materials[iMaterialIndex].pTexture[eTextureType]->Bind_ShaderResource(pShader, pConstantName);
 }
 
 HRESULT CModel::SetUpAnimation_OnShader(CShader* pShader)
 {
 	KEY_DESC KeyDesc = m_Animations[m_iCurrentAnimIndex]->Get_KeyDesc();
 
-	if (FAILED(pShader->Set_RawValue(L"g_CurrKeyFrame", &KeyDesc, sizeof(KEY_DESC))))
+	if (FAILED(pShader->Bind_RawValue("g_CurrKeyFrame", &KeyDesc, sizeof(KEY_DESC))))
 		return E_FAIL;
 
-	if (FAILED(m_Animations[m_iCurrentAnimIndex]->SetUpAnimation_OnShader(pShader, L"g_CurrAnimMap", L"g_CurrKeyFrame")))
+	if (FAILED(m_Animations[m_iCurrentAnimIndex]->SetUpAnimation_OnShader(pShader, "g_CurrAnimMap", "g_CurrKeyFrame")))
 		return E_FAIL;
 
 	return S_OK;
@@ -137,7 +137,9 @@ HRESULT CModel::Load_AssetFile_FromFBX()
 
 	_wsplitpath_s(m_strFileName.c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, nullptr, 0);
 
-	m_pConverter = new CModelConverter(m_pDevice, m_pContext, szFileName);
+	if(nullptr == m_pConverter)
+		m_pConverter = new CModelConverter(m_pDevice, m_pContext, szFileName);
+
 	m_pConverter->Read_AssetFile(m_strFilePath + m_strFileName);
 
 	m_pConverter->Import_ModelData();
@@ -177,6 +179,10 @@ HRESULT CModel::Export_AssetData()
 {
 	_tchar szFileName[MAX_PATH];
 	_wsplitpath_s(m_strFileName.c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, nullptr, 0);
+
+	
+	if (nullptr == m_pConverter)
+		m_pConverter = new CModelConverter(m_pDevice, m_pContext, szFileName);
 
 	wstring szFilePath = wstring(szFileName) + L"/" + szFileName;
 

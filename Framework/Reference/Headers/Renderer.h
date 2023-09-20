@@ -25,8 +25,6 @@ public:
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pGameObject);
 	HRESULT Draw();
 
-private:
-	class CShader* m_pShader = { nullptr };
 
 
 private:

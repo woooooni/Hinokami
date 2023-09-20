@@ -20,9 +20,9 @@ void CPipeLine::Tick()
 	memcpy(&m_vCamPosition, &m_TransformInverseMatrix[D3DTS_VIEW].m[3][0], sizeof(_float4));
 }
 
-HRESULT CPipeLine::Bind_TransformToShader(CShader* pShader, const wstring& strConstantName, CPipeLine::TRANSFORMSTATE eState)
+HRESULT CPipeLine::Bind_TransformToShader(CShader* pShader, const char* pConstantName, CPipeLine::TRANSFORMSTATE eState)
 {
-	return pShader->Set_RawValue(strConstantName, &m_TransformMatrix[eState], sizeof(_float4x4));
+	return pShader->Bind_Matrix(pConstantName, &m_TransformMatrix[eState]);
 }
 
 void CPipeLine::Free()

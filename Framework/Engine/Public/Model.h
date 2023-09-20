@@ -64,7 +64,7 @@ public:
 
 
 public:
-	HRESULT SetUp_OnShader(class CShader* pShader, _uint iMaterialIndex, aiTextureType eTextureType, const wstring& strConstantName);
+	HRESULT SetUp_OnShader(class CShader* pShader, _uint iMaterialIndex, aiTextureType eTextureType, const char* pConstantName);
 	HRESULT SetUpAnimation_OnShader(class CShader* pShader);
 	/* 애니메이션을 재생한다. */
 	/* 1. 해당 애니메이션에서 사용하는 모든 뼈들의  Transformation 행렬을 갱신한다. */

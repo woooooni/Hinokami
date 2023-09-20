@@ -5,6 +5,7 @@
 #include "Animation.h"
 #include "GameInstance.h"
 #include "Dummy.h"
+#include "Terrain.h"
 
 USING(Client)
 IMPLEMENT_SINGLETON(CImGui_Manager)
@@ -33,6 +34,7 @@ HRESULT CImGui_Manager::Reserve_Manager(HWND hWnd, ID3D11Device* pDevice, ID3D11
 
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+    io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleViewports;
     // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
     ImGuiStyle& style = ImGui::GetStyle();
@@ -366,12 +368,44 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
     ImGui::Begin("Map");
     ImGui::Text("Map Tool");
     ImGui::End();
+    
 }
 
 void CImGui_Manager::Tick_Terrain_Tool(_float fTimeDelta)
 {
     ImGui::Begin("Terrain");
     ImGui::Text("Terrain Tool");
+    if (nullptr != m_pTerrain)
+    {
+        
+        CTransform* pTransform = m_pTerrain->Get_TransformCom();
+
+#pragma region Position
+        // Postion
+        _float3 vPos;
+        XMStoreFloat3(&vPos, pTransform->Get_State(CTransform::STATE_POSITION));
+
+        ImGui::Text("Position");
+        ImGui::DragFloat3("##Position", (_float*)&vPos, 0.1f, -999.f, 999.f, "%.3f");
+
+        pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&vPos), 1.f));
+#pragma endregion
+
+        IMGUI_NEW_LINE;
+#pragma region Scale
+        // Scale
+        _float3 vScale = pTransform->Get_Scale();
+
+        ImGui::Text("Scale");
+        ImGui::DragFloat3("##Scale", (_float*)&vScale, 0.1f, 0.1f, 100.f);
+
+        if (vScale.x >= 0.1f
+            && vScale.y >= 0.1f
+            && vScale.z >= 0.1f)
+            pTransform->Set_Scale(XMLoadFloat3(&vScale));
+#pragma endregion
+
+    }
     ImGui::End();
 }
 
@@ -379,6 +413,12 @@ void CImGui_Manager::Free()
 {
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);
+
+
+    m_pTarget = nullptr;
+    m_pDummy = nullptr;
+    m_pTerrain = nullptr;
+    
 
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();

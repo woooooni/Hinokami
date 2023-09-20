@@ -49,6 +49,12 @@ public:
 		m_pDummy = pDummy;
 	}
 
+	void Set_Terrain(class CTerrain* pTerrain)
+	{
+		if (nullptr == pTerrain)
+			return;
+		m_pTerrain = pTerrain;
+	}
 
 private:
 	void Tick_Basic_Tool(_float fTimeDelta);
@@ -84,6 +90,7 @@ private:
 public:
 	CGameObject* m_pTarget = nullptr;
 	class CDummy* m_pDummy = nullptr;
+	class CTerrain* m_pTerrain = nullptr;
 
 public:
 	virtual void Free() override;

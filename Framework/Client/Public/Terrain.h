@@ -30,6 +30,11 @@ public:
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
 
+public:
+	CShader* Get_ShaderCom() { return m_pShaderCom; }
+	CTransform* Get_TransformCom() { return m_pTransformCom; }
+	CVIBuffer_Terrain* Get_TerrainBufferCom() { return m_pVIBufferCom; }
+
 private: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CRenderer*				m_pRendererCom = { nullptr };
 	CTransform*				m_pTransformCom = { nullptr };

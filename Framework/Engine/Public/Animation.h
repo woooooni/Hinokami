@@ -27,7 +27,7 @@ public:
 	_float Get_Duration() { return m_fDuration; }
 
 	shared_ptr<ModelKeyframe> GetKeyframe(const wstring& name);
-	HRESULT SetUpAnimation_OnShader(class CShader* pShader, const wstring& strMapname, const wstring& strDescName);
+	HRESULT SetUpAnimation_OnShader(class CShader* pShader, const char* pConstantTexturename, const char* pConstantDescName);
 
 
 

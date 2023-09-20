@@ -43,7 +43,7 @@ public:
 	void Tick();
 
 public:
-	HRESULT Bind_TransformToShader(class CShader* pShader, const wstring& strConstantName, CPipeLine::TRANSFORMSTATE eState);
+	HRESULT Bind_TransformToShader(class CShader* pShader, const char* pConstantName, CPipeLine::TRANSFORMSTATE eState);
 	
 private:
 	_float4x4				m_TransformMatrix[D3DTS_END];

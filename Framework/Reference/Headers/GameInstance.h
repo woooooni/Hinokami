@@ -72,7 +72,7 @@ public: /* For.PipeLine */
 	_float4x4 Get_TransformFloat4x4(CPipeLine::TRANSFORMSTATE eTransformState) const;
 	_float4x4 Get_TransformFloat4x4_TP(CPipeLine::TRANSFORMSTATE eTransformState) const;
 	_float4 Get_CamPosition();
-	HRESULT Bind_TransformToShader(CShader* pShader, const wstring & strConstantName, CPipeLine::TRANSFORMSTATE eState);
+	HRESULT Bind_TransformToShader(CShader* pShader, const char* pConstantName, CPipeLine::TRANSFORMSTATE eState);
 
 /* For. KeyManager */
 public:

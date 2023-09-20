@@ -58,14 +58,14 @@ HRESULT CTexture::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CTexture::Set_SRV(CShader* pShader, const wstring& strConstantName, _uint iTextureIndex)
+HRESULT CTexture::Bind_ShaderResource(const CShader* pShader, const char* pConstantName, _uint iTextureIndex)
 {
+	return pShader->Bind_Texture(pConstantName, m_SRVs[iTextureIndex]);
+}
 
-	if (iTextureIndex >= m_iNumTextures)
-		return E_FAIL;
-
-	return pShader->Set_ShaderResourceView(strConstantName.c_str(), m_SRVs[iTextureIndex]);
-
+HRESULT CTexture::Bind_ShaderResources(const CShader* pShader, const char* pConstantName)
+{
+	return pShader->Bind_Textures(pConstantName, m_SRVs.data(), m_iNumTextures);
 }
 
 CTexture* CTexture::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strTextureFilePath, _uint iNumTextures)

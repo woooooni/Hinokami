@@ -23,7 +23,12 @@ CModelConverter::~CModelConverter()
 void CModelConverter::Read_AssetFile(wstring file)
 {
 	auto p = std::filesystem::path(file);
-	assert(std::filesystem::exists(p));
+	if (false == std::filesystem::exists(p))
+	{
+		MSG_BOX("FAILED : File Path Strange.");
+		return;
+	}
+	
 
 	_scene = _importer->ReadFile(
 		CAsUtils::ToString(file),

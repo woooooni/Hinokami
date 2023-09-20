@@ -293,9 +293,9 @@ _float4 CGameInstance::Get_CamPosition()
 	return m_pPipeLine->Get_CamPosition();
 }
 
-HRESULT CGameInstance::Bind_TransformToShader(CShader* pShader, const wstring& strConstantName, CPipeLine::TRANSFORMSTATE eState)
+HRESULT CGameInstance::Bind_TransformToShader(CShader* pShader, const char* pConstantName, CPipeLine::TRANSFORMSTATE eState)
 {
-	return m_pPipeLine->Bind_TransformToShader(pShader, strConstantName, eState);
+	return m_pPipeLine->Bind_TransformToShader(pShader, pConstantName, eState);
 }
 
 KEY_STATE CGameInstance::GetKeyState(KEY _eKey)

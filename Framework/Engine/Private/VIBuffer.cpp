@@ -20,6 +20,7 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	, m_eIndexFormat(rhs.m_eIndexFormat)
 	, m_eTopology(rhs.m_eTopology)
 	, m_pVerticesPos(rhs.m_pVerticesPos)
+	, m_Vertices(rhs.m_Vertices)
 {
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
@@ -85,6 +86,16 @@ HRESULT CVIBuffer::Create_IndexBuffer()
 
 	return S_OK;
 }
+
+HRESULT CVIBuffer::Create_Buffer(_Inout_ ID3D11Buffer** ppOut)
+{
+	if (nullptr == m_pDevice)
+		return E_FAIL;
+
+	return m_pDevice->CreateBuffer(&m_BufferDesc, &m_SubResourceData, ppOut);
+}
+
+
 
 
 void CVIBuffer::Free()

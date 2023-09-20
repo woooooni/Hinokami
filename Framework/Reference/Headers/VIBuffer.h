@@ -18,6 +18,9 @@ public:
 public:
 	virtual HRESULT Render();
 
+public:
+	const vector<_float4>& Get_Vertices() { return m_Vertices; }
+
 protected:
 	ID3D11Buffer* m_pVB = nullptr;
 	ID3D11Buffer* m_pIB = nullptr;
@@ -34,14 +37,20 @@ protected:
 	_uint						m_iNumVertices = 0;
 	_uint						m_iStride = 0;
 	_uint						m_iNumPrimitives = 0;
+
 	_uint						m_iIndexSizeofPrimitive = 0;
 	_uint						m_iNumIndicesofPrimitive = 0;
+
 	DXGI_FORMAT					m_eIndexFormat;
 
+	vector<_float4>				m_Vertices;
 
 protected:
 	HRESULT Create_VertexBuffer();
 	HRESULT Create_IndexBuffer();
+	HRESULT Create_Buffer(_Inout_ ID3D11Buffer** ppOut);
+
+	
 
 public:
 	virtual CComponent* Clone(void* pArg) = 0;

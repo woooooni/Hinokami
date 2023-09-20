@@ -1,4 +1,5 @@
 #include "..\Public\VIBuffer_Terrain.h"
+#include "Transform.h"
 
 CVIBuffer_Terrain::CVIBuffer_Terrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CVIBuffer(pDevice, pContext)
@@ -13,153 +14,147 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs)
 
 }
 
-HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFilePath)
+HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeighitMapFilePath)
 {
-	/* 받아온 하이트맵 이미지의 정보를 읽어오자. */
-	_ulong		dwByte = 0;
-	HANDLE		hFile = CreateFile(strHeightMapFilePath.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	BITMAPFILEHEADER		fh;
-	BITMAPINFOHEADER		ih;
+	_ulong			dwByte = 0;
+	HANDLE			hFile = CreateFile(strHeighitMapFilePath.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	if (0 == hFile)
+		return E_FAIL;
 
-	ReadFile(hFile, &fh, sizeof(fh), &dwByte, nullptr);
-	ReadFile(hFile, &ih, sizeof(ih), &dwByte, nullptr);
+	BITMAPFILEHEADER			fh;
+	ReadFile(hFile, &fh, sizeof(BITMAPFILEHEADER), &dwByte, nullptr);
 
-	_ulong* pPixel = { nullptr };
-	pPixel = new _ulong[ih.biWidth * ih.biHeight];
+	BITMAPINFOHEADER			ih;
+	ReadFile(hFile, &ih, sizeof(BITMAPINFOHEADER), &dwByte, nullptr);
 
+	_ulong* pPixel = new _ulong[ih.biWidth * ih.biHeight];
 	ReadFile(hFile, pPixel, sizeof(_ulong) * ih.biWidth * ih.biHeight, &dwByte, nullptr);
 
 	CloseHandle(hFile);
 
+#pragma region VERTEXBUFFER
+	m_iNumVertexBuffers = 1;
 	m_iNumVerticesX = ih.biWidth;
 	m_iNumVerticesZ = ih.biHeight;
-	m_iStride = sizeof(VTXNORTEX); /* 정점하나의 크기 .*/
+
 	m_iNumVertices = m_iNumVerticesX * m_iNumVerticesZ;
+	m_Vertices.reserve(m_iNumVertices);
 
-	m_iIndexSizeofPrimitive = 4; /* 인덱스 하나의 크기. 2 or 4 */
-	m_iNumIndicesofPrimitive = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2 * 3;
-	m_eIndexFormat = m_iIndexSizeofPrimitive == 2 ? DXGI_FORMAT_R16_UINT : DXGI_FORMAT_R32_UINT;
-	m_eTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	m_iNumVertexBuffers = 1;
+	m_iStride = sizeof(VTXNORTEX);
 
-	m_iNumPrimitives = (m_iNumIndicesofPrimitive * (m_iNumVertices / 3));
-
-#pragma region VERTEX_BUFFER
-	/*
-		0x000000ff
-
-		11111111 11101110 11101110 11101110
-	&	00000000 11111111 00000000 00000000
-		00000000 11101110 00000000 00000000*/
-
-
+	m_pVerticesPos = new _float3[m_iNumVertices];
 	VTXNORTEX* pVertices = new VTXNORTEX[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXNORTEX) * m_iNumVertices);
 
-	for (size_t i = 0; i < m_iNumVerticesZ; i++)
+	for (_uint i = 0; i < m_iNumVerticesZ; ++i)
 	{
-		for (size_t j = 0; j < m_iNumVerticesX; j++)
+		for (_uint j = 0; j < m_iNumVerticesX; ++j)
 		{
 			_uint		iIndex = i * m_iNumVerticesX + j;
 
-			pVertices[iIndex].vPosition = _float3(j, (pPixel[iIndex] & 0x000000ff) / 10.f, i);
+			pVertices[iIndex].vPosition = m_pVerticesPos[iIndex] = _float3(j, (pPixel[iIndex] & 0x000000ff) / 30.f, i);
 			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
-			pVertices[iIndex].vTexcoord = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesZ - 1.f));
+			pVertices[iIndex].vTexcoord = _float2(j / _float(m_iNumVerticesX - 1), i / _float(m_iNumVerticesZ - 1));
 		}
 	}
+
+
 
 	Safe_Delete_Array(pPixel);
 
 #pragma endregion
 
-#pragma region INDEX_BUFFER
-	_uint* pIndices = new _uint[m_iNumIndicesofPrimitive];
-	ZeroMemory(pIndices, sizeof(_uint) * m_iNumIndicesofPrimitive);
+#pragma region INDEXBUFFER
+	m_iNumPrimitives = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2;
+	m_iIndexSizeofPrimitive = sizeof(FACEINDICES32);
+	m_iNumIndicesofPrimitive = 3;
+	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
+	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-	_uint		iNumIndices = 0;
+	FACEINDICES32* pIndices = new FACEINDICES32[m_iNumPrimitives];
+	ZeroMemory(pIndices, sizeof(FACEINDICES32) * m_iNumPrimitives);
 
-	for (size_t i = 0; i < m_iNumVerticesZ - 1; i++)
+	_uint		iNumFaces = 0;
+
+	for (_uint i = 0; i < m_iNumVerticesZ - 1; ++i)
 	{
-		for (size_t j = 0; j < m_iNumVerticesX - 1; j++)
+		for (_uint j = 0; j < m_iNumVerticesX - 1; ++j)
 		{
 			_uint		iIndex = i * m_iNumVerticesX + j;
 
-			_uint		iIndices[4] = {
-				iIndex + m_iNumVerticesX,		//5
-				iIndex + m_iNumVerticesX + 1,	//6
-				iIndex + 1,						//1
-				iIndex							//0
+			_uint		iIndices[] = {
+				iIndex + m_iNumVerticesX,
+				iIndex + m_iNumVerticesX + 1,
+				iIndex + 1,
+				iIndex
 			};
 
 			_vector		vSourDir, vDestDir, vNormal;
 
-			pIndices[iNumIndices++] = iIndices[0];
-			pIndices[iNumIndices++] = iIndices[1];
-			pIndices[iNumIndices++] = iIndices[2];
+			pIndices[iNumFaces]._0 = iIndices[0];
+			pIndices[iNumFaces]._1 = iIndices[1];
+			pIndices[iNumFaces]._2 = iIndices[2];
 
-			vSourDir = XMLoadFloat3(&pVertices[iIndices[1]].vPosition) -
-				XMLoadFloat3(&pVertices[iIndices[0]].vPosition);
-
-			vDestDir = XMLoadFloat3(&pVertices[iIndices[2]].vPosition) -
-				XMLoadFloat3(&pVertices[iIndices[1]].vPosition);
+			vSourDir = XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vPosition) - XMLoadFloat3(&pVertices[pIndices[iNumFaces]._0].vPosition);
+			vDestDir = XMLoadFloat3(&pVertices[pIndices[iNumFaces]._2].vPosition) - XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vPosition);
 
 			vNormal = XMVector3Normalize(XMVector3Cross(vSourDir, vDestDir));
 
-			XMStoreFloat3(&pVertices[iIndices[0]].vNormal,
-				XMVector3Normalize(XMLoadFloat3(&pVertices[iIndices[0]].vNormal) + vNormal));
-			XMStoreFloat3(&pVertices[iIndices[1]].vNormal,
-				XMVector3Normalize(XMLoadFloat3(&pVertices[iIndices[1]].vNormal) + vNormal));
-			XMStoreFloat3(&pVertices[iIndices[2]].vNormal,
-				XMVector3Normalize(XMLoadFloat3(&pVertices[iIndices[2]].vNormal) + vNormal));
+			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._0].vNormal,
+				XMLoadFloat3(&pVertices[pIndices[iNumFaces]._0].vNormal) + vNormal);
+			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._1].vNormal,
+				XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vNormal) + vNormal);
+			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._2].vNormal,
+				XMLoadFloat3(&pVertices[pIndices[iNumFaces]._2].vNormal) + vNormal);
 
-			pIndices[iNumIndices++] = iIndices[0];
-			pIndices[iNumIndices++] = iIndices[2];
-			pIndices[iNumIndices++] = iIndices[3];
+			++iNumFaces;
 
-			vSourDir = XMLoadFloat3(&pVertices[iIndices[2]].vPosition) -
-				XMLoadFloat3(&pVertices[iIndices[0]].vPosition);
+			pIndices[iNumFaces]._0 = iIndices[0];
+			pIndices[iNumFaces]._1 = iIndices[2];
+			pIndices[iNumFaces]._2 = iIndices[3];
 
-			vDestDir = XMLoadFloat3(&pVertices[iIndices[3]].vPosition) -
-				XMLoadFloat3(&pVertices[iIndices[2]].vPosition);
+			vSourDir = XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vPosition) - XMLoadFloat3(&pVertices[pIndices[iNumFaces]._0].vPosition);
+			vDestDir = XMLoadFloat3(&pVertices[pIndices[iNumFaces]._2].vPosition) - XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vPosition);
 
 			vNormal = XMVector3Normalize(XMVector3Cross(vSourDir, vDestDir));
 
-			XMStoreFloat3(&pVertices[iIndices[0]].vNormal,
-				XMVector3Normalize(XMLoadFloat3(&pVertices[iIndices[0]].vNormal) + vNormal));
-			XMStoreFloat3(&pVertices[iIndices[2]].vNormal,
-				XMVector3Normalize(XMLoadFloat3(&pVertices[iIndices[2]].vNormal) + vNormal));
-			XMStoreFloat3(&pVertices[iIndices[3]].vNormal,
-				XMVector3Normalize(XMLoadFloat3(&pVertices[iIndices[3]].vNormal) + vNormal));
+			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._0].vNormal,
+				XMLoadFloat3(&pVertices[pIndices[iNumFaces]._0].vNormal) + vNormal);
+			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._1].vNormal,
+				XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vNormal) + vNormal);
+			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._2].vNormal,
+				XMLoadFloat3(&pVertices[pIndices[iNumFaces]._2].vNormal) + vNormal);
+
+			++iNumFaces;
 		}
 	}
-#pragma endregion
 
-	/* 정점버퍼와 인덱스 버퍼를 만드낟. */
-	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
-	m_BufferDesc.ByteWidth = m_iStride * m_iNumVertices;
-	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT; /* 정적버퍼로 할당한다. (Lock, unLock 호출 불가)*/
+	for (_uint i = 0; i < m_iNumVertices; ++i)
+		XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[i].vNormal)));
+
+	ZeroMemory(&m_BufferDesc, sizeof(D3D11_BUFFER_DESC));
+	m_BufferDesc.ByteWidth = m_iNumVertices * m_iStride;
+	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_BufferDesc.CPUAccessFlags = 0;
 	m_BufferDesc.MiscFlags = 0;
 	m_BufferDesc.StructureByteStride = m_iStride;
 
-	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
+	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = pVertices;
 
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
 
-	m_iNumIndicesofPrimitive /= 3;
-	/* 정점버퍼와 인덱스 버퍼를 만드낟. */
-	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
-	m_BufferDesc.ByteWidth = m_iIndexSizeofPrimitive * m_iNumIndicesofPrimitive;
-	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT; /* 정적버퍼로 할당한다. (Lock, unLock 호출 불가)*/
+	ZeroMemory(&m_BufferDesc, sizeof(D3D11_BUFFER_DESC));
+	m_BufferDesc.ByteWidth = m_iNumPrimitives * m_iIndexSizeofPrimitive;
+	m_BufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	m_BufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	m_BufferDesc.CPUAccessFlags = 0;
+	m_BufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	m_BufferDesc.MiscFlags = 0;
 	m_BufferDesc.StructureByteStride = 0;
 
-	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
+	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = pIndices;
 
 	if (FAILED(__super::Create_IndexBuffer()))
@@ -168,24 +163,24 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 	Safe_Delete_Array(pVertices);
 	Safe_Delete_Array(pIndices);
 
+#pragma endregion
+
 
 	return S_OK;
 }
-
-
 
 HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 {
 	return S_OK;
 }
 
-CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strHeightMapFilePath)
+CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strHeighitMapFilePath)
 {
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(strHeightMapFilePath)))
+	if (FAILED(pInstance->Initialize_Prototype(strHeighitMapFilePath)))
 	{
-		MSG_BOX("Failed to Created : CVIBuffer_Terrain");
+		MSG_BOX("Failed To Created : CVIBuffer_Terrain");
 		Safe_Release(pInstance);
 	}
 
@@ -198,17 +193,15 @@ CComponent* CVIBuffer_Terrain::Clone(void* pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CVIBuffer_Terrain");
+		MSG_BOX("Failed To Cloned : CVIBuffer_Terrain");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-
 void CVIBuffer_Terrain::Free()
 {
 	__super::Free();
-
 
 }
