@@ -3,6 +3,7 @@
 #include "Base.h"
 #include "AsTypes.h"
 #include "AsFileUtils.h"
+#include "AsUtils.h"
 
 BEGIN(Engine)
 
@@ -48,7 +49,14 @@ public:
 	_bool Is_Pause() { return m_bPause; }
 
 	const wstring& Get_AnimationName() { return m_szName; }
-	void Set_AnimationName(const wstring& strName) { m_szName = strName; }
+	void Set_AnimationName(const wstring& strName)
+	{
+		if (nullptr != m_pOriginAnimation)
+		{
+			m_szName = strName;
+			m_pOriginAnimation->name = CAsUtils::ToString(strName);
+		}
+	}
 
 private:
 	wstring						m_szName;
@@ -82,7 +90,9 @@ private: /* 복제된 애니메이션 마다 따로 가진다. */
 
 	//Animation
 	ID3D11ShaderResourceView* m_pAnimTexSRV;
-	vector<vector<Matrix>>			m_AnimTransforms;
+	vector<vector<Matrix>>	m_AnimTransforms;
+
+	shared_ptr<asAnimation>	m_pOriginAnimation;
 public:
 	static CAnimation* Create(aiAnimation* pAIAnimation);
 	CAnimation* Clone(class CModel* pModel);

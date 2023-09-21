@@ -15,9 +15,18 @@ public:
 	virtual HRESULT Initialize_Prototype(const wstring& strHeightMapFilePath);
 	virtual HRESULT Initialize(void* pArg) override;
 
+
+public:
+	const vector<VTXNORTEX>& Get_Vertices() { return m_Vertices; }
+	const vector<FACEINDICES32>& Get_Indices() { return m_Indices; }
+
 private:
 	_ulong			m_iNumVerticesX = { 0 };
 	_ulong			m_iNumVerticesZ = { 0 };
+
+private:
+	vector<VTXNORTEX> m_Vertices;
+	vector<FACEINDICES32> m_Indices;
 
 public:
 	static CVIBuffer_Terrain* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring & strHeightMapFilePath);

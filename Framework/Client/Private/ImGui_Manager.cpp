@@ -312,8 +312,10 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
         if (ImGui::InputText("##Animation_Input_Name", szAnimationName, 255))
         {
             wstring NewAnimationName = CGameInstance::GetInstance()->string_to_wstring(string(szAnimationName));
-            Animations[pModelCom->Get_CurrAnimationIndex()]->Set_AnimationName(NewAnimationName);
+            if (NewAnimationName.size() > 0)
+                Animations[pModelCom->Get_CurrAnimationIndex()]->Set_AnimationName(NewAnimationName);
         }
+            
         ImGui::EndGroup();
 
         // Animation Slider

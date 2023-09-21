@@ -18,8 +18,11 @@ public:
 public:
 	virtual HRESULT Render();
 
+
 public:
-	const vector<_float4>& Get_Vertices() { return m_Vertices; }
+	_uint Get_VertexCount() { return m_iNumVertices; }
+	_uint Get_PrimitiveCount() { return m_iNumPrimitives; }
+
 
 protected:
 	ID3D11Buffer* m_pVB = nullptr;
@@ -42,8 +45,6 @@ protected:
 	_uint						m_iNumIndicesofPrimitive = 0;
 
 	DXGI_FORMAT					m_eIndexFormat;
-
-	vector<_float4>				m_Vertices;
 
 protected:
 	HRESULT Create_VertexBuffer();

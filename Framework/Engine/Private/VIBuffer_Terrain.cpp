@@ -10,6 +10,8 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs)
 	: CVIBuffer(rhs)
 	, m_iNumVerticesX(rhs.m_iNumVerticesX)
 	, m_iNumVerticesZ(rhs.m_iNumVerticesZ)
+	, m_Vertices(rhs.m_Vertices)
+	, m_Indices(rhs.m_Indices)
 {
 
 }
@@ -66,6 +68,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeighitMapFile
 
 #pragma region INDEXBUFFER
 	m_iNumPrimitives = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2;
+	m_Indices.reserve(m_iNumPrimitives);
 	m_iIndexSizeofPrimitive = sizeof(FACEINDICES32);
 	m_iNumIndicesofPrimitive = 3;
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
@@ -130,7 +133,16 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeighitMapFile
 	}
 
 	for (_uint i = 0; i < m_iNumVertices; ++i)
+	{
 		XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[i].vNormal)));
+		m_Vertices.push_back(pVertices[i]);
+	}
+
+	for (_uint i = 0; i < m_iNumPrimitives; ++i)
+	{
+		m_Indices.push_back(pIndices[i]);
+	}
+		
 
 	ZeroMemory(&m_BufferDesc, sizeof(D3D11_BUFFER_DESC));
 	m_BufferDesc.ByteWidth = m_iNumVertices * m_iStride;

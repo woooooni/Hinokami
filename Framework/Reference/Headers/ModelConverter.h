@@ -26,10 +26,12 @@ public:
 	vector<shared_ptr<asBone>>* Get_Bones() { return &_bones; }
 	vector<shared_ptr<asMesh>>*  Get_Meshes() { return &_meshes; }
 	vector<shared_ptr<asMaterial>>*  Get_Materials() { return &_materials; }
-	map<const string, shared_ptr<asAnimation>>*  Get_Animations() { return &_animations; }
+	vector<shared_ptr<asAnimation>>*  Get_Animations() { return &_animations; }
 
 	
 	
+	HRESULT Set_AnimationName(const wstring& strNewName, _uint iIndex);
+	HRESULT Swap_Animation(_uint& iSrc, _uint& iDest);
 	HRESULT DeleteAnimation(const wstring& strAnimation);
 
 private:
@@ -69,7 +71,7 @@ private:
 	vector<shared_ptr<asBone>> _bones;
 	vector<shared_ptr<asMesh>> _meshes;
 	vector<shared_ptr<asMaterial>> _materials;
-	map<const string ,shared_ptr<asAnimation>> _animations;
+	vector<shared_ptr<asAnimation>> _animations;
 
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };

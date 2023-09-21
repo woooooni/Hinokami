@@ -44,19 +44,9 @@ public:
 	vector<class CAnimation*>& Get_Animations() { return m_Animations; }
 
 public:
-	void Swap_Animation(_uint iSrc, _uint iDest)
-	{
-		if (iDest >= m_Animations.size())
-			iDest = m_Animations.size() - 1;
-		if (iDest < 0)
-			iDest = 0;
-
-		CAnimation* Temp = m_Animations[iSrc];
-		m_Animations[iSrc] = m_Animations[iDest];
-		m_Animations[iDest] = Temp;
-
-		m_iCurrentAnimIndex = iDest;
-	}
+	HRESULT Swap_Animation(_uint iSrc, _uint iDest);
+	
+	HRESULT Delete_ModelAnimation(_uint iIndex);
 
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix);
@@ -76,9 +66,6 @@ public:
 	HRESULT Load_AssetFile_FromFBX();
 	HRESULT Load_AssetFile_FromBinary();
 	HRESULT Export_AssetData();
-
-
-	HRESULT Delete_ModelAnimation(_uint iIndex);
 
 private:
 	HRESULT Load_ModelData_FromFile(_fmatrix PivotMatrix);

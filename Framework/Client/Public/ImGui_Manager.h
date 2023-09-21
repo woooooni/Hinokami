@@ -82,11 +82,10 @@ private:
 
 	_float m_fWindowAlpha = 1.f;
 
-	ImGuiConfigFlags m_temp;
-
 	wstring m_strFilePath = TEXT("../Bin/Resources/Meshes/");
 	wstring m_strFileName;
 	_uint m_iModelType = 0;
+
 public:
 	CGameObject* m_pTarget = nullptr;
 	class CDummy* m_pDummy = nullptr;

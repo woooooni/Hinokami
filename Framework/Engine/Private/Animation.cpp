@@ -2,7 +2,6 @@
 #include "Channel.h"
 #include "Model.h"
 #include "HierarchyNode.h"
-#include "AsUtils.h"
 #include "Shader.h"
 
 CAnimation::CAnimation()
@@ -79,6 +78,8 @@ HRESULT CAnimation::LoadData_FromAnimationFile(CAsFileUtils* pFileUtils, _fmatri
 	m_fDuration = pFileUtils->Read<_float>();
 	m_fTickPerSecond = pFileUtils->Read<_float>();
 	m_iFrameCount = pFileUtils->Read<uint32>();
+	
+	m_pOriginAnimation = nullptr;
 
 	uint32 iKeyframesCount = pFileUtils->Read<uint32>();
 
@@ -108,6 +109,7 @@ HRESULT CAnimation::LoadData_FromConverter(shared_ptr<asAnimation> pAnimation, _
 	m_fDuration = pAnimation->duration;
 	m_fTickPerSecond = pAnimation->frameRate;
 	m_iFrameCount = pAnimation->frameCount;
+	m_pOriginAnimation = pAnimation;
 
 	uint32 iKeyframesCount = pAnimation->keyframes.size();
 
@@ -286,7 +288,9 @@ HRESULT CAnimation::SetUpAnimation_OnShader(CShader* pShader, const char* pConst
 		return E_FAIL;
 
 	if (FAILED(pShader->Bind_RawValue(pConstantDescName, &m_tKeyDesc, sizeof(KEY_DESC))))
-		return S_OK;
+		return E_FAIL;
+
+	return S_OK;
 }
 
 

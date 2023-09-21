@@ -115,11 +115,11 @@
     <Filter Include="01.Utiltiy\04.Component\07. StateMachine\State">
       <UniqueIdentifier>{bbb352f5-f29c-4f9f-b265-a965efb147bd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\04.Component\06. Model\Model_Importer">
-      <UniqueIdentifier>{2aa65284-064f-4fb0-ae5e-32f4f61813b8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utiltiy\03.GameObjects\01. Camera">
       <UniqueIdentifier>{b499766b-d80b-4e53-9576-e6ef0c89bbbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\04.Component\06. Model\Converter">
+      <UniqueIdentifier>{2aa65284-064f-4fb0-ae5e-32f4f61813b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -241,16 +241,16 @@
       <Filter>01.Utiltiy\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AsFileUtils.h">
-      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+      <Filter>01.Utiltiy\04.Component\06. Model\Converter</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AsTypes.h">
-      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+      <Filter>01.Utiltiy\04.Component\06. Model\Converter</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AsUtils.h">
-      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+      <Filter>01.Utiltiy\04.Component\06. Model\Converter</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ModelConverter.h">
-      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+      <Filter>01.Utiltiy\04.Component\06. Model\Converter</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Terrain.h">
       <Filter>01.Utiltiy\04.Component\02. VIBuffer\Terrain</Filter>
@@ -360,13 +360,13 @@
       <Filter>01.Utiltiy\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AsFileUtils.cpp">
-      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+      <Filter>01.Utiltiy\04.Component\06. Model\Converter</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AsUtils.cpp">
-      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+      <Filter>01.Utiltiy\04.Component\06. Model\Converter</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ModelConverter.cpp">
-      <Filter>01.Utiltiy\04.Component\06. Model\Model_Importer</Filter>
+      <Filter>01.Utiltiy\04.Component\06. Model\Converter</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp">
       <Filter>01.Utiltiy\04.Component\02. VIBuffer\Terrain</Filter>

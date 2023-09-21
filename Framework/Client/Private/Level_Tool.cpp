@@ -153,6 +153,8 @@ HRESULT CLevel_Tool::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, _uint(eLayerType), TEXT("Prototype_GameObject_Camera_Free"), &CameraDesc)))
 		return E_FAIL;
 
+
+
 	Safe_Release(pGameInstance);
 
 	return S_OK;

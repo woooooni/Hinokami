@@ -35,6 +35,9 @@ namespace Engine
 	typedef		XMFLOAT4X4					_float4x4;
 	typedef		XMVECTOR					_vector;
 	typedef		FXMVECTOR					_fvector;
+	typedef		GXMVECTOR					_gvector;
+	typedef		HXMVECTOR					_hvector;
+	
 	
 	
 

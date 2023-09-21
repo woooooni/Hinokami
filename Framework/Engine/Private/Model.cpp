@@ -192,6 +192,26 @@ HRESULT CModel::Export_AssetData()
 	return S_OK;
 }
 
+HRESULT CModel::Swap_Animation(_uint iSrc, _uint iDest)
+{	
+
+	if (FAILED(m_pConverter->Swap_Animation(iSrc, iDest)))
+		return E_FAIL;
+
+	if (iDest >= m_Animations.size())
+		iDest = m_Animations.size() - 1;
+	if (iDest < 0)
+		iDest = 0;
+
+	CAnimation* Temp = m_Animations[iSrc];
+	m_Animations[iSrc] = m_Animations[iDest];
+	m_Animations[iDest] = Temp;
+
+	m_iCurrentAnimIndex = iDest;
+
+	return S_OK;
+}
+
 HRESULT CModel::Delete_ModelAnimation(_uint iIndex)
 {
 	auto iter = m_Animations.begin() + iIndex;
@@ -579,7 +599,7 @@ HRESULT CModel::Load_MaterialData_FromConverter()
 
 HRESULT CModel::Load_AnimationData_FromConverter(_fmatrix PivotMatrix)
 {
-	map<const string, shared_ptr<asAnimation>>* pAnimations = m_pConverter->Get_Animations();
+	vector<shared_ptr<asAnimation>>* pAnimations = m_pConverter->Get_Animations();
 
 	m_iNumAnimations = pAnimations->size();
 
@@ -589,7 +609,7 @@ HRESULT CModel::Load_AnimationData_FromConverter(_fmatrix PivotMatrix)
 		if (nullptr == pAnimation)
 			return E_FAIL;
 
-		if (FAILED(pAnimation->LoadData_FromConverter(iter.second, PivotMatrix)))
+		if (FAILED(pAnimation->LoadData_FromConverter(iter, PivotMatrix)))
 			return E_FAIL;
 
 

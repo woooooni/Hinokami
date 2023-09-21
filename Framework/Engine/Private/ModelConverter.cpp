@@ -116,13 +116,15 @@ void CModelConverter::Import_AnimationData()
 {
 	_uint iAniCount = _scene->mNumAnimations;
 
+	_animations.reserve(_scene->mNumAnimations);
+
 	if (iAniCount > 0)
 	{
 		for (_uint i = 0; i < iAniCount; ++i)
 		{
 			shared_ptr<asAnimation> animation = Read_AnimationData(_scene->mAnimations[i]);
 
-			_animations.insert({ animation->name, animation });
+			_animations.push_back(animation);
 		}
 	}
 }
@@ -296,8 +298,8 @@ shared_ptr<asAnimation> CModelConverter::Find_Animation(const wstring& strAnimat
 {
 	for (auto& iter : _animations)
 	{
-		if (iter.second->name == CAsUtils::ToString(strAnimation))
-			return iter.second;
+		if (iter->name == CAsUtils::ToString(strAnimation))
+			return iter;
 	}
 
 	return nullptr;
@@ -305,7 +307,39 @@ shared_ptr<asAnimation> CModelConverter::Find_Animation(const wstring& strAnimat
 
 HRESULT CModelConverter::DeleteAnimation(const wstring& strAnimation)
 {
-	_animations.erase(CAsUtils::ToString(strAnimation));
+	for (auto iter = _animations.begin(); iter != _animations.end(); ++iter)
+	{
+		
+		if ((*iter)->name == CAsUtils::ToString(strAnimation))
+		{
+			_animations.erase(iter);
+			return S_OK;
+		}
+	}
+	
+
+	return E_FAIL;
+}
+
+HRESULT CModelConverter::Set_AnimationName(const wstring& strNewName, _uint iIndex)
+{
+	if (iIndex >= _animations.size())
+		return E_FAIL;
+
+	_animations[iIndex]->name = CAsUtils::ToString(strNewName);
+	return S_OK;
+}
+
+HRESULT CModelConverter::Swap_Animation(_uint& iSrc, _uint& iDest)
+{
+	if (iDest >= _animations.size())
+		iDest = _animations.size() - 1;
+	if (iDest < 0)
+		iDest = 0;
+
+	shared_ptr<asAnimation> Temp = _animations[iSrc];
+	_animations[iSrc] = _animations[iDest];
+	_animations[iDest] = Temp;
 
 	return S_OK;
 }
@@ -702,7 +736,7 @@ void CModelConverter::Write_AnimationData(wstring finalPath)
 
 	for (auto& iter : _animations)
 	{
-		shared_ptr<asAnimation> animation = iter.second;
+		shared_ptr<asAnimation> animation = iter;
 		file->Write<string>(animation->name);
 		file->Write<float>(animation->duration);
 		file->Write<float>(animation->frameRate);
