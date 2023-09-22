@@ -72,7 +72,6 @@ private:
 	HWND m_hWnd = nullptr;
 
 private:
-
 	_bool m_bShowDemo = true;
 	_bool m_bShowModelWindow = false;
 	_bool m_bShowAnimationWindow = false;

@@ -9,6 +9,8 @@
 #include <filesystem>
 #include "tinyxml2.h"
 #include "ModelConverter.h"
+#include "GameInstance.h"
+#include "GameObject.h"
 
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
@@ -87,6 +89,8 @@ HRESULT CModel::Initialize(void* pArg)
 			return E_FAIL;
 	}
 
+
+
 	return S_OK;
 }
 
@@ -124,6 +128,8 @@ HRESULT CModel::Play_Animation(_float fTimeDelta)
 
 HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 {
+
+
 	pShader->Begin(0);
 
 	m_Meshes[iMeshIndex]->Render();

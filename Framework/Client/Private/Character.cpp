@@ -13,7 +13,17 @@ CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, con
 
 CCharacter::CCharacter(const CCharacter& rhs)
 	: CGameObject(rhs)
-{
+	, m_pShaderCom(rhs.m_pShaderCom)
+	, m_pRendererCom(rhs.m_pRendererCom)
+	, m_pTransformCom(rhs.m_pTransformCom)
+	, m_pModelCom(rhs.m_pModelCom)
+	, m_pStateCom(rhs.m_pStateCom)	
+{	
+	Safe_AddRef(m_pShaderCom);
+	Safe_AddRef(m_pRendererCom);
+	Safe_AddRef(m_pTransformCom);
+	Safe_AddRef(m_pModelCom);
+	Safe_AddRef(m_pStateCom);
 }
 
 HRESULT CCharacter::Initialize_Prototype()

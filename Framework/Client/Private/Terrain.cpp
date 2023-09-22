@@ -2,6 +2,7 @@
 #include "..\Public\Terrain.h"
 #include "GameInstance.h"
 #include "VIBuffer_Terrain.h"
+#include "DebugDraw.h"
 
 CTerrain::CTerrain(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext, L"Terrain")
@@ -17,6 +18,23 @@ CTerrain::CTerrain(const CGameObject & rhs)
 
 HRESULT CTerrain::Initialize_Prototype()
 {
+
+#ifdef _DEBUG
+
+	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pContext);
+	m_pEffect = new BasicEffect(m_pDevice);
+
+	m_pEffect->SetVertexColorEnabled(true);
+
+	const void* pShaderByteCodes = nullptr;
+	size_t			iLength = 0;
+
+	m_pEffect->GetVertexShaderBytecode(&pShaderByteCodes, &iLength);
+
+	if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderByteCodes, iLength, &m_pInputLayout)))
+		return E_FAIL;
+#endif
+
 	return S_OK;
 }
 
@@ -24,7 +42,7 @@ HRESULT CTerrain::Initialize(void* pArg)
 {
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-	m_pTransformCom->Set_Scale(XMVectorSet(30.f, 30.f, 30.f, 1.f));
+	// m_pTransformCom->Set_Scale(XMVectorSet(1.f, 30.f, 30.f, 1.f));
 	return S_OK;
 }
 
@@ -45,6 +63,37 @@ void CTerrain::LateTick(_float fTimeDelta)
 
 HRESULT CTerrain::Render()
 {
+
+#ifdef _DEBUG
+	
+	
+	CGameInstance* pInstance = CGameInstance::GetInstance();
+
+
+	m_pEffect->SetWorld(m_pTransformCom->Get_WorldMatrix());
+	m_pEffect->SetView(pInstance->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+	m_pEffect->SetProjection(pInstance->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+
+
+	m_pEffect->Apply(m_pContext);
+
+	m_pContext->IASetInputLayout(m_pInputLayout);
+
+
+	m_pBatch->Begin();
+
+	DX::DrawGrid(m_pBatch,
+		XMVectorSet(_float(m_pVIBufferCom->Get_VertexCount_X() / 2.f), 0.f, 0.f, 1.f),
+		XMVectorSet(0.f, 0.f, _float(m_pVIBufferCom->Get_VertexCount_Z() / 2.f), 1.f),
+		XMVectorSet(m_pVIBufferCom->Get_VertexCount_X() / 2.f, 1.f, m_pVIBufferCom->Get_VertexCount_Z() / 2.f, 1.f),
+		size_t(m_pVIBufferCom->Get_VertexCount_X()),
+		size_t(m_pVIBufferCom->Get_VertexCount_Z()),
+		DirectX::Colors::Cyan);
+
+
+	m_pBatch->End();
+#endif
+
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -53,6 +102,9 @@ HRESULT CTerrain::Render()
 
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
+
+
+
 
 	return S_OK;
 }

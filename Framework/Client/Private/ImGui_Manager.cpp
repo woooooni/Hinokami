@@ -274,11 +274,19 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
 #pragma region Animation
 void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
 {
+    
     ImGui::Begin("Animation");
+
+    static char szAnimationName[255];
+    
     if (nullptr != m_pDummy->Get_ModelCom())
     {
         CModel* pModelCom = m_pDummy->Get_ModelCom();
         const vector<CAnimation*>& Animations = pModelCom->Get_Animations();
+
+
+        
+
 
         // AnimationList
         if (ImGui::BeginListBox("##Animation_List"))
@@ -289,6 +297,7 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
                 if (ImGui::Selectable(AnimationName.c_str(), i == pModelCom->Get_CurrAnimationIndex()))
                 {
                     pModelCom->Set_AnimIndex(i);
+                    sprintf_s(szAnimationName, CGameInstance::GetInstance()->wstring_to_string(Animations[pModelCom->Get_CurrAnimationIndex()]->Get_AnimationName()).c_str());
                 }
             }
 
@@ -307,15 +316,34 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
             pModelCom->Swap_Animation(pModelCom->Get_CurrAnimationIndex(), pModelCom->Get_CurrAnimationIndex() + 1);
         }
 
-        char szAnimationName[255];
-        sprintf_s(szAnimationName, CGameInstance::GetInstance()->wstring_to_string(Animations[pModelCom->Get_CurrAnimationIndex()]->Get_AnimationName()).c_str());
-        if (ImGui::InputText("##Animation_Input_Name", szAnimationName, 255))
+        
+
+        
+        
+        ImGui::InputText("##Animation_Input_Name", szAnimationName, 255);
+        if(ImGui::Button("Rename"))
         {
             wstring NewAnimationName = CGameInstance::GetInstance()->string_to_wstring(string(szAnimationName));
             if (NewAnimationName.size() > 0)
                 Animations[pModelCom->Get_CurrAnimationIndex()]->Set_AnimationName(NewAnimationName);
         }
-            
+
+        if (KEY_TAP(KEY::ENTER) && ImGui::IsWindowFocused())
+        {
+            wstring NewAnimationName = CGameInstance::GetInstance()->string_to_wstring(string(szAnimationName));
+            if (NewAnimationName.size() > 0)
+                Animations[pModelCom->Get_CurrAnimationIndex()]->Set_AnimationName(NewAnimationName);
+        }
+
+        if (ImGui::Button("Delete"))
+        {
+            pModelCom->Delete_ModelAnimation(pModelCom->Get_CurrAnimationIndex());
+        }
+
+        if (KEY_TAP(KEY::DEL) && ImGui::IsWindowFocused())
+        {
+            pModelCom->Delete_ModelAnimation(pModelCom->Get_CurrAnimationIndex());
+        }
         ImGui::EndGroup();
 
         // Animation Slider
@@ -345,12 +373,6 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
             pCurrAnimation->Set_Pause(true);
         }
 
-
-        
-        if (ImGui::Button("Delete"))
-        {
-            pModelCom->Delete_ModelAnimation(pModelCom->Get_CurrAnimationIndex());
-        }
 
     }
     ImGui::End();

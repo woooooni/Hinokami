@@ -7,6 +7,8 @@
 #include "Component_Manager.h"
 #include "Light_Manager.h"
 #include "Key_Manager.h"
+#include "Camera_Manager.h"
+#include "Font_Manager.h"
 #include "Utils.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
@@ -19,9 +21,12 @@ CGameInstance::CGameInstance()
 	, m_pObject_Manager(CObject_Manager::GetInstance())
 	, m_pComponent_Manager(CComponent_Manager::GetInstance())
 	, m_pUtilities(CUtils::GetInstance())
+	// , m_pCamera_Manager(CCamera_Manager::GetInstance())
 	, m_pPipeLine(CPipeLine::GetInstance())
 	, m_pLight_Manager(CLight_Manager::GetInstance())
 	, m_pKey_Manager(CKey_Manager::GetInstance())
+	, m_pFont_Manager(CFont_Manager::GetInstance())
+	
 {
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pLevel_Manager);
@@ -32,7 +37,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pPipeLine);
 	Safe_AddRef(m_pLight_Manager);
 	Safe_AddRef(m_pKey_Manager);
-
+	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pUtilities);
 }
 
@@ -64,6 +69,8 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, _uint iNumLayerType,
 	if (FAILED(m_pInput_Device->Initialize(hInst, hWnd)))
 		return E_FAIL;
 
+	
+
 	return S_OK;
 }
 
@@ -74,11 +81,13 @@ void CGameInstance::Tick(_float fTimeDelta)
 	m_pObject_Manager->Tick(fTimeDelta);
 	m_pLevel_Manager->Tick(fTimeDelta);
 	m_pPipeLine->Tick();
-
+	
 
 	m_pObject_Manager->LateTick(fTimeDelta);
 	m_pLevel_Manager->LateTick(fTimeDelta);
 }
+
+
 
 void CGameInstance::Clear(_uint iLevelIndex)
 {
@@ -216,12 +225,12 @@ HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring& strProtoT
 	return m_pComponent_Manager->Add_Prototype(iLevelIndex, strProtoTypeTag, pPrototype);
 }
 
-CComponent* CGameInstance::Clone_Component(_uint iLevelIndex, const wstring& strProtoTypeTag, void* pArg)
+CComponent* CGameInstance::Clone_Component(_uint iLevelIndex, const wstring& strProtoTypeTag, CGameObject* pOwner, void* pArg)
 {
 	if (nullptr == m_pComponent_Manager)
 		return nullptr;
 
-	return m_pComponent_Manager->Clone_Component(iLevelIndex, strProtoTypeTag, pArg);
+	return m_pComponent_Manager->Clone_Component(iLevelIndex, strProtoTypeTag, pOwner, pArg);
 }
 
 HRESULT CGameInstance::Check_Prototype(_uint iLevelIndex, const wstring& strProtoTypeTag)
@@ -320,6 +329,43 @@ const POINT& CGameInstance::GetMousePos()
 	return POINT();
 }
 
+HRESULT CGameInstance::Add_Fonts(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strFontTag, const wstring& strFontFilePath)
+{
+	return m_pFont_Manager->Add_Fonts(pDevice, pContext, strFontTag, strFontFilePath);
+}
+
+HRESULT CGameInstance::Render_Fonts(const wstring& strFontTag, const wstring& strTextm, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
+{
+	return m_pFont_Manager->Render_Fonts(strFontTag, strTextm, vPosition, vColor, fAngle, vOrigin, vScale);
+}
+
+
+#pragma region No Use(Camera_Manager)
+//HRESULT CGameInstance::Add_Camera(const wstring& strCameraName, CCamera* pCamera)
+//{
+//	if (nullptr == m_pCamera_Manager)
+//		return E_FAIL;
+//
+//	return m_pCamera_Manager->Add_Camera(strCameraName, pCamera);
+//}
+//
+//HRESULT CGameInstance::Set_MainCamera(const wstring& strCameraName)
+//{
+//	if (nullptr == m_pCamera_Manager)
+//		return E_FAIL;
+//
+//	
+//	return m_pCamera_Manager->Set_MainCamera(strCameraName);
+//}
+//
+//HRESULT CGameInstance::Camera_Clear()
+//{
+//	if (nullptr == m_pCamera_Manager)
+//		return E_FAIL;
+//
+//	return m_pCamera_Manager->Clear();
+//}
+#pragma endregion
 
 
 
@@ -338,6 +384,7 @@ void CGameInstance::Release_Engine()
 	CLight_Manager::GetInstance()->DestroyInstance();
 	CKey_Manager::GetInstance()->DestroyInstance();
 	CUtils::GetInstance()->DestroyInstance();
+	CFont_Manager::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
 	CGameInstance::GetInstance()->DestroyInstance();
 }
@@ -347,6 +394,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pLevel_Manager);
+	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pTimer_Manager);

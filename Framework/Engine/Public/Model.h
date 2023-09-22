@@ -113,6 +113,8 @@ private:
 	shared_ptr<ModelBone>				m_RootBone;
 
 	class CModelConverter*					m_pConverter = nullptr;
+
+
 private:
 	HRESULT Ready_MeshContainers(_fmatrix PivotMatrix);
 	HRESULT Ready_Materials(const char* pModelFilePath);

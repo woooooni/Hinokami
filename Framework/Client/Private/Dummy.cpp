@@ -130,6 +130,7 @@ HRESULT CDummy::Ready_ModelCom(_uint eType, const wstring& strFilePath, const ws
 		return E_FAIL;
 
 	m_pModelCom->Initialize(nullptr);
+	m_pModelCom->Set_Owner(this);
 
 	return S_OK;
 }

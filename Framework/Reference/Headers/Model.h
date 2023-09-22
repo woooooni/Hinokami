@@ -113,6 +113,15 @@ private:
 	shared_ptr<ModelBone>				m_RootBone;
 
 	class CModelConverter*					m_pConverter = nullptr;
+
+#ifdef _DEBUG
+private:
+	class PrimitiveBatch<VertexPositionColor>* m_pBatch = nullptr;
+	class BasicEffect* m_pEffect = nullptr;
+	ID3D11InputLayout* m_pInputLayout = nullptr;
+	_float4	m_vColor = _float4(0.f, 1.f, 0.f, 1.f);
+#endif
+
 private:
 	HRESULT Ready_MeshContainers(_fmatrix PivotMatrix);
 	HRESULT Ready_Materials(const char* pModelFilePath);

@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
+
 BEGIN(Engine)
 class CShader;
 class CTexture;
@@ -38,12 +39,24 @@ public:
 	CTransform* Get_TransformCom() { return m_pTransformCom; }
 	CVIBuffer_Terrain* Get_TerrainBufferCom() { return m_pVIBufferCom; }
 
+#ifdef _DEBUG
+protected:
+	class PrimitiveBatch<VertexPositionColor>* m_pBatch = nullptr;
+	class BasicEffect* m_pEffect = nullptr;
+	ID3D11InputLayout* m_pInputLayout = nullptr;
+	_float4	m_vColor = _float4(0.f, 1.f, 0.f, 1.f);
+#endif
+
+
+
 private: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CRenderer*				m_pRendererCom = { nullptr };
 	CTransform*				m_pTransformCom = { nullptr };
 	CShader*				m_pShaderCom = { nullptr };
 	CTexture*				m_pTextureCom = { nullptr };		
 	CVIBuffer_Terrain*		m_pVIBufferCom = { nullptr };
+
+
 
 private:
 	HRESULT Ready_Components();

@@ -36,44 +36,45 @@ void CCamera_Free::Tick(_float fTimeDelta)
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (KEY_HOLD(KEY::W))
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta * 10.f);
-	}
-
-	if (KEY_HOLD(KEY::S))
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta * 10.f);
-	}
-
-	if (KEY_HOLD(KEY::A))
-	{
-		m_pTransformCom->Go_Left(fTimeDelta * 10.f);
-	}
-
-	if (KEY_HOLD(KEY::D))
-	{
-		m_pTransformCom->Go_Right(fTimeDelta * 10.f);
-	}
-
-	if (KEY_HOLD(KEY::Q))
-	{
-		m_pTransformCom->Go_Up(fTimeDelta * 10.f);
-	}
-
-	if (KEY_HOLD(KEY::E))
-	{
-		m_pTransformCom->Go_Down(fTimeDelta * 10.f);
-	}
-
-	if (KEY_TAP(KEY::R))
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_CameraDesc.vEye));
-		m_pTransformCom->LookAt(XMLoadFloat4(&m_CameraDesc.vAt));
-	}
-
 	if (KEY_HOLD(KEY::RBTN))
 	{
+		if (KEY_HOLD(KEY::W))
+		{
+			m_pTransformCom->Go_Straight(fTimeDelta * 10.f);
+		}
+
+		if (KEY_HOLD(KEY::S))
+		{
+			m_pTransformCom->Go_Backward(fTimeDelta * 10.f);
+		}
+
+		if (KEY_HOLD(KEY::A))
+		{
+			m_pTransformCom->Go_Left(fTimeDelta * 10.f);
+		}
+
+		if (KEY_HOLD(KEY::D))
+		{
+			m_pTransformCom->Go_Right(fTimeDelta * 10.f);
+		}
+
+		if (KEY_HOLD(KEY::Q))
+		{
+			m_pTransformCom->Go_Up(fTimeDelta * 10.f);
+		}
+
+		if (KEY_HOLD(KEY::E))
+		{
+			m_pTransformCom->Go_Down(fTimeDelta * 10.f);
+		}
+
+		if (KEY_TAP(KEY::R))
+		{
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_CameraDesc.vEye));
+			m_pTransformCom->LookAt(XMLoadFloat4(&m_CameraDesc.vAt));
+		}
+
+		
 		_long	MouseMove = 0;
 
 		if (MouseMove = pGameInstance->Get_DIMMoveState(DIMM_X))
@@ -86,6 +87,7 @@ void CCamera_Free::Tick(_float fTimeDelta)
 			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMove * fTimeDelta * 0.05f);
 		}
 	}
+	
 	
 
 	Safe_Release(pGameInstance);

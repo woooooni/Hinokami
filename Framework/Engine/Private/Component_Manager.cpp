@@ -1,5 +1,5 @@
 #include "Component_Manager.h"
-
+#include "GameObject.h"
 IMPLEMENT_SINGLETON(CComponent_Manager)
 
 CComponent_Manager::CComponent_Manager()
@@ -32,13 +32,16 @@ HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const wstring& strP
     return S_OK;
 }
 
-CComponent* CComponent_Manager::Clone_Component(_uint iLevelIndex, const wstring& strProtoTypeTag, void* pArg)
+CComponent* CComponent_Manager::Clone_Component(_uint iLevelIndex, const wstring& strProtoTypeTag, CGameObject* pOwner, void* pArg)
 {
     CComponent* pPrototype = Find_Component(iLevelIndex, strProtoTypeTag);
     if (nullptr == pPrototype)
         return nullptr;
 
-    return pPrototype->Clone(pArg);
+    CComponent* pComponent = pPrototype->Clone(pArg);
+    pComponent->Set_Owner(pOwner);
+    
+    return pComponent;
 }
 
 HRESULT CComponent_Manager::Check_Prototype(_uint iLevelIndex, const wstring& strProtoTypeTag)

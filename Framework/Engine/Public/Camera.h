@@ -9,6 +9,7 @@ BEGIN(Engine)
 
 class ENGINE_DLL CCamera abstract : public CGameObject
 {
+
 public:
 	typedef struct tagCameraDesc
 	{
@@ -24,12 +25,11 @@ protected:
 	virtual ~CCamera() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype();
-	virtual HRESULT Initialize(void* pArg);
-	virtual void Tick(_float fTimeDelta);
-	virtual void LateTick(_float fTimeDelta);
-	virtual HRESULT Render();
-
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize(void* pArg) override;
+	virtual void Tick(_float fTimeDelta) override;
+	virtual void LateTick(_float fTimeDelta) override;
+	virtual HRESULT Render() override;
 
 
 

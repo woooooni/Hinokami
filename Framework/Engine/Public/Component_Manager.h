@@ -9,6 +9,7 @@
 #include "StateMachine.h"
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Terrain.h"
+#include "DebugDraw.h"
 
 
 BEGIN(Engine)
@@ -23,7 +24,7 @@ private:
 public:
     HRESULT Reserve_Manager(_uint iNumLevels);
     HRESULT Add_Prototype(_uint iLevelIndex, const wstring& strProtoTypeTag, class CComponent* pPrototype);
-    class CComponent* Clone_Component(_uint iLevelIndex, const wstring& strProtoTypeTag, void* pArg);
+    class CComponent* Clone_Component(_uint iLevelIndex, const wstring& strProtoTypeTag, CGameObject* pOwner, void* pArg);
     HRESULT Check_Prototype(_uint iLevelIndex, const wstring& strProtoTypeTag);
 
 private:

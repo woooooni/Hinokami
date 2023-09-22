@@ -54,6 +54,12 @@ HRESULT CRenderer::Render_Priority()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_Shadow()
+{
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_NonAlphaBlend()
 {
 	for (auto& iter : m_RenderObjects[RENDER_NONBLEND])

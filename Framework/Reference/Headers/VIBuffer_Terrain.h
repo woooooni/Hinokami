@@ -20,6 +20,9 @@ public:
 	const vector<VTXNORTEX>& Get_Vertices() { return m_Vertices; }
 	const vector<FACEINDICES32>& Get_Indices() { return m_Indices; }
 
+	_ulong			Get_VertexCount_X() { return m_iNumVerticesX; }
+	_ulong			Get_VertexCount_Z() { return m_iNumVerticesZ; }
+
 private:
 	_ulong			m_iNumVerticesX = { 0 };
 	_ulong			m_iNumVerticesZ = { 0 };

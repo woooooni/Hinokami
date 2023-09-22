@@ -57,7 +57,7 @@ public: /* For.Utilities */
 
 public: /* For. Componenet_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const wstring & strProtoTypeTag, class CComponent* pPrototype);
-	class CComponent* Clone_Component(_uint iLevelIndex, const wstring & strProtoTypeTag, void* pArg = nullptr);
+	class CComponent* Clone_Component(_uint iLevelIndex, const wstring & strProtoTypeTag, class CGameObject* pOwner, void* pArg = nullptr);
 	HRESULT Check_Prototype(_uint iLevelIndex, const wstring & strProtoTypeTag);
 
 public: /* For.Light_Manager */
@@ -80,6 +80,19 @@ public:
 	KEY_STATE GetKeyState(KEY _eKey);
 	const POINT& GetMousePos();
 
+/* For. CameraManager*/
+//public:
+//	HRESULT Add_Camera(const wstring & strCameraName, class CCamera * pCamera);
+//	HRESULT Set_MainCamera(const wstring & strCameraName);
+//	HRESULT Camera_Clear();
+
+/* For. Font_Manager */
+public:
+	HRESULT Add_Fonts(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring & strFontTag, const wstring & strFontFilePath);
+	HRESULT Render_Fonts(const wstring & strFontTag, const wstring & strTextm, _float2 vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f),
+		_float fAngle = 0.f, _float2 vOrigin = _float2(0.f, 0.f), _float2 vScale = _float2(1.f, 1.f));
+
+
 
 private:
 	class CTimer_Manager*			m_pTimer_Manager = { nullptr };
@@ -90,10 +103,10 @@ private:
 	class CComponent_Manager*		m_pComponent_Manager = { nullptr };
 	class CPipeLine*				m_pPipeLine = { nullptr };
 	class CLight_Manager*			m_pLight_Manager = { nullptr };
-
-
+	// class CCamera_Manager*			m_pCamera_Manager = { nullptr };
 	class CKey_Manager*				m_pKey_Manager = { nullptr };
 	class CUtils*					m_pUtilities = { nullptr };
+	class CFont_Manager*			m_pFont_Manager = { nullptr };
 
 public:
 	static void Release_Engine();
