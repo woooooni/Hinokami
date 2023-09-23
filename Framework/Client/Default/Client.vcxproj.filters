@@ -94,6 +94,12 @@
     <Filter Include="96. Manager\ImGui\Libs\Docking">
       <UniqueIdentifier>{9f636762-d842-4778-89d0-4c71d473c2af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Building">
+      <UniqueIdentifier>{2bf28741-0203-4091-a578-b154ab47f12f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Prop">
+      <UniqueIdentifier>{1656f416-c6e8-4a9c-bb21-5ebb8a320adc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -198,6 +204,12 @@
     <ClInclude Include="..\..\ThirdParty\imstb_truetype.h">
       <Filter>96. Manager\ImGui\Libs\Docking</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Building.h">
+      <Filter>02.GameObjects\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Prop.h">
+      <Filter>02.GameObjects\Prop</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -286,6 +298,12 @@
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\imgui_widgets.cpp">
       <Filter>96. Manager\ImGui\Libs\Docking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Building.cpp">
+      <Filter>02.GameObjects\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Prop.cpp">
+      <Filter>02.GameObjects\Prop</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

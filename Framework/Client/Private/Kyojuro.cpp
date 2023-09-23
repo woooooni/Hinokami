@@ -189,4 +189,5 @@ CGameObject* CKyojuro::Clone(void* pArg)
 
 void CKyojuro::Free()
 {
+	__super::Free();
 }

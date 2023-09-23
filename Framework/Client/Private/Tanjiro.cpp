@@ -189,4 +189,5 @@ CGameObject* CTanjiro::Clone(void* pArg)
 
 void CTanjiro::Free()
 {
+	__super::Free();
 }

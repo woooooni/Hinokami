@@ -45,7 +45,10 @@ private:
 	HRESULT Loading_For_Level_Logo();
 	HRESULT Loading_For_Level_GamePlay();
 	HRESULT Loading_For_Level_Tool();
-	
+
+private:
+	// 툴에서 사용할 모든 fbx 원형 객체를 로딩한다.
+	HRESULT Loading_Proto_AllObjects(const wstring& strPath);
 
 public:
 	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevel);

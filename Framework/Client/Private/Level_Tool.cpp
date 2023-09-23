@@ -32,8 +32,6 @@ HRESULT CLevel_Tool::Initialize()
 	if (FAILED(Ready_Layer_BackGround(LAYER_TYPE::LAYER_BACKGROUND)))
 		return E_FAIL;
 
-	
-
 	if (FAILED(Ready_Layer_Player(LAYER_TYPE::LAYER_PLAYER)))
 		return E_FAIL;
 

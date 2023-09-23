@@ -189,4 +189,5 @@ CGameObject* CZenitsu::Clone(void* pArg)
 
 void CZenitsu::Free()
 {
+	__super::Free();
 }

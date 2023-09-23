@@ -1,32 +1,30 @@
 #include "stdafx.h"
 #include "GameInstance.h"
-#include "Character.h"
+#include "Prop.h"
 #include "HierarchyNode.h"
 #include "Key_Manager.h"
 
 
 USING(Client)
-CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
+CProp::CProp(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
 	: CGameObject(pDevice, pContext, strObjectTag)
 {
 }
 
-CCharacter::CCharacter(const CCharacter& rhs)
+CProp::CProp(const CProp& rhs)
 	: CGameObject(rhs)
 	, m_pShaderCom(rhs.m_pShaderCom)
 	, m_pRendererCom(rhs.m_pRendererCom)
 	, m_pTransformCom(rhs.m_pTransformCom)
 	, m_pModelCom(rhs.m_pModelCom)
-	, m_pStateCom(rhs.m_pStateCom)	
 {	
 	Safe_AddRef(m_pShaderCom);
 	Safe_AddRef(m_pRendererCom);
 	Safe_AddRef(m_pTransformCom);
 	Safe_AddRef(m_pModelCom);
-	Safe_AddRef(m_pStateCom);
 }
 
-HRESULT CCharacter::Initialize_Prototype()
+HRESULT CProp::Initialize_Prototype()
 {
 	if(FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -34,7 +32,7 @@ HRESULT CCharacter::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CCharacter::Initialize(void* pArg)
+HRESULT CProp::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -42,40 +40,17 @@ HRESULT CCharacter::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CCharacter::Tick(_float fTimeDelta)
+void CProp::Tick(_float fTimeDelta)
 {
-	if (!m_bMainPlayable)
-		return;
 
-	if (m_bControlable)
-		Input(fTimeDelta);
-
-	// Update_Weapon();
-	for (auto& pPart : m_Parts)
-		pPart->Tick(fTimeDelta);
 }
 
-void CCharacter::LateTick(_float fTimeDelta)
+void CProp::LateTick(_float fTimeDelta)
 {
-	if (!m_bMainPlayable)
-		return;
-
-	if (nullptr == m_pRendererCom)
-		return;
-
-	m_pModelCom->Play_Animation(fTimeDelta);
-
-	for (auto& pPart : m_Parts)
-		pPart->LateTick(fTimeDelta);
-
-
-	for (auto& pPart : m_Parts)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, pPart);
-
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 
-HRESULT CCharacter::Render()
+HRESULT CProp::Render()
 {
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -112,60 +87,40 @@ HRESULT CCharacter::Render()
 	return S_OK;
 }
 
-
-
-
-
-void CCharacter::Input(_float fTimeDelta)
+HRESULT CProp::Ready_Components()
 {
-	if (KEY_HOLD(KEY::DOWN_ARROW))
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta);
-	}
-
-	if (KEY_HOLD(KEY::LEFT_ARROW))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -1.f);
-	}
-
-	if (KEY_HOLD(KEY::RIGHT_ARROW))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
-	}
-	if (KEY_HOLD(KEY::UP_ARROW))
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
-	}
-
-	/*if (KEY_TAP(KEY::O))
-	{
-		_uint iCurrAnimIdx = m_pModelCom->Get_CurrAnimationIndex();
-		if (iCurrAnimIdx <= 0)
-			m_pModelCom->Set_AnimIndex(0);
-		else
-			m_pModelCom->Set_AnimIndex(--iCurrAnimIdx);
-	}
-
-	if (KEY_TAP(KEY::P))
-	{
-		_uint iCurrAnimIdx = m_pModelCom->Get_CurrAnimationIndex();
-
-		if (iCurrAnimIdx >= m_pModelCom->Get_MaxAnimIndex())
-			m_pModelCom->Set_AnimIndex(m_pModelCom->Get_MaxAnimIndex());
-		else
-			m_pModelCom->Set_AnimIndex(++iCurrAnimIdx);
-	}*/
+	return S_OK;
 }
 
 
-void CCharacter::Free()
+CProp* CProp::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
+{
+	CProp* pInstance = new CProp(pDevice, pContext, strObjectTag);
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Create Failed : CProp");
+		Safe_Release(pInstance);
+		return nullptr;
+	}
+	return pInstance;
+}
+
+CGameObject* CProp::Clone(void* pArg)
+{
+	CProp* pInstance = new CProp(*this);
+
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("Failed to Cloned : CNezko");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CProp::Free()
 {
 	__super::Free();
-
-	for (auto& pPart : m_Parts)
-		Safe_Release(pPart);
-
-	m_Parts.clear();
 
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);

@@ -48,9 +48,11 @@ HRESULT CDummy::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_AnimModel"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_AnimModel"), TEXT("Com_AnimShader"), (CComponent**)&m_pAnimShaderCom)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Model"), TEXT("Com_NonAnim_Shader"), (CComponent**)&m_pNonAnimShaderCom)))
+		return E_FAIL;
 
 
 	Safe_Release(pGameInstance);
@@ -80,35 +82,40 @@ void CDummy::LateTick(_float fTimeDelta)
 
 HRESULT CDummy::Render()
 {
-	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
+	if (nullptr == m_pModelCom)
 		return S_OK;
+
+
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TP(), sizeof(_float4x4))))
+	CShader* pShader = m_pModelCom->Get_ModelType() == CModel::TYPE::TYPE_NONANIM ? m_pNonAnimShaderCom : m_pAnimShaderCom;
+	
+
+	if (FAILED(pShader->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TP(), sizeof(_float4x4))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
+	if (FAILED(pShader->Bind_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
+	if (FAILED(pShader->Bind_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
 		return E_FAIL;
 
 	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
+		if (FAILED(m_pModelCom->SetUp_OnShader(pShader, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
 			return E_FAIL;
 
 		if (m_pModelCom->Get_ModelType() == CModel::TYPE::TYPE_ANIM)
 		{
-			if (FAILED(m_pModelCom->SetUpAnimation_OnShader(m_pShaderCom)))
+			if (FAILED(m_pModelCom->SetUpAnimation_OnShader(pShader)))
 				return E_FAIL;
 		}
 		/*if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_NORMALS, "g_NormalTexture")))
 			return E_FAIL;*/
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i)))
+		if (FAILED(m_pModelCom->Render(pShader, i)))
 			return E_FAIL;
 	}
 
@@ -142,6 +149,14 @@ HRESULT CDummy::Export_Model()
 		return E_FAIL;
 
 	if(FAILED(m_pModelCom->Export_AssetData()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CDummy::Import_Model()
+{
+	if (nullptr == m_pModelCom)
 		return E_FAIL;
 
 	return S_OK;

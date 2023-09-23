@@ -89,8 +89,6 @@ HRESULT CModel::Initialize(void* pArg)
 			return E_FAIL;
 	}
 
-
-
 	return S_OK;
 }
 
@@ -104,8 +102,10 @@ HRESULT CModel::SetUp_OnShader(CShader* pShader, _uint iMaterialIndex, aiTexture
 
 HRESULT CModel::SetUpAnimation_OnShader(CShader* pShader)
 {
-	KEY_DESC KeyDesc = m_Animations[m_iCurrentAnimIndex]->Get_KeyDesc();
+	if (m_eModelType == TYPE::TYPE_NONANIM)
+		return S_OK;
 
+	KEY_DESC KeyDesc = m_Animations[m_iCurrentAnimIndex]->Get_KeyDesc();
 	if (FAILED(pShader->Bind_RawValue("g_CurrKeyFrame", &KeyDesc, sizeof(KEY_DESC))))
 		return E_FAIL;
 
@@ -117,6 +117,9 @@ HRESULT CModel::SetUpAnimation_OnShader(CShader* pShader)
 
 HRESULT CModel::Play_Animation(_float fTimeDelta)
 {
+	if (m_eModelType == TYPE::TYPE_NONANIM)
+		return S_OK;
+
 	if (m_iCurrentAnimIndex >= m_iNumAnimations)
 		return E_FAIL;
 
@@ -156,8 +159,13 @@ HRESULT CModel::Load_AssetFile_FromFBX()
 		return E_FAIL;
 	if(FAILED(Load_MaterialData_FromConverter()))
 		return E_FAIL;
-	if(FAILED(Load_AnimationData_FromConverter(XMLoadFloat4x4(&m_PivotMatrix))))
-		return E_FAIL;
+	
+	if (m_eModelType == TYPE::TYPE_ANIM)
+	{
+		if (FAILED(Load_AnimationData_FromConverter(XMLoadFloat4x4(&m_PivotMatrix))))
+			return E_FAIL;
+	}
+		
 
 	return S_OK;
 }

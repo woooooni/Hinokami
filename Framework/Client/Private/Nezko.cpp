@@ -189,4 +189,5 @@ CGameObject* CNezko::Clone(void* pArg)
 
 void CNezko::Free()
 {
+	__super::Free();
 }

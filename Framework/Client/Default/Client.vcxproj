@@ -178,6 +178,7 @@
     <ClInclude Include="..\..\ThirdParty\imstb_textedit.h" />
     <ClInclude Include="..\..\ThirdParty\imstb_truetype.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\Public\Building.h" />
     <ClInclude Include="..\Public\Camera_Free.h" />
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -194,6 +195,7 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Nezko.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\Prop.h" />
     <ClInclude Include="..\Public\Tanjiro.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Zenitsu.h" />
@@ -226,6 +228,7 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Building.cpp" />
     <ClCompile Include="..\Private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\Data_Manager.cpp" />
@@ -241,6 +244,7 @@
     <ClCompile Include="..\Private\Giyu.cpp" />
     <ClCompile Include="..\Private\Nezko.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\Prop.cpp" />
     <ClCompile Include="..\Private\Tanjiro.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>

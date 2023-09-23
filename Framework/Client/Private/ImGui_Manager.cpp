@@ -284,7 +284,11 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
         CModel* pModelCom = m_pDummy->Get_ModelCom();
         const vector<CAnimation*>& Animations = pModelCom->Get_Animations();
 
-
+        if (CModel::TYPE::TYPE_NONANIM == pModelCom->Get_ModelType())
+        {
+            ImGui::End();
+            return;
+        }
         
 
 

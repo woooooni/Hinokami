@@ -2,10 +2,10 @@
 
 #include "Client_Defines.h"
 #include "GameObject.h"
-
+#include "Model.h"
 
 BEGIN(Engine)
-class CModel;
+
 class CShader;
 class CTexture;
 class CRenderer;
@@ -34,7 +34,13 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	CShader* Get_ShaderCom() { return m_pShaderCom; }
+	CShader* Get_ShaderCom(CModel::TYPE eType) 
+	{ 
+		if (eType == CModel::TYPE::TYPE_ANIM)
+			return m_pAnimShaderCom;
+		else
+			return m_pNonAnimShaderCom;
+	}
 	CTransform* Get_TransformCom() { return m_pTransformCom; }
 	CModel* Get_ModelCom() { return m_pModelCom; }
 
@@ -45,7 +51,8 @@ public:
 	HRESULT Export_Model();
 	HRESULT Import_Model();
 protected:
-	CShader* m_pShaderCom = nullptr;
+	CShader* m_pNonAnimShaderCom = nullptr;
+	CShader* m_pAnimShaderCom = nullptr;
 	CRenderer* m_pRendererCom = nullptr;
 	CTransform* m_pTransformCom = nullptr;
 	CModel* m_pModelCom = nullptr;

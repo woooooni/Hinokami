@@ -11,6 +11,9 @@
 #include "Giyu.h"
 #include "Dummy.h"
 #include "Terrain.h"
+#include <filesystem>
+#include "Building.h"
+#include "Prop.h"
 
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -172,6 +175,9 @@ HRESULT CLoader::Loading_For_Level_Tool()
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
 	/* For.Prototype_GameObject_Camera_Free */
+	Loading_Proto_AllObjects(L"../Bin/Resources/Map/");
+
+
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
 		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Main_Camera")))))
 		return E_FAIL;
@@ -184,50 +190,12 @@ HRESULT CLoader::Loading_For_Level_Tool()
 		CTerrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
-	//	CPlayer::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-
-	/*if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Giyu"),
-		CGiyu::Create(m_pDevice, m_pContext, L"Giyu"))))
-		return E_FAIL;*/
+	
 
 	m_strLoading = TEXT("모델을 로딩 중 입니다.");
 	_matrix		PivotMatrix = XMMatrixIdentity();
 
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
-	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ForkLift"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Meshes/ForkLift/", "ForkLift.fbx", PivotMatrix))))
-		return E_FAIL;*/
-
-	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Giyu"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Giyu/"), TEXT("Giyu.fbx"), PivotMatrix))))
-		return E_FAIL;*/
-
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Giyu"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Giyu/"), TEXT("Giyu.fbx"), PivotMatrix))))
-	//	return E_FAIL;
-
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Tanjiro"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Tanjiro/"), TEXT("Tanjiro.fbx"), PivotMatrix))))
-	//	return E_FAIL;
-
-	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Nezko"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Nezko/"), TEXT("Nezko.fbx"), PivotMatrix))))
-		return E_FAIL;*/
-
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Kyojuro"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Kyojuro/"), TEXT("Kyojuro.fbx"), PivotMatrix))))
-	//	return E_FAIL;
-
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Zenitsu"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Zenitsu/"), TEXT("Zenitsu.fbx"), PivotMatrix))))
-	//	return E_FAIL;
-
-
-
-
-
 
 	/* For.Prototype_Component_Shader_Model */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Model"),
@@ -244,6 +212,67 @@ HRESULT CLoader::Loading_For_Level_Tool()
 
 	Safe_Release(pGameInstance);
 
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_Proto_AllObjects(const wstring& strPath)
+{
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	std::vector<std::string> paths;
+	paths.reserve(1000);
+
+	for (auto& p : std::filesystem::directory_iterator(strPath))
+	{
+		if (p.is_directory())
+		{
+			Loading_Proto_AllObjects(p.path());
+		}
+
+ 		wstring strFilePath = p.path().wstring();
+		for (_uint i = 0; i < 50; ++i)
+		{
+			if (wstring::npos != strFilePath.find(L"\\"))
+				strFilePath.replace(strFilePath.find(L"\\"), 1, L"/");
+			else
+				break;
+		}
+		
+		
+
+		_tchar strFileName[MAX_PATH];
+		_tchar strFolderName[MAX_PATH];
+		_tchar strExt[MAX_PATH];
+
+		_wsplitpath_s(strFilePath.c_str(), nullptr, 0, strFolderName, MAX_PATH, strFileName, MAX_PATH, strExt, MAX_PATH);
+
+		if (0 == lstrcmp(TEXT(".fbx"), strExt))
+		{
+			if (strFilePath.find(L"Buildings") != wstring::npos)
+			{
+				if (FAILED(pGameInstance->Add_Prototype(wstring(strFileName),
+					CBuilding::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt))))
+				{
+					Safe_Release(pGameInstance);
+					return S_OK;
+				}
+			}
+			else if (strFilePath.find(L"Objects") != wstring::npos)
+			{
+				/*if (FAILED(pGameInstance->Add_Prototype(wstring(strFileName),
+					CBuilding::Create(m_pDevice, m_pContext, wstring(strFileName), strFilePath, wstring(strFileName) + strExt))))
+				{
+					Safe_Release(pGameInstance);
+					return S_OK;
+				}*/
+			}
+		}
+
+	}
+
+	Safe_Release(pGameInstance);
 	return S_OK;
 }
 
