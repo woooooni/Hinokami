@@ -83,6 +83,7 @@ private:
 
 	wstring m_strFilePath = TEXT("../Bin/Resources/Meshes/");
 	wstring m_strFileName;
+	wstring m_strExportPath = TEXT("../Bin/Resources/Export/");
 	_uint m_iModelType = 0;
 
 public:

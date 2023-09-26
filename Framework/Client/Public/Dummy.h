@@ -48,7 +48,7 @@ public:
 	HRESULT Ready_ModelCom(_uint eType, const wstring& strFilePath, const wstring& strFileName);
 
 public:
-	HRESULT Export_Model();
+	HRESULT Export_Model_Bin(const wstring& strFilePath, const wstring& strFileName);
 	HRESULT Import_Model();
 protected:
 	CShader* m_pNonAnimShaderCom = nullptr;

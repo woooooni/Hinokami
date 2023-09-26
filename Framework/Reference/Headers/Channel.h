@@ -11,17 +11,16 @@ public:
 	virtual ~CChannel() = default;
 
 public:
-	const char* Get_Name() const {
-		return m_szName;
+	const wstring& Get_Name() const {
+		return m_strName;
 	}
 
 public:
 	HRESULT Initialize(aiNodeAnim* pAIChannel);
 	_uint Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, class CHierarchyNode* pNode);
 
-
 private:
-	char							m_szName[MAX_PATH] = "";
+	wstring							m_strName;
 
 	_uint							m_iNumKeyFrames = 0;
 	vector<KEYFRAME>				m_KeyFrames;
@@ -30,6 +29,8 @@ private:
 public:
 	static CChannel* Create(aiNodeAnim* pAIChannel);
 	virtual void Free() override;
+
+	friend class CData_Manager;
 };
 
 END

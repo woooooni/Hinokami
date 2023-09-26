@@ -1,7 +1,7 @@
 #include "Key_Manager.h"
 
 
-IMPLEMENT_SINGLETON(CKey_Manager);
+IMPLEMENT_SINGLETON(CKey_Manager)
 
 
 int g_arrVK[(int)KEY::TYPE_END] =
@@ -48,7 +48,7 @@ HRESULT CKey_Manager::Reserve_Manager(ID3D11Device* pDevice, ID3D11DeviceContext
 
 	m_vecKey.reserve(_uint(KEY::TYPE_END));
 	for (_uint i = 0; i < (_uint)KEY::TYPE_END; ++i)
-		m_vecKey.push_back(tKeyInfo{ KEY_STATE::NONE, false });
+		m_vecKey.push_back(KEY_INFO{ KEY_STATE::NONE, false });
 
 
 	ZeroMemory(&m_tMousePos, sizeof(POINT));

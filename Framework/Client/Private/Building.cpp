@@ -29,7 +29,7 @@ HRESULT CBuilding::Initialize_Prototype(const wstring& strFilePath, const wstrin
 	if(FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_pModelCom = CModel::Create(m_pDevice, m_pContext, CModel::TYPE::TYPE_NONANIM, strFilePath, strFileName);
+  	m_pModelCom = CModel::Create(m_pDevice, m_pContext, CModel::TYPE::TYPE_NONANIM, strFilePath, strFileName);
 
 	if(FAILED(m_pModelCom->Initialize(nullptr)))
 		return E_FAIL;
@@ -88,8 +88,6 @@ HRESULT CBuilding::Render()
 		/*if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_NORMALS, "g_NormalTexture")))
 			return E_FAIL;*/
 
-		if (FAILED(m_pModelCom->SetUpAnimation_OnShader(m_pShaderCom)))
-			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Render(m_pShaderCom, i)))
 			return E_FAIL;

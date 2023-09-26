@@ -1,17 +1,22 @@
 ﻿
+#pragma once
+
 #include "Engine_Defines.h"
 #include "Base.h"
 
-BEGIN(Engine)
-struct tKeyInfo
+typedef struct tKeyInfo
 {
 	KEY_STATE	eState;
 	bool		bPrevPushed;
-};
+} KEY_INFO;
+
+
+BEGIN(Engine)
+
 
 class CKey_Manager final : public CBase
 {
-	DECLARE_SINGLETON(CKey_Manager);
+	DECLARE_SINGLETON(CKey_Manager)
 
 public:
 	CKey_Manager();
@@ -27,7 +32,7 @@ public:
 	const POINT& GetMousePos() { return m_tMousePos; }
 
 private:
-	vector<tKeyInfo> m_vecKey;
+	vector<KEY_INFO> m_vecKey;
 
 	HWND	m_hWnd = nullptr;
 

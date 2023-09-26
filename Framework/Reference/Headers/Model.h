@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Component.h"
-#include "AsTypes.h"
 
 BEGIN(Engine)
 
@@ -9,14 +8,13 @@ class ENGINE_DLL CModel final : public CComponent
 {
 public:
 	enum TYPE { TYPE_NONANIM, TYPE_ANIM, TYPE_END };
-
 private:
 	CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CModel(const CModel& rhs);
 	virtual ~CModel() = default;
 
 public:
-	class CHierarchyNode* Get_HierarchyNode(const char* pNodeName);
+	class CHierarchyNode* Get_HierarchyNode(const wstring& strNodeName);
 
 	_uint Get_NumMeshes() const {
 		return m_iNumMeshes;
@@ -28,34 +26,19 @@ public:
 		m_iCurrentAnimIndex = iAnimIndex;
 	}
 
-	_uint Get_CurrAnimationIndex() { return m_iCurrentAnimIndex; }
-
-	_uint Get_MaxAnimIndex();
-
 	_matrix Get_PivotMatrix() {
 		return XMLoadFloat4x4(&m_PivotMatrix);
 	}
 
-	TYPE Get_ModelType() {
-		return m_eModelType;
-	}
+	TYPE Get_ModelType() { return m_eModelType; }
 
-	
-	vector<class CAnimation*>& Get_Animations() { return m_Animations; }
-
-public:
-	HRESULT Swap_Animation(_uint iSrc, _uint iDest);
-	
-	HRESULT Delete_ModelAnimation(_uint iIndex);
 
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix);
 	virtual HRESULT Initialize(void* pArg);
 
-
 public:
 	HRESULT SetUp_OnShader(class CShader* pShader, _uint iMaterialIndex, aiTextureType eTextureType, const char* pConstantName);
-	HRESULT SetUpAnimation_OnShader(class CShader* pShader);
 	/* 애니메이션을 재생한다. */
 	/* 1. 해당 애니메이션에서 사용하는 모든 뼈들의  Transformation 행렬을 갱신한다. */
 	/* 2. Transformation를 최상위 부모로부터 자식으로 계속 누적시켜간다.(CombinedTransformation) */
@@ -63,23 +46,25 @@ public:
 	HRESULT Play_Animation(_float fTimeDelta);
 	HRESULT Render(class CShader* pShader, _uint iMeshIndex, _uint iPassIndex = 0);
 
-	HRESULT Load_AssetFile_FromFBX();
-	HRESULT Load_AssetFile_FromBinary();
-	HRESULT Export_AssetData();
+	HRESULT Delete_Animation(_uint iIndex);
+
+public:
+	vector<class CAnimation*>& Get_Animations() { return m_Animations; }
+	_uint Get_CurrAnimationIndex() { return m_iCurrentAnimIndex; }
+
+
+
+public:
+	const aiScene* Get_Scene() { return m_pAIScene; }
 
 private:
-	HRESULT Load_ModelData_FromFile(_fmatrix PivotMatrix);
-	HRESULT Load_MaterialData_FromFile();
-	HRESULT Load_AnimationData_FromFile(_fmatrix PivotMatrix);
-	HRESULT Create_AnimationTexture(_fmatrix PivotMatrix);
-
-
-	HRESULT Load_ModelData_FromConverter(_fmatrix PivotMatrix);
-	HRESULT Load_MaterialData_FromConverter();
-	HRESULT Load_AnimationData_FromConverter(_fmatrix PivotMatrix);
+	wstring m_strName;
+	wstring m_strFileName;
+	wstring m_strFolderPath;
 
 private:
-	const aiScene*				m_pAIScene = nullptr;
+	const aiScene* m_pAIScene = nullptr;
+
 	Assimp::Importer			m_Importer;
 
 	_float4x4					m_PivotMatrix;
@@ -99,33 +84,38 @@ private:
 
 private:
 	_uint								m_iCurrentAnimIndex = 0;
-	_uint								m_iNextAnimIndex = 0;
-	uint64								m_iNumAnimations = 0;
+	_uint								m_iNumAnimations = 0;
 	vector<class CAnimation*>			m_Animations;
 
 
-	//Model Load
-	wstring								m_strFilePath;
-	wstring								m_strFileName;
+	//vector<vector<ANIM_INTERPOLATION_DATA>>	m_AnimInterpolationData;
+	//ANIM_INTERPOLATION_DATA* m_pCurLinearData = nullptr;
+
+	//list<KEYFRAME> m_NextFirstKeyFrams;
 
 
-	vector<shared_ptr<ModelBone>>		m_ModelBones;
-	shared_ptr<ModelBone>				m_RootBone;
-
-	class CModelConverter*					m_pConverter = nullptr;
+private:
+	ID3D11Texture1D* m_pMatrixTexture = nullptr;
+	ID3D11ShaderResourceView* m_pSRV;
+	vector<_float4x4> m_Matrices;
 
 
 private:
 	HRESULT Ready_MeshContainers(_fmatrix PivotMatrix);
-	HRESULT Ready_Materials(const char* pModelFilePath);
-	HRESULT Ready_HierarchyNodes(aiNode* pNode, class CHierarchyNode* pParent, _uint iDepth);
+	HRESULT Ready_Materials(const wstring& pModelFilePath);
+	HRESULT Ready_HierarchyNodes(aiNode * pNode, class CHierarchyNode* pParent, _uint iDepth);
 	HRESULT Ready_Animations();
-
+	HRESULT Ready_Animation_Texture();
 
 public:
-	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix = XMMatrixIdentity());
+	static CModel* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix = XMMatrixIdentity());
+	static CModel* Create_Bin(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix = XMMatrixIdentity());
 	virtual CComponent* Clone(void* pArg = nullptr);
 	virtual void Free() override;
+
+	friend class CData_Manager;
 };
+
+
 
 END

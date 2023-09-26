@@ -6,6 +6,7 @@
 #include "GameInstance.h"
 #include "Dummy.h"
 #include "Terrain.h"
+#include "Key_Manager.h"
 
 USING(Client)
 IMPLEMENT_SINGLETON(CImGui_Manager)
@@ -237,6 +238,12 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
             m_strFileName = wstring(CGameInstance::GetInstance()->string_to_wstring(string(szFileName)));
         }
 
+
+        static char szExportFolderName[MAX_PATH];
+        ImGui::Text("Export_Folder_Name");
+        ImGui::InputText("##ModelExportFolder", szExportFolderName, MAX_PATH);
+        
+
         
         const char* items[] = { "NON_ANIM", "ANIM"};
         static const char* szCurrent = NULL;
@@ -263,7 +270,13 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
 
         if (ImGui::Button("Export"))
         {
-            m_pDummy->Export_Model();
+            if (strlen(szExportFolderName) > 0)
+            {
+                if (FAILED(m_pDummy->Export_Model_Bin(CGameInstance::GetInstance()->string_to_wstring(szExportFolderName), m_strFileName)))
+                    MSG_BOX("Failed Save.");
+                else
+                    MSG_BOX("Save Success");
+            }
         }
         ImGui::EndChild();
     }
@@ -312,12 +325,12 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
         ImGui::BeginGroup();
         if (ImGui::ArrowButton("##Swap_Animation_Up", ImGuiDir_Up))
         {
-            pModelCom->Swap_Animation(pModelCom->Get_CurrAnimationIndex(), pModelCom->Get_CurrAnimationIndex() - 1);
+            // pModelCom->Swap_Animation(pModelCom->Get_CurrAnimationIndex(), pModelCom->Get_CurrAnimationIndex() - 1);
         }
         IMGUI_SAME_LINE;
         if (ImGui::ArrowButton("##Swap_Animation_Down", ImGuiDir_Down))
         {
-            pModelCom->Swap_Animation(pModelCom->Get_CurrAnimationIndex(), pModelCom->Get_CurrAnimationIndex() + 1);
+            // pModelCom->Swap_Animation(pModelCom->Get_CurrAnimationIndex(), pModelCom->Get_CurrAnimationIndex() + 1);
         }
 
         
@@ -341,12 +354,12 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
 
         if (ImGui::Button("Delete"))
         {
-            pModelCom->Delete_ModelAnimation(pModelCom->Get_CurrAnimationIndex());
+           //  pModelCom->Delete_ModelAnimation(pModelCom->Get_CurrAnimationIndex());
         }
 
         if (KEY_TAP(KEY::DEL) && ImGui::IsWindowFocused())
         {
-            pModelCom->Delete_ModelAnimation(pModelCom->Get_CurrAnimationIndex());
+            // pModelCom->Delete_ModelAnimation(pModelCom->Get_CurrAnimationIndex());
         }
         ImGui::EndGroup();
 
@@ -354,16 +367,17 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
         CAnimation* pCurrAnimation = Animations[pModelCom->Get_CurrAnimationIndex()];
 
         _float fDuration = pCurrAnimation->Get_Duration();
-        _float fCurrFrame = pCurrAnimation->Get_KeyDesc().iCurrFrame;
-        if (ImGui::SliderFloat("##Animation_Slider", &fCurrFrame, 0.f, fDuration, "%.2f"))
-        {
-            pCurrAnimation->Set_Pause(true);
-            pCurrAnimation->Set_CurrFrame(fCurrFrame);
-        }
-        else
-        {
-            pCurrAnimation->Set_Pause(false);
-        }
+
+        // _float fCurrFrame = pCurrAnimation->Get_KeyDesc().iCurrFrame;
+        //if (ImGui::SliderFloat("##Animation_Slider", &fCurrFrame, 0.f, fDuration, "%.2f"))
+        //{
+        //    pCurrAnimation->Set_Pause(true);
+        //    // pCurrAnimation->Set_CurrFrame(fCurrFrame);
+        //}
+        //else
+        //{
+        //    pCurrAnimation->Set_Pause(false);
+        //}
 
         if (ImGui::ArrowButton("##Play_AnimationButton", ImGuiDir_Right))
         {

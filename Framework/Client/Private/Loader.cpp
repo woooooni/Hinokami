@@ -175,7 +175,7 @@ HRESULT CLoader::Loading_For_Level_Tool()
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
 	/* For.Prototype_GameObject_Camera_Free */
-	Loading_Proto_AllObjects(L"../Bin/Resources/Map/");
+	// Loading_Proto_AllObjects(L"../Bin/Resources/Map/");
 
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),

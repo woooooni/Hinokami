@@ -6,14 +6,13 @@ CUtils::CUtils()
 
 }
 
-string CUtils::wstring_to_string(const wstring& strW)
+string CUtils::wstring_to_string(wstring strW)
 {
 	return string(strW.begin(), strW.end());
 }
 
-wstring CUtils::string_to_wstring(const string& strS)
+wstring CUtils::string_to_wstring(string strS)
 {
-	
 	return wstring(strS.begin(), strS.end());
 }
 

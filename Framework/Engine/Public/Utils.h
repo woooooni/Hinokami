@@ -13,8 +13,8 @@ private:
 	virtual ~CUtils() = default;
 
 public:
-	string wstring_to_string(const wstring& strW);
-	wstring string_to_wstring(const string& strS);
+	string wstring_to_string(wstring strW);
+	wstring string_to_wstring(string strS);
 
 public:
 	virtual void	Free();

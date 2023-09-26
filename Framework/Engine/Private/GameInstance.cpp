@@ -6,9 +6,10 @@
 #include "Object_Manager.h"
 #include "Component_Manager.h"
 #include "Light_Manager.h"
-#include "Key_Manager.h"
 #include "Camera_Manager.h"
 #include "Font_Manager.h"
+#include "Data_Manager.h"
+#include "Key_Manager.h"
 #include "Utils.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
@@ -26,6 +27,7 @@ CGameInstance::CGameInstance()
 	, m_pLight_Manager(CLight_Manager::GetInstance())
 	, m_pKey_Manager(CKey_Manager::GetInstance())
 	, m_pFont_Manager(CFont_Manager::GetInstance())
+	, m_pData_Manager(CData_Manager::GetInstance())
 	
 {
 	Safe_AddRef(m_pObject_Manager);
@@ -39,6 +41,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pKey_Manager);
 	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pUtilities);
+	Safe_AddRef(m_pData_Manager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, _uint iNumLayerType, 
@@ -69,7 +72,8 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, _uint iNumLayerType,
 	if (FAILED(m_pInput_Device->Initialize(hInst, hWnd)))
 		return E_FAIL;
 
-	
+	if (FAILED(m_pData_Manager->Reserve_Manager(*ppDevice, *ppContext)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -329,6 +333,17 @@ const POINT& CGameInstance::GetMousePos()
 	return POINT();
 }
 
+
+HRESULT CGameInstance::Export_Model_Data(CModel* pModel, wstring strFolderPath, wstring strFileName)
+{
+	return m_pData_Manager->Export_Model_Data(pModel, strFolderPath, strFileName);
+}
+
+CModel* CGameInstance::Import_Model_Data(_uint eType, wstring strFolderPath, wstring strFileName, _fmatrix PivotMatrix)
+{
+	return m_pData_Manager->Import_Model_Data(eType, strFolderPath, strFileName, PivotMatrix);
+}
+
 HRESULT CGameInstance::Add_Fonts(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strFontTag, const wstring& strFontFilePath)
 {
 	return m_pFont_Manager->Add_Fonts(pDevice, pContext, strFontTag, strFontFilePath);
@@ -385,6 +400,7 @@ void CGameInstance::Release_Engine()
 	CKey_Manager::GetInstance()->DestroyInstance();
 	CUtils::GetInstance()->DestroyInstance();
 	CFont_Manager::GetInstance()->DestroyInstance();
+	CData_Manager::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
 	CGameInstance::GetInstance()->DestroyInstance();
 }
@@ -402,4 +418,5 @@ void CGameInstance::Free()
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pKey_Manager);
 	Safe_Release(m_pUtilities);
+	Safe_Release(m_pData_Manager);
 }

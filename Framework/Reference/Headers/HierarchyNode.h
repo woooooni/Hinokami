@@ -13,9 +13,17 @@ private:
 	virtual ~CHierarchyNode() = default;
 
 public:
-	const char* Get_Name() const {
-		return m_szName;
+	const wstring& Get_Name() const {
+		return m_strName;
 	}
+
+	const wstring Get_ParentName() const {
+		if (m_pParent == nullptr)
+			return wstring();
+
+		return m_pParent->Get_Name();
+	}
+
 	_uint Get_Depth() const {
 		return m_iDepth;
 	}
@@ -36,19 +44,32 @@ public:
 
 public:
 	HRESULT Initialize(aiNode * pAINode, class CHierarchyNode* pParent, _uint iDepth);
+	HRESULT Initialize_Bin(class CModel* pModel);
+
+public:
 	void Set_CombinedTransformation();
 	void Set_OffsetMatrix(_fmatrix OffsetMatrix);
+
 private:
-	char				m_szName[MAX_PATH] = "";
+	wstring				m_strName;
+	wstring				m_strParentName;
+
 	_float4x4			m_OffsetMatrix;
 	_float4x4			m_Transformation;
 	_float4x4			m_CombinedTransformation;
-	CHierarchyNode* m_pParent = nullptr;
+
+	_float4x4			m_OriginTransform;
+
+
+	CHierarchyNode*		m_pParent = nullptr;
 	_uint				m_iDepth = 0;
 
 public:
 	static CHierarchyNode* Create(aiNode * pAINode, class CHierarchyNode* pParent, _uint iDepth);
+	static CHierarchyNode* Create_Bin();
 	virtual void Free();
+
+	friend class CData_Manager;
 };
 
 END

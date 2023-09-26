@@ -1,6 +1,7 @@
 #include "..\Public\Channel.h"
 #include "Model.h"
 #include "HierarchyNode.h"
+#include "Utils.h"
 
 
 
@@ -15,7 +16,7 @@ HRESULT CChannel::Initialize(aiNodeAnim* pAIChannel)
 	/* 이 이름으로 같은 이름을 가진 HierarchyNodes를 채널에 보관해둔다. */
 	/* 왜 보관하니? : 채널이 가진 키프레임중 시간대에 맞는 키플에ㅣㅁ 상태를 만들고. 이걸로 행렬 만들고.
 	이렇게 만든 행렬을 erarchyNodes에 저장해놔야해. */
-	strcpy_s(m_szName, pAIChannel->mNodeName.data);
+	m_strName = CUtils::GetInstance()->string_to_wstring(pAIChannel->mNodeName.C_Str());
 
 	//m_pHierarchyNode = pModel->Get_HierarchyNode(m_szName);
 	//if (nullptr == m_pHierarchyNode)
@@ -72,6 +73,7 @@ HRESULT CChannel::Initialize(aiNodeAnim* pAIChannel)
 	return S_OK;
 }
 
+
 _uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, CHierarchyNode* pNode)
 {
 	_float3			vScale;
@@ -123,6 +125,7 @@ _uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, 
 	return iCurrentKeyFrame;
 }
 
+
 CChannel* CChannel::Create(aiNodeAnim* pAIChannel)
 {
 	CChannel* pInstance = new CChannel();
@@ -135,6 +138,7 @@ CChannel* CChannel::Create(aiNodeAnim* pAIChannel)
 
 	return pInstance;
 }
+
 
 void CChannel::Free()
 {

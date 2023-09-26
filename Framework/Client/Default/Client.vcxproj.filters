@@ -150,9 +150,6 @@
     <ClInclude Include="..\Public\Level_Tool.h">
       <Filter>01.Levels\98. Tool</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Data_Manager.h">
-      <Filter>96. Manager\Data</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Character.h">
       <Filter>02.GameObjects\Character</Filter>
     </ClInclude>
@@ -247,9 +244,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Tool.cpp">
       <Filter>01.Levels\98. Tool</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Data_Manager.cpp">
-      <Filter>96. Manager\Data</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
       <Filter>02.GameObjects\Character</Filter>

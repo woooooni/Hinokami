@@ -19,6 +19,7 @@ CTexture::CTexture(const CTexture& rhs)
 HRESULT CTexture::Initialize_Prototype(const wstring& strTextureFilePath, _uint iNumTextures)
 {
 	m_iNumTextures = iNumTextures;
+	m_FileNames.reserve(m_iNumTextures);
 
 	for (_uint i = 0; i < iNumTextures; ++i)
 	{
@@ -27,9 +28,10 @@ HRESULT CTexture::Initialize_Prototype(const wstring& strTextureFilePath, _uint 
 		wsprintf(szFullPath, strTextureFilePath.c_str(), i);
 
 		_tchar			szDrive[MAX_PATH] = TEXT("");
+		_tchar			szName[MAX_PATH] = TEXT("");
 		_tchar			szExt[MAX_PATH] = TEXT("");
 
-		_wsplitpath_s(szFullPath, szDrive, MAX_PATH, nullptr, 0, nullptr, 0, szExt, MAX_PATH);
+		_wsplitpath_s(szFullPath, szDrive, MAX_PATH, nullptr, 0, szName, MAX_PATH, szExt, MAX_PATH);
 
 		HRESULT hr = 0;
 
@@ -47,6 +49,7 @@ HRESULT CTexture::Initialize_Prototype(const wstring& strTextureFilePath, _uint 
 		if (FAILED(hr))
 			return E_FAIL;
 
+		m_FileNames.push_back(wstring(szName) + szExt);
 		m_SRVs.push_back(pSRV);
 	}
 

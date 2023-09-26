@@ -107,13 +107,6 @@ HRESULT CDummy::Render()
 		if (FAILED(m_pModelCom->SetUp_OnShader(pShader, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
 			return E_FAIL;
 
-		if (m_pModelCom->Get_ModelType() == CModel::TYPE::TYPE_ANIM)
-		{
-			if (FAILED(m_pModelCom->SetUpAnimation_OnShader(pShader)))
-				return E_FAIL;
-		}
-		/*if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_NORMALS, "g_NormalTexture")))
-			return E_FAIL;*/
 
 		if (FAILED(m_pModelCom->Render(pShader, i)))
 			return E_FAIL;
@@ -132,24 +125,30 @@ HRESULT CDummy::Ready_ModelCom(_uint eType, const wstring& strFilePath, const ws
 	_matrix		PivotMatrix = XMMatrixIdentity();
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 
-	m_pModelCom = CModel::Create(m_pDevice, m_pContext, (CModel::TYPE)eType, strFilePath, strFileName, PivotMatrix);
+
+	
+
+	m_pModelCom = CGameInstance::GetInstance()->Import_Model_Data(eType, strFilePath, strFileName, PivotMatrix);
+
 	if (nullptr == m_pModelCom)
 		return E_FAIL;
 
-	m_pModelCom->Initialize(nullptr);
+
 	m_pModelCom->Set_Owner(this);
 
 	return S_OK;
 }
 
 
-HRESULT CDummy::Export_Model()
+HRESULT CDummy::Export_Model_Bin(const wstring& strFilePath, const wstring& strFileName)
 {
 	if (nullptr == m_pModelCom)
 		return E_FAIL;
 
-	if(FAILED(m_pModelCom->Export_AssetData()))
-		return E_FAIL;
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	pInstance->Export_Model_Data(m_pModelCom, strFilePath, strFileName);
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }

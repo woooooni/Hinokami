@@ -115,7 +115,7 @@ HRESULT CTanjiro::Ready_Sockets()
 	if (nullptr == m_pModelCom)
 		return E_FAIL;
 
-	CHierarchyNode* pWeaponSocket = m_pModelCom->Get_HierarchyNode("SWORD");
+	CHierarchyNode* pWeaponSocket = m_pModelCom->Get_HierarchyNode(L"SWORD");
 	if (nullptr == pWeaponSocket)
 		return E_FAIL;
 

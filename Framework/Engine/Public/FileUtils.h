@@ -1,18 +1,17 @@
 #pragma once
-#include "AsTypes.h"
+#include "Engine_Defines.h"
 
-
-enum FileMode : uint8
+enum FileMode
 {
 	Write,
 	Read,
 };
 
-class CAsFileUtils
+class CFileUtils
 {
 public:
-	CAsFileUtils();
-	~CAsFileUtils();
+	CFileUtils();
+	~CFileUtils();
 
 	void Open(wstring filePath, FileMode mode);
 

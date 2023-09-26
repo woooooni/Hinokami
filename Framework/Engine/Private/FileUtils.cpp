@@ -1,11 +1,11 @@
-#include "AsFileUtils.h"
+#include "FileUtils.h"
 
 
-CAsFileUtils::CAsFileUtils()
+CFileUtils::CFileUtils()
 {
 }
 
-CAsFileUtils::~CAsFileUtils()
+CFileUtils::~CFileUtils()
 {
 	if (_handle != INVALID_HANDLE_VALUE)
 	{
@@ -14,7 +14,7 @@ CAsFileUtils::~CAsFileUtils()
 	}
 }
 
-void CAsFileUtils::Open(wstring filePath, FileMode mode)
+void CFileUtils::Open(wstring filePath, FileMode mode)
 {
 	if (mode == FileMode::Write)
 	{
@@ -45,13 +45,13 @@ void CAsFileUtils::Open(wstring filePath, FileMode mode)
 	assert(_handle != INVALID_HANDLE_VALUE);
 }
 
-void CAsFileUtils::Write(void* data, _uint dataSize)
+void CFileUtils::Write(void* data, _uint dataSize)
 {
 	_uint numOfBytes = 0;
 	assert(::WriteFile(_handle, data, dataSize, reinterpret_cast<LPDWORD>(&numOfBytes), nullptr));
 }
 
-void CAsFileUtils::Write(const string& data)
+void CFileUtils::Write(const string& data)
 {
 	_uint size = (_uint)data.size();
 	Write(size);
@@ -64,13 +64,13 @@ void CAsFileUtils::Write(const string& data)
 
 
 
-void CAsFileUtils::Read(void** data, _uint dataSize)
+void CFileUtils::Read(void** data, _uint dataSize)
 {
 	_uint numOfBytes = 0;
 	assert(::ReadFile(_handle, *data, dataSize, reinterpret_cast<LPDWORD>(&numOfBytes), nullptr));
 }
 
-void CAsFileUtils::Read(OUT string& data)
+void CFileUtils::Read(OUT string& data)
 {
 	_uint size = Read<_uint>();
 

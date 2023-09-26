@@ -13,6 +13,8 @@ namespace Engine
 
 	}KEYFRAME;
 
+
+
 	/* 빛의 정보를 담아놓기 위한 구조체. */
 	typedef struct tagLightDesc
 	{
@@ -33,7 +35,7 @@ namespace Engine
 
 	typedef struct tagMaterialDesc
 	{
-		char			strName[MAX_PATH];
+		wchar_t			strName[MAX_PATH];
 
 		XMFLOAT4		vAmbient;
 		XMFLOAT4		vDiffuse;
@@ -159,79 +161,6 @@ namespace Engine
 		unsigned int	iWinSizeX, iWinSizeY;
 
 	} GRAPHIC_DESC;
-
-	typedef struct tagMyHierarchyNode
-	{
-		char cName[MAX_PATH];
-		char cParent[MAX_PATH];
-		int  iDepth;
-		XMFLOAT4X4 matTransform;
-	} DATA_NODE;
-
-	typedef struct tagMyMaterialData
-	{
-		char cNames[AI_TEXTURE_TYPE_MAX][MAX_PATH];
-	} DATA_MATERIAL;
-
-	typedef struct tagMyBoneData
-	{
-		char		cNames[MAX_PATH];
-		XMFLOAT4X4	matOffset;
-	} DATA_BONE;
-
-	typedef struct tagMyMeshData
-	{
-		char				cName[MAX_PATH];
-		int					iMaterialIndex;
-
-		int					NumVertices;
-		// VTXMODEL* pNonAnimVertices;
-		// VTXANIMMODEL* pAnimVertices;
-
-		int					iNumPrimitives;
-		// FACEINDICES32* pIndices;
-
-		int					iNumBones;
-		DATA_BONE* pBones;
-
-	} DATA_MESH;
-
-	typedef struct tagMyChannelData
-	{
-		char szName[MAX_PATH];
-		int iNumKeyFrames;
-		KEYFRAME* pKeyFrames;
-	} DATA_CHANNEL;
-
-	typedef struct tagAnimData
-	{
-		char szName[MAX_PATH];
-
-		bool bLoop;
-		int	iNumChannels;
-
-		float fDuration;
-		float fTickPerSecond;
-
-		DATA_CHANNEL* pChannel;
-	} DATA_ANIM;
-
-	typedef struct tagSceneData
-	{
-
-		int iNodeCount;
-		DATA_NODE* pNodesData;
-
-		int iMaterialCount;
-		DATA_MATERIAL* pMaterialData;
-
-		int iMeshCount;
-		DATA_MESH* pMeshData;
-
-		int iNumAnimations;
-		DATA_ANIM* pAnimData;
-
-	} DATA_SCENE;
 
 }
 

@@ -80,6 +80,11 @@ public:
 	KEY_STATE GetKeyState(KEY _eKey);
 	const POINT& GetMousePos();
 
+public:
+	/* For. Data_Manager */
+	HRESULT Export_Model_Data(class CModel* pModel, wstring strFolderPath, wstring strFileName);
+	class CModel* Import_Model_Data(_uint eType, wstring strFolderPath, wstring strFileName, _fmatrix PivotMatrix = XMMatrixIdentity());
+
 /* For. CameraManager*/
 //public:
 //	HRESULT Add_Camera(const wstring & strCameraName, class CCamera * pCamera);
@@ -106,6 +111,7 @@ private:
 	// class CCamera_Manager*			m_pCamera_Manager = { nullptr };
 	class CKey_Manager*				m_pKey_Manager = { nullptr };
 	class CUtils*					m_pUtilities = { nullptr };
+	class CData_Manager* m_pData_Manager = { nullptr };
 	class CFont_Manager*			m_pFont_Manager = { nullptr };
 
 public:
