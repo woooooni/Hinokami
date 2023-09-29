@@ -65,14 +65,11 @@ HRESULT CTerrain::Render()
 {
 
 #ifdef _DEBUG
-	
-	
-	CGameInstance* pInstance = CGameInstance::GetInstance();
 
 
 	m_pEffect->SetWorld(m_pTransformCom->Get_WorldMatrix());
-	m_pEffect->SetView(pInstance->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
-	m_pEffect->SetProjection(pInstance->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+	m_pEffect->SetView(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+	m_pEffect->SetProjection(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
 
 
 	m_pEffect->Apply(m_pContext);
@@ -82,36 +79,29 @@ HRESULT CTerrain::Render()
 
 	m_pBatch->Begin();
 
+	_float3 vScale = m_pTransformCom->Get_Scale();
+	_float4 fPosition;
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION);
+	XMStoreFloat4(&fPosition, vPosition);
+
 	DX::DrawGrid(m_pBatch,
 		XMVectorSet(_float(m_pVIBufferCom->Get_VertexCount_X() / 2.f), 0.f, 0.f, 1.f),
 		XMVectorSet(0.f, 0.f, _float(m_pVIBufferCom->Get_VertexCount_Z() / 2.f), 1.f),
-		XMVectorSet(m_pVIBufferCom->Get_VertexCount_X() / 2.f, 1.f, m_pVIBufferCom->Get_VertexCount_Z() / 2.f, 1.f),
-		size_t(m_pVIBufferCom->Get_VertexCount_X()),
-		size_t(m_pVIBufferCom->Get_VertexCount_Z()),
-		DirectX::Colors::Cyan);
+		XMVectorSet((m_pVIBufferCom->Get_VertexCount_X() / 2.f), fPosition.y, (m_pVIBufferCom->Get_VertexCount_Z() / 2.f), 1.f),
+		size_t((m_pVIBufferCom->Get_VertexCount_X()) * vScale.x),
+		size_t((m_pVIBufferCom->Get_VertexCount_Z()) * vScale.z),
+		DirectX::Colors::Orange);
 
 
 	m_pBatch->End();
 #endif
-
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
-
-	if(FAILED(m_pShaderCom->Begin(0)))
-		return E_FAIL;
-
-	if (FAILED(m_pVIBufferCom->Render()))
-		return E_FAIL;
-
-
-
 
 	return S_OK;
 }
 
 _bool CTerrain::Is_Picking(__out _float4* vHitPos)
 {
-	CGameInstance* pGameIntance = CGameInstance::GetInstance();
+	
 
 	POINT pt;
 	GetCursorPos(&pt);
@@ -119,12 +109,12 @@ _bool CTerrain::Is_Picking(__out _float4* vHitPos)
 
 	_vector vMousePos = XMVectorSet(
 		_float(pt.x / (g_iWinSizeX * .5f) - 1.f),
-		_float(pt.x / (g_iWinSizeX * .5f) - 1.f),
+		_float(pt.y / (g_iWinSizeY * -.5f) + 1.f),
 		0.f, 0.f);
 
 
-	_matrix ViewMatrixInv = pGameIntance->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
-	_matrix ProjMatrixInv = pGameIntance->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
+	_matrix ViewMatrixInv = GAME_INSTANCE->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
+	_matrix ProjMatrixInv = GAME_INSTANCE->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
 
 	vMousePos = XMVector3TransformCoord(vMousePos, ProjMatrixInv);
 
@@ -168,12 +158,12 @@ _bool CTerrain::Is_Picking(__out _float4* vHitPos)
 			if (fDistnace < fMinDistance)
 			{
 				XMStoreFloat4(vHitPos, vRayPosition + vRayDir * fDistnace);
-				/*string strOut; 
+				string strOut; 
 				strOut += "x : " + to_string(vHitPos->x) + " ";
 				strOut += "y : " + to_string(vHitPos->y) + " ";
 				strOut += "z : " + to_string(vHitPos->z) + " ";
 				MessageBoxA(g_hWnd, strOut.c_str(), "Hit", MB_OK);
-				MSG_BOX("Hit");*/
+				MSG_BOX("Hit");
 				return true;
 			}
 		}
@@ -224,18 +214,18 @@ HRESULT CTerrain::Bind_ShaderResources()
 		return E_FAIL;
 
 
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
 
-	if (FAILED(pGameInstance->Bind_TransformToShader(m_pShaderCom, "g_ViewMatrix", CPipeLine::D3DTS_VIEW)))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Bind_TransformToShader(m_pShaderCom, "g_ProjMatrix", CPipeLine::D3DTS_PROJ)))
-		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+	if (FAILED(GAME_INSTANCE->Bind_TransformToShader(m_pShaderCom, "g_ViewMatrix", CPipeLine::D3DTS_VIEW)))
+		return E_FAIL;
+	if (FAILED(GAME_INSTANCE->Bind_TransformToShader(m_pShaderCom, "g_ProjMatrix", CPipeLine::D3DTS_PROJ)))
 		return E_FAIL;
 
-	Safe_Release(pGameInstance);
+	//if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+	//	return E_FAIL;
+
+	;
 
 
 

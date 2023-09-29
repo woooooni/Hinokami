@@ -10,7 +10,6 @@
 #include "Font_Manager.h"
 #include "Data_Manager.h"
 #include "Key_Manager.h"
-#include "Utils.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -21,7 +20,6 @@ CGameInstance::CGameInstance()
 	, m_pLevel_Manager(CLevel_Manager::GetInstance())
 	, m_pObject_Manager(CObject_Manager::GetInstance())
 	, m_pComponent_Manager(CComponent_Manager::GetInstance())
-	, m_pUtilities(CUtils::GetInstance())
 	// , m_pCamera_Manager(CCamera_Manager::GetInstance())
 	, m_pPipeLine(CPipeLine::GetInstance())
 	, m_pLight_Manager(CLight_Manager::GetInstance())
@@ -40,7 +38,6 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pLight_Manager);
 	Safe_AddRef(m_pKey_Manager);
 	Safe_AddRef(m_pFont_Manager);
-	Safe_AddRef(m_pUtilities);
 	Safe_AddRef(m_pData_Manager);
 }
 
@@ -84,7 +81,7 @@ void CGameInstance::Tick(_float fTimeDelta)
 	m_pKey_Manager->Tick(fTimeDelta);
 	m_pObject_Manager->Tick(fTimeDelta);
 	m_pLevel_Manager->Tick(fTimeDelta);
-	m_pPipeLine->Tick();
+  	m_pPipeLine->Tick();
 	
 
 	m_pObject_Manager->LateTick(fTimeDelta);
@@ -116,6 +113,16 @@ HRESULT CGameInstance::Add_Timer(const wstring & strTimerTag)
 		return E_FAIL;
 
 	return m_pTimer_Manager->Add_Timer(strTimerTag);
+}
+
+ID3D11Device* CGameInstance::Get_Device()
+{
+	return m_pGraphic_Device->Get_Device();
+}
+
+ID3D11DeviceContext* CGameInstance::Get_Context()
+{
+	return m_pGraphic_Device->Get_Context();
 }
 
 HRESULT CGameInstance::Clear_BackBuffer_View(_float4 vClearColor)
@@ -179,25 +186,30 @@ HRESULT CGameInstance::Render_Debug()
 	return m_pLevel_Manager->Render_Debug();
 }
 
-HRESULT CGameInstance::Add_Prototype(const wstring & strPrototypeTag, CGameObject * pPrototype)
+HRESULT CGameInstance::Add_Prototype(const wstring& strPrototypeTag, CGameObject* pPrototype, _uint iLayerType)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
 
-	return m_pObject_Manager->Add_Prototype(strPrototypeTag, pPrototype);	
+	return m_pObject_Manager->Add_Prototype(strPrototypeTag, pPrototype, iLayerType);
 }
 
-HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, _uint iNumLayerType, const wstring & strPrototypeTag, void * pArg)
+HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, _uint iLayerType, const wstring & strPrototypeTag, void * pArg)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
 
-	return m_pObject_Manager->Add_GameObject(iLevelIndex, iNumLayerType, strPrototypeTag, pArg);
+	return m_pObject_Manager->Add_GameObject(iLevelIndex, iLayerType, strPrototypeTag, pArg);
 }
 
-CGameObject* CGameInstance::Clone_GameObject(const wstring& strPrototypeTag, void* pArg)
+CGameObject* CGameInstance::Clone_GameObject(const wstring& strPrototypeTag, _uint iLayerType, void* pArg)
 {
-	return m_pObject_Manager->Clone_GameObject(strPrototypeTag, pArg);
+	return m_pObject_Manager->Clone_GameObject(strPrototypeTag, iLayerType, pArg);
+}
+
+const map<const wstring, class CGameObject*>& CGameInstance::Find_Prototype_GameObjects(_uint iLayerType)
+{
+	return m_pObject_Manager->Find_Prototype_GameObjects(iLayerType);
 }
 
 CGameObject* CGameInstance::Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring& strObjectTag)
@@ -211,15 +223,6 @@ list<CGameObject*>& CGameInstance::Find_GameObjects(_uint iLevelIndex, const _ui
 }
 
 
-string CGameInstance::wstring_to_string(const wstring& strW)
-{
-	return m_pUtilities->wstring_to_string(strW);
-}
-
-wstring CGameInstance::string_to_wstring(const string& strS)
-{
-	return m_pUtilities->string_to_wstring(strS);
-}
 
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring& strProtoTypeTag, CComponent* pPrototype)
 {
@@ -398,7 +401,6 @@ void CGameInstance::Release_Engine()
 	CInput_Device::GetInstance()->DestroyInstance();
 	CLight_Manager::GetInstance()->DestroyInstance();
 	CKey_Manager::GetInstance()->DestroyInstance();
-	CUtils::GetInstance()->DestroyInstance();
 	CFont_Manager::GetInstance()->DestroyInstance();
 	CData_Manager::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
@@ -417,6 +419,5 @@ void CGameInstance::Free()
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pKey_Manager);
-	Safe_Release(m_pUtilities);
 	Safe_Release(m_pData_Manager);
 }

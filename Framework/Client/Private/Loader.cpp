@@ -84,8 +84,8 @@ _int CLoader::Loading()
 
 HRESULT CLoader::Loading_For_Level_Logo()
 {
-	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
+
 
 	/* For.Texture */
 	m_strLoading = TEXT("텍스쳐를 로딩 중 입니다.");
@@ -97,10 +97,10 @@ HRESULT CLoader::Loading_For_Level_Logo()
 	m_strLoading = TEXT("객체원형을 로딩 중 입니다.");
 
 	///* For.Prototype_GameObject_BackGround */
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGround::Create(m_pDevice, m_pContext))))
+	//if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGround::Create(m_pDevice, m_pContext))))
 	//	return E_FAIL;
 	
-	Safe_Release(pGameInstance);
+	;
 
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
@@ -110,9 +110,6 @@ HRESULT CLoader::Loading_For_Level_Logo()
 
 HRESULT CLoader::Loading_For_Level_GamePlay()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
 	/* For.Texture */
 	m_strLoading = TEXT("텍스쳐를 로딩 중 입니다.");
 	
@@ -127,12 +124,12 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
 	/* For.Prototype_GameObject_Camera_Free */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
-		CCamera_Free::Create(m_pDevice, m_pContext, L"Main_Camera"))))
+	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
+		CCamera_Free::Create(m_pDevice, m_pContext, L"Main_Camera"), LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
 	
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
-		CPlayer::Create(m_pDevice, m_pContext))))
+	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_Player"),
+		CPlayer::Create(m_pDevice, m_pContext), LAYER_TYPE::LAYER_PLAYER)))
 		return E_FAIL;
 
 
@@ -141,53 +138,46 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	_matrix		PivotMatrix = XMMatrixIdentity();
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Deer"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Deer/"), TEXT("Deer.fbx"), PivotMatrix))))
-	//	return E_FAIL;
-
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tanjiro"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, TEXT("../Bin/Resources/Meshes/Tanjiro/"), TEXT("Tanjiro.fbx"), PivotMatrix))))
-	//	return E_FAIL;
 
 	/* For.Prototype_Component_Shader_Model */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Model"),
+	if (FAILED(GAME_INSTANCE->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Model"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModel.hlsl"), VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_AnimModel */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_AnimModel"),
+	if (FAILED(GAME_INSTANCE->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_AnimModel"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
 
-	Safe_Release(pGameInstance);
+	;
 
 	return S_OK;
 }
 
 HRESULT CLoader::Loading_For_Level_Tool()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
+
 
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
 	/* For.Prototype_GameObject_Camera_Free */
-	// Loading_Proto_AllObjects(L"../Bin/Resources/Map/");
+	Loading_Proto_AllObjects(L"../Bin/Resources/Map/");
 
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
-		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Main_Camera")))))
+	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
+		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Dummy"),
-		CDummy::Create(m_pDevice, m_pContext, TEXT("Dummy")))))
+	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_Dummy"),
+		CDummy::Create(m_pDevice, m_pContext, TEXT("Dummy")), LAYER_TYPE::LAYER_PLAYER)))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
-		CTerrain::Create(m_pDevice, m_pContext))))
+ 	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
+		CTerrain::Create(m_pDevice, m_pContext), LAYER_TYPE::LAYER_TERRAIN)))
 		return E_FAIL;
 
 	
@@ -198,19 +188,19 @@ HRESULT CLoader::Loading_For_Level_Tool()
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 
 	/* For.Prototype_Component_Shader_Model */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Model"),
+	if (FAILED(GAME_INSTANCE->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Model"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModel.hlsl"), VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_AnimModel */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_AnimModel"),
+	if (FAILED(GAME_INSTANCE->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_AnimModel"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
 
-	Safe_Release(pGameInstance);
+	;
 
 	return S_OK;
 }
@@ -218,8 +208,6 @@ HRESULT CLoader::Loading_For_Level_Tool()
 HRESULT CLoader::Loading_Proto_AllObjects(const wstring& strPath)
 {
 
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
 
 	std::vector<std::string> paths;
 	paths.reserve(1000);
@@ -252,27 +240,23 @@ HRESULT CLoader::Loading_Proto_AllObjects(const wstring& strPath)
 		{
 			if (strFilePath.find(L"Buildings") != wstring::npos)
 			{
-				if (FAILED(pGameInstance->Add_Prototype(wstring(strFileName),
-					CBuilding::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt))))
+				if (FAILED(GAME_INSTANCE->Add_Prototype(wstring(strFileName),
+					CBuilding::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_BUILDING)))
 				{
-					Safe_Release(pGameInstance);
 					return S_OK;
 				}
 			}
 			else if (strFilePath.find(L"Objects") != wstring::npos)
 			{
-				/*if (FAILED(pGameInstance->Add_Prototype(wstring(strFileName),
-					CBuilding::Create(m_pDevice, m_pContext, wstring(strFileName), strFilePath, wstring(strFileName) + strExt))))
+				if (FAILED(GAME_INSTANCE->Add_Prototype(wstring(strFileName),
+					CProp::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_PROP)))
 				{
-					Safe_Release(pGameInstance);
 					return S_OK;
-				}*/
+				}
 			}
 		}
 
 	}
-
-	Safe_Release(pGameInstance);
 	return S_OK;
 }
 

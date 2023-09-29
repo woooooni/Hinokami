@@ -56,10 +56,8 @@ private:
 
 	_float4x4			m_OffsetMatrix;
 	_float4x4			m_Transformation;
+	_float4x4			m_OriginTransformation;
 	_float4x4			m_CombinedTransformation;
-
-	_float4x4			m_OriginTransform;
-
 
 	CHierarchyNode*		m_pParent = nullptr;
 	_uint				m_iDepth = 0;

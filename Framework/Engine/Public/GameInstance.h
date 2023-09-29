@@ -30,6 +30,8 @@ public: /* For.Timer_Manager */
 	HRESULT	Add_Timer(const wstring& strTimerTag);
 
 public: /* For.Graphic_Device */
+	ID3D11Device* Get_Device();
+	ID3D11DeviceContext* Get_Context();
 	HRESULT Clear_BackBuffer_View(_float4 vClearColor);	
 	HRESULT Clear_DepthStencil_View();	
 	HRESULT Present();
@@ -45,15 +47,13 @@ public: /* For.Level_Manager */
 	HRESULT Render_Debug();
 
 public: /* For.Object_Manager */
-	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype);
-	HRESULT Add_GameObject(_uint iLevelIndex, _uint iNumLayerType, const wstring& strPrototypeTag, void* pArg = nullptr);
-	class CGameObject* Clone_GameObject(const wstring & strPrototypeTag, void* pArg = nullptr);
+public:
+	HRESULT Add_Prototype(const wstring & strPrototypeTag, class CGameObject* pPrototype, _uint iLayerType);
+	HRESULT Add_GameObject(_uint iLevelIndex, const _uint iLayerType, const wstring & strPrototypeTag, void* pArg = nullptr);
+	class CGameObject* Clone_GameObject(const wstring & strPrototypeTag, _uint iLayerType, void* pArg = nullptr);
+	const map<const wstring, class CGameObject*>& Find_Prototype_GameObjects(_uint iLayerType);
 	class CGameObject* Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring & strObjectTag);
 	list<CGameObject*>& Find_GameObjects(_uint iLevelIndex, const _uint iLayerType);
-
-public: /* For.Utilities */
-	string wstring_to_string(const wstring & strW);
-	wstring string_to_wstring(const string & strS);
 
 public: /* For. Componenet_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const wstring & strProtoTypeTag, class CComponent* pPrototype);
@@ -110,7 +110,6 @@ private:
 	class CLight_Manager*			m_pLight_Manager = { nullptr };
 	// class CCamera_Manager*			m_pCamera_Manager = { nullptr };
 	class CKey_Manager*				m_pKey_Manager = { nullptr };
-	class CUtils*					m_pUtilities = { nullptr };
 	class CData_Manager* m_pData_Manager = { nullptr };
 	class CFont_Manager*			m_pFont_Manager = { nullptr };
 

@@ -7,12 +7,14 @@
 #include "Dummy.h"
 #include "Terrain.h"
 #include "Key_Manager.h"
+#include "Utils.h"
 
 USING(Client)
 IMPLEMENT_SINGLETON(CImGui_Manager)
 
 CImGui_Manager::CImGui_Manager()
 {
+
 }
 
 HRESULT CImGui_Manager::Reserve_Manager(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -104,8 +106,8 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
 
     IMGUI_NEW_LINE;
 
-    ImGui::Checkbox("Model", &m_bShowModelWindow);
-    ImGui::Checkbox("Animation", &m_bShowAnimationWindow);
+    ImGui::Checkbox("Model Editor", &m_bShowModelWindow);
+    ImGui::Checkbox("Animation", &m_bShowModelWindow);
     ImGui::Checkbox("Effect", &m_bShowEffectWindow);
     ImGui::Checkbox("Map", &m_bShowMapWindow);
     ImGui::Checkbox("Terrain", &m_bShowTerrainWindow);
@@ -113,10 +115,14 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
     if (m_bShowDemo)
         ImGui::ShowDemoWindow(&m_bShowDemo);
 
+    Tick_Hierachy(fTimeDelta);
+
     if (m_bShowModelWindow)
+    {
         Tick_Model_Tool(fTimeDelta);
-    if(m_bShowAnimationWindow)
         Tick_Animation_Tool(fTimeDelta);
+    }
+        
     if(m_bShowEffectWindow)
         Tick_Effect_Tool(fTimeDelta);
     if(m_bShowMapWindow)
@@ -129,15 +135,51 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
     
 }
 
+void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
+{
+    ImGui::Begin("Hierachy");
+
+    const list<CGameObject*>& GameObjects = GAME_INSTANCE->Find_GameObjects(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_BUILDING));
+
+
+    if (ImGui::CollapsingHeader("Building"))
+    {
+        if (ImGui::BeginListBox("##BuildingObject"))
+        {
+            _uint iIdx = 0;
+            for (auto& Object : GameObjects)
+            {
+                string ObjectTag = CUtils::ToString(Object->Get_ObjectTag());
+                string TargetObjectTag;
+
+                if (m_pTarget)
+                    TargetObjectTag = CUtils::ToString(m_pTarget->Get_ObjectTag());
+                else
+                    TargetObjectTag = "";
+
+                if (ImGui::Selectable(ObjectTag.c_str(), TargetObjectTag.c_str()))
+                {
+
+                }
+                iIdx++;
+            }
+
+            ImGui::EndListBox();
+        }
+    }
+    
+    ImGui::End();
+}
+
 void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
 {
     
-    ImGui::Begin("Model");
+    ImGui::Begin("Model Editor");
     if (nullptr != m_pDummy)
     {
         ImGui::Text("Name : ");
         IMGUI_SAME_LINE;
-        ImGui::Text(CGameInstance::GetInstance()->wstring_to_string(m_pDummy->Get_ObjectTag()).c_str());
+        ImGui::Text(CUtils::ToString(m_pDummy->Get_ObjectTag()).c_str());
 
 
         CTransform* pTransform = dynamic_cast<CTransform*>(m_pDummy->Get_Component(L"Com_Transform"));
@@ -159,7 +201,7 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         XMStoreFloat3(&vPos, pTransform->Get_State(CTransform::STATE_POSITION));
         
         ImGui::Text("Position");
-        ImGui::DragFloat3("##Position", (_float*)&vPos, 0.1f, -999.f, 999.f, "%.3f");
+        ImGui::DragFloat3("##Position", (_float*)&vPos, 0.01f, -999.f, 999.f, "%.3f");
 
         pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&vPos), 1.f));
     #pragma endregion
@@ -167,43 +209,33 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         IMGUI_NEW_LINE;
 
     #pragma region Rotaion_TODO
-        //// Rotation
-        //_vector vRight = pTransform->Get_State(CTransform::STATE::STATE_RIGHT);
-        //_vector vUp = pTransform->Get_State(CTransform::STATE::STATE_UP);
-        //_vector vLook = pTransform->Get_State(CTransform::STATE::STATE_LOOK);
+        // Rotation
+        /*_float3 fRotation;
 
-        //
-        //float fRotaionX = XMConvertToDegrees(XMVectorGetX(XMVector4Dot(XMVector4Normalize(vRight), XMVectorSet(1.f, 0.f, 0.f, 0.f))));
-        //float fRotaionY = XMConvertToDegrees(XMVectorGetX(XMVector4Dot(XMVector4Normalize(vUp), XMVectorSet(0.f, 1.f, 0.f, 0.f))));
-        //float fRotaionZ = XMConvertToDegrees(XMVectorGetX(XMVector4Dot(XMVector4Normalize(vLook), XMVectorSet(0.f, 0.f, 1.f, 0.f))));
+        _float4 vRight, vUp, vLook;
+        XMStoreFloat4(&vRight, pTransform->Get_State(CTransform::STATE::STATE_RIGHT));
+        XMStoreFloat4(&vUp, pTransform->Get_State(CTransform::STATE::STATE_UP));
+        XMStoreFloat4(&vLook, pTransform->Get_State(CTransform::STATE::STATE_LOOK));
 
-        //ImGui::Text("Rotaion");
 
-        //ImGui::Text("X : ");
-        //IMGUI_SAME_LINE;
-        //ImGui::DragFloat("##Rotation_x", &fRotaionX, 0.1f, 0.f, 360.f);
+        ImGui::Text("Rotaion");
+        if (ImGui::DragFloat3("##Rotation_x", (_float*)&vRight, 0.1f, 0.f, 360.f))
+        {
+            pTransform->Turn
+        }*/
 
-        //ImGui::Text("Y : ");
-        //IMGUI_SAME_LINE;
-        //ImGui::DragFloat("##Rotation_y", &fRotaionY, 0.1f, 0.f, 360.f);
-
-        //ImGui::Text("Z : ");
-        //IMGUI_SAME_LINE;
-        //ImGui::DragFloat("##Rotation_z", &fRotaionZ, 0.1f, 0.f, 360.f);
-
-        ///*pTransform->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(fRotaionX));
-        //pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRotaionY));
-        //pTransform->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(fRotaionZ));*/
+        /*pTransform->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(fRotaionX));
+        pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRotaionY));
+        pTransform->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(fRotaionZ));*/
+        // IMGUI_NEW_LINE;
     #pragma endregion
-
-        IMGUI_NEW_LINE;
 
     #pragma region Scale
         // Scale
         _float3 vScale = pTransform->Get_Scale();
 
         ImGui::Text("Scale");
-        ImGui::DragFloat3("##Scale", (_float*)&vScale, 0.1f, 0.1f, 100.f);
+        ImGui::DragFloat3("##Scale", (_float*)&vScale, 0.01f, 0.01f, 100.f);
 
         if(vScale.x >= 0.1f 
             && vScale.y >= 0.1f 
@@ -219,8 +251,8 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         char szFileName[MAX_PATH];
         
 
-        sprintf_s(szFilePath, CGameInstance::GetInstance()->wstring_to_string(m_strFilePath).c_str());
-        sprintf_s(szFileName, CGameInstance::GetInstance()->wstring_to_string(m_strFileName).c_str());
+        sprintf_s(szFilePath, CUtils::ToString(m_strFilePath).c_str());
+        sprintf_s(szFileName, CUtils::ToString(m_strFileName).c_str());
         
 
 
@@ -228,14 +260,14 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         IMGUI_SAME_LINE;
         if (ImGui::InputText("##ModelPathText", szFilePath, MAX_PATH))
         {
-            m_strFilePath = wstring(CGameInstance::GetInstance()->string_to_wstring(string(szFilePath)));
+            m_strFilePath = CUtils::ToWString(string(szFilePath));
         }
         
         ImGui::Text("File");
         IMGUI_SAME_LINE;
         if (ImGui::InputText("##ModelFileText", szFileName, MAX_PATH))
         {
-            m_strFileName = wstring(CGameInstance::GetInstance()->string_to_wstring(string(szFileName)));
+            m_strFileName = CUtils::ToWString(string(szFileName));
         }
 
 
@@ -272,7 +304,7 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         {
             if (strlen(szExportFolderName) > 0)
             {
-                if (FAILED(m_pDummy->Export_Model_Bin(CGameInstance::GetInstance()->string_to_wstring(szExportFolderName), m_strFileName)))
+                if (FAILED(m_pDummy->Export_Model_Bin(CUtils::ToWString(szExportFolderName), m_strFileName)))
                     MSG_BOX("Failed Save.");
                 else
                     MSG_BOX("Save Success");
@@ -310,11 +342,11 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
         {
             for(size_t i = 0; i< Animations.size(); ++i)
             {
-                string AnimationName = CGameInstance::GetInstance()->wstring_to_string(Animations[i]->Get_AnimationName());
+                string AnimationName = CUtils::ToString(Animations[i]->Get_AnimationName());
                 if (ImGui::Selectable(AnimationName.c_str(), i == pModelCom->Get_CurrAnimationIndex()))
                 {
                     pModelCom->Set_AnimIndex(i);
-                    sprintf_s(szAnimationName, CGameInstance::GetInstance()->wstring_to_string(Animations[pModelCom->Get_CurrAnimationIndex()]->Get_AnimationName()).c_str());
+                    sprintf_s(szAnimationName, CUtils::ToString(Animations[pModelCom->Get_CurrAnimationIndex()]->Get_AnimationName()).c_str());
                 }
             }
 
@@ -325,12 +357,12 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
         ImGui::BeginGroup();
         if (ImGui::ArrowButton("##Swap_Animation_Up", ImGuiDir_Up))
         {
-            // pModelCom->Swap_Animation(pModelCom->Get_CurrAnimationIndex(), pModelCom->Get_CurrAnimationIndex() - 1);
+            pModelCom->Swap_Animation(pModelCom->Get_CurrAnimationIndex(), pModelCom->Get_CurrAnimationIndex() - 1);
         }
         IMGUI_SAME_LINE;
         if (ImGui::ArrowButton("##Swap_Animation_Down", ImGuiDir_Down))
         {
-            // pModelCom->Swap_Animation(pModelCom->Get_CurrAnimationIndex(), pModelCom->Get_CurrAnimationIndex() + 1);
+            pModelCom->Swap_Animation(pModelCom->Get_CurrAnimationIndex(), pModelCom->Get_CurrAnimationIndex() + 1);
         }
 
         
@@ -340,56 +372,33 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
         ImGui::InputText("##Animation_Input_Name", szAnimationName, 255);
         if(ImGui::Button("Rename"))
         {
-            wstring NewAnimationName = CGameInstance::GetInstance()->string_to_wstring(string(szAnimationName));
+            wstring NewAnimationName = CUtils::ToWString(string(szAnimationName));
             if (NewAnimationName.size() > 0)
                 Animations[pModelCom->Get_CurrAnimationIndex()]->Set_AnimationName(NewAnimationName);
         }
 
         if (KEY_TAP(KEY::ENTER) && ImGui::IsWindowFocused())
         {
-            wstring NewAnimationName = CGameInstance::GetInstance()->string_to_wstring(string(szAnimationName));
+            wstring NewAnimationName = CUtils::ToWString(string(szAnimationName));
             if (NewAnimationName.size() > 0)
                 Animations[pModelCom->Get_CurrAnimationIndex()]->Set_AnimationName(NewAnimationName);
         }
 
-        if (ImGui::Button("Delete"))
-        {
-           //  pModelCom->Delete_ModelAnimation(pModelCom->Get_CurrAnimationIndex());
-        }
+        if (ImGui::Button("Delete") || (KEY_TAP(KEY::DEL) && ImGui::IsWindowFocused()))
+           pModelCom->Delete_Animation(pModelCom->Get_CurrAnimationIndex());
 
-        if (KEY_TAP(KEY::DEL) && ImGui::IsWindowFocused())
-        {
-            // pModelCom->Delete_ModelAnimation(pModelCom->Get_CurrAnimationIndex());
-        }
         ImGui::EndGroup();
 
         // Animation Slider
         CAnimation* pCurrAnimation = Animations[pModelCom->Get_CurrAnimationIndex()];
 
-        _float fDuration = pCurrAnimation->Get_Duration();
-
-        // _float fCurrFrame = pCurrAnimation->Get_KeyDesc().iCurrFrame;
-        //if (ImGui::SliderFloat("##Animation_Slider", &fCurrFrame, 0.f, fDuration, "%.2f"))
-        //{
-        //    pCurrAnimation->Set_Pause(true);
-        //    // pCurrAnimation->Set_CurrFrame(fCurrFrame);
-        //}
-        //else
-        //{
-        //    pCurrAnimation->Set_Pause(false);
-        //}
-
         if (ImGui::ArrowButton("##Play_AnimationButton", ImGuiDir_Right))
-        {
             pCurrAnimation->Set_Pause(false);
-        }
 
         IMGUI_SAME_LINE;
 
         if (ImGui::Button("||"))
-        {
             pCurrAnimation->Set_Pause(true);
-        }
 
 
     }
@@ -408,9 +417,34 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
 {
     ImGui::Begin("Map");
-    ImGui::Text("Map Tool");
-    ImGui::End();
+    const map<const wstring, CGameObject*>& PrototypeObjects = GAME_INSTANCE->Find_Prototype_GameObjects(LAYER_BUILDING);
+
+    static char pSelectedObjectName[MAX_PATH] = "Temp";
+    static _bool bSelected = false;
+    if (ImGui::BeginListBox("##Object_List"))
+    {
+        for (auto& iter : PrototypeObjects)
+        {
+            string strPrototypeName = CUtils::ToString(iter.first);
+            if (ImGui::Selectable(strPrototypeName.c_str(), !strcmp(pSelectedObjectName, strPrototypeName.c_str())))
+            {
+                strcpy_s(pSelectedObjectName, strPrototypeName.c_str());
+                bSelected = true;
+            }
+        }
+        ImGui::EndListBox();
+    }
+    if (bSelected)
+    {
+        if (ImGui::Button("Create"))
+        {
+            wstring strPrototypeName = CUtils::ToWString(pSelectedObjectName);
+            GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, LAYER_BUILDING, strPrototypeName, nullptr);
+        }
+    }
+
     
+    ImGui::End();
 }
 
 void CImGui_Manager::Tick_Terrain_Tool(_float fTimeDelta)
@@ -439,11 +473,11 @@ void CImGui_Manager::Tick_Terrain_Tool(_float fTimeDelta)
         _float3 vScale = pTransform->Get_Scale();
 
         ImGui::Text("Scale");
-        ImGui::DragFloat3("##Scale", (_float*)&vScale, 0.1f, 0.1f, 100.f);
+        ImGui::DragFloat3("##Scale", (_float*)&vScale, 0.01f, 0.01f, 100.f);
 
-        if (vScale.x >= 0.1f
-            && vScale.y >= 0.1f
-            && vScale.z >= 0.1f)
+        if (vScale.x >= 0.01f
+            && vScale.y >= 0.01f
+            && vScale.z >= 0.01f)
             pTransform->Set_Scale(XMLoadFloat3(&vScale));
 #pragma endregion
 

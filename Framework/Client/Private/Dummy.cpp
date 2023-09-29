@@ -30,8 +30,8 @@ HRESULT CDummy::Initialize(void* pArg)
 
 HRESULT CDummy::Ready_Components()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
+
 
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
@@ -55,7 +55,7 @@ HRESULT CDummy::Ready_Components()
 		return E_FAIL;
 
 
-	Safe_Release(pGameInstance);
+	;
 	return S_OK;
 }
 
@@ -87,17 +87,17 @@ HRESULT CDummy::Render()
 
 
 
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
+
 
 	CShader* pShader = m_pModelCom->Get_ModelType() == CModel::TYPE::TYPE_NONANIM ? m_pNonAnimShaderCom : m_pAnimShaderCom;
 	
 
 	if (FAILED(pShader->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TP(), sizeof(_float4x4))))
 		return E_FAIL;
-	if (FAILED(pShader->Bind_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
+	if (FAILED(pShader->Bind_RawValue("g_ViewMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
 		return E_FAIL;
-	if (FAILED(pShader->Bind_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
+	if (FAILED(pShader->Bind_RawValue("g_ProjMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
 		return E_FAIL;
 
 	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
@@ -112,7 +112,7 @@ HRESULT CDummy::Render()
 			return E_FAIL;
 	}
 
-	Safe_Release(pGameInstance);
+	;
 
 	return S_OK;
 }
@@ -128,7 +128,7 @@ HRESULT CDummy::Ready_ModelCom(_uint eType, const wstring& strFilePath, const ws
 
 	
 
-	m_pModelCom = CGameInstance::GetInstance()->Import_Model_Data(eType, strFilePath, strFileName, PivotMatrix);
+	m_pModelCom = GAME_INSTANCE->Import_Model_Data(eType, strFilePath, strFileName, PivotMatrix);
 
 	if (nullptr == m_pModelCom)
 		return E_FAIL;
@@ -145,10 +145,11 @@ HRESULT CDummy::Export_Model_Bin(const wstring& strFilePath, const wstring& strF
 	if (nullptr == m_pModelCom)
 		return E_FAIL;
 
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	pInstance->Export_Model_Data(m_pModelCom, strFilePath, strFileName);
+	
+	if (FAILED(GAME_INSTANCE->Export_Model_Data(m_pModelCom, strFilePath, strFileName)))
+		return E_FAIL;
 
-	RELEASE_INSTANCE(CGameInstance);
+
 
 	return S_OK;
 }

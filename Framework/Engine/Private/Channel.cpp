@@ -2,7 +2,7 @@
 #include "Model.h"
 #include "HierarchyNode.h"
 #include "Utils.h"
-
+#include "Animation.h"
 
 
 CChannel::CChannel()
@@ -16,7 +16,7 @@ HRESULT CChannel::Initialize(aiNodeAnim* pAIChannel)
 	/* 이 이름으로 같은 이름을 가진 HierarchyNodes를 채널에 보관해둔다. */
 	/* 왜 보관하니? : 채널이 가진 키프레임중 시간대에 맞는 키플에ㅣㅁ 상태를 만들고. 이걸로 행렬 만들고.
 	이렇게 만든 행렬을 erarchyNodes에 저장해놔야해. */
-	m_strName = CUtils::GetInstance()->string_to_wstring(pAIChannel->mNodeName.C_Str());
+	m_strName = CUtils::ToWString(pAIChannel->mNodeName.C_Str());
 
 	//m_pHierarchyNode = pModel->Get_HierarchyNode(m_szName);
 	//if (nullptr == m_pHierarchyNode)
@@ -74,7 +74,7 @@ HRESULT CChannel::Initialize(aiNodeAnim* pAIChannel)
 }
 
 
-_uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, CHierarchyNode* pNode)
+_uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, CHierarchyNode* pNode, __out _matrix* pOutMatrix)
 {
 	_float3			vScale;
 	_float4			vRotation;
@@ -117,6 +117,60 @@ _uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, 
 		XMStoreFloat3(&vPosition, XMVectorLerp(XMLoadFloat3(&vSourPosition), XMLoadFloat3(&vDestPosition), fRatio));
 	}
 
+	_matrix	TransformationMatrix = XMMatrixAffineTransformation(XMLoadFloat3(&vScale), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRotation), XMVectorSetW(XMLoadFloat3(&vPosition), 1.f));
+
+	if(pOutMatrix != nullptr)
+		*pOutMatrix = TransformationMatrix;
+
+	if (nullptr != pNode)
+		pNode->Set_Transformation(TransformationMatrix);
+
+	m_iCurrFrames = iCurrentKeyFrame;
+	return iCurrentKeyFrame;
+}
+
+_uint CChannel::Interpolation(_float fPlayTime, _float fTimeDelta, CAnimation* pNextAnimation, _uint iCurrentKeyFrame, CHierarchyNode* pNode, CModel* pModel)
+{
+	_float3			vScale;
+	_float4			vRotation;
+	_float3			vPosition;
+
+	m_fInterpolationTime += pNextAnimation->Get_TickPerSecond() * fTimeDelta * 10.f;
+
+	if (m_fInterpolationTime >= pNextAnimation->Get_Duration())
+	{
+		// TODO : No Interpolation & Set Next Animation
+		if(pModel->Is_InterpolatingAnimation())
+			pModel->Complete_Interpolation();
+
+		m_fInterpolationTime = 0.f;
+		return iCurrentKeyFrame;
+	}
+	else
+	{
+		CChannel* pChannel = pNextAnimation->Get_Channel(m_strName);
+		KEYFRAME NextKeyFrame = pChannel->Get_FirstFrame();
+
+		_float		fRatio = m_fInterpolationTime / pNextAnimation->Get_Duration();
+
+		_float3		vSourScale, vDestScale;
+		_float4		vSourRotation, vDestRotation;
+		_float3		vSourPosition, vDestPosition;
+
+		vSourScale = m_KeyFrames[iCurrentKeyFrame].vScale;
+		vDestScale = NextKeyFrame.vScale;
+
+		vSourRotation = m_KeyFrames[iCurrentKeyFrame].vRotation;
+		vDestRotation = NextKeyFrame.vRotation;
+
+		vSourPosition = m_KeyFrames[iCurrentKeyFrame].vPosition;
+		vDestPosition = NextKeyFrame.vPosition;
+
+		XMStoreFloat3(&vScale, XMVectorLerp(XMLoadFloat3(&vSourScale), XMLoadFloat3(&vDestScale), fRatio));
+		XMStoreFloat4(&vRotation, XMQuaternionSlerp(XMLoadFloat4(&vSourRotation), XMLoadFloat4(&vDestRotation), fRatio));
+		XMStoreFloat3(&vPosition, XMVectorLerp(XMLoadFloat3(&vSourPosition), XMLoadFloat3(&vDestPosition), fRatio));
+	}
+
 	_matrix		TransformationMatrix = XMMatrixAffineTransformation(XMLoadFloat3(&vScale), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRotation), XMVectorSetW(XMLoadFloat3(&vPosition), 1.f));
 
 	if (nullptr != pNode)
@@ -124,6 +178,8 @@ _uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, 
 
 	return iCurrentKeyFrame;
 }
+
+
 
 
 CChannel* CChannel::Create(aiNodeAnim* pAIChannel)
@@ -135,6 +191,13 @@ CChannel* CChannel::Create(aiNodeAnim* pAIChannel)
 		MSG_BOX("Failed To Created : CChannel");
 		Safe_Release(pInstance);
 	}
+
+	return pInstance;
+}
+
+CChannel* CChannel::Create_Bin()
+{
+	CChannel* pInstance = new CChannel;
 
 	return pInstance;
 }

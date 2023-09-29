@@ -65,8 +65,8 @@ HRESULT CKyojuro::Render()
 
 HRESULT CKyojuro::Ready_Components()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
+
 
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
@@ -93,7 +93,7 @@ HRESULT CKyojuro::Ready_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_StateMachine"), TEXT("Com_StateMachine"), (CComponent**)&m_pStateCom)))
 		return E_FAIL;
 
-	Safe_Release(pGameInstance);
+	;
 
 	_vector vScale;
 	vScale.m128_f32[0] = 0.1f;
@@ -126,18 +126,18 @@ HRESULT CKyojuro::Ready_Sockets()
 
 HRESULT CKyojuro::Ready_Parts()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
+
 
 	/* For.Sword */
-	CGameObject* pGameObject = pGameInstance->Clone_GameObject(TEXT("Prototype_GameObject_Sword"));
+	CGameObject* pGameObject = GAME_INSTANCE->Clone_GameObject(TEXT("Prototype_GameObject_Sword"), LAYER_TYPE::LAYER_PLAYER);
 
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
 	m_Parts.push_back(pGameObject);
 
-	Safe_Release(pGameInstance);
+	;
 
 	return S_OK;
 }

@@ -55,7 +55,7 @@ public:
 	HRESULT Render();
 
 private:
-	CGameInstance*			m_pGameInstance = { nullptr };
+	CGameInstance* m_pGame_Instance = { nullptr };
 
 	ID3D11Device*			m_pDevice = { nullptr };
 	ID3D11DeviceContext*	m_pContext = { nullptr };

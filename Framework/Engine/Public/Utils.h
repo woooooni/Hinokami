@@ -2,22 +2,17 @@
 
 #include "Base.h"
 
-BEGIN(Engine)
-
-class CUtils : public CBase
+class ENGINE_DLL CUtils : public CBase
 {
-	DECLARE_SINGLETON(CUtils)
-
-private:
-	CUtils();
-	virtual ~CUtils() = default;
 
 public:
-	string wstring_to_string(wstring strW);
-	wstring string_to_wstring(string strS);
+	static wstring ToWString(string value);
+	static string ToString(wstring value);
 
-public:
-	virtual void	Free();
+	static bool StartsWith(string str, string comp);
+	static bool StartsWith(wstring str, wstring comp);
+
+	static void Replace(OUT string& str, string comp, string rep);
+	static void Replace(OUT wstring& str, wstring comp, wstring rep);
 };
 
-END

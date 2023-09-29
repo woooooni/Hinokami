@@ -32,13 +32,13 @@ HRESULT CLevel_Manager::Render_Debug()
 	{
 		if (nullptr != m_pCurrentLevel)
 		{
-			CGameInstance* pGameInstance = CGameInstance::GetInstance();
-			Safe_AddRef(pGameInstance);
+			
+		
 
 			/* 기존에 추가되어있던 레벨용 자원을 정리한다. */
-			pGameInstance->Clear(m_iCurrentLevelIndex);
+			GAME_INSTANCE->Clear(m_iCurrentLevelIndex);
 
-			Safe_Release(pGameInstance);
+			;
 		}
 		Safe_Release(m_pCurrentLevel);
 

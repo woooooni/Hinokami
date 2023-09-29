@@ -8,7 +8,7 @@
 #include "Dummy.h"
 #include "Terrain.h"
 
-USING(Client)
+
 CLevel_Tool::CLevel_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
 {
@@ -20,7 +20,7 @@ HRESULT CLevel_Tool::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	m_pImGuiManager = CImGui_Manager::GetInstance();
+ 	m_pImGuiManager = CImGui_Manager::GetInstance();
 	Safe_AddRef(m_pImGuiManager);
 
 	if (FAILED(Ready_Lights()))
@@ -45,7 +45,7 @@ HRESULT CLevel_Tool::Initialize()
 		return E_FAIL;
 
 
-	CGameObject* pObject = CGameInstance::GetInstance()->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_PLAYER), L"Dummy");
+	CGameObject* pObject = GAME_INSTANCE->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_PLAYER), L"Dummy");
 	if (nullptr == pObject)
 		return S_OK;
 
@@ -56,7 +56,7 @@ HRESULT CLevel_Tool::Initialize()
 	m_pImGuiManager->Set_Dummy(pDummy);
 
 
-	CGameObject* pTempObject = CGameInstance::GetInstance()->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_BACKGROUND), L"Terrain");
+	CGameObject* pTempObject = GAME_INSTANCE->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_BACKGROUND), L"Terrain");
 	if (nullptr == pTempObject)
 		return S_OK;
 
@@ -87,10 +87,10 @@ HRESULT CLevel_Tool::Render_Debug()
 
 HRESULT CLevel_Tool::Ready_Lights()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
 
-	pGameInstance->Reset_Lights();
+
+	GAME_INSTANCE->Reset_Lights();
 
 	LIGHTDESC			LightDesc;
 
@@ -102,7 +102,7 @@ HRESULT CLevel_Tool::Ready_Lights()
 	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
 	LightDesc.vSpecular = LightDesc.vDiffuse;
 
-	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
 
 	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
@@ -113,7 +113,7 @@ HRESULT CLevel_Tool::Ready_Lights()
 	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
 	LightDesc.vSpecular = LightDesc.vDiffuse;
 
-	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
 
 	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
@@ -123,18 +123,18 @@ HRESULT CLevel_Tool::Ready_Lights()
 	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
-	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
 
-	Safe_Release(pGameInstance);
+	;
 
 	return S_OK;
 }
 
 HRESULT CLevel_Tool::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
+
 
 	CCamera::CAMERADESC			CameraDesc;
 
@@ -148,65 +148,65 @@ HRESULT CLevel_Tool::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
 	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, _uint(eLayerType), TEXT("Prototype_GameObject_Camera_Free"), &CameraDesc)))
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, _uint(eLayerType), TEXT("Prototype_GameObject_Camera_Free"), &CameraDesc)))
 		return E_FAIL;
 
 
 
-	Safe_Release(pGameInstance);
+	;
 
 	return S_OK;
 }
 
 HRESULT CLevel_Tool::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, _uint(eLayerType), TEXT("Prototype_GameObject_Dummy"))))
+
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, _uint(eLayerType), TEXT("Prototype_GameObject_Dummy"))))
 		return E_FAIL;
 
-	Safe_Release(pGameInstance);
+	;
 
 	return S_OK;
 }
 
 HRESULT CLevel_Tool::Ready_Layer_BackGround(const LAYER_TYPE eLayerType)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, _uint(eLayerType), TEXT("Prototype_GameObject_Terrain"))))
+
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, LAYER_TYPE::LAYER_TERRAIN, TEXT("Prototype_GameObject_Terrain"))))
 		return E_FAIL;
 
-	Safe_Release(pGameInstance);
+	;
 
 	return S_OK;
 }
 
 HRESULT CLevel_Tool::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
 
 
-	Safe_Release(pGameInstance);
+
+	;
 	return S_OK;
 }
 
 HRESULT CLevel_Tool::Ready_Layer_UI(const LAYER_TYPE eLayerType)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
+
 
 	/*for (_uint i = 0; i < 1; ++i)
 	{
-		if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_UI"), LEVEL_TOOL, _uint(eLayerType))))
+		if (FAILED(GAME_INSTANCE->Add_GameObject(TEXT("Prototype_GameObject_UI"), LEVEL_TOOL, _uint(eLayerType))))
 			return E_FAIL;
 
 	} */
 
-	Safe_Release(pGameInstance);
+	;
 
 
 
@@ -215,11 +215,11 @@ HRESULT CLevel_Tool::Ready_Layer_UI(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_Tool::Ready_Layer_Effect(const LAYER_TYPE eLayerType)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
 
 
-	Safe_Release(pGameInstance);
+
+	;
 
 
 	return S_OK;

@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "HierarchyNode.h"
 #include "GameInstance.h"
+#include "Utils.h"
 
 CMesh::CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CVIBuffer(pDevice, pContext)
@@ -12,6 +13,9 @@ CMesh::CMesh(const CMesh& rhs)
 	: CVIBuffer(rhs)
 	, m_iMaterialIndex(rhs.m_iMaterialIndex)
 	, m_strName(rhs.m_strName)
+	, m_AnimVertices(rhs.m_AnimVertices)
+	, m_NonAnimVertices(rhs.m_NonAnimVertices)
+	, m_FaceIndices(rhs.m_FaceIndices)
 {
 
 }
@@ -20,10 +24,8 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eModelType, const aiMesh* pAIMe
 {
 	/* 이 메시와 이름이 같은 뼈대가 존재한다면.
 	이 뼈대의 행렬을 메시를 구성하는 정점에 곱해질 수 있도록 유도하낟. */
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
 
-	m_strName = pGameInstance->string_to_wstring(pAIMesh->mName.C_Str());
+	m_strName = CUtils::ToWString(pAIMesh->mName.C_Str());
 
 	/* 메시마다 사용하는 머테리얼(텍스쳐정보로 표현)이 다른다. */
 	/* 메시를 그릴때 마다 어떤 머테리얼을 솅디ㅓ로 던져야할 지르르 결정해주기위해서. */
@@ -62,16 +64,20 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eModelType, const aiMesh* pAIMe
 	FACEINDICES32* pIndices = new FACEINDICES32[m_iNumPrimitives];
 	ZeroMemory(pIndices, sizeof(FACEINDICES32) * m_iNumPrimitives);
 
+	m_FaceIndices.reserve(m_iNumPrimitives);
 	for (_uint i = 0; i < m_iNumPrimitives; ++i)
 	{
 		pIndices[i]._0 = pAIMesh->mFaces[i].mIndices[0];
 		pIndices[i]._1 = pAIMesh->mFaces[i].mIndices[1];
 		pIndices[i]._2 = pAIMesh->mFaces[i].mIndices[2];
+		m_FaceIndices.push_back(pIndices[i]);
 	}
 
 
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = pIndices;
+
+	
 
 	if (FAILED(__super::Create_IndexBuffer()))
 		return E_FAIL;
@@ -79,7 +85,6 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eModelType, const aiMesh* pAIMe
 	Safe_Delete_Array(pIndices);
 
 #pragma endregion
-	Safe_Release(pGameInstance);
 	return S_OK;
 }
 
@@ -88,21 +93,42 @@ HRESULT CMesh::Initialize(void* pArg)
 	return S_OK;
 }
 
+HRESULT CMesh::Initialize_Bin(CModel* pModel, const vector<wstring>& BoneNames)
+{
+	/* 현재 메시에 영향ㅇ르 ㅈ2ㅜ는 뼈들을 순회한다ㅏ. */
+	for (_uint i = 0; i < m_iNumBones; ++i)
+	{
+		CHierarchyNode* pHierarchyNode = pModel->Get_HierarchyNode(BoneNames[i]);
+		m_Bones.push_back(pHierarchyNode);
+		Safe_AddRef(pHierarchyNode);
+	}
+
+	if (0 == m_iNumBones)
+	{
+
+		CHierarchyNode* pNode = pModel->Get_HierarchyNode(m_strName);
+		if (nullptr == pNode)
+			return S_OK;
+
+		m_iNumBones = 1;
+		m_Bones.push_back(pNode);
+
+	}
+
+	return S_OK;
+}
+
 
 HRESULT CMesh::SetUp_HierarchyNodes(CModel* pModel, aiMesh* pAIMesh)
 {
 	m_iNumBones = pAIMesh->mNumBones;
-
-
-	CGameInstance* pInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pInstance);
 
 	/* 현재 메시에 영향ㅇ르 ㅈ2ㅜ는 뼈들을 순회한다ㅏ. */
 	for (_uint i = 0; i < m_iNumBones; ++i)
 	{
 		aiBone* pAIBone = pAIMesh->mBones[i];
 
-		CHierarchyNode* pHierarchyNode = pModel->Get_HierarchyNode(pInstance->string_to_wstring(pAIBone->mName.C_Str()));
+		CHierarchyNode* pHierarchyNode = pModel->Get_HierarchyNode(CUtils::ToWString(pAIBone->mName.C_Str()));
 
 		_float4x4			OffsetMatrix;
 
@@ -200,6 +226,11 @@ HRESULT CMesh::Ready_Vertices(const aiMesh* pAIMesh, _fmatrix PivotMatrix)
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = pVertices;
 
+
+	m_NonAnimVertices.reserve(m_iNumVertices);
+	for (_uint i = 0; i < m_iNumVertices; ++i)
+		m_NonAnimVertices.push_back(pVertices[i]);
+
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
 
@@ -276,6 +307,14 @@ HRESULT CMesh::Ready_AnimVertices(const aiMesh* pAIMesh, CModel* pModel)
 		}
 	}
 
+	m_AnimVertices.reserve(m_iNumVertices);
+
+	for (_uint i = 0; i < m_iNumVertices; ++i)
+		m_AnimVertices.push_back(pVertices[i]);
+
+	
+
+
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = pVertices;
 
@@ -287,9 +326,8 @@ HRESULT CMesh::Ready_AnimVertices(const aiMesh* pAIMesh, CModel* pModel)
 	return S_OK;
 }
 
-HRESULT CMesh::Ready_Vertices(const vector<VTXMODEL>& Vertices, const vector<FACEINDICES32>& Indices)
+HRESULT CMesh::Ready_Bin_Vertices()
 {
-
 	ZeroMemory(&m_BufferDesc, sizeof(D3D11_BUFFER_DESC));
 	m_BufferDesc.ByteWidth = m_iNumVertices * m_iStride;
 	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -300,11 +338,16 @@ HRESULT CMesh::Ready_Vertices(const vector<VTXMODEL>& Vertices, const vector<FAC
 
 
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-	m_SubResourceData.pSysMem = Vertices.data();
+	m_SubResourceData.pSysMem = m_NonAnimVertices.data();
 
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
 
+
+	m_iIndexSizeofPrimitive = sizeof(FACEINDICES32);
+	m_iNumIndicesofPrimitive = 3;
+	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
+	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	ZeroMemory(&m_BufferDesc, sizeof(D3D11_BUFFER_DESC));
 	m_BufferDesc.ByteWidth = m_iNumPrimitives * m_iIndexSizeofPrimitive;
@@ -317,7 +360,7 @@ HRESULT CMesh::Ready_Vertices(const vector<VTXMODEL>& Vertices, const vector<FAC
 
 
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-	m_SubResourceData.pSysMem = Indices.data();
+	m_SubResourceData.pSysMem = m_FaceIndices.data();
 
 	if (FAILED(__super::Create_IndexBuffer()))
 		return E_FAIL;
@@ -326,7 +369,7 @@ HRESULT CMesh::Ready_Vertices(const vector<VTXMODEL>& Vertices, const vector<FAC
 	return S_OK;
 }
 
-HRESULT CMesh::Ready_AnimVertices(const vector<VTXANIMMODEL>& Vertices, const vector<FACEINDICES32>& Indices)
+HRESULT CMesh::Ready_Bin_AnimVertices()
 {
 	ZeroMemory(&m_BufferDesc, sizeof(D3D11_BUFFER_DESC));
 	m_BufferDesc.ByteWidth = m_iNumVertices * m_iStride;
@@ -338,11 +381,16 @@ HRESULT CMesh::Ready_AnimVertices(const vector<VTXANIMMODEL>& Vertices, const ve
 
 
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-	m_SubResourceData.pSysMem = Vertices.data();
+	m_SubResourceData.pSysMem = m_AnimVertices.data();
 
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
 
+
+	m_iIndexSizeofPrimitive = sizeof(FACEINDICES32);
+	m_iNumIndicesofPrimitive = 3;
+	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
+	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	ZeroMemory(&m_BufferDesc, sizeof(D3D11_BUFFER_DESC));
 	m_BufferDesc.ByteWidth = m_iNumPrimitives * m_iIndexSizeofPrimitive;
@@ -355,7 +403,7 @@ HRESULT CMesh::Ready_AnimVertices(const vector<VTXANIMMODEL>& Vertices, const ve
 
 
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-	m_SubResourceData.pSysMem = Indices.data();
+	m_SubResourceData.pSysMem = m_FaceIndices.data();
 
 	if (FAILED(__super::Create_IndexBuffer()))
 		return E_FAIL;
@@ -363,6 +411,8 @@ HRESULT CMesh::Ready_AnimVertices(const vector<VTXANIMMODEL>& Vertices, const ve
 
 	return S_OK;
 }
+
+
 
 
 CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::TYPE eModelType, const aiMesh* pAIMesh, CModel* pModel, _fmatrix PivotMatrix)

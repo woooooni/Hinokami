@@ -58,6 +58,7 @@ public:
 
 private:
 	void Tick_Basic_Tool(_float fTimeDelta);
+	void Tick_Hierachy(_float fTimeDelta);
 	void Tick_Model_Tool(_float fTimeDelta);
 	void Tick_Animation_Tool(_float fTimeDelta);
 	void Tick_Effect_Tool(_float fTimeDelta);
@@ -74,7 +75,6 @@ private:
 private:
 	_bool m_bShowDemo = true;
 	_bool m_bShowModelWindow = false;
-	_bool m_bShowAnimationWindow = false;
 	_bool m_bShowEffectWindow = false;
 	_bool m_bShowMapWindow = true;
 	_bool m_bShowTerrainWindow = true;

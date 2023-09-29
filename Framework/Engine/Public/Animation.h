@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-class CAnimation final : public CBase
+class ENGINE_DLL CAnimation final : public CBase
 {
 private:
 	CAnimation();
@@ -15,12 +15,22 @@ public:
 	HRESULT Initialize_Prototype(aiAnimation* pAIAnimation);
 	HRESULT Initialize(class CModel* pModel);
 
-
 	HRESULT Play_Animation(_float fTimeDelta);
+	HRESULT Play_Animation(class CModel* pModel, CAnimation* pNextAnimation, _float fTimeDelta);
+	void Reset_Animation();
 
 public:
-	_float Get_Duration() { return m_fDuration; }
+	// HRESULT Ready_AnimationTexture();
+	// HRESULT SetUp_AnimationTexture_OnShader(class CShader* pShader, const char* pConstantName);
+	const list<KEYFRAME> Get_Curr_KeyFrames();
+	const list<KEYFRAME> Get_First_KeyFrames();
 
+public:
+	class CChannel* Get_Channel(const wstring & strChannelName);
+	const vector<class CChannel*>& Get_Channels() { return m_Channels; }
+	_float Get_Duration() { return m_fDuration; }
+	_float Get_CurrFrame() { return m_fPlayTime; }
+	_float Get_TickPerSecond() { return m_fTickPerSecond; }
 
 public:
 	_float Get_AnimationSpeed() { return m_fSpeed; }
@@ -30,7 +40,6 @@ public:
 	_bool Is_Pause() { return m_bPause; }
 
 
-	
 	const wstring& Get_AnimationName() { return m_strName; }
 	void Set_AnimationName(const wstring& strName) { m_strName = strName; }
 
@@ -53,11 +62,14 @@ private:
 private: /* 복제된 애니메이션 마다 따로 가진다. */
 	vector<class CHierarchyNode*>	m_HierarchyNodes;
 	vector<_uint>					m_ChannelKeyFrames;
+	vector<_uint>					m_ChannelOldKeyFrames;
 
 	_bool m_bPause = false;
+	// ID3D11ShaderResourceView* m_pSRV = nullptr;
 
 public:
 	static CAnimation* Create(aiAnimation* pAIAnimation);
+	static CAnimation* Create_Bin();
 	CAnimation* Clone(class CModel* pModel);
 
 	virtual void Free() override;

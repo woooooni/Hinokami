@@ -8,6 +8,7 @@
 #include <fstream>
 #include <filesystem>
 
+
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
 {
@@ -44,6 +45,7 @@ CModel::CModel(const CModel& rhs)
 
 	for (auto& pAnimation : m_Animations)
 		Safe_AddRef(pAnimation);
+		
 
 	Safe_AddRef(m_pMatrixTexture);
 }
@@ -74,7 +76,7 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const wstring& strModelFolderPa
 
 	/* 파일의 정보를 읽어서 aiScene안에 보관한다.  */
 
-	m_pAIScene = m_Importer.ReadFile(CUtils::GetInstance()->wstring_to_string(szFullPath).c_str(), iFlag);
+	m_pAIScene = m_Importer.ReadFile(CUtils::ToString(szFullPath).c_str(), iFlag);
 
 	if (nullptr == m_pAIScene)
 		return E_FAIL;
@@ -99,8 +101,7 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const wstring& strModelFolderPa
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Animation_Texture()))
-		return E_FAIL;
+	
 
 	return S_OK;
 }
@@ -164,6 +165,9 @@ HRESULT CModel::Initialize(void* pArg)
 
 	m_Animations = Animations;
 
+	if (FAILED(Ready_Animation_Texture()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -185,6 +189,38 @@ _uint CModel::Get_MaterialIndex(_uint iMeshIndex)
 	return m_Meshes[iMeshIndex]->Get_MaterialIndex();
 }
 
+HRESULT CModel::Set_Animation(const wstring& strAnimationName)
+{
+	for (size_t i = 0; i < m_Animations.size(); ++i)
+	{
+		if (strAnimationName == m_Animations[i]->Get_AnimationName())
+		{
+			Set_AnimIndex(i);
+			return S_OK;
+		}
+	}
+	return E_FAIL;
+}
+
+void CModel::Set_AnimIndex(_uint iAnimIndex)
+{
+	if (iAnimIndex >= m_Animations.size())
+		iAnimIndex = 0;
+
+	m_Animations[m_iCurrentAnimIndex]->Reset_Animation();
+	m_iNextAnimIndex = iAnimIndex;
+	m_bInterpolationAnimation = true;
+}
+
+void CModel::Complete_Interpolation()
+{
+	m_iCurrentAnimIndex = m_iNextAnimIndex;
+	m_iNextAnimIndex = -1;
+	m_bInterpolationAnimation = false;
+}
+
+
+
 
 
 HRESULT CModel::SetUp_OnShader(CShader* pShader, _uint iMaterialIndex, aiTextureType eTextureType, const char* pConstantName)
@@ -200,14 +236,23 @@ HRESULT CModel::Play_Animation(_float fTimeDelta)
 	if (m_iCurrentAnimIndex >= m_iNumAnimations)
 		return E_FAIL;
 
-	/* 현재 재생하고자하는 애니메이션이 제어해야할 뼈들의 지역행렬을 갱신해낸다. */
-	m_Animations[m_iCurrentAnimIndex]->Play_Animation(fTimeDelta);
+
+	if (m_bInterpolationAnimation)
+	{
+		m_Animations[m_iCurrentAnimIndex]->Play_Animation(this, m_Animations[m_iNextAnimIndex], fTimeDelta);
+	}
+	else
+	{
+		m_Animations[m_iCurrentAnimIndex]->Play_Animation(fTimeDelta);
+	}
 
 	/* 지역행렬을 순차적으로(부모에서 자식으로) 누적하여 m_CombinedTransformation를 만든다.  */
 	for (auto& pHierarchyNode : m_HierarchyNodes)
 	{
 		pHierarchyNode->Set_CombinedTransformation();
 	}
+		
+	
 
 	return S_OK;
 }
@@ -218,17 +263,33 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 	{
 		m_Meshes[iMeshIndex]->SetUp_BoneMatrices(m_pMatrixTexture, m_Matrices, XMLoadFloat4x4(&m_PivotMatrix));
 
-		/* 모델 정점의 스키닝. */
-		/*if (FAILED(pShader->Bind_RawValue("g_BoneMatrices", BoneMatrices, sizeof(_float4x4) * 256)))
-			return E_FAIL;*/
-
 		if (FAILED(pShader->Bind_Texture("g_MatrixPallete", m_pSRV)))
-			return E_FAIL;		
+			return E_FAIL;
+
+
 	}
 
 	pShader->Begin(0);
 
 	m_Meshes[iMeshIndex]->Render();
+
+	return S_OK;
+}
+
+HRESULT CModel::Swap_Animation(_uint iSrcIndex, _uint iDestIndex)
+{
+
+	if (TYPE_ANIM != m_eModelType)
+		return E_FAIL;
+
+	if (0 > iSrcIndex || 0 > iDestIndex || m_Animations.size() <= iSrcIndex || m_Animations.size() <= iDestIndex)
+		return E_FAIL;
+
+	CAnimation* Temp = m_Animations[iDestIndex];
+	m_Animations[iDestIndex] = m_Animations[iSrcIndex];
+	m_Animations[iSrcIndex] = Temp;
+
+	m_iCurrentAnimIndex = iSrcIndex;
 
 	return S_OK;
 }
@@ -242,11 +303,17 @@ HRESULT CModel::Delete_Animation(_uint iIndex)
 	if (0 > iIndex || m_Animations.size() <= iIndex)
 		return E_FAIL;
 
+
+
 	vector<CAnimation*>::iterator iter = m_Animations.begin();
 	iter += iIndex;
 	Safe_Release(*iter);
 
 	m_Animations.erase(iter);
+	
+	
+	m_iCurrentAnimIndex = m_Animations.size() >= m_iCurrentAnimIndex ? --m_iCurrentAnimIndex : m_iCurrentAnimIndex;
+	m_iCurrentAnimIndex = 0 > m_iCurrentAnimIndex ? 0 : m_iCurrentAnimIndex;
 
 	return S_OK;
 }
@@ -298,7 +365,7 @@ HRESULT CModel::Ready_Materials(const wstring& ModelFilePath)
 			_tchar			szFileName[MAX_PATH] = L"";
 			_tchar			szExt[MAX_PATH] = L"";
 
-			_wsplitpath_s(CUtils::GetInstance()->string_to_wstring(strPath.C_Str()).c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
+			_wsplitpath_s(CUtils::ToWString(strPath.C_Str()).c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
 
 
 			lstrcpy(szFullPath, ModelFilePath.c_str());
@@ -365,6 +432,7 @@ HRESULT CModel::Ready_Animations()
 
 HRESULT CModel::Ready_Animation_Texture()
 {
+
 	if (TYPE::TYPE_NONANIM == m_eModelType)
 		return S_OK;
 
@@ -388,12 +456,127 @@ HRESULT CModel::Ready_Animation_Texture()
 
 	if (FAILED(m_pDevice->CreateTexture1D(&TextureDesc, nullptr, &m_pMatrixTexture)))
 		return E_FAIL;
-	
+
 	if (FAILED(m_pDevice->CreateShaderResourceView(m_pMatrixTexture, nullptr, &m_pSRV)))
 		return E_FAIL;
 
 	return S_OK;
 }
+
+//HRESULT CModel::Ready_Animation_Texture()
+//{
+//	if (TYPE::TYPE_NONANIM == m_eModelType)
+//		return S_OK;
+//
+//	if (m_MatrixTextures.size() > 0)
+//	{
+//		for (auto& Texture : m_MatrixTextures)
+//			Safe_Release(Texture);
+//		m_MatrixTextures.clear();
+//	}
+//
+//
+//	m_MatrixTextures.reserve(m_iNumMeshes);
+//
+//	for (_uint iNumMesh = 0; iNumMesh < m_Meshes.size(); ++iNumMesh)
+//	{
+//		vector<vector<vector<_float4x4>>> FinalMatrices;
+//
+//		vector<vector<_float4x4>> AnimationMatrices;
+//		vector<_float4x4> BoneMatrices;
+//
+//		FinalMatrices.clear();
+//		FinalMatrices.reserve(m_Animations.size());
+//
+//		
+//		for (_uint iNumAnimation = 0; iNumAnimation < m_Animations.size(); ++iNumAnimation)
+//		{
+//
+//			AnimationMatrices.clear();
+//			AnimationMatrices.resize(m_iMaxAnimationFrame);
+//
+//			for (_uint iDuration = 0; iDuration < m_iMaxAnimationFrame; ++iDuration)
+//			{
+//				m_Animations[iNumAnimation]->Play_Animation(iDuration);
+//
+//				/*for (auto& pHierarchyNode : m_HierarchyNodes)
+//					pHierarchyNode->Set_CombinedTransformation();*/
+//
+//				m_Meshes[iNumMesh]->SetUp_BoneMatrices(nullptr, AnimationMatrices[iDuration], XMLoadFloat4x4(&m_PivotMatrix));
+//			}
+//
+//			FinalMatrices.push_back(AnimationMatrices);
+//		}
+//
+//		ID3D11Texture2D* pTexture;
+//		ID3D11ShaderResourceView* pSrv;
+//
+//
+//		D3D11_TEXTURE2D_DESC TextureDesc;
+//		ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+//
+//		TextureDesc.Width = m_Meshes[iNumMesh]->Get_BoneCount() * 4;
+//		TextureDesc.Height = m_iMaxAnimationFrame;
+//		TextureDesc.ArraySize = m_Animations.size();
+//		TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT; // 16바이트
+//		TextureDesc.Usage = D3D11_USAGE_IMMUTABLE;
+//		TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+//		TextureDesc.MipLevels = 1;
+//		TextureDesc.SampleDesc.Count = 1;
+//
+//		const _uint iLineSize = m_Meshes[iNumMesh]->Get_BoneCount() * sizeof(_float4x4);
+//		const _uint iPageSize = iLineSize * m_iMaxAnimationFrame;
+//		void* pFullData = nullptr;
+//		pFullData = ::malloc(iPageSize * m_Animations.size());
+//
+//
+//
+//		for (_uint iAnimationCount = 0; iAnimationCount < m_Animations.size(); iAnimationCount++)
+//		{
+//			_uint iStartOffset = iAnimationCount * iPageSize;
+//
+//			BYTE* pageStartPtr = reinterpret_cast<BYTE*>(pFullData) + iStartOffset;
+//
+//			for (_uint iFrame = 0; iFrame < m_iMaxAnimationFrame; iFrame++)
+//			{
+//				void* ptr = pageStartPtr + iLineSize * iFrame;
+//				::memcpy(ptr, FinalMatrices[iAnimationCount][iFrame].data(), iLineSize);
+//			}
+//		}
+//
+//
+//		// 리소스 만들기
+//		vector<D3D11_SUBRESOURCE_DATA> Subresources(m_Animations.size());
+//
+//		for (_uint iAnimationCount = 0; iAnimationCount < m_Animations.size(); ++iAnimationCount)
+//		{
+//			void* ptr = (BYTE*)pFullData + iAnimationCount * iPageSize;
+//			Subresources[iAnimationCount].pSysMem = ptr;
+//			Subresources[iAnimationCount].SysMemPitch = iLineSize;
+//			Subresources[iAnimationCount].SysMemSlicePitch = iPageSize;
+//		}
+//
+//		if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, Subresources.data(), &pTexture)))
+//			return E_FAIL;
+//
+//		::free(pFullData);
+//		pFullData = nullptr;
+//
+//		D3D11_SHADER_RESOURCE_VIEW_DESC SrvDesc;
+//		ZeroMemory(&SrvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+//		SrvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+//		SrvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+//		SrvDesc.Texture2D.MipLevels = 1;
+//		SrvDesc.Texture2DArray.ArraySize = m_Animations.size();
+//
+//		if (FAILED(m_pDevice->CreateShaderResourceView(pTexture, &SrvDesc, &pSrv)))
+//			return E_FAIL;
+//
+//		m_MatrixTextures.push_back(pSrv);
+//	}
+//
+//	return S_OK;
+//}
 
 
 
@@ -414,7 +597,6 @@ CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYP
 CModel* CModel::Create_Bin(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix)
 {
 	CModel* pInstance = new CModel(pDevice, pContext);
-
 
 	return pInstance;
 }

@@ -28,13 +28,8 @@ HRESULT CLevel_Logo::LateTick(_float fTimeDelta)
 
 	if (GetKeyState(VK_RETURN) & 0x8000)
 	{
-		CGameInstance*	pGameInstance = CGameInstance::GetInstance();
-		Safe_AddRef(pGameInstance);
-
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING,  CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
+		if (FAILED(GAME_INSTANCE->Open_Level(LEVEL_LOADING,  CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
 			return E_FAIL;
-
-		Safe_Release(pGameInstance);
 	}
 
 
@@ -45,10 +40,10 @@ HRESULT CLevel_Logo::LateTick(_float fTimeDelta)
 HRESULT CLevel_Logo::Ready_Layer_BackGround()
 {
 	/* 원형객체를 복제하여 사본객체를 생성하고 레이어에 추가한다. */
-	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
 
-	Safe_Release(pGameInstance);
+
+	;
 
 	return S_OK;
 }

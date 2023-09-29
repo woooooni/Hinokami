@@ -60,13 +60,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
-	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	if (FAILED(pGameInstance->Add_Timer(TEXT("Timer_Default"))))
+	if (FAILED(GAME_INSTANCE->Add_Timer(TEXT("Timer_Default"))))
 		return FALSE;
 
-	if (FAILED(pGameInstance->Add_Timer(TEXT("Timer_60"))))
+	if (FAILED(GAME_INSTANCE->Add_Timer(TEXT("Timer_60"))))
 		return FALSE;
 
 	_float		fTimeAcc = 0.f;
@@ -87,18 +84,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			}
 		}
 
-		fTimeAcc += pGameInstance->Compute_TimeDelta(TEXT("Timer_Default"));
+		fTimeAcc += GAME_INSTANCE->Compute_TimeDelta(TEXT("Timer_Default"));
 
 		if (fTimeAcc >= 1.f / 60.0f)
 		{
-			pMainApp->Tick(pGameInstance->Compute_TimeDelta(TEXT("Timer_60")));
+			pMainApp->Tick(GAME_INSTANCE->Compute_TimeDelta(TEXT("Timer_60")));
 			pMainApp->Render();
 
 			fTimeAcc = 0.f;
 		}		
 	}
 
-	Safe_Release(pGameInstance);
+	;
 
 
 	/* 전체적인 삭제 작업을 처리한다. */

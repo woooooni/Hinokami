@@ -29,6 +29,15 @@
 
 
 
+
+
+#define GET_INST(CLASSNAME)	CLASSNAME::GetInstance()
+#define GAME_INSTANCE GET_INST(CGameInstance)
+
+#define UTIL CUtils
+
+
+
 #ifndef			MSG_BOX
 #define			MSG_BOX(_message)			MessageBox(nullptr, TEXT(_message), L"System Message", MB_OK)
 #endif
@@ -110,6 +119,11 @@
 #define KEY_TAP(key) KEY_CHECK(key, KEY_STATE::TAP)
 #define KEY_AWAY(key) KEY_CHECK(key, KEY_STATE::AWAY)
 #define KEY_NONE(key) KEY_CHECK(key, KEY_STATE::NONE)
+
+
+// VTF
+#define MAX_MODEL_TRANSFORMS 250
+#define MAX_MODEL_KEYFRAMES 150
 
 
 

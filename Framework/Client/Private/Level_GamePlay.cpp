@@ -50,8 +50,8 @@ HRESULT CLevel_GamePlay::LateTick(_float fTimeDelta)
 
 HRESULT CLevel_GamePlay::Ready_Lights()
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
+
 
 	LIGHTDESC			LightDesc;
 
@@ -63,7 +63,7 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
 	LightDesc.vSpecular = LightDesc.vDiffuse;
 
-	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
 
 	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
@@ -74,7 +74,7 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
 	LightDesc.vSpecular = LightDesc.vDiffuse;
 
-	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
 
 	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
@@ -84,18 +84,18 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
-	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
 
-	Safe_Release(pGameInstance);
+	;
 
 	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
+
 
 	CCamera::CAMERADESC			CameraDesc;
 
@@ -109,64 +109,64 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
 	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, _uint(eLayerType), TEXT("Prototype_GameObject_Camera_Free"), &CameraDesc)))
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, _uint(eLayerType), TEXT("Prototype_GameObject_Camera_Free"), &CameraDesc)))
 		return E_FAIL;
 
-	Safe_Release(pGameInstance);
+	;
 
 	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, _uint(eLayerType), TEXT("Prototype_GameObject_Player"))))
+
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, _uint(eLayerType), TEXT("Prototype_GameObject_Player"))))
 		return E_FAIL;
 
 
-	Safe_Release(pGameInstance);
+	;
 
 	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const LAYER_TYPE eLayerType)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
 
-	/*if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_Terrain"), LEVEL_GAMEPLAY, _uint(eLayerType))))
+
+	/*if (FAILED(GAME_INSTANCE->Add_GameObject(TEXT("Prototype_GameObject_Terrain"), LEVEL_GAMEPLAY, _uint(eLayerType))))
 		return E_FAIL;*/
 
-	Safe_Release(pGameInstance);
+	;
 
 	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
 	
 
-	Safe_Release(pGameInstance);
+	
+
+	;
 	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_UI(const LAYER_TYPE eLayerType)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
+
 
 	/*for (_uint i = 0; i < 1; ++i)
 	{
-		if (FAILED(pGameInstance->Add_GameObject(TEXT("Prototype_GameObject_UI"), LEVEL_GAMEPLAY, _uint(eLayerType))))
+		if (FAILED(GAME_INSTANCE->Add_GameObject(TEXT("Prototype_GameObject_UI"), LEVEL_GAMEPLAY, _uint(eLayerType))))
 			return E_FAIL;
 
 	} */
 
-	Safe_Release(pGameInstance);
+	;
 
 
 
@@ -175,11 +175,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Effect(const LAYER_TYPE eLayerType)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
+	
 
 
-	Safe_Release(pGameInstance);
+
+	;
 
 
 	return S_OK;

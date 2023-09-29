@@ -12,6 +12,7 @@ private:
 	virtual ~CVIBuffer_Terrain() = default;
 
 public:
+	virtual HRESULT Initialize_Prototype(_uint iSizeX, _uint iSizeZ);
 	virtual HRESULT Initialize_Prototype(const wstring& strHeightMapFilePath);
 	virtual HRESULT Initialize(void* pArg) override;
 
@@ -33,6 +34,7 @@ private:
 
 public:
 	static CVIBuffer_Terrain* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring & strHeightMapFilePath);
+	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iSizeX, _uint iSizeZ);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };

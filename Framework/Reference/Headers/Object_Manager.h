@@ -17,11 +17,12 @@ private:
 
 public:
 	HRESULT Reserve_Manager(_uint iNumLevels, _uint iNumLayerTypes);
-	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype);
+	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype, _uint iLayerType);
 	HRESULT Add_GameObject(_uint iLevelIndex, const _uint iLayerType, const wstring& strPrototypeTag, void* pArg);
-	class CGameObject* Clone_GameObject(const wstring& strPrototypeTag, void* pArg = nullptr);
+	class CGameObject* Clone_GameObject(const wstring& strPrototypeTag, _uint iLayerType, void* pArg = nullptr);
 	
 public:
+	const map<const wstring, class CGameObject*>& Find_Prototype_GameObjects(_uint iLayerType);
 	class CGameObject* Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring& strObjectTag);
 	list<CGameObject*>& Find_GameObjects(_uint iLevelIndex, const _uint iLayerType);
 
@@ -33,16 +34,18 @@ public:
 
 private:
 	/* 원형객체들을 레벨별로 보관할까?! */
-	map<const wstring, class CGameObject*>				m_Prototypes;
+	map<const wstring, class CGameObject*>*				m_pPrototypes;
+	_uint	m_iNumLayer = { 0 };
 
 private:
 	/* 사본객체들을 레벨별로 그룹(CLayer)지어서 보관한다. */
 	_uint								m_iNumLevels = { 0 };
+	
 	vector<class CLayer*>*				m_pLayers = { nullptr };
 	typedef vector<class CLayer*>*		LAYERS;
 
 private:
-	class CGameObject* Find_Prototype(const wstring& strPrototypeTag);
+	class CGameObject* Find_Prototype(const wstring& strPrototypeTag, _uint iLayerType);
 	class CLayer* Find_Layer(_uint iLevelIndex, _uint iLayerType);
 
 public:

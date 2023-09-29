@@ -42,9 +42,6 @@ HRESULT CLevel_Loading::LateTick(_float fTimeDelta)
 	{	
 		if (true == m_pLoader->Get_Finished())
 		{
-			CGameInstance*	pGameInstance = CGameInstance::GetInstance();
-			Safe_AddRef(pGameInstance);
-
 			CLevel*		pNewLevel = nullptr;
 
 			switch (m_eNextLevel)
@@ -64,10 +61,10 @@ HRESULT CLevel_Loading::LateTick(_float fTimeDelta)
 			if (nullptr == pNewLevel)
 				return E_FAIL;
 
-			if (FAILED(pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
+			if (FAILED(GAME_INSTANCE->Open_Level(m_eNextLevel, pNewLevel)))
 				return E_FAIL;		
 
-			Safe_Release(pGameInstance);
+			;
 		}
 	}
 

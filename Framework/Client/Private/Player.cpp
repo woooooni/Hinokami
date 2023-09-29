@@ -27,10 +27,7 @@ HRESULT CPlayer::Initialize_Prototype()
 HRESULT CPlayer::Initialize(void* pArg)
 {
 
-	CGameInstance* pGameIntance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameIntance);
-
-	CGameObject* pGameObject = pGameIntance->Clone_GameObject(L"Prototype_GameObject_Giyu");
+	CGameObject* pGameObject = GAME_INSTANCE->Clone_GameObject(L"Prototype_GameObject_Giyu", LAYER_TYPE::LAYER_PLAYER);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
@@ -47,7 +44,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	
 	
-	Safe_Release(pGameIntance);
+	
     return S_OK;
 }
 

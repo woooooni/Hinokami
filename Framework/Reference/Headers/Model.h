@@ -22,9 +22,10 @@ public:
 
 	_uint Get_MaterialIndex(_uint iMeshIndex);
 
-	void Set_AnimIndex(_uint iAnimIndex) {
-		m_iCurrentAnimIndex = iAnimIndex;
-	}
+	HRESULT Set_Animation(const wstring& strAnimationName);
+	void Set_AnimIndex(_uint iAnimIndex);
+	
+	void Complete_Interpolation();
 
 	_matrix Get_PivotMatrix() {
 		return XMLoadFloat4x4(&m_PivotMatrix);
@@ -46,8 +47,10 @@ public:
 	HRESULT Play_Animation(_float fTimeDelta);
 	HRESULT Render(class CShader* pShader, _uint iMeshIndex, _uint iPassIndex = 0);
 
-	HRESULT Delete_Animation(_uint iIndex);
 
+	HRESULT Swap_Animation(_uint iSrcIndex, _uint iDestIndex);
+	HRESULT Delete_Animation(_uint iIndex);
+	_bool Is_InterpolatingAnimation() { return m_bInterpolationAnimation; }
 public:
 	vector<class CAnimation*>& Get_Animations() { return m_Animations; }
 	_uint Get_CurrAnimationIndex() { return m_iCurrentAnimIndex; }
@@ -84,14 +87,11 @@ private:
 
 private:
 	_uint								m_iCurrentAnimIndex = 0;
+	_int								m_iNextAnimIndex = -1;
+	_bool								m_bInterpolationAnimation = false;
+
 	_uint								m_iNumAnimations = 0;
 	vector<class CAnimation*>			m_Animations;
-
-
-	//vector<vector<ANIM_INTERPOLATION_DATA>>	m_AnimInterpolationData;
-	//ANIM_INTERPOLATION_DATA* m_pCurLinearData = nullptr;
-
-	//list<KEYFRAME> m_NextFirstKeyFrams;
 
 
 private:
@@ -99,6 +99,8 @@ private:
 	ID3D11ShaderResourceView* m_pSRV;
 	vector<_float4x4> m_Matrices;
 
+//private:
+//	vector<ID3D11ShaderResourceView*> m_MatrixTextures;
 
 private:
 	HRESULT Ready_MeshContainers(_fmatrix PivotMatrix);

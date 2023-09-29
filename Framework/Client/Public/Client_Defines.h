@@ -5,12 +5,7 @@
 
 namespace Client
 {
-	enum LEVELID { LEVEL_STATIC, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_TOOL, LEVEL_LOADING, LEVEL_END };
-
-	const unsigned int		g_iWinSizeX = 1280;
-	const unsigned int		g_iWinSizeY = 720;
-
-	enum class LAYER_TYPE
+	enum LAYER_TYPE
 	{
 		LAYER_TERRAIN,
 		LAYER_SKYBOX,
@@ -25,6 +20,11 @@ namespace Client
 		LAYER_UI,
 		LAYER_END
 	};
+
+	enum LEVELID { LEVEL_STATIC, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_TOOL, LEVEL_LOADING, LEVEL_END };
+
+	const unsigned int		g_iWinSizeX = 1280;
+	const unsigned int		g_iWinSizeY = 720;
 }
 
 extern HWND g_hWnd;

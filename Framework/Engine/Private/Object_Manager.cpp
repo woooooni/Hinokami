@@ -13,34 +13,43 @@ HRESULT CObject_Manager::Reserve_Manager(_uint iNumLevels, _uint iNumLayerTypes)
 	if (nullptr != m_pLayers)
 		return E_FAIL;
 
+
+	m_iNumLayer = iNumLayerTypes;
+	m_iNumLevels = iNumLevels;
+
+	
+	
+	m_pPrototypes = new map<const wstring, class CGameObject*>[iNumLayerTypes];
+
+
 	m_pLayers = new vector<CLayer*>[iNumLevels];
 
-	for (_uint i = 0; i < iNumLevels; ++i)
+	for (_uint i = 0; i < m_iNumLevels; ++i)
 	{
-		m_pLayers[i].reserve(iNumLevels + 1);
+		m_pLayers[i].reserve(m_iNumLevels + 1);
 		for (_uint j = 0; j < iNumLayerTypes; ++j)
 			m_pLayers[i].push_back(CLayer::Create());
 	}
 
-	m_iNumLevels = iNumLevels;
 
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Add_Prototype(const wstring & strPrototypeTag, CGameObject * pPrototype)
+HRESULT CObject_Manager::Add_Prototype(const wstring& strPrototypeTag, CGameObject* pPrototype, _uint iLayerType)
 {
-	if (nullptr != Find_Prototype(strPrototypeTag))
+	if (nullptr != Find_Prototype(strPrototypeTag, iLayerType))
 		return E_FAIL;
 
-	m_Prototypes.emplace(strPrototypeTag, pPrototype);
+	m_pPrototypes[iLayerType].emplace(strPrototypeTag, pPrototype);
 
 	return S_OK;
 }
+
 
 HRESULT CObject_Manager::Add_GameObject(_uint iLevelIndex, const _uint iLayerType, const wstring & strPrototypeTag, void * pArg)
 {
 	/* 복제할 사본을 차즌ㄷ나. */
-	CGameObject*		pPrototype = Find_Prototype(strPrototypeTag);
+	CGameObject*		pPrototype = Find_Prototype(strPrototypeTag, iLayerType);
 	if (nullptr == pPrototype)
 		return E_FAIL;
 
@@ -57,9 +66,9 @@ HRESULT CObject_Manager::Add_GameObject(_uint iLevelIndex, const _uint iLayerTyp
 	return S_OK;
 }
 
-CGameObject* CObject_Manager::Clone_GameObject(const wstring& strPrototypeTag, void* pArg)
+CGameObject* CObject_Manager::Clone_GameObject(const wstring& strPrototypeTag, _uint iLayerType, void* pArg)
 {
-	CGameObject* pPrototype = Find_Prototype(strPrototypeTag);
+	CGameObject* pPrototype = Find_Prototype(strPrototypeTag, iLayerType);
 
 	if (nullptr == pPrototype)
 		return nullptr;
@@ -71,6 +80,17 @@ CGameObject* CObject_Manager::Clone_GameObject(const wstring& strPrototypeTag, v
 
 
 	return pGameObject;
+}
+
+const map<const wstring, class CGameObject*>& CObject_Manager::Find_Prototype_GameObjects(_uint iLayerType)
+{
+	if (iLayerType >= m_iNumLayer)
+	{
+		MSG_BOX("FAILED : CObject_Manager::Find_Prototype_GameObjects");
+		return m_pPrototypes[0];
+	}
+		
+	return  m_pPrototypes[iLayerType];
 }
 
 CGameObject* CObject_Manager::Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring& strObjectTag)
@@ -132,11 +152,14 @@ void CObject_Manager::Clear(_uint iLevelIndex)
 	m_pLayers[iLevelIndex].clear();
 }
 
-CGameObject * CObject_Manager::Find_Prototype(const wstring & strPrototypeTag)
+CGameObject * CObject_Manager::Find_Prototype(const wstring & strPrototypeTag, _uint iLayerType)
 {
-	auto	iter = m_Prototypes.find(strPrototypeTag);
+	if (iLayerType >= m_iNumLayer)
+		return nullptr;
 
-	if (iter == m_Prototypes.end())
+	auto	iter = m_pPrototypes[iLayerType].find(strPrototypeTag);
+
+	if (iter == m_pPrototypes[iLayerType].end())
 		return nullptr;
 
 	return iter->second;
@@ -169,10 +192,12 @@ void CObject_Manager::Free()
 
 	Safe_Delete_Array(m_pLayers);
 
-	for (auto& pObj : m_Prototypes)
-		Safe_Release(pObj.second);
 
-	m_Prototypes.clear();
+	for (_uint i = 0; i < m_iNumLayer; ++i)
+	{
+		for (auto& pObj : m_pPrototypes[i])
+			Safe_Release(pObj.second);
+		m_pPrototypes[i].clear();
+	}
 
-	
 }

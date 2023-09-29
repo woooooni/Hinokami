@@ -10,6 +10,8 @@
 #include "Animation.h"
 #include "Channel.h"
 
+
+USING(Engine)
 IMPLEMENT_SINGLETON(CData_Manager);
 
 
@@ -93,6 +95,8 @@ CModel* CData_Manager::Import_Model_Data(_uint eType, wstring strFolderPath, wst
 
 		wstring strFinalFolderPath = strFolderPath + szFileName;
 
+		XMStoreFloat4x4(&pModel->m_PivotMatrix, PivotMatrix);
+
 		if (FAILED(Import_Mesh(strFinalFolderPath, pModel)))
 		{
 			MSG_BOX("Import_Mesh Failed.");
@@ -117,6 +121,13 @@ CModel* CData_Manager::Import_Model_Data(_uint eType, wstring strFolderPath, wst
 			Safe_Release(pModel);
 			return nullptr;
 		}
+
+		if (FAILED(pModel->Ready_Animation_Texture()))
+		{
+			MSG_BOX("Ready_Animation_Texture Failed.");
+			Safe_Release(pModel);
+			return nullptr;
+		}
 	}
 
 	return pModel;
@@ -136,8 +147,6 @@ HRESULT CData_Manager::Export_Mesh(const wstring& strFinalFolderPath, CModel* pM
 
 	filesystem::create_directories(path.parent_path());
 
-	CUtils* StrUtil = CUtils::GetInstance();
-	Safe_AddRef(StrUtil);
 
 	shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
 	File->Open(strMeshFilePath, FileMode::Write);
@@ -149,10 +158,11 @@ HRESULT CData_Manager::Export_Mesh(const wstring& strFinalFolderPath, CModel* pM
 	for (auto& Node : pModel->m_HierarchyNodes)
 	{
 		File->Write<_uint>(Node->m_iDepth);
-		File->Write<string>(StrUtil->wstring_to_string(Node->m_strName));
-		File->Write<string>(StrUtil->wstring_to_string(Node->Get_ParentName()));
-		// Warning ! if Add Parent
-		File->Write<_float4x4>(Node->m_Transformation);
+		File->Write<string>(CUtils::ToString(Node->m_strName));
+		File->Write<string>(CUtils::ToString(Node->Get_ParentName()));
+
+		// Warning ! Origin Save, To Load Transform
+		File->Write<_float4x4>(Node->m_OriginTransformation);
 		File->Write<_float4x4>(Node->m_OffsetMatrix);
 	}
 
@@ -160,34 +170,43 @@ HRESULT CData_Manager::Export_Mesh(const wstring& strFinalFolderPath, CModel* pM
 	
 	for (auto& Mesh : pModel->m_Meshes)
 	{
-		File->Write<string>(StrUtil->wstring_to_string(Mesh->m_strName));
+		File->Write<string>(CUtils::ToString(Mesh->m_strName));
 		File->Write<_uint>(Mesh->m_iMaterialIndex);
 		File->Write<_uint>(Mesh->m_iNumBones);
 		File->Write<_uint>(Mesh->m_iNumVertexBuffers);
 		File->Write<_uint>(Mesh->m_iNumVertices);
 		File->Write<_uint>(Mesh->m_iStride);
 		File->Write<_uint>(Mesh->m_iNumPrimitives);
-
 		File->Write<_uint>(Mesh->m_iIndexSizeofPrimitive);
 		File->Write<_uint>(Mesh->m_iNumIndicesofPrimitive);
 		File->Write<D3D11_PRIMITIVE_TOPOLOGY>(Mesh->m_eTopology);
 		File->Write<DXGI_FORMAT>(Mesh->m_eIndexFormat);
 
+		for (auto& Bone : Mesh->m_Bones)
+		{
+			File->Write<string>(CUtils::ToString(Bone->m_strName));
+		}
 
-		File->Write(&Mesh->m_pIB[0], sizeof(FACEINDICES32) * Mesh->m_iNumPrimitives);
+
+		File->Write<_uint>((_uint)Mesh->m_FaceIndices.size());
+		for (auto Indices : Mesh->m_FaceIndices)
+			File->Write(&Indices, sizeof(FACEINDICES32));
 
 
 		if (pModel->m_eModelType == CModel::TYPE::TYPE_ANIM)
-			File->Write(&Mesh->m_pVB[0], sizeof(VTXANIMMODEL) * Mesh->m_iNumVertices);
+		{
+			for (auto& Vertex : Mesh->m_AnimVertices)
+				File->Write(&Vertex, sizeof(VTXANIMMODEL));
+		}
 		else
-			File->Write(&Mesh->m_pVB[0], sizeof(VTXMODEL) * Mesh->m_iNumVertices);
-
-
-
+		{
+			for (auto& Vertex : Mesh->m_NonAnimVertices)
+				File->Write(&Vertex, sizeof(VTXMODEL));
+		}
+			
 
 	}
 
-	Safe_Release(StrUtil);
 	return S_OK;
 }
 #pragma endregion
@@ -202,9 +221,6 @@ HRESULT CData_Manager::Export_Material(const wstring& strFinalFolderPath, CModel
 	wstring strMaterialFilePath = strFinalFolderPath + L".xml";
 	auto path = filesystem::path(strMaterialFilePath);
 	filesystem::create_directories(path.parent_path());
-
-	CUtils* StringUtil = CUtils::GetInstance();
-	Safe_AddRef(StringUtil);
 	
 	shared_ptr<tinyxml2::XMLDocument> Document = make_shared<tinyxml2::XMLDocument>();
 	tinyxml2::XMLDeclaration* Decl = Document->NewDeclaration();
@@ -250,8 +266,7 @@ HRESULT CData_Manager::Export_Material(const wstring& strFinalFolderPath, CModel
 
 	}
 
-	Document->SaveFile(StringUtil->wstring_to_string(strMaterialFilePath).c_str());
-	Safe_Release(StringUtil);
+	Document->SaveFile(CUtils::ToString(strMaterialFilePath).c_str());
 	
 
 	return S_OK;
@@ -268,31 +283,30 @@ HRESULT CData_Manager::Export_Animation(const wstring& strFinalFolderPath, CMode
 	auto path = filesystem::path(strAnimationFilePath);
 	filesystem::create_directories(path.parent_path());
 
-	CUtils* StringUtil = CUtils::GetInstance();
-	Safe_AddRef(StringUtil);
-
 	shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
 	File->Open(strAnimationFilePath, FileMode::Write);
 
-	File->Write<_uint>(pModel->m_Animations.size());
+	File->Write<_uint>(_uint(pModel->m_Animations.size()));
 	for (auto& Animation : pModel->m_Animations)
 	{
-		File->Write<string>(StringUtil->wstring_to_string(Animation->m_strName));
+		File->Write<string>(CUtils::ToString(Animation->m_strName));
 		File->Write<_float>(Animation->m_fDuration);
 		File->Write<_float>(Animation->m_fTickPerSecond);
 		File->Write<_float>(Animation->m_fSpeed);
-		
+
 		File->Write<_uint>(Animation->m_iNumChannels);
 		for (auto& Channel : Animation->m_Channels)
 		{
-			File->Write<string>(StringUtil->wstring_to_string(Channel->m_strName));
-			for (_uint i = 0; i < Channel->m_iNumKeyFrames; ++i)			
+			File->Write<string>(CUtils::ToString(Channel->m_strName));
+			File->Write<_uint>(Channel->m_iNumKeyFrames);
+			for (_uint i = 0; i < Channel->m_iNumKeyFrames; ++i)
+			{
 				File->Write(&Channel->m_KeyFrames[i], sizeof(KEYFRAME));
+			}
+
 		}
 
 	}
-
-	Safe_Release(StringUtil);
 	return S_OK;
 }
 
@@ -306,9 +320,9 @@ string CData_Manager::Export_Texture(const wstring& strOriginFolder, const strin
 		return "";
 
 
-	string TextureName = CUtils::GetInstance()->wstring_to_string(pTexture->Get_Name(iIdx));
+	string TextureName = CUtils::ToString(pTexture->Get_Name(iIdx));
 	
-	string OriginTextureFilePath = CUtils::GetInstance()->wstring_to_string(strOriginFolder) + TextureName;
+	string OriginTextureFilePath = CUtils::ToString(strOriginFolder) + TextureName;
 	string SaveTextureFilePath = strSaveFolder + "/" + TextureName;
 
 	CopyFileA(OriginTextureFilePath.c_str(), SaveTextureFilePath.c_str(), false);
@@ -325,9 +339,6 @@ HRESULT CData_Manager::Import_Mesh(const wstring strFinalPath, CModel* pModel)
 	shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
 	File->Open(strMeshFilePath, FileMode::Read);
 
-
-	CUtils* StrUtil = CUtils::GetInstance();
-
 	_uint iAnimationCount = File->Read<_uint>();
 
 	pModel->m_eModelType = iAnimationCount > 0 ? CModel::TYPE::TYPE_ANIM : CModel::TYPE::TYPE_NONANIM;
@@ -338,12 +349,13 @@ HRESULT CData_Manager::Import_Mesh(const wstring strFinalPath, CModel* pModel)
 	{
 		CHierarchyNode* pNode = CHierarchyNode::Create_Bin();
 		
-		pNode->m_iDepth = File->Read<_uint>();
-		pNode->m_strName = StrUtil->string_to_wstring(File->Read<string>());
-		pNode->m_strParentName = StrUtil->string_to_wstring(File->Read<string>());
-		// Warning ! if Add Parent
-		pNode->m_Transformation = File->Read<_float4x4>();
-		pNode->m_OffsetMatrix = File->Read<_float4x4>();
+
+		File->Read<_uint>(pNode->m_iDepth);
+		pNode->m_strName =CUtils::ToWString(File->Read<string>());
+		pNode->m_strParentName =CUtils::ToWString(File->Read<string>());
+		// Warning ! Load Orgin Transformation to m_Transfomation
+		File->Read<_float4x4>(pNode->m_Transformation);
+		File->Read<_float4x4>(pNode->m_OffsetMatrix);
 
 
 		pModel->m_HierarchyNodes.push_back(pNode);
@@ -360,15 +372,14 @@ HRESULT CData_Manager::Import_Mesh(const wstring strFinalPath, CModel* pModel)
 	{
 		
 		CMesh* Mesh = CMesh::Create_Bin(m_pDevice, m_pContext, pModel->m_eModelType, XMLoadFloat4x4(&pModel->m_PivotMatrix));
-
-		Mesh->m_strName = StrUtil->string_to_wstring(File->Read<string>());
+		
+		Mesh->m_strName =CUtils::ToWString(File->Read<string>());
 		File->Read<_uint>(Mesh->m_iMaterialIndex);
 		File->Read<_uint>(Mesh->m_iNumBones);
 		File->Read<_uint>(Mesh->m_iNumVertexBuffers);
 		File->Read<_uint>(Mesh->m_iNumVertices);
 		File->Read<_uint>(Mesh->m_iStride);
 		File->Read<_uint>(Mesh->m_iNumPrimitives);
-
 		File->Read<_uint>(Mesh->m_iIndexSizeofPrimitive);
 		File->Read<_uint>(Mesh->m_iNumIndicesofPrimitive);
 		File->Read<D3D11_PRIMITIVE_TOPOLOGY>(Mesh->m_eTopology);
@@ -376,44 +387,53 @@ HRESULT CData_Manager::Import_Mesh(const wstring strFinalPath, CModel* pModel)
 
 
 
-		vector<FACEINDICES32> Indices(Mesh->m_iNumPrimitives);
-		for (_uint j = 0; j < Mesh->m_iNumPrimitives; ++j)
+		vector<wstring> BoneNames(Mesh->m_iNumBones);
+		for (_uint j = 0; j < Mesh->m_iNumBones; ++j)		
+			BoneNames[j] =CUtils::ToWString(File->Read<string>());
+
+
+		_uint iIndiceSize = File->Read<_uint>();
+		Mesh->m_FaceIndices.reserve(iIndiceSize);
+		for (_uint j = 0; j < iIndiceSize; ++j)
 		{
 			FACEINDICES32 Index;
 			File->Read<FACEINDICES32>(Index);
-			Indices.push_back(Index);
+			Mesh->m_FaceIndices.push_back(Index);
 		}
 
 
 		if (pModel->m_eModelType == CModel::TYPE::TYPE_ANIM)
 		{
-			vector<VTXANIMMODEL> Vertices(Mesh->m_iNumVertices);
+			Mesh->m_AnimVertices.reserve(Mesh->m_iNumVertices);
 			for (_uint j = 0; j < Mesh->m_iNumVertices; ++j)
 			{
 				VTXANIMMODEL Vertex;
 				ZeroMemory(&Vertex, sizeof(VTXANIMMODEL));
 				File->Read<VTXANIMMODEL>(Vertex);
 
-				Vertices.push_back(Vertex);
+				Mesh->m_AnimVertices.push_back(Vertex);
 			}
-			if(FAILED(Mesh->Ready_AnimVertices(Vertices, Indices)))
+			if(FAILED(Mesh->Ready_Bin_AnimVertices()))
 				return E_FAIL;
 		}
 
 		else
 		{
-			vector<VTXMODEL> Vertices(Mesh->m_iNumVertices);
+			Mesh->m_NonAnimVertices.reserve(Mesh->m_iNumVertices);
 			for (_uint j = 0; j < Mesh->m_iNumVertices; ++j)
 			{
 				VTXMODEL Vertex;
 				ZeroMemory(&Vertex, sizeof(VTXMODEL));
 				File->Read<VTXMODEL>(Vertex);
 
-				Vertices.push_back(Vertex);
+				Mesh->m_NonAnimVertices.push_back(Vertex);
 			}
-			if (FAILED(Mesh->Ready_Vertices(Vertices, Indices)))
+			if (FAILED(Mesh->Ready_Bin_Vertices()))
 				return E_FAIL;
 		}
+
+		Mesh->Initialize_Bin(pModel, BoneNames);
+		pModel->m_Meshes.push_back(Mesh);
 	}
 
 
@@ -429,12 +449,9 @@ HRESULT CData_Manager::Import_Material(const wstring strFinalPath, const wstring
 		return E_FAIL;
 
 	wstring strMaterialFilePath = strFinalPath + L".xml";
-	
-	CUtils* StringUtil = CUtils::GetInstance();
-	Safe_AddRef(StringUtil);
 
 	tinyxml2::XMLDocument* Document = new tinyxml2::XMLDocument();
-	tinyxml2::XMLError error = Document->LoadFile(StringUtil->wstring_to_string(strMaterialFilePath).c_str());
+	tinyxml2::XMLError error = Document->LoadFile(CUtils::ToString(strMaterialFilePath).c_str());
 
 	if (error != tinyxml2::XML_SUCCESS)
 		return E_FAIL;
@@ -450,14 +467,14 @@ HRESULT CData_Manager::Import_Material(const wstring strFinalPath, const wstring
 		tinyxml2::XMLElement* Node = nullptr;
 		Node = MaterialNode->FirstChildElement();
 
-		lstrcpy(MaterialDesc.strName, StringUtil->string_to_wstring(Node->GetText()).c_str());
+		lstrcpy(MaterialDesc.strName,CUtils::ToWString(Node->GetText()).c_str());
 
 
 		// Diffuse Texture
 		Node = Node->NextSiblingElement();
 		if (Node->GetText())
 		{
-			wstring strTexture = StringUtil->string_to_wstring(Node->GetText());
+			wstring strTexture =CUtils::ToWString(Node->GetText());
 			if (strTexture.length() > 0)
 			{
 				MaterialDesc.pTexture[aiTextureType_DIFFUSE] = CTexture::Create(m_pDevice, m_pContext, strFolderPath + strTexture);
@@ -470,7 +487,7 @@ HRESULT CData_Manager::Import_Material(const wstring strFinalPath, const wstring
 		Node = Node->NextSiblingElement();
 		if (Node->GetText())
 		{
-			wstring strTexture = StringUtil->string_to_wstring(Node->GetText());
+			wstring strTexture =CUtils::ToWString(Node->GetText());
 			if (strTexture.length() > 0)
 			{
 				MaterialDesc.pTexture[aiTextureType_SPECULAR] = CTexture::Create(m_pDevice, m_pContext, strFolderPath + strTexture);
@@ -484,7 +501,7 @@ HRESULT CData_Manager::Import_Material(const wstring strFinalPath, const wstring
 		Node = Node->NextSiblingElement();
 		if (Node->GetText())
 		{
-			wstring strTexture = StringUtil->string_to_wstring(Node->GetText());
+			wstring strTexture =CUtils::ToWString(Node->GetText());
 			if (strTexture.length() > 0)
 			{
 				MaterialDesc.pTexture[aiTextureType_NORMALS] = CTexture::Create(m_pDevice, m_pContext, strFolderPath + strTexture);
@@ -497,7 +514,7 @@ HRESULT CData_Manager::Import_Material(const wstring strFinalPath, const wstring
 		Node = Node->NextSiblingElement();
 		if (Node->GetText())
 		{
-			wstring strTexture = StringUtil->string_to_wstring(Node->GetText());
+			wstring strTexture =CUtils::ToWString(Node->GetText());
 			if (strTexture.length() > 0)
 			{
 				MaterialDesc.pTexture[aiTextureType_EMISSIVE] = CTexture::Create(m_pDevice, m_pContext, strFolderPath + strTexture);
@@ -511,9 +528,6 @@ HRESULT CData_Manager::Import_Material(const wstring strFinalPath, const wstring
 		MaterialNode = MaterialNode->NextSiblingElement();
 	}
 	pModel->m_iNumMaterials = pModel->m_Materials.size();
-
-
-	Safe_Release(StringUtil);
 	return S_OK;
 }
 #pragma endregion
@@ -521,11 +535,61 @@ HRESULT CData_Manager::Import_Material(const wstring strFinalPath, const wstring
 HRESULT CData_Manager::Import_Animation(const wstring strFinalPath, CModel* pModel)
 {
 	//230926 TODO : Import_Animation
+	if (pModel == nullptr)
+		return E_FAIL;
+
+	wstring strAnimationFilePath = strFinalPath + L".anim";
+	auto path = filesystem::path(strAnimationFilePath);
+	
+
+	shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
+	File->Open(strAnimationFilePath, FileMode::Read);
+
+	File->Read<_uint>(pModel->m_iNumAnimations);
+	for (_uint i = 0; i < pModel->m_iNumAnimations; ++i)
+	{
+		CAnimation* pAnimation = CAnimation::Create_Bin();
+
+		
+		pAnimation->m_strName =CUtils::ToWString(File->Read<string>()) ;
+		File->Read<_float>(pAnimation->m_fDuration);
+		File->Read<_float>(pAnimation->m_fTickPerSecond);
+		File->Read<_float>(pAnimation->m_fSpeed);
+
+		File->Read<_uint>(pAnimation->m_iNumChannels);
+		for (_uint j = 0; j < pAnimation->m_iNumChannels; ++j)
+		{
+			CChannel* pChannel = CChannel::Create_Bin();
+
+			pChannel->m_strName =CUtils::ToWString(File->Read<string>());
+			File->Read<_uint>(pChannel->m_iNumKeyFrames);
+
+			for (_uint k = 0; k < pChannel->m_iNumKeyFrames; ++k)
+			{
+				KEYFRAME tKeyFrame;
+				ZeroMemory(&tKeyFrame, sizeof(KEYFRAME));
+
+				File->Read<KEYFRAME>(tKeyFrame);
+
+				pChannel->m_KeyFrames.push_back(tKeyFrame);
+			}
+			pAnimation->m_Channels.push_back(pChannel);
+		}
+		if (FAILED(pAnimation->Initialize(pModel)))
+			return E_FAIL;
+
+		pModel->m_Animations.push_back(pAnimation);
+	}
+
+	if (FAILED(pModel->Ready_Animation_Texture()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 HRESULT CData_Manager::Import_Texture(const wstring strFinalPath, CModel* pModel)
 {
+
 	return S_OK;
 }
 
