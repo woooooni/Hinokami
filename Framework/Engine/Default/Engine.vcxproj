@@ -168,7 +168,7 @@
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\Public\Component_Manager.h" />
     <ClInclude Include="..\Public\CustomFont.h" />
-    <ClInclude Include="..\Public\Data_Manager.h" />
+    <ClInclude Include="..\Public\Model_Manager.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
     <ClInclude Include="..\Public\Engine_Enum.h" />
@@ -217,7 +217,7 @@
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\Private\Component_Manager.cpp" />
     <ClCompile Include="..\Private\CustomFont.cpp" />
-    <ClCompile Include="..\Private\Data_Manager.cpp" />
+    <ClCompile Include="..\Private\Model_Manager.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp" />
     <ClCompile Include="..\Private\Engine_Struct.cpp" />
     <ClCompile Include="..\Private\Font_Manager.cpp" />

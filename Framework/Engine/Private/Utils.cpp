@@ -46,6 +46,13 @@ void CUtils::Replace(OUT wstring& str, wstring comp, wstring rep)
 	str = temp;
 }
 
+wstring CUtils::PathToWString(wstring strPath)
+{
+	Replace(strPath, L"\\", L"/");
+	
+	return strPath;
+}
+
 std::wstring CUtils::ToWString(string value)
 {
 	return wstring(value.begin(), value.end());

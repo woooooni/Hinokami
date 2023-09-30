@@ -31,6 +31,7 @@ public:
 
 
 public:
+	void Set_ObjectTag(const wstring& strTag) { m_strObjectTag = strTag; }
 	const wstring& Get_ObjectTag() { return m_strObjectTag; }
 	
 

@@ -32,6 +32,9 @@ HRESULT CLevel_Tool::Initialize()
 	if (FAILED(Ready_Layer_BackGround(LAYER_TYPE::LAYER_BACKGROUND)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Terrain(LAYER_TYPE::LAYER_TERRAIN)))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Player(LAYER_TYPE::LAYER_PLAYER)))
 		return E_FAIL;
 
@@ -173,54 +176,30 @@ HRESULT CLevel_Tool::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_Tool::Ready_Layer_BackGround(const LAYER_TYPE eLayerType)
 {
-	
 
+	return S_OK;
+}
 
+HRESULT CLevel_Tool::Ready_Layer_Terrain(const LAYER_TYPE eLayerType)
+{
 	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, LAYER_TYPE::LAYER_TERRAIN, TEXT("Prototype_GameObject_Terrain"))))
 		return E_FAIL;
-
-	;
 
 	return S_OK;
 }
 
 HRESULT CLevel_Tool::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 {
-	
-
-
-
-	;
 	return S_OK;
 }
 
 HRESULT CLevel_Tool::Ready_Layer_UI(const LAYER_TYPE eLayerType)
 {
-	
-
-
-	/*for (_uint i = 0; i < 1; ++i)
-	{
-		if (FAILED(GAME_INSTANCE->Add_GameObject(TEXT("Prototype_GameObject_UI"), LEVEL_TOOL, _uint(eLayerType))))
-			return E_FAIL;
-
-	} */
-
-	;
-
-
-
 	return S_OK;
 }
 
 HRESULT CLevel_Tool::Ready_Layer_Effect(const LAYER_TYPE eLayerType)
 {
-	
-
-
-
-	;
-
 
 	return S_OK;
 }

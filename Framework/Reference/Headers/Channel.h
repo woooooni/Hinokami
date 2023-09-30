@@ -39,7 +39,7 @@ public:
 	static CChannel* Create_Bin();
 	virtual void Free() override;
 
-	friend class CData_Manager;
+	friend class CModel_Manager;
 };
 
 END

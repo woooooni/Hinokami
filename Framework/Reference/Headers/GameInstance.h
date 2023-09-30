@@ -81,9 +81,10 @@ public:
 	const POINT& GetMousePos();
 
 public:
-	/* For. Data_Manager */
-	HRESULT Export_Model_Data(class CModel* pModel, wstring strFolderPath, wstring strFileName);
+	/* For. Model_Manager */
+	HRESULT Export_Model_Data(class CModel* pModel, const wstring & strSubFolderName, wstring strFileName);
 	class CModel* Import_Model_Data(_uint eType, wstring strFolderPath, wstring strFileName, _fmatrix PivotMatrix = XMMatrixIdentity());
+	HRESULT Export_Model_Data_FromPath(_uint eType, wstring strFolderPath);
 
 /* For. CameraManager*/
 //public:
@@ -110,7 +111,7 @@ private:
 	class CLight_Manager*			m_pLight_Manager = { nullptr };
 	// class CCamera_Manager*			m_pCamera_Manager = { nullptr };
 	class CKey_Manager*				m_pKey_Manager = { nullptr };
-	class CData_Manager* m_pData_Manager = { nullptr };
+	class CModel_Manager*			m_pModel_Manager = { nullptr };
 	class CFont_Manager*			m_pFont_Manager = { nullptr };
 
 public:

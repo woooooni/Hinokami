@@ -116,6 +116,7 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
         ImGui::ShowDemoWindow(&m_bShowDemo);
 
     Tick_Hierachy(fTimeDelta);
+    Tick_Inspector(fTimeDelta);
 
     if (m_bShowModelWindow)
     {
@@ -141,10 +142,9 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
 
     const list<CGameObject*>& GameObjects = GAME_INSTANCE->Find_GameObjects(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_BUILDING));
 
-
     if (ImGui::CollapsingHeader("Building"))
     {
-        if (ImGui::BeginListBox("##BuildingObject"))
+        if (ImGui::BeginListBox("##BuildingObject", ImVec2(300, 0)))
         {
             _uint iIdx = 0;
             for (auto& Object : GameObjects)
@@ -157,8 +157,9 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
                 else
                     TargetObjectTag = "";
 
-                if (ImGui::Selectable(ObjectTag.c_str(), TargetObjectTag.c_str()))
+                if (ImGui::Selectable(ObjectTag.c_str(), TargetObjectTag.c_str(), 0, ImVec2(300, 15)))
                 {
+                    m_pTarget = Object;
 
                 }
                 iIdx++;
@@ -171,17 +172,108 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
     ImGui::End();
 }
 
+void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
+{
+    ImGui::Begin("Inspector");
+    if (!m_pTarget)
+    {
+        ImGui::End();
+        return;
+    }
+        
+    if (nullptr != m_pTarget)
+    {
+
+        static char pTargetName[MAX_PATH] = "";
+        ImGui::Text("Name : ");
+        IMGUI_SAME_LINE;
+
+        ImGui::InputText("##TargetName", pTargetName, MAX_PATH);
+        IMGUI_SAME_LINE;
+
+        if (ImGui::Button("Rename"))
+        {
+            m_pTarget->Set_ObjectTag(CUtils::ToWString(pTargetName));
+        }
+
+        if (KEY_TAP(KEY::ENTER) && ImGui::IsWindowFocused())
+        {
+            m_pTarget->Set_ObjectTag(CUtils::ToWString(pTargetName));
+        }
+
+
+        CTransform* pTransform = dynamic_cast<CTransform*>(m_pTarget->Get_Component(L"Com_Transform"));
+        if (nullptr == pTransform)
+        {
+            ImGui::End();
+            return;
+        }
+        IMGUI_NEW_LINE;
+
+        ImGui::Text("Transform");
+        ImGui::BeginChild("##Transform");
+
+        IMGUI_NEW_LINE;
+
+#pragma region Position
+        // Postion
+        _float3 vPos;
+        XMStoreFloat3(&vPos, pTransform->Get_State(CTransform::STATE_POSITION));
+
+        ImGui::Text("Position");
+        ImGui::DragFloat3("##Position", (_float*)&vPos, 0.01f, -999.f, 999.f, "%.3f");
+
+        pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&vPos), 1.f));
+#pragma endregion
+
+        IMGUI_NEW_LINE;
+
+#pragma region Rotaion_TODO
+        // Rotation
+        /*_float3 fRotation;
+
+        _float4 vRight, vUp, vLook;
+        XMStoreFloat4(&vRight, pTransform->Get_State(CTransform::STATE::STATE_RIGHT));
+        XMStoreFloat4(&vUp, pTransform->Get_State(CTransform::STATE::STATE_UP));
+        XMStoreFloat4(&vLook, pTransform->Get_State(CTransform::STATE::STATE_LOOK));
+
+
+        ImGui::Text("Rotaion");
+        if (ImGui::DragFloat3("##Rotation_x", (_float*)&vRight, 0.1f, 0.f, 360.f))
+        {
+            pTransform->Turn
+        }*/
+
+        /*pTransform->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(fRotaionX));
+        pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRotaionY));
+        pTransform->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(fRotaionZ));*/
+        // IMGUI_NEW_LINE;
+#pragma endregion
+
+#pragma region Scale
+    // Scale
+        _float3 vScale = pTransform->Get_Scale();
+
+        ImGui::Text("Scale");
+        ImGui::DragFloat3("##Scale", (_float*)&vScale, 0.01f, 0.01f, 100.f);
+
+        if (vScale.x >= 0.01f
+            && vScale.y >= 0.01f
+            && vScale.z >= 0.01f)
+            pTransform->Set_Scale(XMLoadFloat3(&vScale));
+#pragma endregion
+
+        ImGui::EndChild();
+    }
+    ImGui::End();
+}
+
 void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
 {
     
     ImGui::Begin("Model Editor");
     if (nullptr != m_pDummy)
     {
-        ImGui::Text("Name : ");
-        IMGUI_SAME_LINE;
-        ImGui::Text(CUtils::ToString(m_pDummy->Get_ObjectTag()).c_str());
-
-
         CTransform* pTransform = dynamic_cast<CTransform*>(m_pDummy->Get_Component(L"Com_Transform"));
         if (nullptr == pTransform)
         {
@@ -237,9 +329,9 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         ImGui::Text("Scale");
         ImGui::DragFloat3("##Scale", (_float*)&vScale, 0.01f, 0.01f, 100.f);
 
-        if(vScale.x >= 0.1f 
-            && vScale.y >= 0.1f 
-            && vScale.z >= 0.1f)
+        if(vScale.x >= 0.01f
+            && vScale.y >= 0.01f
+            && vScale.z >= 0.01f)
             pTransform->Set_Scale(XMLoadFloat3(&vScale));
     #pragma endregion
         
@@ -276,7 +368,7 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         ImGui::InputText("##ModelExportFolder", szExportFolderName, MAX_PATH);
         
 
-        
+
         const char* items[] = { "NON_ANIM", "ANIM"};
         static const char* szCurrent = NULL;
         if (ImGui::BeginCombo("##ModelType", szCurrent))
@@ -310,6 +402,47 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
                     MSG_BOX("Save Success");
             }
         }
+
+        IMGUI_NEW_LINE;
+        IMGUI_NEW_LINE;
+
+        static char szAllObjectExportFolderName[MAX_PATH] = "";
+        ImGui::Text("Export_All_Object_To_SubFolder");
+        ImGui::InputText("##All_ModelExportFolder", szAllObjectExportFolderName, MAX_PATH);
+
+
+        const char* szArrModelTypes[] = { "NON_ANIM", "ANIM" };
+        static const char* szAllObjectModelType;
+        static _int iSelectedModelType = -1;
+        if (ImGui::BeginCombo("##AllObject_ModelType", szAllObjectModelType))
+        {
+            for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+            {
+                bool is_selected = (szAllObjectModelType == items[n]); // You can store your selection however you want, outside or inside your objects
+                if (ImGui::Selectable(items[n], is_selected))
+                {
+                    szAllObjectModelType = szArrModelTypes[n];
+                    iSelectedModelType = n;
+                }
+
+            }
+            ImGui::EndCombo();
+        }
+        if (ImGui::Button("Export_All"))
+        {
+            if (0 != strcmp(szAllObjectExportFolderName, "") && iSelectedModelType != -1)
+            {
+                if (FAILED(GAME_INSTANCE->Export_Model_Data_FromPath(iSelectedModelType, CUtils::ToWString(szAllObjectExportFolderName))))
+                    MSG_BOX("Export Failed.");
+                else
+                    MSG_BOX("Export Complete!");
+            }
+            else
+            {
+                MSG_BOX("폴더 경로를 입력하세요.");
+            }
+        }
+
         ImGui::EndChild();
     }
     ImGui::End();

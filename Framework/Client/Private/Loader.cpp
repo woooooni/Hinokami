@@ -120,6 +120,16 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 	/* For.Shader */
 	m_strLoading = TEXT("셰이더를 로딩 중 입니다.");
+	/* For.Prototype_Component_Shader_Model */
+	if (FAILED(GAME_INSTANCE->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Model"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModel.hlsl"), VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_AnimModel */
+	if (FAILED(GAME_INSTANCE->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_AnimModel"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements))))
+		return E_FAIL;
+
 
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
@@ -139,15 +149,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 
 
-	/* For.Prototype_Component_Shader_Model */
-	if (FAILED(GAME_INSTANCE->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Model"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModel.hlsl"), VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Shader_AnimModel */
-	if (FAILED(GAME_INSTANCE->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_AnimModel"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
+	
 
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
@@ -159,7 +161,11 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 HRESULT CLoader::Loading_For_Level_Tool()
 {
-	
+
+	/* For.Shader */
+	m_strLoading = TEXT("셰이더를 로딩 중 입니다.");
+
+	/* For.Prototype_Component_Shader_Model */
 
 
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
@@ -187,31 +193,16 @@ HRESULT CLoader::Loading_For_Level_Tool()
 
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 
-	/* For.Prototype_Component_Shader_Model */
-	if (FAILED(GAME_INSTANCE->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Model"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModel.hlsl"), VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Shader_AnimModel */
-	if (FAILED(GAME_INSTANCE->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_AnimModel"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
+	
 
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
-
-	;
 
 	return S_OK;
 }
 
 HRESULT CLoader::Loading_Proto_AllObjects(const wstring& strPath)
 {
-
-
-	std::vector<std::string> paths;
-	paths.reserve(1000);
-
 	for (auto& p : std::filesystem::directory_iterator(strPath))
 	{
 		if (p.is_directory())

@@ -1,4 +1,4 @@
-#include "..\Public\Data_Manager.h"
+#include "..\Public\Model_Manager.h"
 #include "Model.h"
 #include <filesystem>
 #include "tinyxml2.h"
@@ -12,15 +12,15 @@
 
 
 USING(Engine)
-IMPLEMENT_SINGLETON(CData_Manager);
+IMPLEMENT_SINGLETON(CModel_Manager);
 
 
-CData_Manager::CData_Manager()
+CModel_Manager::CModel_Manager()
 {
 
 }
 
-HRESULT CData_Manager::Reserve_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+HRESULT CModel_Manager::Reserve_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_pDevice = pDevice;
 	m_pContext = pContext;
@@ -28,16 +28,18 @@ HRESULT CData_Manager::Reserve_Manager(ID3D11Device* pDevice, ID3D11DeviceContex
 	Safe_AddRef(pDevice);
 	Safe_AddRef(pContext);
 
+	XMStoreFloat4x4(&m_PivotMatrix, XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f)));
+
 	return S_OK;
 }
 
-HRESULT CData_Manager::Export_Model_Data(CModel* pModel, const wstring& strSubFolderName, const wstring& strFileName)
+HRESULT CModel_Manager::Export_Model_Data(CModel* pModel, const wstring& strSubFolderName, const wstring& strFileName)
 {
 	_tchar szOriginFileName[MAX_PATH];
 	_wsplitpath_s(strFileName.c_str(), nullptr, 0, nullptr, 0, szOriginFileName, MAX_PATH, nullptr, 0);
 
 
-	wstring strFinalFolderPath = m_strExportFolderPath + strSubFolderName + szOriginFileName + L"/" + szOriginFileName;
+	wstring strFinalFolderPath = m_strExportFolderPath + strSubFolderName + szOriginFileName;
 
 
 	if (FAILED(Export_Mesh(strFinalFolderPath, pModel)))
@@ -55,8 +57,45 @@ HRESULT CData_Manager::Export_Model_Data(CModel* pModel, const wstring& strSubFo
 	return S_OK;
 }
 
+HRESULT CModel_Manager::Export_Model_Data_FromPath(_uint eType, wstring strFolderPath)
+{
+	for (auto& p : std::filesystem::directory_iterator(strFolderPath))
+	{
+
+		if (p.is_directory())
+		{
+			Export_Model_Data_FromPath(eType, p.path());
+		}
+
+		wstring strFilePath = CUtils::PathToWString(p.path().wstring());
+		wstring strSubFolderPath = CUtils::PathToWString(p.path().parent_path());
+		strSubFolderPath = strSubFolderPath.substr(strSubFolderPath.find_last_of(L"/") + 1, strSubFolderPath.size() - 1) + L"/";
+
+		_tchar strFileName[MAX_PATH];
+		_tchar strFolderName[MAX_PATH];
+		_tchar strExt[MAX_PATH];
+
+		_wsplitpath_s(strFilePath.c_str(), nullptr, 0, strFolderName, MAX_PATH, strFileName, MAX_PATH, strExt, MAX_PATH);
+
+		CModel* pModel = nullptr;
+		if (0 == lstrcmp(TEXT(".fbx"), strExt))
+		{
+			pModel = Import_Model_Data(eType, strFolderName, wstring(strFileName) + strExt);
+			if (nullptr == pModel)
+				return E_FAIL;
+
+			if (FAILED(Export_Model_Data(pModel, strSubFolderPath, strFileName)))
+				return E_FAIL;
+
+			Safe_Release(pModel);
+		}
+		Safe_Release(pModel);
+	}
+	return S_OK;
+}
+
 #pragma region Import_ModelData
-CModel* CData_Manager::Import_Model_Data(_uint eType, wstring strFolderPath, wstring strFileName, _fmatrix PivotMatrix)
+CModel* CModel_Manager::Import_Model_Data(_uint eType, wstring strFolderPath, wstring strFileName, _fmatrix PivotMatrix)
 {
 	_tchar szFileName[MAX_PATH];
 	_tchar szExt[MAX_PATH];
@@ -66,10 +105,10 @@ CModel* CData_Manager::Import_Model_Data(_uint eType, wstring strFolderPath, wst
 	CModel* pModel = nullptr;
 	if (0 == lstrcmp(szExt, L".fbx"))
 	{
-		pModel = CModel::Create(
+ 		pModel = CModel::Create(
 			m_pDevice, 
 			m_pContext, CModel::TYPE(eType), 
-			strFolderPath, strFileName, PivotMatrix);
+			strFolderPath, strFileName, XMLoadFloat4x4(&m_PivotMatrix));
 
 		if (nullptr == pModel)
 			return nullptr;
@@ -88,14 +127,14 @@ CModel* CData_Manager::Import_Model_Data(_uint eType, wstring strFolderPath, wst
 		pModel = CModel::Create_Bin(
 			m_pDevice,
 			m_pContext, CModel::TYPE(eType),
-			strFolderPath, strFileName, PivotMatrix);
+			strFolderPath, strFileName, XMLoadFloat4x4(&m_PivotMatrix));
 
 		if (nullptr == pModel)
 			return nullptr;
 
 		wstring strFinalFolderPath = strFolderPath + szFileName;
 
-		XMStoreFloat4x4(&pModel->m_PivotMatrix, PivotMatrix);
+		XMStoreFloat4x4(&pModel->m_PivotMatrix, XMLoadFloat4x4(&m_PivotMatrix));
 
 		if (FAILED(Import_Mesh(strFinalFolderPath, pModel)))
 		{
@@ -137,7 +176,7 @@ CModel* CData_Manager::Import_Model_Data(_uint eType, wstring strFolderPath, wst
 #pragma endregion
 
 #pragma region Export_Mesh
-HRESULT CData_Manager::Export_Mesh(const wstring& strFinalFolderPath, CModel* pModel)
+HRESULT CModel_Manager::Export_Mesh(const wstring& strFinalFolderPath, CModel* pModel)
 {
 	if (pModel == nullptr)
 		return E_FAIL;
@@ -213,7 +252,7 @@ HRESULT CData_Manager::Export_Mesh(const wstring& strFinalFolderPath, CModel* pM
 
 #pragma region Export_Material
 
-HRESULT CData_Manager::Export_Material(const wstring& strFinalFolderPath, CModel* pModel)
+HRESULT CModel_Manager::Export_Material(const wstring& strFinalFolderPath, CModel* pModel)
 {
 	if (pModel == nullptr)
 		return E_FAIL;
@@ -274,7 +313,7 @@ HRESULT CData_Manager::Export_Material(const wstring& strFinalFolderPath, CModel
 #pragma endregion
 
 #pragma region Export_Animation
-HRESULT CData_Manager::Export_Animation(const wstring& strFinalFolderPath, CModel* pModel)
+HRESULT CModel_Manager::Export_Animation(const wstring& strFinalFolderPath, CModel* pModel)
 {
 	if (pModel == nullptr)
 		return E_FAIL;
@@ -314,7 +353,7 @@ HRESULT CData_Manager::Export_Animation(const wstring& strFinalFolderPath, CMode
 
 
 #pragma region Export_Texture
-string CData_Manager::Export_Texture(const wstring& strOriginFolder, const string& strSaveFolder, CTexture* pTexture, _uint iIdx)
+string CModel_Manager::Export_Texture(const wstring& strOriginFolder, const string& strSaveFolder, CTexture* pTexture, _uint iIdx)
 {
 	if (pTexture == nullptr)
 		return "";
@@ -333,7 +372,7 @@ string CData_Manager::Export_Texture(const wstring& strOriginFolder, const strin
 #pragma endregion
 
 #pragma region Import_Mesh
-HRESULT CData_Manager::Import_Mesh(const wstring strFinalPath, CModel* pModel)
+HRESULT CModel_Manager::Import_Mesh(const wstring strFinalPath, CModel* pModel)
 {
 	wstring strMeshFilePath = strFinalPath + L".mesh";
 	shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
@@ -443,7 +482,7 @@ HRESULT CData_Manager::Import_Mesh(const wstring strFinalPath, CModel* pModel)
 
 
 #pragma region Import_Material
-HRESULT CData_Manager::Import_Material(const wstring strFinalPath, const wstring strFolderPath, CModel* pModel)
+HRESULT CModel_Manager::Import_Material(const wstring strFinalPath, const wstring strFolderPath, CModel* pModel)
 {
 	if (pModel == nullptr)
 		return E_FAIL;
@@ -532,7 +571,7 @@ HRESULT CData_Manager::Import_Material(const wstring strFinalPath, const wstring
 }
 #pragma endregion
 
-HRESULT CData_Manager::Import_Animation(const wstring strFinalPath, CModel* pModel)
+HRESULT CModel_Manager::Import_Animation(const wstring strFinalPath, CModel* pModel)
 {
 	//230926 TODO : Import_Animation
 	if (pModel == nullptr)
@@ -587,7 +626,7 @@ HRESULT CData_Manager::Import_Animation(const wstring strFinalPath, CModel* pMod
 	return S_OK;
 }
 
-HRESULT CData_Manager::Import_Texture(const wstring strFinalPath, CModel* pModel)
+HRESULT CModel_Manager::Import_Texture(const wstring strFinalPath, CModel* pModel)
 {
 
 	return S_OK;
@@ -595,7 +634,7 @@ HRESULT CData_Manager::Import_Texture(const wstring strFinalPath, CModel* pModel
 
 
 
-void CData_Manager::Free()
+void CModel_Manager::Free()
 {
 	__super::Free();
 

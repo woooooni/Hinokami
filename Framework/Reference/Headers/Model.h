@@ -109,13 +109,15 @@ private:
 	HRESULT Ready_Animations();
 	HRESULT Ready_Animation_Texture();
 
-public:
+private:
 	static CModel* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix = XMMatrixIdentity());
 	static CModel* Create_Bin(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix = XMMatrixIdentity());
+
+public:
 	virtual CComponent* Clone(void* pArg = nullptr);
 	virtual void Free() override;
 
-	friend class CData_Manager;
+	friend class CModel_Manager;
 };
 
 

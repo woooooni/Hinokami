@@ -142,11 +142,11 @@
     <Filter Include="01.Utiltiy\04.Component\06. Model\Mesh">
       <UniqueIdentifier>{5b64ff7d-ec4a-40c1-b063-16459f9af01c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.System\06. Data">
+    <Filter Include="01.Utiltiy\06. Model_Manager">
       <UniqueIdentifier>{855daea8-1daf-4a71-bee6-d2dcb3b418a7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.System\06. Data\Manager">
-      <UniqueIdentifier>{b7d03750-8607-4e14-af90-67780e011312}</UniqueIdentifier>
+    <Filter Include="01.Utiltiy\07. Map_Manager">
+      <UniqueIdentifier>{f84ef70a-bfa5-4643-9a8e-c9d4fc795f63}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -285,11 +285,11 @@
     <ClInclude Include="..\Public\Target_Manager.h">
       <Filter>01.Utiltiy\05. RenderTarget\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Data_Manager.h">
-      <Filter>00.System\06. Data\Manager</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\FileUtils.h">
       <Filter>01.Utiltiy\98. Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Model_Manager.h">
+      <Filter>01.Utiltiy\06. Model_Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -413,11 +413,11 @@
     <ClCompile Include="..\Private\Target_Manager.cpp">
       <Filter>01.Utiltiy\05. RenderTarget\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Data_Manager.cpp">
-      <Filter>00.System\06. Data\Manager</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\FileUtils.cpp">
       <Filter>01.Utiltiy\98. Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model_Manager.cpp">
+      <Filter>01.Utiltiy\06. Model_Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

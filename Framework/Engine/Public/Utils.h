@@ -14,5 +14,7 @@ public:
 
 	static void Replace(OUT string& str, string comp, string rep);
 	static void Replace(OUT wstring& str, wstring comp, wstring rep);
+
+	static wstring PathToWString(wstring strPath);
 };
 

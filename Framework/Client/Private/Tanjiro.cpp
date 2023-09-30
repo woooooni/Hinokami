@@ -93,8 +93,6 @@ HRESULT CTanjiro::Ready_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_StateMachine"), TEXT("Com_StateMachine"), (CComponent**)&m_pStateCom)))
 		return E_FAIL;
 
-	;
-
 	_vector vScale;
 	vScale.m128_f32[0] = 0.1f;
 	vScale.m128_f32[1] = 0.1f;

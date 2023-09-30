@@ -68,7 +68,7 @@ public:
 	virtual CComponent* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
 
-	friend class CData_Manager;
+	friend class CModel_Manager;
 
 };
 

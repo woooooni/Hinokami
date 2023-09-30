@@ -8,7 +8,7 @@
 #include "Light_Manager.h"
 #include "Camera_Manager.h"
 #include "Font_Manager.h"
-#include "Data_Manager.h"
+#include "Model_Manager.h"
 #include "Key_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
@@ -25,7 +25,7 @@ CGameInstance::CGameInstance()
 	, m_pLight_Manager(CLight_Manager::GetInstance())
 	, m_pKey_Manager(CKey_Manager::GetInstance())
 	, m_pFont_Manager(CFont_Manager::GetInstance())
-	, m_pData_Manager(CData_Manager::GetInstance())
+	, m_pModel_Manager(CModel_Manager::GetInstance())
 	
 {
 	Safe_AddRef(m_pObject_Manager);
@@ -38,7 +38,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pLight_Manager);
 	Safe_AddRef(m_pKey_Manager);
 	Safe_AddRef(m_pFont_Manager);
-	Safe_AddRef(m_pData_Manager);
+	Safe_AddRef(m_pModel_Manager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, _uint iNumLayerType, 
@@ -69,7 +69,7 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, _uint iNumLayerType,
 	if (FAILED(m_pInput_Device->Initialize(hInst, hWnd)))
 		return E_FAIL;
 
-	if (FAILED(m_pData_Manager->Reserve_Manager(*ppDevice, *ppContext)))
+	if (FAILED(m_pModel_Manager->Reserve_Manager(*ppDevice, *ppContext)))
 		return E_FAIL;
 
 	return S_OK;
@@ -337,14 +337,19 @@ const POINT& CGameInstance::GetMousePos()
 }
 
 
-HRESULT CGameInstance::Export_Model_Data(CModel* pModel, wstring strFolderPath, wstring strFileName)
+HRESULT CGameInstance::Export_Model_Data(CModel* pModel, const wstring& strSubFolderName, wstring strFileName)
 {
-	return m_pData_Manager->Export_Model_Data(pModel, strFolderPath, strFileName);
+	return m_pModel_Manager->Export_Model_Data(pModel, strSubFolderName, strFileName);
 }
 
 CModel* CGameInstance::Import_Model_Data(_uint eType, wstring strFolderPath, wstring strFileName, _fmatrix PivotMatrix)
 {
-	return m_pData_Manager->Import_Model_Data(eType, strFolderPath, strFileName, PivotMatrix);
+	return m_pModel_Manager->Import_Model_Data(eType, strFolderPath, strFileName, PivotMatrix);
+}
+
+HRESULT CGameInstance::Export_Model_Data_FromPath(_uint eType, wstring strFolderPath)
+{
+	return m_pModel_Manager->Export_Model_Data_FromPath(eType, strFolderPath);
 }
 
 HRESULT CGameInstance::Add_Fonts(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strFontTag, const wstring& strFontFilePath)
@@ -402,7 +407,7 @@ void CGameInstance::Release_Engine()
 	CLight_Manager::GetInstance()->DestroyInstance();
 	CKey_Manager::GetInstance()->DestroyInstance();
 	CFont_Manager::GetInstance()->DestroyInstance();
-	CData_Manager::GetInstance()->DestroyInstance();
+	CModel_Manager::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
 	CGameInstance::GetInstance()->DestroyInstance();
 }
@@ -419,5 +424,5 @@ void CGameInstance::Free()
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pKey_Manager);
-	Safe_Release(m_pData_Manager);
+	Safe_Release(m_pModel_Manager);
 }

@@ -74,7 +74,7 @@ public:
 
 	virtual void Free() override;
 
-	friend class CData_Manager;
+	friend class CModel_Manager;
 };
 
 END

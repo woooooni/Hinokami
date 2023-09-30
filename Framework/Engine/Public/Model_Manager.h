@@ -4,18 +4,19 @@
 
 BEGIN(Engine)
 
-class CData_Manager final : public CBase
+class CModel_Manager final : public CBase
 {
-	DECLARE_SINGLETON(CData_Manager);
+	DECLARE_SINGLETON(CModel_Manager);
 public:
-	CData_Manager();
-	virtual ~CData_Manager() = default;
+	CModel_Manager();
+	virtual ~CModel_Manager() = default;
 
 public:
 	HRESULT Reserve_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	
 public:
-	HRESULT Export_Model_Data(class CModel* pModel, const wstring& strFolderName, const wstring& strFileName);
+	HRESULT Export_Model_Data(class CModel* pModel, const wstring& strSubFolderName, const wstring& strFileName);
+	HRESULT Export_Model_Data_FromPath(_uint eType, wstring strFolderPath);
 	class CModel* Import_Model_Data(_uint eType, wstring strFolderPath, wstring strFileName, _fmatrix PivotMatrix = XMMatrixIdentity());
 
 	
@@ -39,6 +40,7 @@ private:
 private:
 	ID3D11Device* m_pDevice = nullptr;
 	ID3D11DeviceContext* m_pContext = nullptr;
+	_float4x4 m_PivotMatrix;
 
 public:
 	virtual void Free() override;

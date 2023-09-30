@@ -67,7 +67,7 @@ public:
 	static CHierarchyNode* Create_Bin();
 	virtual void Free();
 
-	friend class CData_Manager;
+	friend class CModel_Manager;
 };
 
 END
