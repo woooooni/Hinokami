@@ -56,6 +56,14 @@ public:
 		m_pTerrain = pTerrain;
 	}
 
+	void Set_Camera(class CCamera_Free* pCamera)
+	{
+		if (nullptr == pCamera)
+			return;
+
+		m_pCamera = pCamera;
+	}
+
 private:
 	void Tick_Basic_Tool(_float fTimeDelta);
 	void Tick_Hierachy(_float fTimeDelta);
@@ -90,10 +98,11 @@ private:
 public:
 	class CGameObject* m_pTarget = nullptr;
 	class CGameObject* m_pPrevObject = nullptr;
+	class CMesh_Effect* m_pPrevEffect = nullptr;
 
 	class CDummy* m_pDummy = nullptr;
 	class CTerrain* m_pTerrain = nullptr;
-
+	class CCamera_Free* m_pCamera = nullptr;
 public:
 	virtual void Free() override;
 };

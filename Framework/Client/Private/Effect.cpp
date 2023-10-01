@@ -14,11 +14,12 @@ CEffect::CEffect(const CEffect& rhs)
 	, m_pShaderCom(rhs.m_pShaderCom)
 	, m_pRendererCom(rhs.m_pRendererCom)
 	, m_pTransformCom(rhs.m_pTransformCom)
+	, m_pEffectTexture(rhs.m_pEffectTexture)
 {
 	Safe_AddRef(m_pShaderCom);
 	Safe_AddRef(m_pRendererCom);
 	Safe_AddRef(m_pTransformCom);
-
+	Safe_AddRef(m_pEffectTexture);
 }
 
 HRESULT CEffect::Initialize_Prototype()
@@ -33,7 +34,7 @@ void CEffect::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
-
+	Safe_Release(m_pEffectTexture);
 
 }
 

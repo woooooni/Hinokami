@@ -40,11 +40,15 @@ public:
 	CVIBuffer_Terrain* Get_TerrainBufferCom() { return m_pVIBufferCom; }
 
 #ifdef _DEBUG
+public:
+	void Set_DrawGrid(_bool bDraw) { m_bDraw = bDraw; }
+	_bool Is_DrawGrid() { return m_bDraw; }
 protected:
 	class PrimitiveBatch<VertexPositionColor>* m_pBatch = nullptr;
 	class BasicEffect* m_pEffect = nullptr;
 	ID3D11InputLayout* m_pInputLayout = nullptr;
 	_float4	m_vColor = _float4(0.f, 1.f, 0.f, 1.f);
+	_bool m_bDraw = true;
 #endif
 
 

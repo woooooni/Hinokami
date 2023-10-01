@@ -24,8 +24,9 @@ public:
 		_float4			vRotationDir = _float4(0.f, 0.f, 0.f, 0.f);
 
 		_float2			vAccUV = _float2(0.f, 0.f);
-		_float			fUVSpeed = 0.f;
-		
+		_float			fUSpeed = 0.f;
+		_float			fVSpeed = 0.f;
+		_uint			iTextureIndex = 0;
 	} EFFECT_DESC;
 
 protected:
@@ -54,6 +55,7 @@ protected:
 	class CShader* m_pShaderCom = nullptr;
 	class CRenderer* m_pRendererCom = nullptr;
 	class CTransform* m_pTransformCom = nullptr;
+	class CTexture* m_pEffectTexture = nullptr;
 
 protected:
 	EFFECT_DESC m_tEffectDesc;

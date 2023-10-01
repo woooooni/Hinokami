@@ -136,6 +136,11 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Tile0.jpg")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Effect_Texture*/
+	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Effect_Texture"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Effects/T_e_Plc_P0012_Fire020.png")))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Transform */
 	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
 		CTransform::Create(m_pDevice, m_pContext))))

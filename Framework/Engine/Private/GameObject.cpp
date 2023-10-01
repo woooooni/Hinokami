@@ -60,7 +60,7 @@ HRESULT CGameObject::Add_Component(const wstring& strComponentTag, CComponent* p
 		return E_FAIL;
 
 	m_Components.emplace(strComponentTag, pComponent);
-	
+	Safe_AddRef(pComponent);
 	return S_OK;
 }
 

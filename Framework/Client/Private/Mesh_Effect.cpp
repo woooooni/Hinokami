@@ -14,6 +14,7 @@ CMesh_Effect::CMesh_Effect(const CMesh_Effect& rhs)
 	, m_pModel(rhs.m_pModel)
 	, m_strModelFileName(rhs.m_strModelFileName)
 	, m_strModelFolderPath(rhs.m_strModelFolderPath)
+	, m_strEffectName(rhs.m_strEffectName)
 {
 	Safe_AddRef(m_pModel);
 }
@@ -24,6 +25,7 @@ HRESULT CMesh_Effect::Initialize_Prototype(const wstring& strEffectName, const w
 	m_tEffectDesc = EffectDesc;
 	m_strModelFolderPath = strModelFolderPath;
 	m_strModelFileName = strModelFileName;
+	m_strEffectName = strEffectName;
 
 	if (FAILED(GAME_INSTANCE->Import_Model_Data(LEVEL_STATIC, TEXT("Prototype_Component_MeshEffect_") + strEffectName, CModel::TYPE::TYPE_NONANIM, strModelFolderPath, strModelFileName)))
 		return E_FAIL;
@@ -60,8 +62,11 @@ HRESULT CMesh_Effect::Ready_Components(const wstring& strModelFolderPath, const 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Effect"), TEXT("Com_EffectShader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_MeshEffect_") + m_strEffectName, TEXT("Com_Model"), (CComponent**)&m_pModel)))
+		return E_FAIL;
 	
-
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Effect_Texture"), TEXT("Com_Texture"), (CComponent**)&m_pEffectTexture)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -69,7 +74,8 @@ HRESULT CMesh_Effect::Ready_Components(const wstring& strModelFolderPath, const 
 
 void CMesh_Effect::Tick(_float fTimeDelta)
 {
-
+	m_tEffectDesc.vAccUV = _float2(m_tEffectDesc.fUSpeed * fTimeDelta, m_tEffectDesc.fVSpeed * fTimeDelta);
+	// m_pTransformCom->Turn(XMLoadFloat4(&m_tEffectDesc.vRotationDir), fTimeDelta);
 }
 
 void CMesh_Effect::LateTick(_float fTimeDelta)
@@ -78,8 +84,6 @@ void CMesh_Effect::LateTick(_float fTimeDelta)
 		return;
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
-
-
 }
 
 HRESULT CMesh_Effect::Render()
@@ -90,9 +94,16 @@ HRESULT CMesh_Effect::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_ProjMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_tEffectDesc", &m_tEffectDesc, sizeof(m_tEffectDesc))))
+		return E_FAIL;
 
+	if (FAILED(m_pEffectTexture->Bind_ShaderResource(m_pShaderCom, "g_EffectTexture", m_tEffectDesc.iTextureIndex)))
+		return E_FAIL;
+
+
+	for (_uint i = 0; i < m_pModel->Get_NumMeshes(); ++ i)
+		m_pModel->Render(m_pShaderCom, i);
 	
-
 
 	return S_OK;
 }

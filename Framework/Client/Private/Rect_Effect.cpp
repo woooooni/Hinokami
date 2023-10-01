@@ -20,8 +20,7 @@ CRect_Effect::CRect_Effect(const CRect_Effect& rhs)
 HRESULT CRect_Effect::Initialize_Prototype(const EFFECT_DESC& EffectDesc)
 {
 
-	m_tEffectDesc.vAccUV = EffectDesc.vAccUV;
-	m_tEffectDesc.fUVSpeed = EffectDesc.fUVSpeed;
+	m_tEffectDesc = EffectDesc;
 
 	return S_OK;
 }

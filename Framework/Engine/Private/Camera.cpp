@@ -19,6 +19,7 @@ HRESULT CCamera::Initialize_Prototype()
 	if (nullptr == m_pTransformCom)
 		return E_FAIL;
 
+
 	return S_OK;
 }
 

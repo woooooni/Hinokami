@@ -24,6 +24,9 @@ HRESULT CCamera_Free::Initialize_Prototype()
 
 HRESULT CCamera_Free::Initialize(void * pArg)
 {
+	if (FAILED(Ready_Components()))
+		return E_FAIL;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -108,6 +111,11 @@ HRESULT CCamera_Free::Render()
 HRESULT CCamera_Free::Ready_Components()
 {
 	__super::Ready_Components();
+
+
+	if (FAILED(__super::Add_Component(L"Com_Transform", m_pTransformCom)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

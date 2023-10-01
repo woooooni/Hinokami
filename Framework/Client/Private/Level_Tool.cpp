@@ -7,6 +7,7 @@
 #include "Character.h"
 #include "Dummy.h"
 #include "Terrain.h"
+#include "Camera_Free.h"
 
 
 CLevel_Tool::CLevel_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -68,6 +69,17 @@ HRESULT CLevel_Tool::Initialize()
 		return E_FAIL;
 
 	m_pImGuiManager->Set_Terrain(pTerrain);
+
+
+	CGameObject* pTempCamera = GAME_INSTANCE->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_CAMERA), L"Main_Camera");
+	if (nullptr == pTempCamera)
+		return E_FAIL;
+
+	CCamera_Free* pCamera = dynamic_cast<CCamera_Free*>(pTempCamera);
+	if (nullptr == pCamera)
+		return E_FAIL;
+
+	m_pImGuiManager->Set_Camera(pCamera);
 	return S_OK;
 }
 
@@ -148,7 +160,7 @@ HRESULT CLevel_Tool::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	CameraDesc.fNear = 0.2f;
 	CameraDesc.fFar = 1000.f;
 
-	CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
+	CameraDesc.TransformDesc.fSpeedPerSec = 3.f;
 	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
 	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, _uint(eLayerType), TEXT("Prototype_GameObject_Camera_Free"), &CameraDesc)))

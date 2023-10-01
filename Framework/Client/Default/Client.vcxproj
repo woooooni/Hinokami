@@ -199,6 +199,7 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Mesh_Effect.h" />
     <ClInclude Include="..\Public\Nezko.h" />
+    <ClInclude Include="..\Public\Picking_Manager.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Prop.h" />
     <ClInclude Include="..\Public\Rect_Effect.h" />
@@ -250,6 +251,7 @@
     <ClCompile Include="..\Private\Giyu.cpp" />
     <ClCompile Include="..\Private\Mesh_Effect.cpp" />
     <ClCompile Include="..\Private\Nezko.cpp" />
+    <ClCompile Include="..\Private\Picking_Manager.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Prop.cpp" />
     <ClCompile Include="..\Private\Rect_Effect.cpp" />

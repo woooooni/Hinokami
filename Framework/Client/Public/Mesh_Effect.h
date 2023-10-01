@@ -40,6 +40,7 @@ protected:
 
 private:
 	class CModel* m_pModel = nullptr;
+	wstring m_strEffectName;
 	wstring m_strModelFolderPath;
 	wstring m_strModelFileName;
 

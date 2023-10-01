@@ -8,6 +8,8 @@
 #include "Terrain.h"
 #include "Key_Manager.h"
 #include "Utils.h"
+#include "Mesh_Effect.h"
+#include "Camera_Free.h"
 
 USING(Client)
 IMPLEMENT_SINGLETON(CImGui_Manager)
@@ -153,10 +155,9 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
             continue;
 
 
-        const list<CGameObject*>& GameObjects = GAME_INSTANCE->Find_GameObjects(LEVEL_TOOL, i);
-
         if (ImGui::CollapsingHeader(STR_LAYER_NAME[i]))
         {
+            const list<CGameObject*>& GameObjects = GAME_INSTANCE->Find_GameObjects(LEVEL_TOOL, i);
             char szListBoxLable[MAX_PATH] = "##ListBox";
             strcat_s(szListBoxLable, STR_LAYER_NAME[i]);
 
@@ -173,9 +174,27 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
                     else
                         TargetObjectTag = "";
 
-                    if (ImGui::Selectable(ObjectTag.c_str(), TargetObjectTag.c_str(), 0, ImVec2(300, 15)))
+                    if (ImGui::Selectable(ObjectTag.c_str(), TargetObjectTag.c_str(), ImGuiSelectableFlags_AllowDoubleClick, ImVec2(300, 15)))
                     {
                         m_pTarget = Object;
+                        if (ImGui::IsMouseDoubleClicked(0))
+                        {
+                            CTransform* pCameraTransform = dynamic_cast<CTransform*>(m_pCamera->Get_Component(L"Com_Transform"));
+                            CTransform* pTargetTransform = dynamic_cast<CTransform*>(m_pTarget->Get_Component(L"Com_Transform"));
+                            
+                            _float4 vObjectPosition;
+                            XMStoreFloat4(&vObjectPosition, pTargetTransform->Get_State(CTransform::STATE::STATE_POSITION));
+                            
+                            vObjectPosition.y += 10.f;
+                            vObjectPosition.z -= 10.f;
+
+                            
+                            pCameraTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat4(&vObjectPosition));
+
+                            vObjectPosition.y -= 10.f;
+                            vObjectPosition.z += 10.f;
+                            pCameraTransform->LookAt(XMLoadFloat4(&vObjectPosition));
+                        }
                     }
                     iIdx++;
                 }
@@ -189,14 +208,12 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
                 for (auto& Object : GameObjects)
                 {
                     wstring strObjectTag = Object->Get_ObjectTag();
-                    if (strObjectTag.find_first_not_of(L"0123456789") == std::string::npos)
-                    {
+
+                    if (strObjectTag.find_first_of(L"0123456789") == std::string::npos)
                         strObjectTag += to_wstring(iIdx++);
-                    }
                     else
-                    {
-                        strObjectTag.replace(strObjectTag.find_first_of(L"0123456789"), strObjectTag.size(), to_wstring(iIdx++));
-                    }
+                        strObjectTag.replace(strObjectTag.find_first_of(L"0123456789"), strObjectTag.size() - 1, to_wstring(iIdx++));
+
                     Object->Set_ObjectTag(strObjectTag);
                 }
             }
@@ -577,7 +594,46 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
 void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 {
     ImGui::Begin("Effect");
-    ImGui::Text("Effect Tool");
+    if (m_pPrevEffect != nullptr)
+    {
+        m_pPrevEffect->Tick(fTimeDelta);
+        m_pPrevEffect->LateTick(fTimeDelta);
+
+        const CEffect::EFFECT_DESC& tDesc = m_pPrevEffect->Get_EffectDesc();
+        
+    }
+
+    static char szEffectName[MAX_PATH] = "";
+    static char szEffectFolderPath[MAX_PATH] = "";
+    static char szEffectFileName[MAX_PATH] = "";
+    
+    ImGui::Text("Effect_Name");
+    ImGui::InputText("##EffectName", szEffectName, MAX_PATH);
+    IMGUI_NEW_LINE;
+    ImGui::Text("Effect_FolderPath");
+    ImGui::InputText("##EffectFolderPath", szEffectFolderPath, MAX_PATH);
+    IMGUI_NEW_LINE;
+    ImGui::Text("Effect_FileName");
+    ImGui::InputText("##EffectFileName", szEffectFileName, MAX_PATH);
+
+    if(ImGui::Button("Generate_Effect"))
+    {
+        Safe_Release(m_pPrevEffect);
+
+        CEffect::EFFECT_DESC tDesc;
+        ZeroMemory(&tDesc, sizeof(CEffect::EFFECT_DESC));
+
+        CMesh_Effect* pMeshEffect = CMesh_Effect::Create(m_pDevice, m_pContext, 
+            CUtils::ToWString(szEffectName), 
+            L"Mesh_Effect", 
+            CUtils::ToWString(szEffectFolderPath), 
+            CUtils::ToWString(szEffectFileName), 
+            tDesc);
+
+        pMeshEffect->Initialize(nullptr);
+
+        m_pPrevEffect = pMeshEffect;
+    }
     ImGui::End();
 }
 
@@ -638,6 +694,7 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
         }
     }
 
+
     if (m_pPrevObject && nullptr != m_pTerrain)
     {
         _float4 vHitPos;
@@ -664,12 +721,16 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
                     m_pPrevObject = nullptr;
                 }
 
+                pObjectTransform->Set_State(CTransform::STATE::STATE_RIGHT, pTransform->Get_State(CTransform::STATE::STATE_RIGHT));
+                pObjectTransform->Set_State(CTransform::STATE::STATE_UP, pTransform->Get_State(CTransform::STATE::STATE_UP));
+                pObjectTransform->Set_State(CTransform::STATE::STATE_LOOK, pTransform->Get_State(CTransform::STATE::STATE_LOOK));
                 pObjectTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat4(&vHitPos));
 
                 if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, eSelectedLayer, pCloneObject)))
                 {
                     MSG_BOX("Add_GameObject Failed.");
                     Safe_Release(m_pPrevObject);
+                    Safe_Release(pCloneObject);
                     m_pPrevObject = nullptr;
                 }
             }
@@ -682,6 +743,32 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
         {
             Safe_Release(m_pPrevObject);
             m_pPrevObject = nullptr;
+        }
+
+        if (KEY_TAP(KEY::R))
+        {
+            CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
+            pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
+        }
+
+        if (KEY_TAP(KEY::OPEN_SQUARE_BRACKET))
+        {
+            CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
+            _float3 vScale = pTransform->Get_Scale();
+            vScale.x = clamp(vScale.x -= 1.f, 1.f, 999.f);
+            vScale.y = clamp(vScale.y -= 1.f, 1.f, 999.f);
+            vScale.z = clamp(vScale.z -= 1.f, 1.f, 999.f);
+            pTransform->Set_Scale(XMLoadFloat3(&vScale));
+        }
+
+        if (KEY_TAP(KEY::CLOSE_SQUARE_BRACKET))
+        {
+            CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
+            _float3 vScale = pTransform->Get_Scale();
+            vScale.x = clamp(vScale.x += 1.f, 1.f, 999.f);
+            vScale.y = clamp(vScale.y += 1.f, 1.f, 999.f);
+            vScale.z = clamp(vScale.z += 1.f, 1.f, 999.f);
+            pTransform->Set_Scale(XMLoadFloat3(&vScale));
         }
     }
     
@@ -698,7 +785,14 @@ void CImGui_Manager::Tick_Terrain_Tool(_float fTimeDelta)
     ImGui::Text("Terrain Tool");
     if (nullptr != m_pTerrain)
     {
+        static _bool bDrawGrid = true;
+        ImGui::Text("Draw_Grid");
+        IMGUI_SAME_LINE;
+        ImGui::Checkbox("##DrawGrid", &bDrawGrid);
+        m_pTerrain->Set_DrawGrid(bDrawGrid);
         
+
+        IMGUI_NEW_LINE;
         CTransform* pTransform = m_pTerrain->Get_TransformCom();
 
 #pragma region Position

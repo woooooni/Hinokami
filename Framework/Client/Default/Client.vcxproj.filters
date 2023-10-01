@@ -112,6 +112,9 @@
     <Filter Include="02.GameObjects\Effect\Dummy_Effect">
       <UniqueIdentifier>{c520ddf1-6c6d-41d9-b1da-7dd477fb5811}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. Manager\Picking">
+      <UniqueIdentifier>{56516b2c-83e0-46b5-8868-d80fb89ab33c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -228,6 +231,9 @@
     <ClInclude Include="..\Public\Rect_Effect.h">
       <Filter>02.GameObjects\Effect\Rect_Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Picking_Manager.h">
+      <Filter>96. Manager\Picking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -328,6 +334,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Rect_Effect.cpp">
       <Filter>02.GameObjects\Effect\Rect_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Picking_Manager.cpp">
+      <Filter>96. Manager\Picking</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

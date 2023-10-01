@@ -66,34 +66,37 @@ HRESULT CTerrain::Render()
 
 #ifdef _DEBUG
 
-
-	m_pEffect->SetWorld(m_pTransformCom->Get_WorldMatrix());
-	m_pEffect->SetView(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
-	m_pEffect->SetProjection(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
-
-
-	m_pEffect->Apply(m_pContext);
-
-	m_pContext->IASetInputLayout(m_pInputLayout);
+	if (m_bDraw)
+	{
+		m_pEffect->SetWorld(m_pTransformCom->Get_WorldMatrix());
+		m_pEffect->SetView(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+		m_pEffect->SetProjection(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
 
 
-	m_pBatch->Begin();
+		m_pEffect->Apply(m_pContext);
 
-	_float3 vScale = m_pTransformCom->Get_Scale();
-	_float4 fPosition;
-	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION);
-	XMStoreFloat4(&fPosition, vPosition);
-
-	DX::DrawGrid(m_pBatch,
-		XMVectorSet(_float(m_pVIBufferCom->Get_VertexCount_X() / 2.f), 0.f, 0.f, 1.f),
-		XMVectorSet(0.f, 0.f, _float(m_pVIBufferCom->Get_VertexCount_Z() / 2.f), 1.f),
-		XMVectorSet((m_pVIBufferCom->Get_VertexCount_X() / 2.f), fPosition.y, (m_pVIBufferCom->Get_VertexCount_Z() / 2.f), 1.f),
-		size_t((m_pVIBufferCom->Get_VertexCount_X()) * vScale.x),
-		size_t((m_pVIBufferCom->Get_VertexCount_Z()) * vScale.z),
-		DirectX::Colors::Orange);
+		m_pContext->IASetInputLayout(m_pInputLayout);
 
 
-	m_pBatch->End();
+		m_pBatch->Begin();
+
+		_float3 vScale = m_pTransformCom->Get_Scale();
+		_float4 fPosition;
+		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION);
+		XMStoreFloat4(&fPosition, vPosition);
+
+		DX::DrawGrid(m_pBatch,
+			XMVectorSet(_float(m_pVIBufferCom->Get_VertexCount_X() / 2.f), 0.f, 0.f, 1.f),
+			XMVectorSet(0.f, 0.f, _float(m_pVIBufferCom->Get_VertexCount_Z() / 2.f), 1.f),
+			XMVectorSet((m_pVIBufferCom->Get_VertexCount_X() / 2.f), fPosition.y, (m_pVIBufferCom->Get_VertexCount_Z() / 2.f), 1.f),
+			size_t((m_pVIBufferCom->Get_VertexCount_X()) * vScale.x),
+			size_t((m_pVIBufferCom->Get_VertexCount_Z()) * vScale.z),
+			DirectX::Colors::Orange);
+
+
+		m_pBatch->End();
+	}
+	
 #endif
 
 	return S_OK;
@@ -157,7 +160,12 @@ _bool CTerrain::Is_Picking(__out _float4* vHitPos)
 		{
 			if (fDistnace < fMinDistance)
 			{
-				XMStoreFloat4(vHitPos, vRayPosition + vRayDir * fDistnace);
+				_vector vPickingPos = vRayPosition + vRayDir * fDistnace;
+				
+				XMStoreFloat4(vHitPos, vPickingPos);
+				vHitPos->x = _uint(floorf(vHitPos->x + 0.5f));
+				vHitPos->y = _uint(floorf(vHitPos->y + 0.5f));
+				vHitPos->z = _uint(floorf(vHitPos->z + 0.5f));
 				/*string strOut; 
 				strOut += "x : " + to_string(vHitPos->x) + " ";
 				strOut += "y : " + to_string(vHitPos->y) + " ";
