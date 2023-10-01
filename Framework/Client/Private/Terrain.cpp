@@ -158,12 +158,12 @@ _bool CTerrain::Is_Picking(__out _float4* vHitPos)
 			if (fDistnace < fMinDistance)
 			{
 				XMStoreFloat4(vHitPos, vRayPosition + vRayDir * fDistnace);
-				string strOut; 
+				/*string strOut; 
 				strOut += "x : " + to_string(vHitPos->x) + " ";
 				strOut += "y : " + to_string(vHitPos->y) + " ";
 				strOut += "z : " + to_string(vHitPos->z) + " ";
 				MessageBoxA(g_hWnd, strOut.c_str(), "Hit", MB_OK);
-				MSG_BOX("Hit");
+				MSG_BOX("Hit");*/
 				return true;
 			}
 		}

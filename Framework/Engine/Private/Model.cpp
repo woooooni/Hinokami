@@ -32,6 +32,7 @@ CModel::CModel(const CModel& rhs)
 	, m_strName(rhs.m_strName)
 	, m_strFileName(rhs.m_strFileName)
 	, m_strFolderPath(rhs.m_strFolderPath)
+	, m_bFromBinary(rhs.m_bFromBinary)
 {
 	for (auto& pMeshContainer : m_Meshes)
 		Safe_AddRef(pMeshContainer);
@@ -265,8 +266,6 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 
 		if (FAILED(pShader->Bind_Texture("g_MatrixPallete", m_pSRV)))
 			return E_FAIL;
-
-
 	}
 
 	pShader->Begin(0);
@@ -452,8 +451,6 @@ HRESULT CModel::Ready_Animation_Texture()
 	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	TextureDesc.MiscFlags = 0;
 
-
-
 	if (FAILED(m_pDevice->CreateTexture1D(&TextureDesc, nullptr, &m_pMatrixTexture)))
 		return E_FAIL;
 
@@ -463,6 +460,7 @@ HRESULT CModel::Ready_Animation_Texture()
 	return S_OK;
 }
 
+#pragma region Deprecated
 //HRESULT CModel::Ready_Animation_Texture()
 //{
 //	if (TYPE::TYPE_NONANIM == m_eModelType)
@@ -577,7 +575,7 @@ HRESULT CModel::Ready_Animation_Texture()
 //
 //	return S_OK;
 //}
-
+#pragma endregion 
 
 
 
@@ -597,20 +595,22 @@ CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYP
 CModel* CModel::Create_Bin(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix)
 {
 	CModel* pInstance = new CModel(pDevice, pContext);
-
+	pInstance->m_bFromBinary = true;
 	return pInstance;
 }
 
 CComponent* CModel::Clone(void* pArg)
 {
 	CModel* pInstance = new CModel(*this);
-
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (!m_bFromBinary)
 	{
-		MSG_BOX("Failed To Cloned : CModel");
-		Safe_Release(pInstance);
+		if (FAILED(pInstance->Initialize(pArg)))
+		{
+			MSG_BOX("Failed To Cloned : CModel");
+			Safe_Release(pInstance);
+		}
+		return pInstance;
 	}
-
 	return pInstance;
 }
 

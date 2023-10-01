@@ -9,6 +9,7 @@
 #include "Texture.h"
 #include "Animation.h"
 #include "Channel.h"
+#include "GameInstance.h"
 
 
 USING(Engine)
@@ -80,7 +81,7 @@ HRESULT CModel_Manager::Export_Model_Data_FromPath(_uint eType, wstring strFolde
 		CModel* pModel = nullptr;
 		if (0 == lstrcmp(TEXT(".fbx"), strExt))
 		{
-			pModel = Import_Model_Data(eType, strFolderName, wstring(strFileName) + strExt);
+			Import_Model_Data(0, wstring(L"Prototype_Model_") + strFileName, eType, strFolderName, wstring(strFileName) + strExt, &pModel);
 			if (nullptr == pModel)
 				return E_FAIL;
 
@@ -95,7 +96,14 @@ HRESULT CModel_Manager::Export_Model_Data_FromPath(_uint eType, wstring strFolde
 }
 
 #pragma region Import_ModelData
-CModel* CModel_Manager::Import_Model_Data(_uint eType, wstring strFolderPath, wstring strFileName, _fmatrix PivotMatrix)
+
+/* 모델 컴포넌트를 생성해 컴포넌트 매니저에 프로토타입 등록시킨다. */
+HRESULT CModel_Manager::Import_Model_Data(_uint iLevelIndex, 
+	const wstring& strProtoTypeTag, 
+	_uint eType, 
+	wstring strFolderPath, 
+	wstring strFileName,
+	__out class CModel** ppOut)
 {
 	_tchar szFileName[MAX_PATH];
 	_tchar szExt[MAX_PATH];
@@ -111,16 +119,21 @@ CModel* CModel_Manager::Import_Model_Data(_uint eType, wstring strFolderPath, ws
 			strFolderPath, strFileName, XMLoadFloat4x4(&m_PivotMatrix));
 
 		if (nullptr == pModel)
-			return nullptr;
+			return E_FAIL;
 
 		if (FAILED(pModel->Initialize(nullptr)))
 		{
 			MSG_BOX("Model Initialize Failed : Data Manager");
 			Safe_Release(pModel);
-			return nullptr;
+			return E_FAIL;
 		}
 
-		return pModel;
+		if (FAILED(GAME_INSTANCE->Add_Prototype(iLevelIndex, strProtoTypeTag, pModel)))
+		{
+			MSG_BOX("Model Add Prototype Failed : Model Manager");
+			Safe_Release(pModel);
+			return E_FAIL;
+		}
 	}
 	else
 	{
@@ -130,7 +143,7 @@ CModel* CModel_Manager::Import_Model_Data(_uint eType, wstring strFolderPath, ws
 			strFolderPath, strFileName, XMLoadFloat4x4(&m_PivotMatrix));
 
 		if (nullptr == pModel)
-			return nullptr;
+			return E_FAIL;
 
 		wstring strFinalFolderPath = strFolderPath + szFileName;
 
@@ -140,7 +153,7 @@ CModel* CModel_Manager::Import_Model_Data(_uint eType, wstring strFolderPath, ws
 		{
 			MSG_BOX("Import_Mesh Failed.");
 			Safe_Release(pModel);
-			return nullptr;
+			return E_FAIL;
 		}
 			
 
@@ -148,29 +161,56 @@ CModel* CModel_Manager::Import_Model_Data(_uint eType, wstring strFolderPath, ws
 		{
 			MSG_BOX("Import_Material Failed.");
 			Safe_Release(pModel);
-			return nullptr;
+			return E_FAIL;
 		}
 
 		if (CModel::TYPE::TYPE_NONANIM == pModel->Get_ModelType())
-			return pModel;
-
-		if (FAILED(Import_Animation(strFinalFolderPath, pModel)))
 		{
-			MSG_BOX("Import_Animation Failed.");
-			Safe_Release(pModel);
-			return nullptr;
+			if (FAILED(GAME_INSTANCE->Add_Prototype(iLevelIndex, strProtoTypeTag, pModel)))
+			{
+				MSG_BOX("Model Add Prototype Failed : Model Manager");
+				Safe_Release(pModel);
+				return E_FAIL;
+			}
 		}
-
-		if (FAILED(pModel->Ready_Animation_Texture()))
+		else
 		{
-			MSG_BOX("Ready_Animation_Texture Failed.");
-			Safe_Release(pModel);
-			return nullptr;
+			if (FAILED(Import_Animation(strFinalFolderPath, pModel)))
+			{
+				MSG_BOX("Import_Animation Failed.");
+				Safe_Release(pModel);
+				return E_FAIL;
+			}
+
+			if (FAILED(pModel->Ready_Animation_Texture()))
+			{
+				MSG_BOX("Ready_Animation_Texture Failed.");
+				Safe_Release(pModel);
+				return E_FAIL;
+			}
+
+			if (FAILED(GAME_INSTANCE->Add_Prototype(iLevelIndex, strProtoTypeTag, pModel)))
+			{
+				MSG_BOX("Model Add Prototype Failed : Model Manager");
+				Safe_Release(pModel);
+				return E_FAIL;
+			}
 		}
 	}
 
-	return pModel;
-		
+	if (ppOut != nullptr)
+	{
+		*ppOut = dynamic_cast<CModel*>(pModel->Clone());
+		if (*ppOut == nullptr)
+		{
+			MSG_BOX("ppOut Initialize Failed. : Model Manager");
+			return E_FAIL;
+		}
+			
+			
+		Safe_AddRef(pModel);
+	}
+	return S_OK;
 	
 }
 #pragma endregion

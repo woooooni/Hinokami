@@ -135,8 +135,6 @@ HRESULT CTanjiro::Ready_Parts()
 
 	m_Parts.push_back(pGameObject);
 
-	;
-
 	return S_OK;
 }
 

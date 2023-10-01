@@ -20,8 +20,12 @@ class CEffect abstract : public CGameObject
 public:
 	typedef struct tagEffectDesc
 	{
+		_float4			vDir = _float4(0.f, 0.f, 0.f, 0.f);
+		_float4			vRotationDir = _float4(0.f, 0.f, 0.f, 0.f);
+
 		_float2			vAccUV = _float2(0.f, 0.f);
 		_float			fUVSpeed = 0.f;
+		
 	} EFFECT_DESC;
 
 protected:
@@ -36,6 +40,14 @@ public:
 	virtual void Tick(_float fTimeDelta) PURE;
 	virtual void LateTick(_float fTimeDelta) PURE;
 	virtual HRESULT Render() PURE;
+
+protected:
+	// CGameObject을(를) 통해 상속됨
+	virtual HRESULT Ready_Components() override;
+
+public:
+	const EFFECT_DESC& Get_EffectDesc() { return m_tEffectDesc; }
+	void Set_EffectDesc(const EFFECT_DESC& tEffectDesc) { m_tEffectDesc = tEffectDesc; }
 
 
 protected:

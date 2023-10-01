@@ -202,6 +202,14 @@ HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, _uint iLayerType, const
 	return m_pObject_Manager->Add_GameObject(iLevelIndex, iLayerType, strPrototypeTag, pArg);
 }
 
+HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, const _uint iLayerType, CGameObject* pGameObject)
+{
+	if (nullptr == m_pObject_Manager)
+		return E_FAIL;
+
+	return m_pObject_Manager->Add_GameObject(iLevelIndex, iLayerType, pGameObject);
+}
+
 CGameObject* CGameInstance::Clone_GameObject(const wstring& strPrototypeTag, _uint iLayerType, void* pArg)
 {
 	return m_pObject_Manager->Clone_GameObject(strPrototypeTag, iLayerType, pArg);
@@ -342,9 +350,9 @@ HRESULT CGameInstance::Export_Model_Data(CModel* pModel, const wstring& strSubFo
 	return m_pModel_Manager->Export_Model_Data(pModel, strSubFolderName, strFileName);
 }
 
-CModel* CGameInstance::Import_Model_Data(_uint eType, wstring strFolderPath, wstring strFileName, _fmatrix PivotMatrix)
+HRESULT CGameInstance::Import_Model_Data(_uint iLevelIndex, const wstring& strProtoTypeTag, _uint eType, wstring strFolderPath, wstring strFileName, __out class CModel** ppOut)
 {
-	return m_pModel_Manager->Import_Model_Data(eType, strFolderPath, strFileName, PivotMatrix);
+	return m_pModel_Manager->Import_Model_Data(iLevelIndex, strProtoTypeTag, eType, strFolderPath, strFileName, ppOut);
 }
 
 HRESULT CGameInstance::Export_Model_Data_FromPath(_uint eType, wstring strFolderPath)

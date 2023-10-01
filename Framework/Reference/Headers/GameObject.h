@@ -37,6 +37,7 @@ public:
 
 protected:
 	virtual HRESULT Ready_Components() PURE;
+	HRESULT Add_Component(const wstring& pComponentTag, class CComponent* pComponent);
 	HRESULT Add_Component(_uint iLevelIndex, const wstring& pPrototypeTag, const wstring& pComponentTag, CComponent** ppOut, void* pArg = nullptr);
 	HRESULT Compute_CamZ(_fvector vWorldPos);
 

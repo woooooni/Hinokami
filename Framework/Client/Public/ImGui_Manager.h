@@ -85,10 +85,12 @@ private:
 	wstring m_strFilePath = TEXT("../Bin/Resources/Meshes/");
 	wstring m_strFileName;
 	wstring m_strExportPath = TEXT("../Bin/Resources/Export/");
-	_uint m_iModelType = 0;
+	_uint m_iSelectedModelType = 0;
 
 public:
 	class CGameObject* m_pTarget = nullptr;
+	class CGameObject* m_pPrevObject = nullptr;
+
 	class CDummy* m_pDummy = nullptr;
 	class CTerrain* m_pTerrain = nullptr;
 

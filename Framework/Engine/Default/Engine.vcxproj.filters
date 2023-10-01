@@ -148,6 +148,9 @@
     <Filter Include="01.Utiltiy\07. Map_Manager">
       <UniqueIdentifier>{f84ef70a-bfa5-4643-9a8e-c9d4fc795f63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utiltiy\04.Component\08. Animator">
+      <UniqueIdentifier>{7295782a-c5ae-444d-a318-dbef0ca7bf87}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">

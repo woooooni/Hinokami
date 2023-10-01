@@ -17,6 +17,7 @@ CBuilding::CBuilding(const CBuilding& rhs)
 	, m_pRendererCom(rhs.m_pRendererCom)
 	, m_pTransformCom(rhs.m_pTransformCom)
 	, m_pModelCom(rhs.m_pModelCom)
+	, m_strBuildingName(rhs.m_strBuildingName)
 {	
 	Safe_AddRef(m_pShaderCom);
 	Safe_AddRef(m_pRendererCom);
@@ -29,9 +30,13 @@ HRESULT CBuilding::Initialize_Prototype(const wstring& strFilePath, const wstrin
 	if(FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_pModelCom = GAME_INSTANCE->Import_Model_Data(CModel::TYPE::TYPE_NONANIM, strFilePath, strFileName);
+	_tchar szFileName[MAX_PATH];
+	_tchar szExt[MAX_PATH];
+	_wsplitpath_s(strFileName.c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
 
-	if(nullptr == m_pModelCom)
+	m_strBuildingName = szFileName;
+
+	if (FAILED(GAME_INSTANCE->Import_Model_Data(LEVEL_STATIC, L"Prototype_Component_Model_" + m_strBuildingName, CModel::TYPE::TYPE_NONANIM, strFilePath, strFileName, nullptr)))
 		return E_FAIL;
 
 
@@ -109,7 +114,8 @@ HRESULT CBuilding::Ready_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Model"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	// TODO Dummy Model
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_") + m_strBuildingName, TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+		return E_FAIL;
 
 	return S_OK;
 }

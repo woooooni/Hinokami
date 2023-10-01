@@ -66,6 +66,9 @@ void CImGui_Manager::Tick(_float fTimeDelta)
     ImGui::NewFrame();
 
     Tick_Basic_Tool(fTimeDelta);
+
+
+    
    
     ImGui::EndFrame();
 }
@@ -140,32 +143,63 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
 {
     ImGui::Begin("Hierachy");
 
-    const list<CGameObject*>& GameObjects = GAME_INSTANCE->Find_GameObjects(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_BUILDING));
-
-    if (ImGui::CollapsingHeader("Building"))
+    for (_uint i = 0; i < LAYER_TYPE::LAYER_END; ++i)
     {
-        if (ImGui::BeginListBox("##BuildingObject", ImVec2(300, 0)))
+        if (i == LAYER_TYPE::LAYER_CAMERA
+            || i == LAYER_TYPE::LAYER_TERRAIN
+            || i == LAYER_TYPE::LAYER_BACKGROUND
+            || i == LAYER_TYPE::LAYER_SKYBOX
+            || i == LAYER_TYPE::LAYER_UI)
+            continue;
+
+
+        const list<CGameObject*>& GameObjects = GAME_INSTANCE->Find_GameObjects(LEVEL_TOOL, i);
+
+        if (ImGui::CollapsingHeader(STR_LAYER_NAME[i]))
         {
-            _uint iIdx = 0;
-            for (auto& Object : GameObjects)
+            char szListBoxLable[MAX_PATH] = "##ListBox";
+            strcat_s(szListBoxLable, STR_LAYER_NAME[i]);
+
+            if (ImGui::BeginListBox(szListBoxLable, ImVec2(300, 0)))
             {
-                string ObjectTag = CUtils::ToString(Object->Get_ObjectTag());
-                string TargetObjectTag;
-
-                if (m_pTarget)
-                    TargetObjectTag = CUtils::ToString(m_pTarget->Get_ObjectTag());
-                else
-                    TargetObjectTag = "";
-
-                if (ImGui::Selectable(ObjectTag.c_str(), TargetObjectTag.c_str(), 0, ImVec2(300, 15)))
+                _uint iIdx = 0;
+                for (auto& Object : GameObjects)
                 {
-                    m_pTarget = Object;
+                    string ObjectTag = CUtils::ToString(Object->Get_ObjectTag());
+                    string TargetObjectTag;
 
+                    if (m_pTarget)
+                        TargetObjectTag = CUtils::ToString(m_pTarget->Get_ObjectTag());
+                    else
+                        TargetObjectTag = "";
+
+                    if (ImGui::Selectable(ObjectTag.c_str(), TargetObjectTag.c_str(), 0, ImVec2(300, 15)))
+                    {
+                        m_pTarget = Object;
+                    }
+                    iIdx++;
                 }
-                iIdx++;
+
+                ImGui::EndListBox();
             }
 
-            ImGui::EndListBox();
+            if (ImGui::Button("Auto Rename"))
+            {
+                _uint iIdx = 0;
+                for (auto& Object : GameObjects)
+                {
+                    wstring strObjectTag = Object->Get_ObjectTag();
+                    if (strObjectTag.find_first_not_of(L"0123456789") == std::string::npos)
+                    {
+                        strObjectTag += to_wstring(iIdx++);
+                    }
+                    else
+                    {
+                        strObjectTag.replace(strObjectTag.find_first_of(L"0123456789"), strObjectTag.size(), to_wstring(iIdx++));
+                    }
+                    Object->Set_ObjectTag(strObjectTag);
+                }
+            }
         }
     }
     
@@ -379,7 +413,7 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
                 if (ImGui::Selectable(items[n], is_selected))
                 {
                     szCurrent = items[n];
-                    m_iModelType = n;
+                    m_iSelectedModelType = n;
                 }
                     
             }
@@ -389,7 +423,7 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
 
         if (ImGui::Button("Import"))
         {
-            m_pDummy->Ready_ModelCom(m_iModelType, m_strFilePath, m_strFileName);
+            m_pDummy->Ready_ModelCom(m_iSelectedModelType, m_strFilePath, m_strFileName);
         }
 
         if (ImGui::Button("Export"))
@@ -550,31 +584,109 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
 {
     ImGui::Begin("Map");
-    const map<const wstring, CGameObject*>& PrototypeObjects = GAME_INSTANCE->Find_Prototype_GameObjects(LAYER_BUILDING);
 
     static char pSelectedObjectName[MAX_PATH] = "Temp";
     static _bool bSelected = false;
-    if (ImGui::BeginListBox("##Object_List"))
+    static LAYER_TYPE eSelectedLayer = LAYER_TYPE::LAYER_END;
+    static string strPrototypeName;
+
+    for (_uint i = 0; i < LAYER_TYPE::LAYER_END; ++i)
     {
-        for (auto& iter : PrototypeObjects)
+        if (i == LAYER_TYPE::LAYER_CAMERA
+            || i == LAYER_TYPE::LAYER_TERRAIN
+            || i == LAYER_TYPE::LAYER_BACKGROUND
+            || i == LAYER_TYPE::LAYER_SKYBOX
+            || i == LAYER_TYPE::LAYER_UI)
+            continue;
+
+        const map<const wstring, CGameObject*>& PrototypeObjects = GAME_INSTANCE->Find_Prototype_GameObjects(i);
+
+        char szListBoxTag[MAX_PATH] = "##Object_List";
+        strcat_s(szListBoxTag, to_string(i).c_str());
+
+        
+        if (ImGui::CollapsingHeader(STR_LAYER_NAME[i]))
         {
-            string strPrototypeName = CUtils::ToString(iter.first);
-            if (ImGui::Selectable(strPrototypeName.c_str(), !strcmp(pSelectedObjectName, strPrototypeName.c_str())))
+            if (ImGui::BeginListBox(szListBoxTag))
             {
-                strcpy_s(pSelectedObjectName, strPrototypeName.c_str());
-                bSelected = true;
+                for (auto& iter : PrototypeObjects)
+                {
+                    strPrototypeName = CUtils::ToString(iter.first);
+                    if (ImGui::Selectable(strPrototypeName.c_str(), !strcmp(pSelectedObjectName, strPrototypeName.c_str())))
+                    {
+                        m_pPrevObject = iter.second->Clone(nullptr);
+
+                        strcpy_s(pSelectedObjectName, strPrototypeName.c_str());
+                        eSelectedLayer = LAYER_TYPE(i);
+                        bSelected = true;
+                    }
+                }
+                ImGui::EndListBox();
             }
         }
-        ImGui::EndListBox();
     }
+
     if (bSelected)
     {
         if (ImGui::Button("Create"))
         {
             wstring strPrototypeName = CUtils::ToWString(pSelectedObjectName);
-            GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, LAYER_BUILDING, strPrototypeName, nullptr);
+            if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, eSelectedLayer, strPrototypeName, nullptr)))
+            {
+                MSG_BOX("Create Failed.");
+            }
         }
     }
+
+    if (m_pPrevObject && nullptr != m_pTerrain)
+    {
+        _float4 vHitPos;
+        if (m_pTerrain->Is_Picking(&vHitPos))
+        {
+            CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
+            if (nullptr != pTransform)
+                pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat4(&vHitPos));
+
+            if (KEY_TAP(KEY::LBTN))
+            {
+                CGameObject* pCloneObject = m_pPrevObject->Clone(nullptr);
+                if (nullptr == pCloneObject)
+                {
+                    MSG_BOX("Clone_Failed.");
+                    Safe_Release(m_pPrevObject);
+                    m_pPrevObject = nullptr;
+                }
+                CTransform* pObjectTransform = dynamic_cast<CTransform*>(pCloneObject->Get_Component(L"Com_Transform"));
+                if (pObjectTransform == nullptr)
+                {
+                    MSG_BOX("Get_TransformCom Failed.");
+                    Safe_Release(m_pPrevObject);
+                    m_pPrevObject = nullptr;
+                }
+
+                pObjectTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat4(&vHitPos));
+
+                if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, eSelectedLayer, pCloneObject)))
+                {
+                    MSG_BOX("Add_GameObject Failed.");
+                    Safe_Release(m_pPrevObject);
+                    m_pPrevObject = nullptr;
+                }
+            }
+        }
+
+        m_pPrevObject->Tick(fTimeDelta);
+        m_pPrevObject->LateTick(fTimeDelta);
+
+        if (KEY_TAP(KEY::RBTN))
+        {
+            Safe_Release(m_pPrevObject);
+            m_pPrevObject = nullptr;
+        }
+    }
+    
+
+
 
     
     ImGui::End();

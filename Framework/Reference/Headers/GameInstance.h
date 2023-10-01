@@ -50,6 +50,7 @@ public: /* For.Object_Manager */
 public:
 	HRESULT Add_Prototype(const wstring & strPrototypeTag, class CGameObject* pPrototype, _uint iLayerType);
 	HRESULT Add_GameObject(_uint iLevelIndex, const _uint iLayerType, const wstring & strPrototypeTag, void* pArg = nullptr);
+	HRESULT Add_GameObject(_uint iLevelIndex, const _uint iLayerType, class CGameObject* pGameObject);
 	class CGameObject* Clone_GameObject(const wstring & strPrototypeTag, _uint iLayerType, void* pArg = nullptr);
 	const map<const wstring, class CGameObject*>& Find_Prototype_GameObjects(_uint iLayerType);
 	class CGameObject* Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring & strObjectTag);
@@ -83,7 +84,7 @@ public:
 public:
 	/* For. Model_Manager */
 	HRESULT Export_Model_Data(class CModel* pModel, const wstring & strSubFolderName, wstring strFileName);
-	class CModel* Import_Model_Data(_uint eType, wstring strFolderPath, wstring strFileName, _fmatrix PivotMatrix = XMMatrixIdentity());
+	HRESULT Import_Model_Data(_uint iLevelIndex, const wstring & strProtoTypeTag, _uint eType, wstring strFolderPath, wstring strFileName, __out class CModel** ppOut = nullptr);
 	HRESULT Export_Model_Data_FromPath(_uint eType, wstring strFolderPath);
 
 /* For. CameraManager*/

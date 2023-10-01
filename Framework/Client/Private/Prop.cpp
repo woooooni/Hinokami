@@ -17,6 +17,7 @@ CProp::CProp(const CProp& rhs)
 	, m_pRendererCom(rhs.m_pRendererCom)
 	, m_pTransformCom(rhs.m_pTransformCom)
 	, m_pModelCom(rhs.m_pModelCom)
+	, m_strPropName(rhs.m_strPropName)
 {	
 	Safe_AddRef(m_pShaderCom);
 	Safe_AddRef(m_pRendererCom);
@@ -28,6 +29,15 @@ CProp::CProp(const CProp& rhs)
 HRESULT CProp::Initialize_Prototype(const wstring& strFilePath, const wstring& strFileName)
 {
 	if (FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
+
+	_tchar szFileName[MAX_PATH];
+	_tchar szExt[MAX_PATH];
+	_wsplitpath_s(strFileName.c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
+
+	m_strPropName = szFileName;
+
+	if (FAILED(GAME_INSTANCE->Import_Model_Data(LEVEL_STATIC, L"Prototype_Component_Model_" + m_strPropName, CModel::TYPE::TYPE_NONANIM, strFilePath, strFileName, nullptr)))
 		return E_FAIL;
 
 	return S_OK;
@@ -58,9 +68,6 @@ HRESULT CProp::Render()
 {
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
-
-	
-
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TP(), sizeof(_float4x4))))
 		return E_FAIL;
@@ -99,6 +106,9 @@ HRESULT CProp::Ready_Components()
 
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Model"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_") + m_strPropName, TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	return S_OK;

@@ -37,4 +37,10 @@ void CEffect::Free()
 
 }
 
+HRESULT CEffect::Ready_Components()
+{
+	return S_OK;
+}
+
+
 

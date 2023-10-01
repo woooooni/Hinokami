@@ -11,29 +11,36 @@ CMesh_Effect::CMesh_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 
 CMesh_Effect::CMesh_Effect(const CMesh_Effect& rhs)
 	: CEffect(rhs)
-	, m_pMesh(rhs.m_pMesh)
+	, m_pModel(rhs.m_pModel)
+	, m_strModelFileName(rhs.m_strModelFileName)
+	, m_strModelFolderPath(rhs.m_strModelFolderPath)
 {
-	Safe_AddRef(m_pMesh);
+	Safe_AddRef(m_pModel);
 }
 
 
-HRESULT CMesh_Effect::Initialize_Prototype(const EFFECT_DESC& EffectDesc)
+HRESULT CMesh_Effect::Initialize_Prototype(const wstring& strEffectName, const wstring& strModelFolderPath, const wstring& strModelFileName, const EFFECT_DESC& EffectDesc)
 {
-	m_tEffectDesc.vAccUV = EffectDesc.vAccUV;
-	m_tEffectDesc.fUVSpeed = EffectDesc.fUVSpeed;
+	m_tEffectDesc = EffectDesc;
+	m_strModelFolderPath = strModelFolderPath;
+	m_strModelFileName = strModelFileName;
+
+	if (FAILED(GAME_INSTANCE->Import_Model_Data(LEVEL_STATIC, TEXT("Prototype_Component_MeshEffect_") + strEffectName, CModel::TYPE::TYPE_NONANIM, strModelFolderPath, strModelFileName)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 
 HRESULT CMesh_Effect::Initialize(void* pArg)
 {
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(m_strModelFolderPath, m_strModelFileName)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CMesh_Effect::Ready_Components()
+HRESULT CMesh_Effect::Ready_Components(const wstring& strModelFolderPath, const wstring& strModelFileName)
 {
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
@@ -53,6 +60,9 @@ HRESULT CMesh_Effect::Ready_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Effect"), TEXT("Com_EffectShader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
+	
+
+
 	return S_OK;
 }
 
@@ -64,10 +74,10 @@ void CMesh_Effect::Tick(_float fTimeDelta)
 
 void CMesh_Effect::LateTick(_float fTimeDelta)
 {
-	/*if (nullptr == m_pRendererCom)
+	if (nullptr == m_pRendererCom)
 		return;
 
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);*/
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
 
 
 }
@@ -81,16 +91,17 @@ HRESULT CMesh_Effect::Render()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_ProjMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
 		return E_FAIL;
 
-	m_pMesh->Render();
+	
+
 
 	return S_OK;
 }
 
 
-CMesh_Effect* CMesh_Effect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const EFFECT_DESC& EffectDesc)
+CMesh_Effect* CMesh_Effect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strEffectName, const wstring& strObjectTag, const wstring& strFolderPath, const wstring& strFileName, const EFFECT_DESC& EffectDesc)
 {
 	CMesh_Effect* pInstance = new CMesh_Effect(pDevice, pContext, strObjectTag);
-	if (FAILED(pInstance->Initialize_Prototype(EffectDesc)))
+	if (FAILED(pInstance->Initialize_Prototype(strEffectName, strFolderPath, strFileName, EffectDesc)))
 	{
 		MSG_BOX("Create Failed : CMesh_Effect");
 		Safe_Release(pInstance);
@@ -115,5 +126,5 @@ CGameObject* CMesh_Effect::Clone(void* pArg)
 void CMesh_Effect::Free()
 {
 	__super::Free();
-	Safe_Release(m_pMesh);
+	Safe_Release(m_pModel);
 }

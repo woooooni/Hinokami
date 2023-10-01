@@ -59,13 +59,13 @@ HRESULT CLevel_Tool::Initialize()
 	m_pImGuiManager->Set_Dummy(pDummy);
 
 
-	CGameObject* pTempObject = GAME_INSTANCE->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_BACKGROUND), L"Terrain");
+	CGameObject* pTempObject = GAME_INSTANCE->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_TERRAIN), L"Terrain");
 	if (nullptr == pTempObject)
-		return S_OK;
+		return E_FAIL;
 
 	CTerrain* pTerrain = dynamic_cast<CTerrain*>(pTempObject);
 	if (nullptr == pTerrain)
-		return S_OK;
+		return E_FAIL;
 
 	m_pImGuiManager->Set_Terrain(pTerrain);
 	return S_OK;
@@ -155,21 +155,13 @@ HRESULT CLevel_Tool::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 		return E_FAIL;
 
 
-
-	;
-
 	return S_OK;
 }
 
 HRESULT CLevel_Tool::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 {
-	
-
-
 	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, _uint(eLayerType), TEXT("Prototype_GameObject_Dummy"))))
 		return E_FAIL;
-
-	;
 
 	return S_OK;
 }

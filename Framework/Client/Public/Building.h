@@ -43,6 +43,10 @@ protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CTransform* m_pTransformCom = nullptr;
 	CModel* m_pModelCom = nullptr;
 
+
+private:
+	wstring m_strBuildingName;
+
 public:
 	static CBuilding* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, 
 		const wstring& strObjectTag, const wstring& strFilePath, const wstring& strFileName);

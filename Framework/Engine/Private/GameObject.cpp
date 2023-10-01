@@ -54,6 +54,16 @@ CComponent* CGameObject::Get_Component(const wstring& strComponentTag)
 
 }
 
+HRESULT CGameObject::Add_Component(const wstring& strComponentTag, CComponent* pComponent)
+{
+	if (nullptr != Find_Component(strComponentTag))
+		return E_FAIL;
+
+	m_Components.emplace(strComponentTag, pComponent);
+	
+	return S_OK;
+}
+
 HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring& pPrototypeTag, const wstring& pComponentTag, CComponent** ppOut, void* pArg)
 {
 	if (nullptr != Find_Component(pComponentTag))
@@ -73,8 +83,6 @@ HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring& pPrototypeT
 	*ppOut = pComponent;
 
 	Safe_AddRef(pComponent);
-
-	;
 
 	return S_OK;
 }

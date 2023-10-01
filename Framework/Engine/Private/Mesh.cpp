@@ -16,6 +16,7 @@ CMesh::CMesh(const CMesh& rhs)
 	, m_AnimVertices(rhs.m_AnimVertices)
 	, m_NonAnimVertices(rhs.m_NonAnimVertices)
 	, m_FaceIndices(rhs.m_FaceIndices)
+	, m_bFromBinary(rhs.m_bFromBinary)
 {
 
 }
@@ -431,7 +432,7 @@ CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CMode
 CMesh* CMesh::Create_Bin(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::TYPE eModelType, _fmatrix PivotMatrix)
 {
 	CMesh* pInstance = new CMesh(pDevice, pContext);
-
+	pInstance->m_bFromBinary = true;
 	return pInstance;
 }
 
@@ -439,12 +440,15 @@ CComponent* CMesh::Clone(void* pArg)
 {
 	CMesh* pInstance = new CMesh(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (!m_bFromBinary)
 	{
-		MSG_BOX("Failed To Cloned : CMesh");
-		Safe_Release(pInstance);
+		if (FAILED(pInstance->Initialize(pArg)))
+		{
+			MSG_BOX("Failed To Cloned : CMesh");
+			Safe_Release(pInstance);
+		}
 	}
-
+	
 	return pInstance;
 }
 

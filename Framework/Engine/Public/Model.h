@@ -72,7 +72,7 @@ private:
 
 	_float4x4					m_PivotMatrix;
 	TYPE						m_eModelType = TYPE_END;
-
+	_bool						m_bFromBinary = false;
 private:
 	_uint							m_iNumMeshes = 0;
 	vector<class CMesh*>			m_Meshes;

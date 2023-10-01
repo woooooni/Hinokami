@@ -30,9 +30,6 @@ HRESULT CDummy::Initialize(void* pArg)
 
 HRESULT CDummy::Ready_Components()
 {
-	
-
-
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
@@ -85,11 +82,6 @@ HRESULT CDummy::Render()
 	if (nullptr == m_pModelCom)
 		return S_OK;
 
-
-
-	
-
-
 	CShader* pShader = m_pModelCom->Get_ModelType() == CModel::TYPE::TYPE_NONANIM ? m_pNonAnimShaderCom : m_pAnimShaderCom;
 	
 
@@ -112,28 +104,35 @@ HRESULT CDummy::Render()
 			return E_FAIL;
 	}
 
-	;
-
 	return S_OK;
 }
 
 HRESULT CDummy::Ready_ModelCom(_uint eType, const wstring& strFilePath, const wstring& strFileName)
 {
 	if (nullptr != m_pModelCom)
-		Safe_Release(m_pModelCom);
-	
-	_matrix		PivotMatrix = XMMatrixIdentity();
-	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+		Safe_Release(m_pModelCom);	
 
+	_tchar szFileName[MAX_PATH];
+	_tchar szExt[MAX_PATH];
+	_wsplitpath_s(strFileName.c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
 
-	
+	if (FAILED(GAME_INSTANCE->Check_Prototype(LEVEL_DUMMY, wstring(L"Prototype_Componenet_Model_") + szFileName)))
+	{
+		auto& iter = m_Components.find(wstring(L"Com_Model_") + szFileName);
+		if (iter != m_Components.end())
+		{
+			Safe_Release(iter->second);
+			m_Components.erase(iter);
+		}
 
-	m_pModelCom = GAME_INSTANCE->Import_Model_Data(eType, strFilePath, strFileName, PivotMatrix);
-
-	if (nullptr == m_pModelCom)
-		return E_FAIL;
-
-
+		if (FAILED(__super::Add_Component(LEVEL_DUMMY, wstring(L"Prototype_Componenet_Model_") + szFileName, wstring(L"Com_Model_") + szFileName, (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(GAME_INSTANCE->Import_Model_Data(LEVEL_DUMMY, wstring(L"Prototype_Componenet_Model_") + szFileName, eType, strFilePath, strFileName, &m_pModelCom)))
+			return E_FAIL;
+	}
 	m_pModelCom->Set_Owner(this);
 
 	return S_OK;
@@ -148,8 +147,6 @@ HRESULT CDummy::Export_Model_Bin(const wstring& strFilePath, const wstring& strF
 	
 	if (FAILED(GAME_INSTANCE->Export_Model_Data(m_pModelCom, strFilePath, strFileName)))
 		return E_FAIL;
-
-
 
 	return S_OK;
 }

@@ -17,7 +17,7 @@ public:
 public:
 	HRESULT Export_Model_Data(class CModel* pModel, const wstring& strSubFolderName, const wstring& strFileName);
 	HRESULT Export_Model_Data_FromPath(_uint eType, wstring strFolderPath);
-	class CModel* Import_Model_Data(_uint eType, wstring strFolderPath, wstring strFileName, _fmatrix PivotMatrix = XMMatrixIdentity());
+	HRESULT Import_Model_Data(_uint iLevelIndex, const wstring& strProtoTypeTag, _uint eType, wstring strFolderPath, wstring strFileName, __out class CModel** ppOut = nullptr);
 
 	
 

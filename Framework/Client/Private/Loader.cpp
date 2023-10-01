@@ -14,6 +14,7 @@
 #include <filesystem>
 #include "Building.h"
 #include "Prop.h"
+#include "Utils.h"
 
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -171,7 +172,7 @@ HRESULT CLoader::Loading_For_Level_Tool()
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
 	/* For.Prototype_GameObject_Camera_Free */
-	Loading_Proto_AllObjects(L"../Bin/Resources/Map/");
+	Loading_Proto_AllObjects(L"../Bin/Export/Map/");
 
 
 	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
@@ -210,31 +211,22 @@ HRESULT CLoader::Loading_Proto_AllObjects(const wstring& strPath)
 			Loading_Proto_AllObjects(p.path());
 		}
 
- 		wstring strFilePath = p.path().wstring();
-		for (_uint i = 0; i < 50; ++i)
-		{
-			if (wstring::npos != strFilePath.find(L"\\"))
-				strFilePath.replace(strFilePath.find(L"\\"), 1, L"/");
-			else
-				break;
-		}
+ 		wstring strFilePath = CUtils::PathToWString(p.path().wstring());
 		
-		
-
 		_tchar strFileName[MAX_PATH];
 		_tchar strFolderName[MAX_PATH];
 		_tchar strExt[MAX_PATH];
 
 		_wsplitpath_s(strFilePath.c_str(), nullptr, 0, strFolderName, MAX_PATH, strFileName, MAX_PATH, strExt, MAX_PATH);
 
-		if (0 == lstrcmp(TEXT(".fbx"), strExt))
+		if (0 == lstrcmp(TEXT(".fbx"), strExt) || 0 == lstrcmp(TEXT(".mesh"), strExt))
 		{
 			if (strFilePath.find(L"Buildings") != wstring::npos)
 			{
 				if (FAILED(GAME_INSTANCE->Add_Prototype(wstring(strFileName),
 					CBuilding::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_BUILDING)))
 				{
-					return S_OK;
+					return E_FAIL;
 				}
 			}
 			else if (strFilePath.find(L"Objects") != wstring::npos)
@@ -242,7 +234,7 @@ HRESULT CLoader::Loading_Proto_AllObjects(const wstring& strPath)
 				if (FAILED(GAME_INSTANCE->Add_Prototype(wstring(strFileName),
 					CProp::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_PROP)))
 				{
-					return S_OK;
+					return E_FAIL;
 				}
 			}
 		}

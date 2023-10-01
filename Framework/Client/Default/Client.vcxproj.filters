@@ -109,6 +109,9 @@
     <Filter Include="02.GameObjects\Effect\Rect_Effect">
       <UniqueIdentifier>{6889ef20-0b7a-4d6a-a6a6-38c9a9f46a2d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Effect\Dummy_Effect">
+      <UniqueIdentifier>{c520ddf1-6c6d-41d9-b1da-7dd477fb5811}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

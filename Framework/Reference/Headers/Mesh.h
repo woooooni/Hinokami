@@ -42,6 +42,7 @@ public:
 private:
 	wstring				m_strName;
 	_uint				m_iMaterialIndex = 0;
+	_bool				m_bFromBinary = false;
 private:
 	/* 이 메시에 영향ㅇ르 주는 뼈의 갯수. */
 	_uint							m_iNumBones = 0;
