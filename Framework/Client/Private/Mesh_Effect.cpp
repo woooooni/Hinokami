@@ -11,12 +11,12 @@ CMesh_Effect::CMesh_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 
 CMesh_Effect::CMesh_Effect(const CMesh_Effect& rhs)
 	: CEffect(rhs)
-	, m_pModel(rhs.m_pModel)
+	, m_pModelCom(rhs.m_pModelCom)
 	, m_strModelFileName(rhs.m_strModelFileName)
 	, m_strModelFolderPath(rhs.m_strModelFolderPath)
 	, m_strEffectName(rhs.m_strEffectName)
 {
-	Safe_AddRef(m_pModel);
+	Safe_AddRef(m_pModelCom);
 }
 
 
@@ -62,10 +62,7 @@ HRESULT CMesh_Effect::Ready_Components(const wstring& strModelFolderPath, const 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Effect"), TEXT("Com_EffectShader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_MeshEffect_") + m_strEffectName, TEXT("Com_Model"), (CComponent**)&m_pModel)))
-		return E_FAIL;
-	
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Effect_Texture"), TEXT("Com_Texture"), (CComponent**)&m_pEffectTexture)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_MeshEffect_") + m_strEffectName, TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	return S_OK;
@@ -74,7 +71,12 @@ HRESULT CMesh_Effect::Ready_Components(const wstring& strModelFolderPath, const 
 
 void CMesh_Effect::Tick(_float fTimeDelta)
 {
-	m_tEffectDesc.vAccUV = _float2(m_tEffectDesc.fUSpeed * fTimeDelta, m_tEffectDesc.fVSpeed * fTimeDelta);
+	m_tEffectDesc.vAccUV.x = clamp(m_tEffectDesc.vAccUV.x += m_tEffectDesc.fUSpeed * fTimeDelta, 0.f, 1.f);
+	m_tEffectDesc.vAccUV.y = clamp(m_tEffectDesc.vAccUV.y += m_tEffectDesc.fVSpeed * fTimeDelta, 0.f, 1.f);
+
+	
+	m_tEffectDesc.vAccUV.x = m_tEffectDesc.vAccUV.x >= 1.f ? 0.f : m_tEffectDesc.vAccUV.x;
+	m_tEffectDesc.vAccUV.y = m_tEffectDesc.vAccUV.y >= 1.f ? 0.f : m_tEffectDesc.vAccUV.y;
 	// m_pTransformCom->Turn(XMLoadFloat4(&m_tEffectDesc.vRotationDir), fTimeDelta);
 }
 
@@ -97,12 +99,23 @@ HRESULT CMesh_Effect::Render()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_tEffectDesc", &m_tEffectDesc, sizeof(m_tEffectDesc))))
 		return E_FAIL;
 
-	if (FAILED(m_pEffectTexture->Bind_ShaderResource(m_pShaderCom, "g_EffectTexture", m_tEffectDesc.iTextureIndex)))
-		return E_FAIL;
+	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
 
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
+			return E_FAIL;
 
-	for (_uint i = 0; i < m_pModel->Get_NumMeshes(); ++ i)
-		m_pModel->Render(m_pShaderCom, i);
+		if (nullptr != m_pModelCom->Get_MaterialTexture(i, aiTextureType_OPACITY))
+		{
+			if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_OPACITY, "g_OpacityTexture")))
+				return E_FAIL;
+		}
+		
+
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i)))
+			return E_FAIL;
+	}
 	
 
 	return S_OK;
@@ -137,5 +150,5 @@ CGameObject* CMesh_Effect::Clone(void* pArg)
 void CMesh_Effect::Free()
 {
 	__super::Free();
-	Safe_Release(m_pModel);
+	Safe_Release(m_pModelCom);
 }

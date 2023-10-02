@@ -30,6 +30,7 @@ public:
 			return wstring();
 		return m_FileNames[iIdx];
 	}
+	_uint Get_TextureCount() { return m_iNumTextures; }
 
 private:
 	/* 셰이더에 직접 바인딩 될 수 있는 객체 */

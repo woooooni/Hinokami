@@ -190,6 +190,11 @@ _uint CModel::Get_MaterialIndex(_uint iMeshIndex)
 	return m_Meshes[iMeshIndex]->Get_MaterialIndex();
 }
 
+CTexture* CModel::Get_MaterialTexture(_uint iMeshIndex, _uint iTextureType)
+{
+	return m_Materials[iMeshIndex].pTexture[iTextureType];
+}
+
 HRESULT CModel::Set_Animation(const wstring& strAnimationName)
 {
 	for (size_t i = 0; i < m_Animations.size(); ++i)

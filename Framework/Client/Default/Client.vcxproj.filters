@@ -115,6 +115,9 @@
     <Filter Include="96. Manager\Picking">
       <UniqueIdentifier>{56516b2c-83e0-46b5-8868-d80fb89ab33c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Camera\NewFilter1">
+      <UniqueIdentifier>{7e828685-a039-4493-8280-84dfbbdd1977}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

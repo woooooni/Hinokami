@@ -50,6 +50,7 @@ public:
 	const EFFECT_DESC& Get_EffectDesc() { return m_tEffectDesc; }
 	void Set_EffectDesc(const EFFECT_DESC& tEffectDesc) { m_tEffectDesc = tEffectDesc; }
 
+	CTexture* Get_Texture() { return m_pEffectTexture; }
 
 protected:
 	class CShader* m_pShaderCom = nullptr;

@@ -157,7 +157,7 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
 
         if (ImGui::CollapsingHeader(STR_LAYER_NAME[i]))
         {
-            const list<CGameObject*>& GameObjects = GAME_INSTANCE->Find_GameObjects(LEVEL_TOOL, i);
+            list<CGameObject*>& GameObjects = GAME_INSTANCE->Find_GameObjects(LEVEL_TOOL, i);
             char szListBoxLable[MAX_PATH] = "##ListBox";
             strcat_s(szListBoxLable, STR_LAYER_NAME[i]);
 
@@ -174,7 +174,7 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
                     else
                         TargetObjectTag = "";
 
-                    if (ImGui::Selectable(ObjectTag.c_str(), TargetObjectTag.c_str(), ImGuiSelectableFlags_AllowDoubleClick, ImVec2(300, 15)))
+                    if (ImGui::Selectable(ObjectTag.c_str(), ObjectTag == TargetObjectTag, ImGuiSelectableFlags_AllowDoubleClick, ImVec2(300, 15)))
                     {
                         m_pTarget = Object;
                         if (ImGui::IsMouseDoubleClicked(0))
@@ -195,12 +195,29 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
                             vObjectPosition.z += 10.f;
                             pCameraTransform->LookAt(XMLoadFloat4(&vObjectPosition));
                         }
+
+                       
                     }
                     iIdx++;
                 }
 
                 ImGui::EndListBox();
             }
+
+            if (KEY_TAP(KEY::DEL) && nullptr != m_pTarget)
+            {
+                list<CGameObject*>::iterator iter = GameObjects.begin();
+                for (; iter != GameObjects.end(); ++iter)
+                {
+                    if ((*iter)->Get_ObjectTag() == m_pTarget->Get_ObjectTag())
+                    {
+                        Safe_Release(m_pTarget);
+                        iter = GameObjects.erase(iter);
+                        break;
+                    }
+                }
+            }
+            
 
             if (ImGui::Button("Auto Rename"))
             {
@@ -633,6 +650,27 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         pMeshEffect->Initialize(nullptr);
 
         m_pPrevEffect = pMeshEffect;
+    }
+
+    if (nullptr != m_pPrevEffect)
+    {
+        CEffect::EFFECT_DESC tEffectDesc = m_pPrevEffect->Get_EffectDesc();
+        
+        ImGui::Text("SpeedU : ");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat("##EffectUSpeed", &tEffectDesc.fUSpeed, 0.01f, 0.f, 100.f);
+
+
+        ImGui::Text("SpeedV : ");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat("##EffectVSpeed", &tEffectDesc.fVSpeed, 0.01f, 0.f, 100.f);
+
+        //ImGui::Text("Texture Select : ");
+        //IMGUI_SAME_LINE;
+        //ImGui::DragInt("##EffectTextureIndex", (int*)&tEffectDesc.iTextureIndex, 1.f, 0, m_pPrevEffect->Get_Texture()->Get_TextureCount() - 1);
+
+        m_pPrevEffect->Set_EffectDesc(tEffectDesc);
+
     }
     ImGui::End();
 }

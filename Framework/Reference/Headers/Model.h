@@ -21,6 +21,7 @@ public:
 	}
 
 	_uint Get_MaterialIndex(_uint iMeshIndex);
+	class CTexture* Get_MaterialTexture(_uint iMeshIndex, _uint iTextureType);
 
 	HRESULT Set_Animation(const wstring& strAnimationName);
 	void Set_AnimIndex(_uint iAnimIndex);

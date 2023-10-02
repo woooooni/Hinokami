@@ -37,9 +37,6 @@ HRESULT CCamera_Free::Initialize(void * pArg)
 
 void CCamera_Free::Tick(_float fTimeDelta)
 {
-	
-
-
 	if (KEY_HOLD(KEY::RBTN))
 	{
 		if (KEY_HOLD(KEY::W))
