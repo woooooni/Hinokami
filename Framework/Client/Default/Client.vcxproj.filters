@@ -106,17 +106,11 @@
     <Filter Include="02.GameObjects\Effect\Mesh_Effect">
       <UniqueIdentifier>{af553d2f-0ac3-4811-81f7-df9f9c1117ed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Effect\Rect_Effect">
-      <UniqueIdentifier>{6889ef20-0b7a-4d6a-a6a6-38c9a9f46a2d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Effect\Dummy_Effect">
-      <UniqueIdentifier>{c520ddf1-6c6d-41d9-b1da-7dd477fb5811}</UniqueIdentifier>
-    </Filter>
     <Filter Include="96. Manager\Picking">
       <UniqueIdentifier>{56516b2c-83e0-46b5-8868-d80fb89ab33c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Camera\NewFilter1">
-      <UniqueIdentifier>{7e828685-a039-4493-8280-84dfbbdd1977}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\Effect\Texture_Effect">
+      <UniqueIdentifier>{6889ef20-0b7a-4d6a-a6a6-38c9a9f46a2d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -231,9 +225,6 @@
     <ClInclude Include="..\Public\Mesh_Effect.h">
       <Filter>02.GameObjects\Effect\Mesh_Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Rect_Effect.h">
-      <Filter>02.GameObjects\Effect\Rect_Effect</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Picking_Manager.h">
       <Filter>96. Manager\Picking</Filter>
     </ClInclude>
@@ -335,9 +326,6 @@
     <ClCompile Include="..\Private\Mesh_Effect.cpp">
       <Filter>02.GameObjects\Effect\Mesh_Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Rect_Effect.cpp">
-      <Filter>02.GameObjects\Effect\Rect_Effect</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Picking_Manager.cpp">
       <Filter>96. Manager\Picking</Filter>
     </ClCompile>
@@ -371,7 +359,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModelEffect.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshEffect.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

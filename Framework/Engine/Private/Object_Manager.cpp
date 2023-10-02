@@ -107,6 +107,11 @@ const map<const wstring, class CGameObject*>& CObject_Manager::Find_Prototype_Ga
 	return  m_pPrototypes[iLayerType];
 }
 
+CGameObject* CObject_Manager::Find_Prototype_GameObject(_uint iLayerType, const wstring& strPrototypeTag)
+{
+	return Find_Prototype(strPrototypeTag, iLayerType);
+}
+
 CGameObject* CObject_Manager::Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring& strObjectTag)
 {
 	CLayer* pLayer = Find_Layer(iLevelIndex, iLayerType);

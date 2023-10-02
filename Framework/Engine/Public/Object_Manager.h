@@ -24,6 +24,7 @@ public:
 	
 public:
 	const map<const wstring, class CGameObject*>& Find_Prototype_GameObjects(_uint iLayerType);
+	class CGameObject* Find_Prototype_GameObject(_uint iLayerType, const wstring& strPrototypeTag);
 	class CGameObject* Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring& strObjectTag);
 	list<CGameObject*>& Find_GameObjects(_uint iLevelIndex, const _uint iLayerType);
 

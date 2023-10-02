@@ -151,6 +151,9 @@
     <Filter Include="01.Utiltiy\04.Component\08. Animator">
       <UniqueIdentifier>{7295782a-c5ae-444d-a318-dbef0ca7bf87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utiltiy\04.Component\02. VIBuffer\Particle">
+      <UniqueIdentifier>{8a127f5b-7cea-4b5f-a091-26304663d1eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -294,6 +297,9 @@
     <ClInclude Include="..\Public\Model_Manager.h">
       <Filter>01.Utiltiy\06. Model_Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Particle.h">
+      <Filter>01.Utiltiy\04.Component\02. VIBuffer\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -421,6 +427,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Model_Manager.cpp">
       <Filter>01.Utiltiy\06. Model_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Particle.cpp">
+      <Filter>01.Utiltiy\04.Component\02. VIBuffer\Particle</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

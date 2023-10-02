@@ -215,6 +215,11 @@ CGameObject* CGameInstance::Clone_GameObject(const wstring& strPrototypeTag, _ui
 	return m_pObject_Manager->Clone_GameObject(strPrototypeTag, iLayerType, pArg);
 }
 
+CGameObject* CGameInstance::Find_Prototype_GameObject(_uint iLayerType, const wstring& strPrototypeTag)
+{
+	return m_pObject_Manager->Find_Prototype_GameObject(iLayerType, strPrototypeTag);
+}
+
 const map<const wstring, class CGameObject*>& CGameInstance::Find_Prototype_GameObjects(_uint iLayerType)
 {
 	return m_pObject_Manager->Find_Prototype_GameObjects(iLayerType);

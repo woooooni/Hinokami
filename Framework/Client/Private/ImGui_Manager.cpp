@@ -141,6 +141,10 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
     
 }
 
+void CImGui_Manager::Tick_Camera_Tool(_float fTimeDelta)
+{
+}
+
 void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
 {
     ImGui::Begin("Hierachy");
@@ -611,12 +615,12 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
 void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 {
     ImGui::Begin("Effect");
-    if (m_pPrevEffect != nullptr)
+    if (m_pPrevMeshEffect != nullptr)
     {
-        m_pPrevEffect->Tick(fTimeDelta);
-        m_pPrevEffect->LateTick(fTimeDelta);
+        m_pPrevMeshEffect->Tick(fTimeDelta);
+        m_pPrevMeshEffect->LateTick(fTimeDelta);
 
-        const CEffect::EFFECT_DESC& tDesc = m_pPrevEffect->Get_EffectDesc();
+        const CEffect::MESH_EFFECT_DESC& tDesc = m_pPrevMeshEffect->Get_Mesh_EffectDesc();
         
     }
 
@@ -633,12 +637,12 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
     ImGui::Text("Effect_FileName");
     ImGui::InputText("##EffectFileName", szEffectFileName, MAX_PATH);
 
-    if(ImGui::Button("Generate_Effect"))
+    if(ImGui::Button("Generate_Mesh_Effect"))
     {
-        Safe_Release(m_pPrevEffect);
+        Safe_Release(m_pPrevMeshEffect);
 
-        CEffect::EFFECT_DESC tDesc;
-        ZeroMemory(&tDesc, sizeof(CEffect::EFFECT_DESC));
+        CEffect::MESH_EFFECT_DESC tDesc;
+        ZeroMemory(&tDesc, sizeof(CEffect::MESH_EFFECT_DESC));
 
         CMesh_Effect* pMeshEffect = CMesh_Effect::Create(m_pDevice, m_pContext, 
             CUtils::ToWString(szEffectName), 
@@ -649,27 +653,47 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
         pMeshEffect->Initialize(nullptr);
 
-        m_pPrevEffect = pMeshEffect;
+        m_pPrevMeshEffect = pMeshEffect;
     }
 
-    if (nullptr != m_pPrevEffect)
+    IMGUI_SAME_LINE;
+
+    if (ImGui::Button("Generate_Texture_Effect"))
     {
-        CEffect::EFFECT_DESC tEffectDesc = m_pPrevEffect->Get_EffectDesc();
+        Safe_Release(m_pPrevMeshEffect);
+
+        CEffect::MESH_EFFECT_DESC tDesc;
+        ZeroMemory(&tDesc, sizeof(CEffect::MESH_EFFECT_DESC));
+
+        CMesh_Effect* pMeshEffect = CMesh_Effect::Create(m_pDevice, m_pContext,
+            CUtils::ToWString(szEffectName),
+            L"Mesh_Effect",
+            CUtils::ToWString(szEffectFolderPath),
+            CUtils::ToWString(szEffectFileName),
+            tDesc);
+
+        pMeshEffect->Initialize(nullptr);
+
+        m_pPrevMeshEffect = pMeshEffect;
+    }
+
+
+
+    if (nullptr != m_pPrevMeshEffect)
+    {
+        CEffect::MESH_EFFECT_DESC tEffectDesc = m_pPrevMeshEffect->Get_Mesh_EffectDesc();
         
         ImGui::Text("SpeedU : ");
         IMGUI_SAME_LINE;
-        ImGui::DragFloat("##EffectUSpeed", &tEffectDesc.fUSpeed, 0.01f, 0.f, 100.f);
+        ImGui::DragFloat("##EffectUSpeed", &tEffectDesc.vUVSpeed.x, 0.01f, -100.f, 100.f);
 
 
         ImGui::Text("SpeedV : ");
         IMGUI_SAME_LINE;
-        ImGui::DragFloat("##EffectVSpeed", &tEffectDesc.fVSpeed, 0.01f, 0.f, 100.f);
+        ImGui::DragFloat("##EffectVSpeed", &tEffectDesc.vUVSpeed.y, 0.01f, -100.f, 100.f);
 
-        //ImGui::Text("Texture Select : ");
-        //IMGUI_SAME_LINE;
-        //ImGui::DragInt("##EffectTextureIndex", (int*)&tEffectDesc.iTextureIndex, 1.f, 0, m_pPrevEffect->Get_Texture()->Get_TextureCount() - 1);
 
-        m_pPrevEffect->Set_EffectDesc(tEffectDesc);
+        m_pPrevMeshEffect->Set_Mesh_EffectDesc(tEffectDesc);
 
     }
     ImGui::End();

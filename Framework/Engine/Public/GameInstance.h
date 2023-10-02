@@ -52,6 +52,7 @@ public:
 	HRESULT Add_GameObject(_uint iLevelIndex, const _uint iLayerType, const wstring & strPrototypeTag, void* pArg = nullptr);
 	HRESULT Add_GameObject(_uint iLevelIndex, const _uint iLayerType, class CGameObject* pGameObject);
 	class CGameObject* Clone_GameObject(const wstring & strPrototypeTag, _uint iLayerType, void* pArg = nullptr);
+	class CGameObject* Find_Prototype_GameObject(_uint iLayerType, const wstring & strPrototypeTag);
 	const map<const wstring, class CGameObject*>& Find_Prototype_GameObjects(_uint iLayerType);
 	class CGameObject* Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring & strObjectTag);
 	list<CGameObject*>& Find_GameObjects(_uint iLevelIndex, const _uint iLayerType);

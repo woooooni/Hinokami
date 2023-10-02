@@ -25,7 +25,7 @@ private:
 
 
 public:
-	virtual HRESULT Initialize_Prototype(const wstring& strEffectName, const wstring& strModelFolderPath, const wstring& strModelFileName, const EFFECT_DESC& EffectDesc);
+	virtual HRESULT Initialize_Prototype(const wstring& strEffectName, const wstring& strModelFolderPath, const wstring& strModelFileName, const MESH_EFFECT_DESC& EffectDesc);
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void LateTick(_float fTimeDelta) override;
@@ -50,7 +50,7 @@ public:
 		const wstring& strObjectTag, 
 		const wstring& strFolderPath, 
 		const wstring& strFileName, 
-		const EFFECT_DESC& EffectDesc);
+		const MESH_EFFECT_DESC& EffectDesc);
 
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;

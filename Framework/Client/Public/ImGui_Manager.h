@@ -66,6 +66,7 @@ public:
 
 private:
 	void Tick_Basic_Tool(_float fTimeDelta);
+	void Tick_Camera_Tool(_float fTimeDelta);
 	void Tick_Hierachy(_float fTimeDelta);
 	void Tick_Inspector(_float fTimeDelta);
 	void Tick_Model_Tool(_float fTimeDelta);
@@ -98,7 +99,7 @@ private:
 public:
 	class CGameObject* m_pTarget = nullptr;
 	class CGameObject* m_pPrevObject = nullptr;
-	class CMesh_Effect* m_pPrevEffect = nullptr;
+	class CMesh_Effect* m_pPrevMeshEffect = nullptr;
 
 	class CDummy* m_pDummy = nullptr;
 	class CTerrain* m_pTerrain = nullptr;

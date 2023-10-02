@@ -202,7 +202,6 @@
     <ClInclude Include="..\Public\Picking_Manager.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Prop.h" />
-    <ClInclude Include="..\Public\Rect_Effect.h" />
     <ClInclude Include="..\Public\Tanjiro.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Zenitsu.h" />
@@ -254,7 +253,6 @@
     <ClCompile Include="..\Private\Picking_Manager.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Prop.cpp" />
-    <ClCompile Include="..\Private\Rect_Effect.cpp" />
     <ClCompile Include="..\Private\Tanjiro.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
@@ -279,7 +277,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimModel.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModelEffect.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshEffect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
   </ItemGroup>
