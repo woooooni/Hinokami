@@ -50,6 +50,7 @@ public:
 public:
 	HRESULT Export_Model_Bin(const wstring& strFilePath, const wstring& strFileName);
 	HRESULT Import_Model();
+	
 protected:
 	CShader* m_pNonAnimShaderCom = nullptr;
 	CShader* m_pAnimShaderCom = nullptr;

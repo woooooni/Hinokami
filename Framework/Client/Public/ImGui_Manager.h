@@ -100,10 +100,12 @@ public:
 	class CGameObject* m_pTarget = nullptr;
 	class CGameObject* m_pPrevObject = nullptr;
 	class CMesh_Effect* m_pPrevMeshEffect = nullptr;
+	class CTexture_Effect* m_pPrevTextureEffect = nullptr;
 
 	class CDummy* m_pDummy = nullptr;
 	class CTerrain* m_pTerrain = nullptr;
 	class CCamera_Free* m_pCamera = nullptr;
+
 public:
 	virtual void Free() override;
 };

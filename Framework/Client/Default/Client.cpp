@@ -86,16 +86,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		fTimeAcc += GAME_INSTANCE->Compute_TimeDelta(TEXT("Timer_Default"));
 
-		if (fTimeAcc >= 1.f / 60.0f)
+		if (fTimeAcc >= 1.f / 144.f)
 		{
 			pMainApp->Tick(GAME_INSTANCE->Compute_TimeDelta(TEXT("Timer_60")));
 			pMainApp->Render();
 
 			fTimeAcc = 0.f;
-		}		
+		}
 	}
-
-	;
 
 
 	/* 전체적인 삭제 작업을 처리한다. */

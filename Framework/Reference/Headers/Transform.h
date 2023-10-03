@@ -64,8 +64,12 @@ public:
 	void Set_Scale(_fvector vScaleInfo);
 	_float3 Get_Scale();
 
+	_matrix Get_RotationMatrix();
+	_float3 Get_RotaionAngle();
+
 	void Turn(_fvector vAxis, _float fTimeDelta);
 	void Rotation(_fvector vAxis, _float fRadian);
+	void Rotation_Acc(_fvector vAxis, _float fRadian);
 
 	void LookAt(_fvector vAt);
 	void LookAt_ForLandObject(_fvector vAt);

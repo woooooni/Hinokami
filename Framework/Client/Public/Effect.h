@@ -20,14 +20,12 @@ class CEffect abstract : public CGameObject
 public:
 	typedef struct tagTextureEffectDesc
 	{
-		
-		_float2			vAccUV			= _float2(0.f, 0.f);
-		_float2			fUVIndex		= _float2(0.f, 0.f);
-
 		_bool			bIncrement = true;
 
-		_uint			iMaxCountX		= 0.f;
-		_uint			iMaxCountY		= 0.f;
+		_float2			fUVIndex		= _float2(0.f, 0.f);
+
+		_float			fMaxCountX		= 0.f;
+		_float			fMaxCountY		= 0.f;
 
 		_float			fAccUVIndex		= 0.f;
 		_float			fNextIndexSpeed = 0.f;
@@ -35,8 +33,8 @@ public:
 
 	typedef struct tagMeshEffectDesc
 	{
-		_float2 vUVAcc = _float2(0.f, 0.f);
-		_float2 vUVSpeed = _float2(0.f, 0.f);
+		_float2 vAccUV = _float2(0.f, 0.f);
+		_float2 vSpeedUV = _float2(0.f, 0.f);
 
 	} MESH_EFFECT_DESC;
 
@@ -71,7 +69,7 @@ protected:
 	virtual HRESULT Ready_Components() override;
 
 public:
-	const TEXTURE_EFFECT_DESC& Get_Texutre_EffectDesc() { return m_tTextureEffectDesc; }
+	const TEXTURE_EFFECT_DESC& Get_Texture_EffectDesc() { return m_tTextureEffectDesc; }
 	void Set_Texture_EffectDesc(const TEXTURE_EFFECT_DESC& tEffectDesc) { m_tTextureEffectDesc = tEffectDesc; }
 
 	const MESH_EFFECT_DESC& Get_Mesh_EffectDesc() { return m_tMeshEffectDesc; }

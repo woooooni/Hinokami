@@ -204,6 +204,7 @@
     <ClInclude Include="..\Public\Prop.h" />
     <ClInclude Include="..\Public\Tanjiro.h" />
     <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\Public\Texture_Effect.h" />
     <ClInclude Include="..\Public\Zenitsu.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -257,6 +258,7 @@
     <ClCompile Include="..\Private\Terrain.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\Texture_Effect.cpp" />
     <ClCompile Include="..\Private\Zenitsu.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -16,7 +16,6 @@ CAnimation::CAnimation(const CAnimation& rhs)
 	, m_iNumChannels(rhs.m_iNumChannels)
 	, m_fTickPerSecond(rhs.m_fTickPerSecond)
 	, m_fPlayTime(rhs.m_fPlayTime)
-	, m_fSpeed(rhs.m_fSpeed)
 	, m_strName(rhs.m_strName)
 	/*, m_pSRV(rhs.m_pSRV)*/
 {
@@ -87,7 +86,7 @@ void CAnimation::Reset_Animation()
 
 HRESULT CAnimation::Play_Animation(_float fTimeDelta)
 {
-	m_fPlayTime += m_fTickPerSecond * fTimeDelta;
+	m_fPlayTime += m_fSpeed * m_fTickPerSecond * fTimeDelta;
 
 	if (m_fPlayTime >= m_fDuration)
 	{

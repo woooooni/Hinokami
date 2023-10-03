@@ -10,6 +10,7 @@
 #include "Utils.h"
 #include "Mesh_Effect.h"
 #include "Camera_Free.h"
+#include "Texture_Effect.h"
 
 USING(Client)
 IMPLEMENT_SINGLETON(CImGui_Manager)
@@ -301,20 +302,15 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
         IMGUI_NEW_LINE;
 
 #pragma region Rotaion_TODO
-        // Rotation
-        /*_float3 fRotation;
-
-        _float4 vRight, vUp, vLook;
-        XMStoreFloat4(&vRight, pTransform->Get_State(CTransform::STATE::STATE_RIGHT));
-        XMStoreFloat4(&vUp, pTransform->Get_State(CTransform::STATE::STATE_UP));
-        XMStoreFloat4(&vLook, pTransform->Get_State(CTransform::STATE::STATE_LOOK));
+        //
+        //_float3 fRotationAngle = pTransform->Get_RotaionAngle();
 
 
-        ImGui::Text("Rotaion");
-        if (ImGui::DragFloat3("##Rotation_x", (_float*)&vRight, 0.1f, 0.f, 360.f))
-        {
-            pTransform->Turn
-        }*/
+        //ImGui::Text("Rotaion");
+        //if (ImGui::DragFloat3("##Rotaion", (_float*)&fRotationAngle, 0.1f, 0.f, 360.f))
+        //{
+        //    
+        //}
 
         /*pTransform->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(fRotaionX));
         pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRotaionY));
@@ -605,6 +601,13 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
         if (ImGui::Button("||"))
             pCurrAnimation->Set_Pause(true);
 
+        _float fSpeed = pCurrAnimation->Get_AnimationSpeed();
+        ImGui::Text("Speed");
+        IMGUI_SAME_LINE;
+        if (ImGui::DragFloat("##AnimationSpeed", &fSpeed, 0.01f, 0.f, 100.f))
+        {
+            pCurrAnimation->Set_AnimationSpeed(fSpeed);
+        }
 
     }
     ImGui::End();
@@ -636,9 +639,10 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
     IMGUI_NEW_LINE;
     ImGui::Text("Effect_FileName");
     ImGui::InputText("##EffectFileName", szEffectFileName, MAX_PATH);
-
+    
     if(ImGui::Button("Generate_Mesh_Effect"))
     {
+        Safe_Release(m_pPrevTextureEffect);
         Safe_Release(m_pPrevMeshEffect);
 
         CEffect::MESH_EFFECT_DESC tDesc;
@@ -660,43 +664,67 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
     if (ImGui::Button("Generate_Texture_Effect"))
     {
+        Safe_Release(m_pPrevTextureEffect);
         Safe_Release(m_pPrevMeshEffect);
 
-        CEffect::MESH_EFFECT_DESC tDesc;
-        ZeroMemory(&tDesc, sizeof(CEffect::MESH_EFFECT_DESC));
+        CEffect::TEXTURE_EFFECT_DESC tDesc;
+        ZeroMemory(&tDesc, sizeof(CEffect::TEXTURE_EFFECT_DESC));
 
-        CMesh_Effect* pMeshEffect = CMesh_Effect::Create(m_pDevice, m_pContext,
+        CTexture_Effect* pTextureEffect = CTexture_Effect::Create(m_pDevice, m_pContext,
             CUtils::ToWString(szEffectName),
-            L"Mesh_Effect",
+            L"Texture_Effect",
             CUtils::ToWString(szEffectFolderPath),
             CUtils::ToWString(szEffectFileName),
             tDesc);
 
-        pMeshEffect->Initialize(nullptr);
+        pTextureEffect->Initialize(nullptr);
 
-        m_pPrevMeshEffect = pMeshEffect;
+        m_pPrevTextureEffect = pTextureEffect;
     }
+    ImGui::End();
 
-
-
+    ImGui::Begin("Effect_Desc");
     if (nullptr != m_pPrevMeshEffect)
     {
         CEffect::MESH_EFFECT_DESC tEffectDesc = m_pPrevMeshEffect->Get_Mesh_EffectDesc();
-        
+
         ImGui::Text("SpeedU : ");
         IMGUI_SAME_LINE;
-        ImGui::DragFloat("##EffectUSpeed", &tEffectDesc.vUVSpeed.x, 0.01f, -100.f, 100.f);
+        ImGui::DragFloat("##EffectUSpeed", &tEffectDesc.vSpeedUV.x, 0.01f, -100.f, 100.f);
 
 
         ImGui::Text("SpeedV : ");
         IMGUI_SAME_LINE;
-        ImGui::DragFloat("##EffectVSpeed", &tEffectDesc.vUVSpeed.y, 0.01f, -100.f, 100.f);
+        ImGui::DragFloat("##EffectVSpeed", &tEffectDesc.vSpeedUV.y, 0.01f, -100.f, 100.f);
 
 
         m_pPrevMeshEffect->Set_Mesh_EffectDesc(tEffectDesc);
 
     }
+    else if (nullptr != m_pPrevTextureEffect)
+    {
+        CEffect::TEXTURE_EFFECT_DESC tEffectDesc = m_pPrevTextureEffect->Get_Texture_EffectDesc();
+
+        ImGui::Text("Increment");
+        IMGUI_SAME_LINE;
+        ImGui::Checkbox("##Effect_Increment", &tEffectDesc.bIncrement);
+
+        ImGui::Text("Speed : ");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat("##Effect_Index_Speed", &tEffectDesc.fNextIndexSpeed, 0.01f, 0.f, 100.f);
+
+        ImGui::Text("Texture Count X");
+        IMGUI_SAME_LINE;
+        ImGui::Text("Texture Count Y");
+
+        ImGui::DragFloat("##Texture_CountX", &tEffectDesc.fMaxCountX, 1.f, 0.f, 100.f);
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat("##Texture_CountY", &tEffectDesc.fMaxCountX, 1.f, 0.f, 100.f);
+
+        m_pPrevTextureEffect->Set_Texture_EffectDesc(tEffectDesc);
+    }
     ImGui::End();
+
 }
 
 void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
@@ -736,7 +764,6 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
 
                         strcpy_s(pSelectedObjectName, strPrototypeName.c_str());
                         eSelectedLayer = LAYER_TYPE(i);
-                        bSelected = true;
                     }
                 }
                 ImGui::EndListBox();
@@ -744,20 +771,8 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
         }
     }
 
-    if (bSelected)
-    {
-        if (ImGui::Button("Create"))
-        {
-            wstring strPrototypeName = CUtils::ToWString(pSelectedObjectName);
-            if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, eSelectedLayer, strPrototypeName, nullptr)))
-            {
-                MSG_BOX("Create Failed.");
-            }
-        }
-    }
 
-
-    if (m_pPrevObject && nullptr != m_pTerrain)
+    if (nullptr != m_pPrevObject && nullptr != m_pTerrain)
     {
         _float4 vHitPos;
         if (m_pTerrain->Is_Picking(&vHitPos))
@@ -798,21 +813,6 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
             }
         }
 
-        m_pPrevObject->Tick(fTimeDelta);
-        m_pPrevObject->LateTick(fTimeDelta);
-
-        if (KEY_TAP(KEY::RBTN))
-        {
-            Safe_Release(m_pPrevObject);
-            m_pPrevObject = nullptr;
-        }
-
-        if (KEY_TAP(KEY::R))
-        {
-            CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
-            pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
-        }
-
         if (KEY_TAP(KEY::OPEN_SQUARE_BRACKET))
         {
             CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
@@ -832,9 +832,23 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
             vScale.z = clamp(vScale.z += 1.f, 1.f, 999.f);
             pTransform->Set_Scale(XMLoadFloat3(&vScale));
         }
+
+        if (KEY_TAP(KEY::R))
+        {
+            CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
+            pTransform->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f));
+        }
+
+        m_pPrevObject->Tick(fTimeDelta);
+        m_pPrevObject->LateTick(fTimeDelta);
+
+        if (KEY_TAP(KEY::RBTN))
+        {
+            Safe_Release(m_pPrevObject);
+            m_pPrevObject = nullptr;
+        }
     }
     
-
 
 
     

@@ -43,11 +43,11 @@ void CEffect::IncrementUV(_float fTimeDelta)
 	{
 		m_tTextureEffectDesc.fAccUVIndex = 0.f;
 		m_tTextureEffectDesc.fUVIndex.x += 1.f;
-		if (m_tTextureEffectDesc.fUVIndex.x >= m_tTextureEffectDesc.iMaxCountX)
+		if (m_tTextureEffectDesc.fUVIndex.x >= m_tTextureEffectDesc.fMaxCountX)
 		{
 			m_tTextureEffectDesc.fUVIndex.x = 0.f;
 			m_tTextureEffectDesc.fUVIndex.y += 1.f;
-			if (m_tTextureEffectDesc.fUVIndex.y >= m_tTextureEffectDesc.iMaxCountY)
+			if (m_tTextureEffectDesc.fUVIndex.y >= m_tTextureEffectDesc.fMaxCountY)
 			{
 				m_tTextureEffectDesc.fUVIndex.y = 0.f;
 				m_bEnd = true;
@@ -65,11 +65,11 @@ void CEffect::DecrementUV(_float fTimeDelta)
 		m_tTextureEffectDesc.fUVIndex.x -= 1.f;
 		if (m_tTextureEffectDesc.fUVIndex.x < 0.f)
 		{
-			m_tTextureEffectDesc.fUVIndex.x = m_tTextureEffectDesc.iMaxCountX;
+			m_tTextureEffectDesc.fUVIndex.x = m_tTextureEffectDesc.fMaxCountX;
 			m_tTextureEffectDesc.fUVIndex.y -= 1.f;
 			if (m_tTextureEffectDesc.fUVIndex.y < 0.f)
 			{
-				m_tTextureEffectDesc.fUVIndex.y = 0.f;
+				m_tTextureEffectDesc.fUVIndex.y = m_tTextureEffectDesc.fMaxCountY;
 				m_bEnd = true;
 			}
 		}
@@ -78,8 +78,8 @@ void CEffect::DecrementUV(_float fTimeDelta)
 
 void CEffect::Update_MeshUV(_float fTimeDelta)
 {
-	m_tMeshEffectDesc.vUVAcc.x += m_tMeshEffectDesc.vUVSpeed.x * fTimeDelta;
-	m_tMeshEffectDesc.vUVAcc.y += m_tMeshEffectDesc.vUVSpeed.y * fTimeDelta;
+	m_tMeshEffectDesc.vAccUV.x += m_tMeshEffectDesc.vSpeedUV.x * fTimeDelta;
+	m_tMeshEffectDesc.vAccUV.y += m_tMeshEffectDesc.vSpeedUV.y * fTimeDelta;
 }
 
 

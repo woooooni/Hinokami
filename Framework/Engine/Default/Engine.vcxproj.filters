@@ -34,56 +34,8 @@
     <Filter Include="01.Utiltiy\00.GameInstance">
       <UniqueIdentifier>{aa6f228e-028d-4efd-b2f3-39052d369412}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\02.Level">
-      <UniqueIdentifier>{d2acafff-f010-42f6-92f5-eb2ab8db46b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\02.Level\Manager">
-      <UniqueIdentifier>{d401dff7-3c68-47ac-9107-431b908baa1f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\03.GameObjects">
-      <UniqueIdentifier>{68ba6cd0-6b14-4dc9-9336-cec267f20f0d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component">
-      <UniqueIdentifier>{2f7b0f55-c192-41e7-bb1e-3795db1aeefc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utiltiy\98. Utils">
       <UniqueIdentifier>{ede3a70d-ed37-4bef-b5c7-5b7d814980f4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\00. Manager">
-      <UniqueIdentifier>{8bbd81a9-95ab-4f92-bc4d-ac853884e638}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\01. Renderer">
-      <UniqueIdentifier>{15fe4fbd-6c18-467c-9742-0006c1b4371d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\02. VIBuffer">
-      <UniqueIdentifier>{eb0138e8-590d-4bd6-bc94-809ce0e0d5af}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\02. VIBuffer\Terrain">
-      <UniqueIdentifier>{9d04d116-5d72-4285-9207-214bf7487f84}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\02. VIBuffer\Terrain\QuadTree">
-      <UniqueIdentifier>{64fbde0d-8ecd-4c28-a410-cd1f80d04432}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\03. Shader">
-      <UniqueIdentifier>{ae1b5658-3515-477e-aa12-9972107b50c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\04. Texture">
-      <UniqueIdentifier>{445db20a-a830-4dc1-bdf8-7a3a9cbb45e1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\05. Transform">
-      <UniqueIdentifier>{37b928aa-12d2-40e1-9f44-3d087ec017eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\06. Model">
-      <UniqueIdentifier>{dc59df1b-4935-4056-82d0-d12eed44486a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\06. Model\Animation">
-      <UniqueIdentifier>{72685385-8a9c-49bf-88d9-37196e8571e6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\06. Model\Animation\Channel">
-      <UniqueIdentifier>{e17772b1-c0ea-476e-97a0-ed210da6160f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\06. Model\HierarchyNode">
-      <UniqueIdentifier>{0868a72e-ad37-4734-97e4-37ba0027defa}</UniqueIdentifier>
     </Filter>
     <Filter Include="00.System\02. PipeLine">
       <UniqueIdentifier>{d191d93f-d647-4adc-8e26-1b8c3968bf65}</UniqueIdentifier>
@@ -94,32 +46,8 @@
     <Filter Include="00.System\03. Lights\Manager">
       <UniqueIdentifier>{d6886123-03e7-4e79-890a-2a7757df425e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\04.Component\02. VIBuffer\Rect">
-      <UniqueIdentifier>{6c257ca1-d39b-4b2d-a140-21f27556eefd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\03.GameObjects\00. Manager">
-      <UniqueIdentifier>{e5b6768b-8e62-4930-8c6b-a6f1199ff91f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\03.GameObjects\00. Manager\Layer">
-      <UniqueIdentifier>{8c2666f7-7eb6-4c1f-98fa-b493cdf2443c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00.System\04. Key">
       <UniqueIdentifier>{7a87af19-0b8e-444b-99ed-ae323f63834e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\07. StateMachine">
-      <UniqueIdentifier>{8d86628d-dc52-4ed0-8a10-0b139744439c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\07. StateMachine\State">
-      <UniqueIdentifier>{bbb352f5-f29c-4f9f-b265-a965efb147bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\03.GameObjects\01. Camera">
-      <UniqueIdentifier>{b499766b-d80b-4e53-9576-e6ef0c89bbbc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\03.GameObjects\01. Camera\Manager">
-      <UniqueIdentifier>{1e20dead-8850-40c4-91b2-77a917592581}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utiltiy\04.Component\08. RigidBody">
-      <UniqueIdentifier>{6dbc72dd-ea57-448b-9ae5-1ab0a3691faa}</UniqueIdentifier>
     </Filter>
     <Filter Include="00.System\05. Fonts">
       <UniqueIdentifier>{03a0b80a-8fc8-41b9-a680-2e84b3f5a774}</UniqueIdentifier>
@@ -133,26 +61,98 @@
     <Filter Include="01.Utiltiy\98. Utils\Debug_Draw">
       <UniqueIdentifier>{064d2f56-28b1-443d-ac9c-abfc78094fc3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\05. RenderTarget">
-      <UniqueIdentifier>{094abac2-e051-4c6c-a95a-e080453a6ea8}</UniqueIdentifier>
+    <Filter Include="01.Utiltiy\01.Level">
+      <UniqueIdentifier>{d2acafff-f010-42f6-92f5-eb2ab8db46b9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\05. RenderTarget\Manager">
-      <UniqueIdentifier>{8e13a1ed-b597-4309-a5e0-8b12801b47b7}</UniqueIdentifier>
+    <Filter Include="01.Utiltiy\01.Level\Manager">
+      <UniqueIdentifier>{d401dff7-3c68-47ac-9107-431b908baa1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\04.Component\06. Model\Mesh">
+    <Filter Include="01.Utiltiy\02.GameObjects">
+      <UniqueIdentifier>{68ba6cd0-6b14-4dc9-9336-cec267f20f0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\02.GameObjects\00. Manager">
+      <UniqueIdentifier>{e5b6768b-8e62-4930-8c6b-a6f1199ff91f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\02.GameObjects\00. Manager\Layer">
+      <UniqueIdentifier>{8c2666f7-7eb6-4c1f-98fa-b493cdf2443c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\02.GameObjects\01. Camera">
+      <UniqueIdentifier>{b499766b-d80b-4e53-9576-e6ef0c89bbbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\02.GameObjects\01. Camera\Manager">
+      <UniqueIdentifier>{1e20dead-8850-40c4-91b2-77a917592581}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component">
+      <UniqueIdentifier>{2f7b0f55-c192-41e7-bb1e-3795db1aeefc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\00. Manager">
+      <UniqueIdentifier>{8bbd81a9-95ab-4f92-bc4d-ac853884e638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\01. Renderer">
+      <UniqueIdentifier>{15fe4fbd-6c18-467c-9742-0006c1b4371d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\02. VIBuffer">
+      <UniqueIdentifier>{eb0138e8-590d-4bd6-bc94-809ce0e0d5af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Terrain">
+      <UniqueIdentifier>{9d04d116-5d72-4285-9207-214bf7487f84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Terrain\QuadTree">
+      <UniqueIdentifier>{64fbde0d-8ecd-4c28-a410-cd1f80d04432}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Rect">
+      <UniqueIdentifier>{6c257ca1-d39b-4b2d-a140-21f27556eefd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Particle">
+      <UniqueIdentifier>{8a127f5b-7cea-4b5f-a091-26304663d1eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\03. Shader">
+      <UniqueIdentifier>{ae1b5658-3515-477e-aa12-9972107b50c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\04. Texture">
+      <UniqueIdentifier>{445db20a-a830-4dc1-bdf8-7a3a9cbb45e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\05. Transform">
+      <UniqueIdentifier>{37b928aa-12d2-40e1-9f44-3d087ec017eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\06. Model">
+      <UniqueIdentifier>{dc59df1b-4935-4056-82d0-d12eed44486a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\06. Model\Animation">
+      <UniqueIdentifier>{72685385-8a9c-49bf-88d9-37196e8571e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\06. Model\Animation\Channel">
+      <UniqueIdentifier>{e17772b1-c0ea-476e-97a0-ed210da6160f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\06. Model\HierarchyNode">
+      <UniqueIdentifier>{0868a72e-ad37-4734-97e4-37ba0027defa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\06. Model\Mesh">
       <UniqueIdentifier>{5b64ff7d-ec4a-40c1-b063-16459f9af01c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\06. Model_Manager">
-      <UniqueIdentifier>{855daea8-1daf-4a71-bee6-d2dcb3b418a7}</UniqueIdentifier>
+    <Filter Include="01.Utiltiy\03.Component\07. StateMachine">
+      <UniqueIdentifier>{8d86628d-dc52-4ed0-8a10-0b139744439c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\07. Map_Manager">
-      <UniqueIdentifier>{f84ef70a-bfa5-4643-9a8e-c9d4fc795f63}</UniqueIdentifier>
+    <Filter Include="01.Utiltiy\03.Component\07. StateMachine\State">
+      <UniqueIdentifier>{bbb352f5-f29c-4f9f-b265-a965efb147bd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\04.Component\08. Animator">
+    <Filter Include="01.Utiltiy\03.Component\08. RigidBody">
+      <UniqueIdentifier>{6dbc72dd-ea57-448b-9ae5-1ab0a3691faa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\08. Animator">
       <UniqueIdentifier>{7295782a-c5ae-444d-a318-dbef0ca7bf87}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\04.Component\02. VIBuffer\Particle">
-      <UniqueIdentifier>{8a127f5b-7cea-4b5f-a091-26304663d1eb}</UniqueIdentifier>
+    <Filter Include="01.Utiltiy\04. RenderTarget">
+      <UniqueIdentifier>{094abac2-e051-4c6c-a95a-e080453a6ea8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\04. RenderTarget\Manager">
+      <UniqueIdentifier>{8e13a1ed-b597-4309-a5e0-8b12801b47b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\05. Model_Manager">
+      <UniqueIdentifier>{855daea8-1daf-4a71-bee6-d2dcb3b418a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\06. Map_Manager">
+      <UniqueIdentifier>{f84ef70a-bfa5-4643-9a8e-c9d4fc795f63}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -187,61 +187,61 @@
       <Filter>01.Utiltiy\00.GameInstance</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level.h">
-      <Filter>01.Utiltiy\02.Level</Filter>
+      <Filter>01.Utiltiy\01.Level</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Manager.h">
-      <Filter>01.Utiltiy\02.Level\Manager</Filter>
+      <Filter>01.Utiltiy\01.Level\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\GameObject.h">
-      <Filter>01.Utiltiy\03.GameObjects</Filter>
+      <Filter>01.Utiltiy\02.GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Object_Manager.h">
-      <Filter>01.Utiltiy\03.GameObjects\00. Manager</Filter>
+      <Filter>01.Utiltiy\02.GameObjects\00. Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Layer.h">
-      <Filter>01.Utiltiy\03.GameObjects\00. Manager\Layer</Filter>
+      <Filter>01.Utiltiy\02.GameObjects\00. Manager\Layer</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Component.h">
-      <Filter>01.Utiltiy\04.Component</Filter>
+      <Filter>01.Utiltiy\03.Component</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Renderer.h">
-      <Filter>01.Utiltiy\04.Component\01. Renderer</Filter>
+      <Filter>01.Utiltiy\03.Component\01. Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer.h">
-      <Filter>01.Utiltiy\04.Component\02. VIBuffer</Filter>
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Shader.h">
-      <Filter>01.Utiltiy\04.Component\03. Shader</Filter>
+      <Filter>01.Utiltiy\03.Component\03. Shader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Texture.h">
-      <Filter>01.Utiltiy\04.Component\04. Texture</Filter>
+      <Filter>01.Utiltiy\03.Component\04. Texture</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Utils.h">
       <Filter>01.Utiltiy\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Component_Manager.h">
-      <Filter>01.Utiltiy\04.Component\00. Manager</Filter>
+      <Filter>01.Utiltiy\03.Component\00. Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Transform.h">
-      <Filter>01.Utiltiy\04.Component\05. Transform</Filter>
+      <Filter>01.Utiltiy\03.Component\05. Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Model.h">
-      <Filter>01.Utiltiy\04.Component\06. Model</Filter>
+      <Filter>01.Utiltiy\03.Component\06. Model</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\HierarchyNode.h">
-      <Filter>01.Utiltiy\04.Component\06. Model\HierarchyNode</Filter>
+      <Filter>01.Utiltiy\03.Component\06. Model\HierarchyNode</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Animation.h">
-      <Filter>01.Utiltiy\04.Component\06. Model\Animation</Filter>
+      <Filter>01.Utiltiy\03.Component\06. Model\Animation</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Channel.h">
-      <Filter>01.Utiltiy\04.Component\06. Model\Animation\Channel</Filter>
+      <Filter>01.Utiltiy\03.Component\06. Model\Animation\Channel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Mesh.h">
-      <Filter>01.Utiltiy\04.Component\06. Model\Mesh</Filter>
+      <Filter>01.Utiltiy\03.Component\06. Model\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Camera.h">
-      <Filter>01.Utiltiy\03.GameObjects\01. Camera</Filter>
+      <Filter>01.Utiltiy\02.GameObjects\01. Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PipeLine.h">
       <Filter>00.System\02. PipeLine</Filter>
@@ -253,7 +253,7 @@
       <Filter>00.System\03. Lights</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Rect.h">
-      <Filter>01.Utiltiy\04.Component\02. VIBuffer\Rect</Filter>
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Rect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Key_Manager.h">
       <Filter>00.System\04. Key</Filter>
@@ -265,16 +265,16 @@
       <Filter>00.System\01.Device\Input</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State.h">
-      <Filter>01.Utiltiy\04.Component\07. StateMachine\State</Filter>
+      <Filter>01.Utiltiy\03.Component\07. StateMachine\State</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\StateMachine.h">
-      <Filter>01.Utiltiy\04.Component\07. StateMachine</Filter>
+      <Filter>01.Utiltiy\03.Component\07. StateMachine</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\tinyxml2.h">
       <Filter>01.Utiltiy\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Terrain.h">
-      <Filter>01.Utiltiy\04.Component\02. VIBuffer\Terrain</Filter>
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Font_Manager.h">
       <Filter>00.System\05. Fonts\Manager</Filter>
@@ -286,19 +286,19 @@
       <Filter>01.Utiltiy\98. Utils\Debug_Draw</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\RenderTarget.h">
-      <Filter>01.Utiltiy\05. RenderTarget</Filter>
+      <Filter>01.Utiltiy\04. RenderTarget</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Target_Manager.h">
-      <Filter>01.Utiltiy\05. RenderTarget\Manager</Filter>
+      <Filter>01.Utiltiy\04. RenderTarget\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\FileUtils.h">
       <Filter>01.Utiltiy\98. Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Model_Manager.h">
-      <Filter>01.Utiltiy\06. Model_Manager</Filter>
+      <Filter>01.Utiltiy\05. Model_Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Particle.h">
-      <Filter>01.Utiltiy\04.Component\02. VIBuffer\Particle</Filter>
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -318,58 +318,58 @@
       <Filter>01.Utiltiy\00.GameInstance</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level.cpp">
-      <Filter>01.Utiltiy\02.Level</Filter>
+      <Filter>01.Utiltiy\01.Level</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Manager.cpp">
-      <Filter>01.Utiltiy\02.Level\Manager</Filter>
+      <Filter>01.Utiltiy\01.Level\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\private\GameObject.cpp">
-      <Filter>01.Utiltiy\03.GameObjects</Filter>
+      <Filter>01.Utiltiy\02.GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Object_Manager.cpp">
-      <Filter>01.Utiltiy\03.GameObjects\00. Manager</Filter>
+      <Filter>01.Utiltiy\02.GameObjects\00. Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Layer.cpp">
-      <Filter>01.Utiltiy\03.GameObjects\00. Manager\Layer</Filter>
+      <Filter>01.Utiltiy\02.GameObjects\00. Manager\Layer</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Component.cpp">
-      <Filter>01.Utiltiy\04.Component</Filter>
+      <Filter>01.Utiltiy\03.Component</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Renderer.cpp">
-      <Filter>01.Utiltiy\04.Component\01. Renderer</Filter>
+      <Filter>01.Utiltiy\03.Component\01. Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer.cpp">
-      <Filter>01.Utiltiy\04.Component\02. VIBuffer</Filter>
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Shader.cpp">
-      <Filter>01.Utiltiy\04.Component\03. Shader</Filter>
+      <Filter>01.Utiltiy\03.Component\03. Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Texture.cpp">
-      <Filter>01.Utiltiy\04.Component\04. Texture</Filter>
+      <Filter>01.Utiltiy\03.Component\04. Texture</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Utils.cpp">
       <Filter>01.Utiltiy\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Component_Manager.cpp">
-      <Filter>01.Utiltiy\04.Component\00. Manager</Filter>
+      <Filter>01.Utiltiy\03.Component\00. Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Transform.cpp">
-      <Filter>01.Utiltiy\04.Component\05. Transform</Filter>
+      <Filter>01.Utiltiy\03.Component\05. Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Model.cpp">
-      <Filter>01.Utiltiy\04.Component\06. Model</Filter>
+      <Filter>01.Utiltiy\03.Component\06. Model</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Channel.cpp">
-      <Filter>01.Utiltiy\04.Component\06. Model\Animation\Channel</Filter>
+      <Filter>01.Utiltiy\03.Component\06. Model\Animation\Channel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Camera.cpp">
-      <Filter>01.Utiltiy\03.GameObjects\01. Camera</Filter>
+      <Filter>01.Utiltiy\02.GameObjects\01. Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\HierarchyNode.cpp">
-      <Filter>01.Utiltiy\04.Component\06. Model\HierarchyNode</Filter>
+      <Filter>01.Utiltiy\03.Component\06. Model\HierarchyNode</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Mesh.cpp">
-      <Filter>01.Utiltiy\04.Component\06. Model\Mesh</Filter>
+      <Filter>01.Utiltiy\03.Component\06. Model\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PipeLine.cpp">
       <Filter>00.System\02. PipeLine</Filter>
@@ -381,7 +381,7 @@
       <Filter>00.System\03. Lights</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Rect.cpp">
-      <Filter>01.Utiltiy\04.Component\02. VIBuffer\Rect</Filter>
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Rect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Engine_Struct.cpp">
       <Filter>99.Defines</Filter>
@@ -393,19 +393,19 @@
       <Filter>00.System\01.Device\Input</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Animation.cpp">
-      <Filter>01.Utiltiy\04.Component\06. Model\Animation</Filter>
+      <Filter>01.Utiltiy\03.Component\06. Model\Animation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State.cpp">
-      <Filter>01.Utiltiy\04.Component\07. StateMachine\State</Filter>
+      <Filter>01.Utiltiy\03.Component\07. StateMachine\State</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\StateMachine.cpp">
-      <Filter>01.Utiltiy\04.Component\07. StateMachine</Filter>
+      <Filter>01.Utiltiy\03.Component\07. StateMachine</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\tinyxml2.cpp">
       <Filter>01.Utiltiy\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp">
-      <Filter>01.Utiltiy\04.Component\02. VIBuffer\Terrain</Filter>
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Font_Manager.cpp">
       <Filter>00.System\05. Fonts\Manager</Filter>
@@ -417,19 +417,19 @@
       <Filter>01.Utiltiy\98. Utils\Debug_Draw</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\RenderTarget.cpp">
-      <Filter>01.Utiltiy\05. RenderTarget</Filter>
+      <Filter>01.Utiltiy\04. RenderTarget</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Target_Manager.cpp">
-      <Filter>01.Utiltiy\05. RenderTarget\Manager</Filter>
+      <Filter>01.Utiltiy\04. RenderTarget\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\FileUtils.cpp">
       <Filter>01.Utiltiy\98. Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Model_Manager.cpp">
-      <Filter>01.Utiltiy\06. Model_Manager</Filter>
+      <Filter>01.Utiltiy\05. Model_Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Particle.cpp">
-      <Filter>01.Utiltiy\04.Component\02. VIBuffer\Particle</Filter>
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Particle</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

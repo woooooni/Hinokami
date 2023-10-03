@@ -28,17 +28,8 @@
     <Filter Include="02.GameObjects">
       <UniqueIdentifier>{d435cd37-10c5-4f6c-a2f1-ee72504bbb59}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\BackGround">
-      <UniqueIdentifier>{327a42a0-45f0-4b4d-b8cd-bb209baedc94}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Player">
-      <UniqueIdentifier>{d26bf6ee-8989-439a-89bb-3c4c11da2bdc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97. ShaderFiles">
       <UniqueIdentifier>{97b53119-8317-43a4-a8ee-44ae8e440ad2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Camera">
-      <UniqueIdentifier>{91ff704d-cfae-4d8f-8be1-b64393bcf977}</UniqueIdentifier>
     </Filter>
     <Filter Include="96. Manager">
       <UniqueIdentifier>{c37011bc-5412-406d-a7cf-28e2a3b42769}</UniqueIdentifier>
@@ -58,59 +49,68 @@
     <Filter Include="96. Manager\Data">
       <UniqueIdentifier>{ec8bafee-f593-4a3c-8fdf-d0b90ae21adb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Character">
-      <UniqueIdentifier>{68cce55d-7f2c-4b33-a387-09d20e080365}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Monster">
-      <UniqueIdentifier>{978c82ce-6d25-428d-8f75-f1b25ce61559}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Character\00. Tanjiro">
-      <UniqueIdentifier>{507885f5-cfcd-484d-a4f5-ff0c17446477}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Character\01. Nezko">
-      <UniqueIdentifier>{c6df1f2e-e957-4679-a2b2-50efdbeddd66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Character\02. Zenitsu">
-      <UniqueIdentifier>{07bef7e3-df50-4b6a-a898-5325e137510e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Character\03. Kyojuro">
-      <UniqueIdentifier>{2589e047-34fe-4253-8753-f2d83685afd5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Character\04. Giyu">
-      <UniqueIdentifier>{471c5856-a3a8-4243-9e9f-b94b15ad18d7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. State">
       <UniqueIdentifier>{35062dd5-e235-43a2-a38d-3e4b2f7300b7}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. State\Character">
       <UniqueIdentifier>{96b97e03-5b05-4aa0-885c-f7e365a5268d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Character\99. Dummy">
-      <UniqueIdentifier>{3b5162f8-31c0-4401-b6d0-d22ac970a862}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Terrain">
-      <UniqueIdentifier>{dec9bd71-23ed-45a4-8928-d0f72663a888}</UniqueIdentifier>
-    </Filter>
     <Filter Include="96. Manager\ImGui\Libs\Docking">
       <UniqueIdentifier>{9f636762-d842-4778-89d0-4c71d473c2af}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Building">
-      <UniqueIdentifier>{2bf28741-0203-4091-a578-b154ab47f12f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Prop">
-      <UniqueIdentifier>{1656f416-c6e8-4a9c-bb21-5ebb8a320adc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Effect">
-      <UniqueIdentifier>{26cf5b1a-34c4-4aeb-bd80-ee795d3c6f23}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Effect\Mesh_Effect">
-      <UniqueIdentifier>{af553d2f-0ac3-4811-81f7-df9f9c1117ed}</UniqueIdentifier>
     </Filter>
     <Filter Include="96. Manager\Picking">
       <UniqueIdentifier>{56516b2c-83e0-46b5-8868-d80fb89ab33c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Effect\Texture_Effect">
+    <Filter Include="02.GameObjects\00. BackGround">
+      <UniqueIdentifier>{327a42a0-45f0-4b4d-b8cd-bb209baedc94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01. Building">
+      <UniqueIdentifier>{2bf28741-0203-4091-a578-b154ab47f12f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02. Camera">
+      <UniqueIdentifier>{91ff704d-cfae-4d8f-8be1-b64393bcf977}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character">
+      <UniqueIdentifier>{68cce55d-7f2c-4b33-a387-09d20e080365}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\00. Tanjiro">
+      <UniqueIdentifier>{507885f5-cfcd-484d-a4f5-ff0c17446477}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\01. Nezko">
+      <UniqueIdentifier>{c6df1f2e-e957-4679-a2b2-50efdbeddd66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\02. Zenitsu">
+      <UniqueIdentifier>{07bef7e3-df50-4b6a-a898-5325e137510e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\03. Kyojuro">
+      <UniqueIdentifier>{2589e047-34fe-4253-8753-f2d83685afd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\04. Giyu">
+      <UniqueIdentifier>{471c5856-a3a8-4243-9e9f-b94b15ad18d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\99. Dummy">
+      <UniqueIdentifier>{3b5162f8-31c0-4401-b6d0-d22ac970a862}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\04. Player">
+      <UniqueIdentifier>{d26bf6ee-8989-439a-89bb-3c4c11da2bdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster">
+      <UniqueIdentifier>{978c82ce-6d25-428d-8f75-f1b25ce61559}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99. Terrain">
+      <UniqueIdentifier>{dec9bd71-23ed-45a4-8928-d0f72663a888}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. Effect">
+      <UniqueIdentifier>{26cf5b1a-34c4-4aeb-bd80-ee795d3c6f23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. Effect\Mesh_Effect">
+      <UniqueIdentifier>{af553d2f-0ac3-4811-81f7-df9f9c1117ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. Effect\Texture_Effect">
       <UniqueIdentifier>{6889ef20-0b7a-4d6a-a6a6-38c9a9f46a2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. Prop">
+      <UniqueIdentifier>{1656f416-c6e8-4a9c-bb21-5ebb8a320adc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -148,13 +148,13 @@
       <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BackGround.h">
-      <Filter>02.GameObjects\BackGround</Filter>
+      <Filter>02.GameObjects\00. BackGround</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Player.h">
-      <Filter>02.GameObjects\Player</Filter>
+      <Filter>02.GameObjects\04. Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Camera_Free.h">
-      <Filter>02.GameObjects\Camera</Filter>
+      <Filter>02.GameObjects\02. Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ImGui_Manager.h">
       <Filter>96. Manager\ImGui</Filter>
@@ -163,28 +163,28 @@
       <Filter>01.Levels\98. Tool</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Character.h">
-      <Filter>02.GameObjects\Character</Filter>
+      <Filter>02.GameObjects\03. Character</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tanjiro.h">
-      <Filter>02.GameObjects\Character\00. Tanjiro</Filter>
+      <Filter>02.GameObjects\03. Character\00. Tanjiro</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Nezko.h">
-      <Filter>02.GameObjects\Character\01. Nezko</Filter>
+      <Filter>02.GameObjects\03. Character\01. Nezko</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Zenitsu.h">
-      <Filter>02.GameObjects\Character\02. Zenitsu</Filter>
+      <Filter>02.GameObjects\03. Character\02. Zenitsu</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Kyojuro.h">
-      <Filter>02.GameObjects\Character\03. Kyojuro</Filter>
+      <Filter>02.GameObjects\03. Character\03. Kyojuro</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Giyu.h">
-      <Filter>02.GameObjects\Character\04. Giyu</Filter>
+      <Filter>02.GameObjects\03. Character\04. Giyu</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Dummy.h">
-      <Filter>02.GameObjects\Character\99. Dummy</Filter>
+      <Filter>02.GameObjects\03. Character\99. Dummy</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
-      <Filter>02.GameObjects\Terrain</Filter>
+      <Filter>02.GameObjects\99. Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\imconfig.h">
       <Filter>96. Manager\ImGui\Libs\Docking</Filter>
@@ -214,19 +214,22 @@
       <Filter>96. Manager\ImGui\Libs\Docking</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Building.h">
-      <Filter>02.GameObjects\Building</Filter>
+      <Filter>02.GameObjects\01. Building</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Prop.h">
-      <Filter>02.GameObjects\Prop</Filter>
+      <Filter>02.GameObjects\06. Prop</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect.h">
-      <Filter>02.GameObjects\Effect</Filter>
+      <Filter>02.GameObjects\07. Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Mesh_Effect.h">
-      <Filter>02.GameObjects\Effect\Mesh_Effect</Filter>
+      <Filter>02.GameObjects\07. Effect\Mesh_Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Picking_Manager.h">
       <Filter>96. Manager\Picking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Texture_Effect.h">
+      <Filter>02.GameObjects\07. Effect\Texture_Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -252,13 +255,13 @@
       <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BackGround.cpp">
-      <Filter>02.GameObjects\BackGround</Filter>
+      <Filter>02.GameObjects\00. BackGround</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
-      <Filter>02.GameObjects\Player</Filter>
+      <Filter>02.GameObjects\04. Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Camera_Free.cpp">
-      <Filter>02.GameObjects\Camera</Filter>
+      <Filter>02.GameObjects\02. Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ImGui_Manager.cpp">
       <Filter>96. Manager\ImGui</Filter>
@@ -267,28 +270,28 @@
       <Filter>01.Levels\98. Tool</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Character.cpp">
-      <Filter>02.GameObjects\Character</Filter>
+      <Filter>02.GameObjects\03. Character</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tanjiro.cpp">
-      <Filter>02.GameObjects\Character\00. Tanjiro</Filter>
+      <Filter>02.GameObjects\03. Character\00. Tanjiro</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Nezko.cpp">
-      <Filter>02.GameObjects\Character\01. Nezko</Filter>
+      <Filter>02.GameObjects\03. Character\01. Nezko</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Zenitsu.cpp">
-      <Filter>02.GameObjects\Character\02. Zenitsu</Filter>
+      <Filter>02.GameObjects\03. Character\02. Zenitsu</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Kyojuro.cpp">
-      <Filter>02.GameObjects\Character\03. Kyojuro</Filter>
+      <Filter>02.GameObjects\03. Character\03. Kyojuro</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Giyu.cpp">
-      <Filter>02.GameObjects\Character\04. Giyu</Filter>
+      <Filter>02.GameObjects\03. Character\04. Giyu</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Dummy.cpp">
-      <Filter>02.GameObjects\Character\99. Dummy</Filter>
+      <Filter>02.GameObjects\03. Character\99. Dummy</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
-      <Filter>02.GameObjects\Terrain</Filter>
+      <Filter>02.GameObjects\99. Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\imgui.cpp">
       <Filter>96. Manager\ImGui\Libs\Docking</Filter>
@@ -315,19 +318,22 @@
       <Filter>96. Manager\ImGui\Libs\Docking</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Building.cpp">
-      <Filter>02.GameObjects\Building</Filter>
+      <Filter>02.GameObjects\01. Building</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Prop.cpp">
-      <Filter>02.GameObjects\Prop</Filter>
+      <Filter>02.GameObjects\06. Prop</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect.cpp">
-      <Filter>02.GameObjects\Effect</Filter>
+      <Filter>02.GameObjects\07. Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Mesh_Effect.cpp">
-      <Filter>02.GameObjects\Effect\Mesh_Effect</Filter>
+      <Filter>02.GameObjects\07. Effect\Mesh_Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Picking_Manager.cpp">
       <Filter>96. Manager\Picking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Texture_Effect.cpp">
+      <Filter>02.GameObjects\07. Effect\Texture_Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

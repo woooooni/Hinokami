@@ -124,6 +124,42 @@ _float3 CTransform::Get_Scale()
 		XMVectorGetX(XMVector3Length(Get_State(CTransform::STATE_LOOK))));
 }
 
+_matrix CTransform::Get_RotationMatrix()
+{
+	_float4x4 RotationMatrix;
+	
+	_float3 vScale = Get_Scale();
+	memcpy(RotationMatrix.m[0], &_float4(m_WorldMatrix._11 / vScale.x, m_WorldMatrix._12 / vScale.y, m_WorldMatrix._13 / vScale.z, 0), sizeof(_float4));
+	memcpy(RotationMatrix.m[1], &_float4(m_WorldMatrix._21 / vScale.x, m_WorldMatrix._22 / vScale.y, m_WorldMatrix._23 / vScale.z, 0), sizeof(_float4));
+	memcpy(RotationMatrix.m[2], &_float4(m_WorldMatrix._31 / vScale.x, m_WorldMatrix._32 / vScale.y, m_WorldMatrix._33 / vScale.z, 0), sizeof(_float4));
+
+	_float4 vPos = _float4(0.f, 0.f, 0.f, 1.f);
+	memcpy(RotationMatrix.m[3], &vPos, sizeof(_float4));
+
+	return XMLoadFloat4x4(&RotationMatrix);
+}
+
+_float3 CTransform::Get_RotaionAngle()
+{
+	_vector vScale;
+	_vector vRotaion;
+	_vector vTrans;
+	XMMatrixDecompose(&vScale, &vRotaion, &vTrans, XMLoadFloat4x4(&m_WorldMatrix));
+
+	XMVectorSetW(vRotaion, 0.f);
+
+	_float3 vAngle;
+	XMQuaternionToAxisAngle(&XMVectorSet(1.f, 0.f, 0.f, 0.f), &vAngle.x, vRotaion);
+	XMQuaternionToAxisAngle(&XMVectorSet(0.f, 1.f, 0.f, 0.f), &vAngle.y, vRotaion);
+	XMQuaternionToAxisAngle(&XMVectorSet(0.f, 0.f, 1.f, 0.f), &vAngle.z, vRotaion);
+
+	vAngle.x = XMConvertToDegrees(vAngle.x);
+	vAngle.y = XMConvertToDegrees(vAngle.y);
+	vAngle.z = XMConvertToDegrees(vAngle.z);
+
+	return vAngle;
+}
+
 void CTransform::Turn(_fvector vAxis, _float fTimeDelta)
 {
 	_matrix		RotationMatrix = XMMatrixRotationAxis(vAxis, m_TransformDesc.fRotationPerSec * fTimeDelta);
@@ -143,6 +179,15 @@ void CTransform::Rotation(_fvector vAxis, _float fRadian)
 	Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(XMVectorSet(1.f, 0.f, 0.f, 0.f) * Scale.x, RotationMatrix));
 	Set_State(CTransform::STATE_UP, XMVector3TransformNormal(XMVectorSet(0.f, 1.f, 0.f, 0.f) * Scale.y, RotationMatrix));
 	Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(XMVectorSet(0.f, 0.f, 1.f, 0.f) * Scale.z, RotationMatrix));
+}
+
+void CTransform::Rotation_Acc(_fvector vAxis, _float fRadian)
+{
+	_matrix		RotationMatrix = XMMatrixRotationAxis(vAxis, fRadian);
+
+	Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(Get_State(CTransform::STATE_RIGHT), RotationMatrix));
+	Set_State(CTransform::STATE_UP, XMVector3TransformNormal(Get_State(CTransform::STATE_UP), RotationMatrix));
+	Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(Get_State(CTransform::STATE_LOOK), RotationMatrix));
 }
 
 void CTransform::LookAt(_fvector vAt)
