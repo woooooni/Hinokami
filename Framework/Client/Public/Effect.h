@@ -75,13 +75,10 @@ public:
 	const MESH_EFFECT_DESC& Get_Mesh_EffectDesc() { return m_tMeshEffectDesc; }
 	void Set_Mesh_EffectDesc(const MESH_EFFECT_DESC& tEffectDesc) { m_tMeshEffectDesc = tEffectDesc; }
 
-	CTexture* Get_Texture() { return m_pEffectTexture; }
-
 protected:
 	class CShader* m_pShaderCom = nullptr;
 	class CRenderer* m_pRendererCom = nullptr;
 	class CTransform* m_pTransformCom = nullptr;
-	class CTexture* m_pEffectTexture = nullptr;
 
 protected:
 	TEXTURE_EFFECT_DESC m_tTextureEffectDesc;

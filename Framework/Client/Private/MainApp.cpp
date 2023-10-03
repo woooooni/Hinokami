@@ -121,6 +121,11 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshEffect.hlsl"), VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_Texture_Effect */
+	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Texture_Effect"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTextureEffect.hlsl"), VTXPOINT_DECLARATION::Elements, VTXPOINT_DECLARATION::iNumElements))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Shader_Model*/
 	if (FAILED(GAME_INSTANCE->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Model"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModel.hlsl"), VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
@@ -131,15 +136,16 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Effect*/
+	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Tile0.jpg")))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Texture_Terrain*/
 	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Terrain"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Tile0.jpg")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Effect_Texture*/
-	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Effect_Texture"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Effects/T_e_Plc_P0012_Fire020.png")))))
-		return E_FAIL;
 
 	/* For.Prototype_Component_Transform */
 	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),

@@ -368,5 +368,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshEffect.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTextureEffect.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -4,13 +4,12 @@
 #include "Effect.h"
 
 BEGIN(Engine)
-class CMesh;
 class CShader;
 class CTexture;
 class CRenderer;
 class CTransform;
 class CPipeLine;
-
+class CVIBuffer_Particle;
 END
 
 BEGIN(Client)
@@ -39,7 +38,11 @@ protected:
 
 
 private:
-	class CModel* m_pModelCom = nullptr;
+	class CTexture* m_pEffectTexture = nullptr;
+	class CVIBuffer_Particle* m_pVIBuffer = nullptr;
+
+	_uint m_iTextureIndex = 0;
+
 	wstring m_strEffectName;
 	wstring m_strModelFolderPath;
 	wstring m_strModelFileName;
