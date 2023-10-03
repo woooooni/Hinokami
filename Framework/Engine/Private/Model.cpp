@@ -376,7 +376,7 @@ HRESULT CModel::Ready_Materials(const wstring& ModelFilePath)
 			lstrcat(szFullPath, szFileName);
 			lstrcat(szFullPath, szExt);
 
-			memcpy(MaterialDesc.strName, &szFileName, sizeof(wchar_t) * MAX_PATH);
+			memcpy(MaterialDesc.strName, &szFileName, MAX_PATH);
 
 			MaterialDesc.pTexture[j] = CTexture::Create(m_pDevice, m_pContext, szFullPath);
 			if (nullptr == MaterialDesc.pTexture[j])
