@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="98. Default">
+      <UniqueIdentifier>{c131f7a8-6dda-4ff8-8987-f7e215a7dca6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. Defines">
+      <UniqueIdentifier>{9ddaeee0-d92d-4794-9e0f-20d2f3404329}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Network">
+      <UniqueIdentifier>{0060c00a-062d-4f84-a94e-be1b62067beb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Network\00. Protocol">
+      <UniqueIdentifier>{406c26c5-a20b-4536-ad59-9f3d2600da7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. GameContens">
+      <UniqueIdentifier>{20aa8738-ddda-4964-9a69-36ca5412b449}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. GameContens\Room">
+      <UniqueIdentifier>{4b56a4da-671c-4323-996f-b25e96a4bda1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. GameContens\Player">
+      <UniqueIdentifier>{486f5a6e-1d0d-4338-9fbe-f594fdc67636}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Network\01. GameSession">
+      <UniqueIdentifier>{57ea4137-03cd-451a-8083-d1bc85fcde77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Network\01. GameSession\Manager">
+      <UniqueIdentifier>{ec641403-03bf-42a7-8524-b510311f4b92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Network\02. PacketHandler">
+      <UniqueIdentifier>{5d03a2c9-3d7d-47ee-b41a-d2576592584d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Server.cpp">
+      <Filter>98. Default</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>98. Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameSession.cpp">
+      <Filter>97. Network\01. GameSession</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameSessionManager.cpp">
+      <Filter>97. Network\01. GameSession\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ClientPacketHandler.cpp">
+      <Filter>97. Network\02. PacketHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Room.cpp">
+      <Filter>00. GameContens\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>00. GameContens\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Protobuf\Enum.pb.cc">
+      <Filter>97. Network\00. Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Protobuf\Protocol.pb.cc">
+      <Filter>97. Network\00. Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Protobuf\Struct.pb.cc">
+      <Filter>97. Network\00. Protocol</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameSession.h">
+      <Filter>97. Network\01. GameSession</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameSessionManager.h">
+      <Filter>97. Network\01. GameSession\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ClientPacketHandler.h">
+      <Filter>97. Network\02. PacketHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Room.h">
+      <Filter>00. GameContens\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player.h">
+      <Filter>00. GameContens\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Protobuf\Enum.pb.h">
+      <Filter>97. Network\00. Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Protobuf\Protocol.pb.h">
+      <Filter>97. Network\00. Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Protobuf\Struct.pb.h">
+      <Filter>97. Network\00. Protocol</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Protobuf\Enum.proto">
+      <Filter>97. Network\00. Protocol</Filter>
+    </None>
+    <None Include="..\..\Protobuf\GenPackets.bat">
+      <Filter>97. Network\00. Protocol</Filter>
+    </None>
+    <None Include="..\..\Protobuf\protoc.exe">
+      <Filter>97. Network\00. Protocol</Filter>
+    </None>
+    <None Include="..\..\Protobuf\Protocol.proto">
+      <Filter>97. Network\00. Protocol</Filter>
+    </None>
+    <None Include="..\..\Protobuf\Struct.proto">
+      <Filter>97. Network\00. Protocol</Filter>
+    </None>
+  </ItemGroup>
+</Project>

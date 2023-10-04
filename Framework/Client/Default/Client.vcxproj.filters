@@ -112,6 +112,18 @@
     <Filter Include="02.GameObjects\06. Prop">
       <UniqueIdentifier>{1656f416-c6e8-4a9c-bb21-5ebb8a320adc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="95. Network">
+      <UniqueIdentifier>{06316bbb-45ed-4560-b5e6-003783fd4b6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95. Network\Protocol">
+      <UniqueIdentifier>{8028344f-c3cf-4f38-bb0d-35588c68ce1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95. Network\Handler">
+      <UniqueIdentifier>{491fd68e-f94c-4fb7-a357-c84cbe9cc1e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95. Network\Manager">
+      <UniqueIdentifier>{0f8e3f92-4c13-4cfe-a5c1-b8b18cad08df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -231,6 +243,15 @@
     <ClInclude Include="..\Public\Texture_Effect.h">
       <Filter>02.GameObjects\07. Effect\Texture_Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Protobuf\Enum.pb.h">
+      <Filter>95. Network\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Protobuf\Protocol.pb.h">
+      <Filter>95. Network\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Protobuf\Struct.pb.h">
+      <Filter>95. Network\Protocol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -335,6 +356,15 @@
     <ClCompile Include="..\Private\Texture_Effect.cpp">
       <Filter>02.GameObjects\07. Effect\Texture_Effect</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Protobuf\Enum.pb.cc">
+      <Filter>95. Network\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Protobuf\Protocol.pb.cc">
+      <Filter>95. Network\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Protobuf\Struct.pb.cc">
+      <Filter>95. Network\Protocol</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -371,5 +401,22 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTextureEffect.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Protobuf\Enum.proto">
+      <Filter>95. Network\Protocol</Filter>
+    </None>
+    <None Include="..\..\Protobuf\GenPackets.bat">
+      <Filter>95. Network\Protocol</Filter>
+    </None>
+    <None Include="..\..\Protobuf\protoc.exe">
+      <Filter>95. Network\Protocol</Filter>
+    </None>
+    <None Include="..\..\Protobuf\Protocol.proto">
+      <Filter>95. Network\Protocol</Filter>
+    </None>
+    <None Include="..\..\Protobuf\Struct.proto">
+      <Filter>95. Network\Protocol</Filter>
+    </None>
   </ItemGroup>
 </Project>
