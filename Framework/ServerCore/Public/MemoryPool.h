@@ -52,3 +52,4 @@ private:
 	atomic<int32>	_reserveCount = 0;
 };
 
+

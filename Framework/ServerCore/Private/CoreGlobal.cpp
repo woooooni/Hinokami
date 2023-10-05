@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CoreGlobal.h"
 #include "ThreadManager.h"
-#include "Memory.h"
+#include "ServerMemory.h"
 #include "DeadLockProfiler.h"
 #include "SocketUtils.h"
 #include "SendBuffer.h"

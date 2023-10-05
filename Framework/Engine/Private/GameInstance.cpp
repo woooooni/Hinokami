@@ -26,6 +26,7 @@ CGameInstance::CGameInstance()
 	, m_pKey_Manager(CKey_Manager::GetInstance())
 	, m_pFont_Manager(CFont_Manager::GetInstance())
 	, m_pModel_Manager(CModel_Manager::GetInstance())
+	, m_pNetwork_Manager(CNetwork_Manager::GetInstance())
 	
 {
 	Safe_AddRef(m_pObject_Manager);
@@ -39,6 +40,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pKey_Manager);
 	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pModel_Manager);
+	Safe_AddRef(m_pNetwork_Manager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, _uint iNumLayerType, 
@@ -230,6 +232,11 @@ CGameObject* CGameInstance::Find_GameObejct(_uint iLevelIndex, const _uint iLaye
 	return m_pObject_Manager->Find_GameObejct(iLevelIndex, iLayerType, strObjectTag);
 }
 
+CGameObject* CGameInstance::Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, _int iObjectID)
+{
+	return m_pObject_Manager->Find_GameObejct(iLevelIndex, iLayerType, iObjectID);
+}
+
 list<CGameObject*>& CGameInstance::Find_GameObjects(_uint iLevelIndex, const _uint iLayerType)
 {
 	return m_pObject_Manager->Find_GameObjects(iLevelIndex, iLayerType);
@@ -375,6 +382,27 @@ HRESULT CGameInstance::Render_Fonts(const wstring& strFontTag, const wstring& st
 	return m_pFont_Manager->Render_Fonts(strFontTag, strTextm, vPosition, vColor, fAngle, vOrigin, vScale);
 }
 
+void CGameInstance::Set_ServerSession(ServerSessionRef session)
+{
+	m_pNetwork_Manager->Set_ServerSession(session);
+}
+
+void CGameInstance::Send(SendBufferRef sendBuffer)
+{
+	m_pNetwork_Manager->Send(sendBuffer);
+}
+
+bool CGameInstance::Is_Connected()
+{
+	return m_pNetwork_Manager->Is_Connected();
+}
+
+ServerSessionRef& CGameInstance::Get_ServerSession()
+{
+	// TODO: 여기에 return 문을 삽입합니다.
+	return m_pNetwork_Manager->Get_ServerSession();
+}
+
 
 #pragma region No Use(Camera_Manager)
 //HRESULT CGameInstance::Add_Camera(const wstring& strCameraName, CCamera* pCamera)
@@ -411,6 +439,7 @@ HRESULT CGameInstance::Render_Fonts(const wstring& strFontTag, const wstring& st
 
 void CGameInstance::Release_Engine()
 {
+	CNetwork_Manager::GetInstance()->DestroyInstance();
 	CLevel_Manager::GetInstance()->DestroyInstance();
 	CObject_Manager::GetInstance()->DestroyInstance();
 	CComponent_Manager::GetInstance()->DestroyInstance();
@@ -438,4 +467,5 @@ void CGameInstance::Free()
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pKey_Manager);
 	Safe_Release(m_pModel_Manager);
+	Safe_Release(m_pNetwork_Manager);
 }

@@ -121,9 +121,6 @@
     <Filter Include="95. Network\Handler">
       <UniqueIdentifier>{491fd68e-f94c-4fb7-a357-c84cbe9cc1e3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95. Network\Manager">
-      <UniqueIdentifier>{0f8e3f92-4c13-4cfe-a5c1-b8b18cad08df}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -252,6 +249,9 @@
     <ClInclude Include="..\..\Protobuf\Struct.pb.h">
       <Filter>95. Network\Protocol</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ClientPacketHandler.h">
+      <Filter>95. Network\Handler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -364,6 +364,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Protobuf\Struct.pb.cc">
       <Filter>95. Network\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Public\ClientPacketHandler.cpp">
+      <Filter>95. Network\Handler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Allocator.h"
-#include "Memory.h"
+#include "ServerMemory.h"
 
 /*-------------------
 	BaseAllocator

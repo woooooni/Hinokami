@@ -5,7 +5,7 @@
 #include "DebugDraw.h"
 
 CTerrain::CTerrain(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-	: CGameObject(pDevice, pContext, L"Terrain")
+	: CGameObject(pDevice, pContext, L"Terrain", OBJ_TYPE::OBJ_TERRAIN)
 {
 
 }

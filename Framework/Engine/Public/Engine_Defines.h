@@ -25,6 +25,14 @@
 #include <Assimp/postprocess.h>
 
 #define DIRECTINPUT_VERSION 0x0800
+
+
+#include <ServerCore/CoreExports.h>
+#include "Protocol.pb.h"
+
+
+
+
 #include <dinput.h>
 
 #include <DirectXMath.h>
@@ -40,6 +48,8 @@ using namespace DirectX;
 
 #include <process.h>
 
+
+
 #include "Engine_Macro.h"
 #include "Engine_Struct.h"
 #include "Engine_Typedef.h"
@@ -48,21 +58,21 @@ using namespace DirectX;
 
 
 
-#ifdef _DEBUG
-
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-//#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console") // 디버그 모드에서 콘솔창 출력.
-
-#ifndef DBG_NEW 
-
-#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 
-#define new DBG_NEW 
-
-#endif
-
-#endif // _DEBUG
+//#ifdef _DEBUG
+//
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
+////#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console") // 디버그 모드에서 콘솔창 출력.
+//
+//#ifndef DBG_NEW 
+//
+//#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 
+//#define new DBG_NEW 
+//
+//#endif
+//
+//#endif // _DEBUG
 
 using namespace std;
 using namespace Engine;

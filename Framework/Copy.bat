@@ -7,8 +7,9 @@ xcopy /y .\Engine\Bin\*.lib					.\Reference\Librarys\
 xcopy /y .\ThirdParty\*.lib					.\Reference\Librarys\
 
 
-xcopy /y .\ServerCore\Public\*.*			.\Reference\Headers\
+xcopy /y .\ServerCore\Public\*.*			.\Engine\Public\ServerCore\
 xcopy /y .\ServerCore\Bin\*.lib				.\Reference\Librarys\
+xcopy /y .\ServerCore\Bin\*.lib				.\Engine\ThirdPartyLib\
 
 
 xcopy /y .\Engine\Bin\*.dll					.\Client\Bin\

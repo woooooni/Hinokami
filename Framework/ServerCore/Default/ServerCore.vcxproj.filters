@@ -57,7 +57,7 @@
     <ClInclude Include="..\Public\CoreTLS.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Types.h">
+    <ClInclude Include="..\Public\CoreTypes.h">
       <Filter>Main</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Allocator.h">
@@ -66,7 +66,7 @@
     <ClInclude Include="..\Public\Container.h">
       <Filter>Memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Memory.h">
+    <ClInclude Include="..\Public\ServerMemory.h">
       <Filter>Memory</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MemoryPool.h">
@@ -126,7 +126,7 @@
     <ClInclude Include="..\Public\TypeCast.h">
       <Filter>Memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Core_Exports.h">
+    <ClInclude Include="..\Public\CoreExports.h">
       <Filter>Default</Filter>
     </ClInclude>
   </ItemGroup>
@@ -155,7 +155,7 @@
     <ClCompile Include="..\Private\Allocator.cpp">
       <Filter>Memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Memory.cpp">
+    <ClCompile Include="..\Private\ServerMemory.cpp">
       <Filter>Memory</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MemoryPool.cpp">

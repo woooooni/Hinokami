@@ -45,7 +45,7 @@ public:
 		EFFECT_END
 	};
 protected:
-	CEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, EFFECT_TYPE eType);
+	CEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, OBJ_TYPE eObjType, EFFECT_TYPE eType);
 	CEffect(const CEffect& rhs);
 	virtual ~CEffect() = default;
 

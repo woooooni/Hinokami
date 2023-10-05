@@ -121,13 +121,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;HAS_STD_BYTE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/;../../ThirdParty/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/ServerCore/;../../ThirdParty/;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libprotobufd.lib;ServerCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../Reference/Librarys/</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../Reference/Librarys/;../../ThirdParty/;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

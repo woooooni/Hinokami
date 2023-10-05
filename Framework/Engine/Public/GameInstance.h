@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component_Manager.h"
+#include <Network_Manager.h>
 
 /* 클라이언트개발자가 엔진의 기능을 이용하고자할 때 접촉하는 객체.  */
 /* 클라이언트에 보여줘야할 함수들을 모두 정의하고 있는다. */
@@ -55,6 +56,7 @@ public:
 	class CGameObject* Find_Prototype_GameObject(_uint iLayerType, const wstring & strPrototypeTag);
 	const map<const wstring, class CGameObject*>& Find_Prototype_GameObjects(_uint iLayerType);
 	class CGameObject* Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring & strObjectTag);
+	class CGameObject* Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, _int iObjectID);
 	list<CGameObject*>& Find_GameObjects(_uint iLevelIndex, const _uint iLayerType);
 
 public: /* For. Componenet_Manager */
@@ -101,6 +103,13 @@ public:
 		_float fAngle = 0.f, _float2 vOrigin = _float2(0.f, 0.f), _float2 vScale = _float2(1.f, 1.f));
 
 
+/* For. Network_Manager */
+public:
+	void Set_ServerSession(ServerSessionRef session);
+	void Send(SendBufferRef sendBuffer);
+	bool Is_Connected();
+	ServerSessionRef& Get_ServerSession();
+
 
 private:
 	class CTimer_Manager*			m_pTimer_Manager = { nullptr };
@@ -115,7 +124,7 @@ private:
 	class CKey_Manager*				m_pKey_Manager = { nullptr };
 	class CModel_Manager*			m_pModel_Manager = { nullptr };
 	class CFont_Manager*			m_pFont_Manager = { nullptr };
-
+	class CNetwork_Manager*			m_pNetwork_Manager = { nullptr };
 public:
 	static void Release_Engine();
 	virtual void Free() override;

@@ -1,5 +1,5 @@
 #pragma once
-#include "Types.h"
+#include "CoreTypes.h"
 #include "MemoryPool.h"
 
 template<typename Type>

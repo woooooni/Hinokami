@@ -9,6 +9,14 @@
 
 
 
-#include "Core_Exports.h"
+
+#include <winsock2.h>
+#include <mswsock.h>
+#include <ws2tcpip.h>
+#pragma comment(lib, "ws2_32.lib")
+#include "CoreExports.h"
+#include <windows.h>
+#include <iostream>
+using namespace std;
 
 #endif //PCH_H

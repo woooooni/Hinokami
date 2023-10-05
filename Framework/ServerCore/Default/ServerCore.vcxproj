@@ -160,7 +160,7 @@
     <ClInclude Include="..\Public\CoreGlobal.h" />
     <ClInclude Include="..\Public\CoreMacro.h" />
     <ClInclude Include="..\Public\CoreTLS.h" />
-    <ClInclude Include="..\Public\Core_Exports.h" />
+    <ClInclude Include="..\Public\CoreExports.h" />
     <ClInclude Include="..\Public\DeadLockProfiler.h" />
     <ClInclude Include="..\Public\GlobalQueue.h" />
     <ClInclude Include="..\Public\IocpCore.h" />
@@ -171,7 +171,7 @@
     <ClInclude Include="..\Public\Listener.h" />
     <ClInclude Include="..\Public\Lock.h" />
     <ClInclude Include="..\Public\LockQueue.h" />
-    <ClInclude Include="..\Public\Memory.h" />
+    <ClInclude Include="..\Public\ServerMemory.h" />
     <ClInclude Include="..\Public\MemoryPool.h" />
     <ClInclude Include="..\Public\NetAddress.h" />
     <ClInclude Include="..\Public\ObjectPool.h" />
@@ -183,7 +183,7 @@
     <ClInclude Include="..\Public\SocketUtils.h" />
     <ClInclude Include="..\Public\ThreadManager.h" />
     <ClInclude Include="..\Public\TypeCast.h" />
-    <ClInclude Include="..\Public\Types.h" />
+    <ClInclude Include="..\Public\CoreTypes.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -202,7 +202,7 @@
     <ClCompile Include="..\Private\Listener.cpp" />
     <ClCompile Include="..\Private\Lock.cpp" />
     <ClCompile Include="..\Private\LockQueue.cpp" />
-    <ClCompile Include="..\Private\Memory.cpp" />
+    <ClCompile Include="..\Private\ServerMemory.cpp" />
     <ClCompile Include="..\Private\MemoryPool.cpp" />
     <ClCompile Include="..\Private\NetAddress.cpp" />
     <ClCompile Include="..\Private\RecvBuffer.cpp" />

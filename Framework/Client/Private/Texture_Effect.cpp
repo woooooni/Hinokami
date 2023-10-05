@@ -6,7 +6,7 @@
 
 
 CTexture_Effect::CTexture_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
-	: CEffect(pDevice, pContext, strObjectTag, EFFECT_TYPE::EFFECT_MESH)
+	: CEffect(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_TEXTURE_EFFECT, EFFECT_TYPE::EFFECT_MESH)
 {
 }
 

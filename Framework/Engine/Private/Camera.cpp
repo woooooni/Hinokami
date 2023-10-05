@@ -1,8 +1,8 @@
 #include "..\Public\Camera.h"
 #include "PipeLine.h"
 
-CCamera::CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjTag)
-	: CGameObject(pDevice, pContext, strObjTag)
+CCamera::CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjTag, _uint iObjectID)
+	: CGameObject(pDevice, pContext, strObjTag, iObjectID)
 {
 }
 

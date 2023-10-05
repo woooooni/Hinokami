@@ -4,8 +4,8 @@
 #include "Mesh.h"
 
 
-CEffect::CEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, EFFECT_TYPE eType)
-	: CGameObject(pDevice, pContext, strObjectTag)
+CEffect::CEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, OBJ_TYPE eObjType, EFFECT_TYPE eType)
+	: CGameObject(pDevice, pContext, strObjectTag, eObjType)
 	, m_eType(eType)
 {
 }

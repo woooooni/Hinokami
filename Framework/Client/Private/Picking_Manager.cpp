@@ -18,7 +18,7 @@ HRESULT CPicking_Manager::Reserve_Manager(ID3D11Device* pDevice, ID3D11DeviceCon
 
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
-
+	
 
 	return S_OK;
 }

@@ -2,7 +2,7 @@
 #include "BackGround.h"
 
 CBackGround::CBackGround(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-	: CGameObject(pDevice, pContext, L"BackGround")
+	: CGameObject(pDevice, pContext, L"BackGround", OBJ_TYPE::OBJ_BACKGROUND)
 {
 
 }

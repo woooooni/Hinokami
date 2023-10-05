@@ -17,6 +17,7 @@ class CLevel_Manager final : public CBase
 private:
 	CLevel_Manager();
 	virtual ~CLevel_Manager() = default;
+	USE_LOCK
 
 public:
 	void Tick(_float fTimeDelta);

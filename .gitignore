@@ -399,3 +399,4 @@ FodyWeavers.xsd
 *.csv
 *.zip
 Framework/Reference/Librarys/libprotobufd.lib
+Framework/Engine/ThirdPartyLib/libprotobufd.lib

@@ -4,7 +4,7 @@
 #include "Key_Manager.h"
 
 CCamera_Free::CCamera_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjTag)
-	: CCamera(pDevice, pContext, strObjTag)
+	: CCamera(pDevice, pContext, strObjTag, OBJ_TYPE::OBJ_CAMERA)
 {
 }
 

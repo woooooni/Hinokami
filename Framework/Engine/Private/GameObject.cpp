@@ -2,10 +2,14 @@
 #include "GameInstance.h"
 #include "Component.h"
 
-CGameObject::CGameObject(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, wstring strObjectTag)
+_uint CGameObject::g_ObjecId = 0;
+
+CGameObject::CGameObject(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, wstring strObjectTag, _int iObjectType)
 	: m_pDevice(pDevice)
 	, m_pContext(pContext)
 	, m_strObjectTag(strObjectTag)
+	, m_iObjectType(iObjectType)
+	, m_iObjectID(g_ObjecId++)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
@@ -15,6 +19,8 @@ CGameObject::CGameObject(const CGameObject & rhs)
 	: m_pDevice(rhs.m_pDevice)
 	, m_pContext(rhs.m_pContext)
 	, m_strObjectTag(rhs.m_strObjectTag)
+	, m_iObjectID(g_ObjecId++)
+	, m_iObjectType(rhs.m_iObjectType)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);

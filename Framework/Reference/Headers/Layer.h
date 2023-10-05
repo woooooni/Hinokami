@@ -12,6 +12,7 @@ private:
 	CLayer();
 	virtual ~CLayer() = default;
 
+	USE_LOCK
 public:
 	HRESULT Initialize();
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
@@ -22,6 +23,7 @@ public:
 public:
 	list<class CGameObject*>& Find_GameObjects() { return m_GameObjects; }
 	CGameObject* Find_GameObject(const wstring& strObjectTag);
+	CGameObject* Find_GameObject(_int iObjectID);
 
 private:
 	list<class CGameObject*>	m_GameObjects;

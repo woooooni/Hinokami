@@ -154,6 +154,18 @@
     <Filter Include="01.Utiltiy\06. Map_Manager">
       <UniqueIdentifier>{f84ef70a-bfa5-4643-9a8e-c9d4fc795f63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utiltiy\97. Network">
+      <UniqueIdentifier>{eb348517-94de-49fe-a138-f294dc9a1b97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\97. Network\Protocol">
+      <UniqueIdentifier>{6263386b-daa1-4161-becb-9e3707ce5298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\97. Network\Manager">
+      <UniqueIdentifier>{199d5911-6544-4e15-b0cc-c3e327b1d5e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\97. Network\ServerSession">
+      <UniqueIdentifier>{978048be-b028-4b41-b387-18fdd1ebba13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -300,6 +312,21 @@
     <ClInclude Include="..\Public\VIBuffer_Particle.h">
       <Filter>01.Utiltiy\03.Component\02. VIBuffer\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Protobuf\Enum.pb.h">
+      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Protobuf\Protocol.pb.h">
+      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Protobuf\Struct.pb.h">
+      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network_Manager.h">
+      <Filter>01.Utiltiy\97. Network\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ServerSession.h">
+      <Filter>01.Utiltiy\97. Network\ServerSession</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -431,5 +458,37 @@
     <ClCompile Include="..\Private\VIBuffer_Particle.cpp">
       <Filter>01.Utiltiy\03.Component\02. VIBuffer\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Protobuf\Enum.pb.cc">
+      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Protobuf\Protocol.pb.cc">
+      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Protobuf\Struct.pb.cc">
+      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Network_Manager.cpp">
+      <Filter>01.Utiltiy\97. Network\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ServerSession.cpp">
+      <Filter>01.Utiltiy\97. Network\ServerSession</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Protobuf\Enum.proto">
+      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    </None>
+    <None Include="..\..\Protobuf\GenPackets.bat">
+      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    </None>
+    <None Include="..\..\Protobuf\protoc.exe">
+      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    </None>
+    <None Include="..\..\Protobuf\Protocol.proto">
+      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    </None>
+    <None Include="..\..\Protobuf\Struct.proto">
+      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    </None>
   </ItemGroup>
 </Project>

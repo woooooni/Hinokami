@@ -12,6 +12,7 @@ HRESULT CLayer::Initialize()
 
 HRESULT CLayer::Add_GameObject(CGameObject * pGameObject)
 {
+	WRITE_LOCK
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
@@ -40,11 +41,27 @@ void CLayer::LateTick(_float fTimeDelta)
 
 CGameObject* CLayer::Find_GameObject(const wstring& strObjectTag)
 {
+	READ_LOCK
 	CGameObject* pObj = nullptr;
 	auto iter = find_if(m_GameObjects.begin(), m_GameObjects.end(), [&](CGameObject* pObj) 
 	{
 		return pObj->Get_ObjectTag() == strObjectTag;
 	});
+
+	if (iter == m_GameObjects.end())
+		return nullptr;
+
+	return *iter;
+}
+
+CGameObject* CLayer::Find_GameObject(_int iObjectID)
+{
+	READ_LOCK
+	CGameObject* pObj = nullptr;
+	auto iter = find_if(m_GameObjects.begin(), m_GameObjects.end(), [&](CGameObject* pObj)
+		{
+			return pObj->Get_ObjectID() == iObjectID;
+		});
 
 	if (iter == m_GameObjects.end())
 		return nullptr;

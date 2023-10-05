@@ -8,7 +8,7 @@
 
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject(pDevice, pContext, L"Player")
+	: CGameObject(pDevice, pContext, L"Player", OBJ_TYPE::OBJ_PLAYER)
 {
 }
 
