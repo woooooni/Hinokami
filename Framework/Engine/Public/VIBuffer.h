@@ -22,7 +22,8 @@ public:
 public:
 	_uint Get_VertexCount() { return m_iNumVertices; }
 	_uint Get_PrimitiveCount() { return m_iNumPrimitives; }
-
+	const vector<_float3>& Get_VertexLocalPositions() { return m_VertexLocalPositions; }
+	const vector<FACEINDICES32>& Get_FaceIndices() { return m_FaceIndices; }
 
 protected:
 	ID3D11Buffer* m_pVB = nullptr;
@@ -33,7 +34,8 @@ protected:
 
 	D3D11_PRIMITIVE_TOPOLOGY		m_eTopology;
 
-	_float3* m_pVerticesPos = nullptr;
+	vector<_float3>					m_VertexLocalPositions;
+	vector<FACEINDICES32>			m_FaceIndices;
 
 protected:
 	_uint						m_iNumVertexBuffers = 0;

@@ -1,23 +1,29 @@
 #pragma once
 
+#include "Server_Defines.h"
 #include "Session.h"
 
-class GameSession : public PacketSession
+
+BEGIN(Server)
+
+class CGameSession : public PacketSession
 {
 public:
-	~GameSession()
-	{
-		cout << "~GameSession" << endl;
-	}
+	CGameSession();
+	virtual ~CGameSession() = default;
 
-	virtual void OnConnected() override;
-	virtual void OnDisconnected() override;
-	virtual void OnRecvPacket(BYTE* buffer, int32 len) override;
-	virtual void OnSend(int32 len) override;
+	USE_LOCK
 
 public:
-	Vector<PlayerRef> _players;
+	virtual void OnConnected() override;
+	virtual void OnDisconnected() override;
+	virtual void OnRecvPacket(BYTE * buffer, int32 len) override;
+	virtual void OnSend(int32 len) override;
 
-	PlayerRef _currentPlayer;
-	weak_ptr<class Room> _room;
+private:
+
+	wstring		m_strCharacter;
+	_uint		m_iPlayerID;
 };
+
+END

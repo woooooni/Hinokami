@@ -10,8 +10,6 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs)
 	: CVIBuffer(rhs)
 	, m_iNumVerticesX(rhs.m_iNumVerticesX)
 	, m_iNumVerticesZ(rhs.m_iNumVerticesZ)
-	, m_Vertices(rhs.m_Vertices)
-	, m_Indices(rhs.m_Indices)
 {
 
 }
@@ -24,11 +22,10 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iSizeX, _uint iSizeZ)
 	m_iNumVerticesZ = iSizeZ;
 
 	m_iNumVertices = m_iNumVerticesX * m_iNumVerticesZ;
-	m_Vertices.reserve(m_iNumVertices);
+	m_VertexLocalPositions.reserve(m_iNumVertices);
 
 	m_iStride = sizeof(VTXNORTEX);
 
-	m_pVerticesPos = new _float3[m_iNumVertices];
 	VTXNORTEX* pVertices = new VTXNORTEX[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXNORTEX) * m_iNumVertices);
 
@@ -38,7 +35,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iSizeX, _uint iSizeZ)
 		{
 			_uint		iIndex = i * m_iNumVerticesX + j;
 
-			pVertices[iIndex].vPosition = m_pVerticesPos[iIndex] = _float3(j, 0, i);
+			pVertices[iIndex].vPosition = _float3(j, 0, i);
 			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			pVertices[iIndex].vTexcoord = _float2(j / _float(m_iNumVerticesX - 1), i / _float(m_iNumVerticesZ - 1));
 		}
@@ -49,7 +46,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iSizeX, _uint iSizeZ)
 
 #pragma region INDEXBUFFER
 	m_iNumPrimitives = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2;
-	m_Indices.reserve(m_iNumPrimitives);
+	
 	m_iIndexSizeofPrimitive = sizeof(FACEINDICES32);
 	m_iNumIndicesofPrimitive = 3;
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
@@ -113,15 +110,17 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(_uint iSizeX, _uint iSizeZ)
 		}
 	}
 
+	m_VertexLocalPositions.reserve(m_iNumVertices);
+	m_FaceIndices.reserve(m_iNumPrimitives);
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[i].vNormal)));
-		m_Vertices.push_back(pVertices[i]);
+		m_VertexLocalPositions.push_back(pVertices[i].vPosition);
 	}
 
 	for (_uint i = 0; i < m_iNumPrimitives; ++i)
 	{
-		m_Indices.push_back(pIndices[i]);
+		m_FaceIndices.push_back(pIndices[i]);
 	}
 
 
@@ -186,11 +185,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeighitMapFile
 	m_iNumVerticesZ = ih.biHeight;
 
 	m_iNumVertices = m_iNumVerticesX * m_iNumVerticesZ;
-	m_Vertices.reserve(m_iNumVertices);
 
 	m_iStride = sizeof(VTXNORTEX);
 
-	m_pVerticesPos = new _float3[m_iNumVertices];
 	VTXNORTEX* pVertices = new VTXNORTEX[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXNORTEX) * m_iNumVertices);
 
@@ -200,7 +197,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeighitMapFile
 		{
 			_uint		iIndex = i * m_iNumVerticesX + j;
 
-			pVertices[iIndex].vPosition = m_pVerticesPos[iIndex] = _float3(j, (pPixel[iIndex] & 0x000000ff) / 30.f, i);
+			pVertices[iIndex].vPosition = _float3(j, (pPixel[iIndex] & 0x000000ff) / 30.f, i);
 			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			pVertices[iIndex].vTexcoord = _float2(j / _float(m_iNumVerticesX - 1), i / _float(m_iNumVerticesZ - 1));
 		}
@@ -214,7 +211,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeighitMapFile
 
 #pragma region INDEXBUFFER
 	m_iNumPrimitives = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2;
-	m_Indices.reserve(m_iNumPrimitives);
+	
 	m_iIndexSizeofPrimitive = sizeof(FACEINDICES32);
 	m_iNumIndicesofPrimitive = 3;
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
@@ -278,15 +275,18 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeighitMapFile
 		}
 	}
 
+
+	m_VertexLocalPositions.reserve(m_iNumVertices);
+	m_FaceIndices.reserve(m_iNumPrimitives);
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[i].vNormal)));
-		m_Vertices.push_back(pVertices[i]);
+		m_VertexLocalPositions.push_back(pVertices[i].vPosition);
 	}
 
 	for (_uint i = 0; i < m_iNumPrimitives; ++i)
 	{
-		m_Indices.push_back(pIndices[i]);
+		m_FaceIndices.push_back(pIndices[i]);
 	}
 		
 

@@ -4,9 +4,13 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 #include "ImGui_Manager.h"
+#include "Network_Manager.h"
+#include "SocketUtils.h"
+
 
 CMainApp::CMainApp()	
 	: m_pGame_Instance(CGameInstance::GetInstance())
+	, m_pNetwork_Manager(CNetwork_Manager::GetInstance())
 {
 	Safe_AddRef(m_pGame_Instance);
 }
@@ -26,6 +30,8 @@ HRESULT CMainApp::Initialize()
 	GraphicDesc.iWinSizeX = g_iWinSizeX;
 	GraphicDesc.iWinSizeY = g_iWinSizeY;
 
+	SocketUtils::Init();
+
 	if (FAILED(m_pGame_Instance->Initialize_Engine(LEVEL_END, _uint(LAYER_TYPE::LAYER_END), GraphicDesc, &m_pDevice, &m_pContext, g_hWnd, g_hInstance)))
 		return E_FAIL;
 
@@ -36,7 +42,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_TOOL)))
+	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
 
@@ -190,8 +196,10 @@ void Client::CMainApp::Free()
 
 
 	CImGui_Manager::GetInstance()->DestroyInstance();
-
+	CNetwork_Manager::GetInstance()->DestroyInstance();
 
 	Safe_Release(m_pGame_Instance);
 	CGameInstance::Release_Engine();
+
+	SocketUtils::Clear();
 }

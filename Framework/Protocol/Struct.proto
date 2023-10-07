@@ -1,0 +1,21 @@
+syntax = "proto3";
+package Protocol;
+
+import "Enum.proto";
+
+message Player
+{
+	uint64 id = 1;
+	string name = 2;
+	PlayerType playerType = 3;
+	// Ω∫≈» ¡§∫∏...
+}
+
+message ObjectInfo
+{
+	uint32 iObjectID = 1;
+	int32 iLevel = 2;
+	int32 iLayer = 3;
+	repeated float vTargetPos = 4 [packed = true];
+	repeated float matWorld = 5 [packed = true];
+}

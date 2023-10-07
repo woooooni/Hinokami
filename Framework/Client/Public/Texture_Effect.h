@@ -31,7 +31,8 @@ public:
 	virtual HRESULT Render() override;
 
 
-
+public:
+	HRESULT Save_EffectInfo() override;
 
 protected:
 	virtual HRESULT Ready_Components(const wstring& strModelFolderPath, const wstring& strModelFileName);

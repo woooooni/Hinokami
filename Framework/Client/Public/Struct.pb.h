@@ -47,7 +47,7 @@ struct TableStruct_Struct_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[1]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[2]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -55,11 +55,15 @@ struct TableStruct_Struct_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Struct_2eproto;
 namespace Protocol {
+class ObjectInfo;
+struct ObjectInfoDefaultTypeInternal;
+extern ObjectInfoDefaultTypeInternal _ObjectInfo_default_instance_;
 class Player;
 struct PlayerDefaultTypeInternal;
 extern PlayerDefaultTypeInternal _Player_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
+template<> ::Protocol::ObjectInfo* Arena::CreateMaybeMessage<::Protocol::ObjectInfo>(Arena*);
 template<> ::Protocol::Player* Arena::CreateMaybeMessage<::Protocol::Player>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
@@ -223,6 +227,208 @@ class Player final :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Struct_2eproto;
 };
+// -------------------------------------------------------------------
+
+class ObjectInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.ObjectInfo) */ {
+ public:
+  inline ObjectInfo() : ObjectInfo(nullptr) {}
+  ~ObjectInfo() override;
+  explicit constexpr ObjectInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  ObjectInfo(const ObjectInfo& from);
+  ObjectInfo(ObjectInfo&& from) noexcept
+    : ObjectInfo() {
+    *this = ::std::move(from);
+  }
+
+  inline ObjectInfo& operator=(const ObjectInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ObjectInfo& operator=(ObjectInfo&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const ObjectInfo& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const ObjectInfo* internal_default_instance() {
+    return reinterpret_cast<const ObjectInfo*>(
+               &_ObjectInfo_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    1;
+
+  friend void swap(ObjectInfo& a, ObjectInfo& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ObjectInfo* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ObjectInfo* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ObjectInfo* New() const final {
+    return new ObjectInfo();
+  }
+
+  ObjectInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<ObjectInfo>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const ObjectInfo& from);
+  void MergeFrom(const ObjectInfo& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ObjectInfo* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.ObjectInfo";
+  }
+  protected:
+  explicit ObjectInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kVTargetPosFieldNumber = 4,
+    kMatWorldFieldNumber = 5,
+    kIObjectIDFieldNumber = 1,
+    kILevelFieldNumber = 2,
+    kILayerFieldNumber = 3,
+  };
+  // repeated float vTargetPos = 4 [packed = true];
+  int vtargetpos_size() const;
+  private:
+  int _internal_vtargetpos_size() const;
+  public:
+  void clear_vtargetpos();
+  private:
+  float _internal_vtargetpos(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+      _internal_vtargetpos() const;
+  void _internal_add_vtargetpos(float value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+      _internal_mutable_vtargetpos();
+  public:
+  float vtargetpos(int index) const;
+  void set_vtargetpos(int index, float value);
+  void add_vtargetpos(float value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+      vtargetpos() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+      mutable_vtargetpos();
+
+  // repeated float matWorld = 5 [packed = true];
+  int matworld_size() const;
+  private:
+  int _internal_matworld_size() const;
+  public:
+  void clear_matworld();
+  private:
+  float _internal_matworld(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+      _internal_matworld() const;
+  void _internal_add_matworld(float value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+      _internal_mutable_matworld();
+  public:
+  float matworld(int index) const;
+  void set_matworld(int index, float value);
+  void add_matworld(float value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+      matworld() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+      mutable_matworld();
+
+  // uint32 iObjectID = 1;
+  void clear_iobjectid();
+  ::PROTOBUF_NAMESPACE_ID::uint32 iobjectid() const;
+  void set_iobjectid(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_iobjectid() const;
+  void _internal_set_iobjectid(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // int32 iLevel = 2;
+  void clear_ilevel();
+  ::PROTOBUF_NAMESPACE_ID::int32 ilevel() const;
+  void set_ilevel(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_ilevel() const;
+  void _internal_set_ilevel(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 iLayer = 3;
+  void clear_ilayer();
+  ::PROTOBUF_NAMESPACE_ID::int32 ilayer() const;
+  void set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_ilayer() const;
+  void _internal_set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.ObjectInfo)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< float > vtargetpos_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< float > matworld_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 iobjectid_;
+  ::PROTOBUF_NAMESPACE_ID::int32 ilevel_;
+  ::PROTOBUF_NAMESPACE_ID::int32 ilayer_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_Struct_2eproto;
+};
 // ===================================================================
 
 
@@ -319,9 +525,169 @@ inline void Player::set_playertype(::Protocol::PlayerType value) {
   // @@protoc_insertion_point(field_set:Protocol.Player.playerType)
 }
 
+// -------------------------------------------------------------------
+
+// ObjectInfo
+
+// uint32 iObjectID = 1;
+inline void ObjectInfo::clear_iobjectid() {
+  iobjectid_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 ObjectInfo::_internal_iobjectid() const {
+  return iobjectid_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 ObjectInfo::iobjectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.iObjectID)
+  return _internal_iobjectid();
+}
+inline void ObjectInfo::_internal_set_iobjectid(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  iobjectid_ = value;
+}
+inline void ObjectInfo::set_iobjectid(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_iobjectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.iObjectID)
+}
+
+// int32 iLevel = 2;
+inline void ObjectInfo::clear_ilevel() {
+  ilevel_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 ObjectInfo::_internal_ilevel() const {
+  return ilevel_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 ObjectInfo::ilevel() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.iLevel)
+  return _internal_ilevel();
+}
+inline void ObjectInfo::_internal_set_ilevel(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  ilevel_ = value;
+}
+inline void ObjectInfo::set_ilevel(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_ilevel(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.iLevel)
+}
+
+// int32 iLayer = 3;
+inline void ObjectInfo::clear_ilayer() {
+  ilayer_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 ObjectInfo::_internal_ilayer() const {
+  return ilayer_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 ObjectInfo::ilayer() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.iLayer)
+  return _internal_ilayer();
+}
+inline void ObjectInfo::_internal_set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  ilayer_ = value;
+}
+inline void ObjectInfo::set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_ilayer(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.iLayer)
+}
+
+// repeated float vTargetPos = 4 [packed = true];
+inline int ObjectInfo::_internal_vtargetpos_size() const {
+  return vtargetpos_.size();
+}
+inline int ObjectInfo::vtargetpos_size() const {
+  return _internal_vtargetpos_size();
+}
+inline void ObjectInfo::clear_vtargetpos() {
+  vtargetpos_.Clear();
+}
+inline float ObjectInfo::_internal_vtargetpos(int index) const {
+  return vtargetpos_.Get(index);
+}
+inline float ObjectInfo::vtargetpos(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.vTargetPos)
+  return _internal_vtargetpos(index);
+}
+inline void ObjectInfo::set_vtargetpos(int index, float value) {
+  vtargetpos_.Set(index, value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.vTargetPos)
+}
+inline void ObjectInfo::_internal_add_vtargetpos(float value) {
+  vtargetpos_.Add(value);
+}
+inline void ObjectInfo::add_vtargetpos(float value) {
+  _internal_add_vtargetpos(value);
+  // @@protoc_insertion_point(field_add:Protocol.ObjectInfo.vTargetPos)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+ObjectInfo::_internal_vtargetpos() const {
+  return vtargetpos_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+ObjectInfo::vtargetpos() const {
+  // @@protoc_insertion_point(field_list:Protocol.ObjectInfo.vTargetPos)
+  return _internal_vtargetpos();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+ObjectInfo::_internal_mutable_vtargetpos() {
+  return &vtargetpos_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+ObjectInfo::mutable_vtargetpos() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.ObjectInfo.vTargetPos)
+  return _internal_mutable_vtargetpos();
+}
+
+// repeated float matWorld = 5 [packed = true];
+inline int ObjectInfo::_internal_matworld_size() const {
+  return matworld_.size();
+}
+inline int ObjectInfo::matworld_size() const {
+  return _internal_matworld_size();
+}
+inline void ObjectInfo::clear_matworld() {
+  matworld_.Clear();
+}
+inline float ObjectInfo::_internal_matworld(int index) const {
+  return matworld_.Get(index);
+}
+inline float ObjectInfo::matworld(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.matWorld)
+  return _internal_matworld(index);
+}
+inline void ObjectInfo::set_matworld(int index, float value) {
+  matworld_.Set(index, value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.matWorld)
+}
+inline void ObjectInfo::_internal_add_matworld(float value) {
+  matworld_.Add(value);
+}
+inline void ObjectInfo::add_matworld(float value) {
+  _internal_add_matworld(value);
+  // @@protoc_insertion_point(field_add:Protocol.ObjectInfo.matWorld)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+ObjectInfo::_internal_matworld() const {
+  return matworld_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+ObjectInfo::matworld() const {
+  // @@protoc_insertion_point(field_list:Protocol.ObjectInfo.matWorld)
+  return _internal_matworld();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+ObjectInfo::_internal_mutable_matworld() {
+  return &matworld_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+ObjectInfo::mutable_matworld() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.ObjectInfo.matWorld)
+  return _internal_mutable_matworld();
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 

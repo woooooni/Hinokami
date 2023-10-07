@@ -41,6 +41,7 @@ class CRenderer;
 END
 
 BEGIN(Client)
+class CNetwork_Manager;
 
 class CMainApp final : public CBase
 {
@@ -56,6 +57,7 @@ public:
 
 private:
 	CGameInstance* m_pGame_Instance = { nullptr };
+	CNetwork_Manager* m_pNetwork_Manager = { nullptr };
 
 	ID3D11Device*			m_pDevice = { nullptr };
 	ID3D11DeviceContext*	m_pContext = { nullptr };

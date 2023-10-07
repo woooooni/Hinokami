@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Engine_Defines.h"
 #include "Component.h"
+#include "Lock.h"
 
 BEGIN(Engine)
 
@@ -20,6 +22,8 @@ private:
 	CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CTransform(const CTransform& rhs);
 	virtual ~CTransform() = default;
+
+	USE_LOCK
 
 public:
 	_vector Get_State(STATE eState) {
@@ -60,12 +64,15 @@ public:
 	void Go_Right(_float fTimeDelta);
 	void Go_Up(_float fTimeDelta);
 	void Go_Down(_float fTimeDelta);
+	void Go_Dir(_fvector vDir, _float fTimeDelta);
 
 	void Set_Scale(_fvector vScaleInfo);
 	_float3 Get_Scale();
 
-	_matrix Get_RotationMatrix();
-	_float3 Get_RotaionAngle();
+	_float3 Get_Rotaion_Degree();
+	_float3 Get_Rotation_Radian();
+
+	void Set_Rotation(_fvector vRadianEulerAngle);
 
 	void Turn(_fvector vAxis, _float fTimeDelta);
 	void Rotation(_fvector vAxis, _float fRadian);
@@ -75,9 +82,16 @@ public:
 	void LookAt_ForLandObject(_fvector vAt);
 	void Move(_fvector vTargetPos, _float fTimeDelta, _float fLimitDistance = 0.1f);
 
+	const TRANSFORMDESC& Get_TransformDesc() { return m_TransformDesc; }
+	void Set_TransformDesc(const TRANSFORMDESC& TransformDesc) { m_TransformDesc = TransformDesc; }
+
 private:
 	_float4x4				m_WorldMatrix;
+	_float3					m_vRotation = _float3(0.f, 0.f, 0.f);
 	TRANSFORMDESC			m_TransformDesc;
+
+private:
+	_float3 ToEulerAngles(_vector Quaternion);
 
 public:
 	static CTransform* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

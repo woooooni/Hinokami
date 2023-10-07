@@ -76,6 +76,15 @@ HRESULT CMesh_Effect::Ready_Components(const wstring& strModelFolderPath, const 
 void CMesh_Effect::Tick(_float fTimeDelta)
 {
 	Update_MeshUV(fTimeDelta);
+
+	m_pTransformCom->Go_Dir(XMLoadFloat3(&m_tMeshEffectDesc.vMoveDir), fTimeDelta);
+
+	_float3 fLen;
+	XMStoreFloat3(&fLen, XMVector3Length(XMLoadFloat3(&m_tMeshEffectDesc.vTurnDir)));
+
+	if (fLen.x > 0.f)
+		m_pTransformCom->Turn(XMVector3Normalize(XMLoadFloat3(&m_tMeshEffectDesc.vTurnDir)), fTimeDelta);
+	
 }
 
 void CMesh_Effect::LateTick(_float fTimeDelta)
@@ -83,7 +92,7 @@ void CMesh_Effect::LateTick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return;
 
-	Compute_CamZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	// Compute_CamZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
 }
 
@@ -115,6 +124,12 @@ HRESULT CMesh_Effect::Render()
 			return E_FAIL;
 	}
 	
+
+	return S_OK;
+}
+
+HRESULT CMesh_Effect::Save_EffectInfo()
+{
 
 	return S_OK;
 }

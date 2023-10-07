@@ -31,7 +31,8 @@ public:
 	virtual void LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-
+public:
+	virtual HRESULT Save_EffectInfo() override;
 
 
 protected:

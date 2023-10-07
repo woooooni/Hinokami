@@ -4,6 +4,16 @@
 #pragma warning (disable : 4005)
 #pragma warning (disable : 4251)
 
+#ifndef WinSock_Include_h__
+#define WinSock_Include_h__
+
+#include <winsock2.h>
+#include <mswsock.h>
+#include <ws2tcpip.h>
+#pragma comment(lib, "ws2_32.lib")
+
+#endif
+
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <FX11/d3dx11effect.h>
@@ -26,9 +36,22 @@
 
 #define DIRECTINPUT_VERSION 0x0800
 
+//#ifdef _DEBUG
+//#pragma comment(lib, "ServerCore.lib")
+//#pragma comment(lib, "libprotobufd.lib")
+//#else
+//#pragma comment(lib, "ServerCore.lib")
+//#pragma comment(lib, "libprotobuf.lib")
+//#endif
+//
+//
+//#include "CoreExports.h"
+//#include "Enum.pb.h"
+//
+//using GameSessionRef = shared_ptr<class GameSession>;
+//using PlayerRef = shared_ptr<class Player>;
+#include <mutex>
 
-#include <ServerCore/CoreExports.h>
-#include "Protocol.pb.h"
 
 
 
@@ -44,8 +67,7 @@ using namespace DirectX;
 #include <unordered_map>
 #include <algorithm>
 #include <typeinfo>
-
-
+#include <array>
 #include <process.h>
 
 

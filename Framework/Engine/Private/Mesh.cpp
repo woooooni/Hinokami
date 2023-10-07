@@ -15,7 +15,6 @@ CMesh::CMesh(const CMesh& rhs)
 	, m_strName(rhs.m_strName)
 	, m_AnimVertices(rhs.m_AnimVertices)
 	, m_NonAnimVertices(rhs.m_NonAnimVertices)
-	, m_FaceIndices(rhs.m_FaceIndices)
 	, m_bFromBinary(rhs.m_bFromBinary)
 {
 
@@ -208,11 +207,13 @@ HRESULT CMesh::Ready_Vertices(const aiMesh* pAIMesh, _fmatrix PivotMatrix)
 	VTXMODEL* pVertices = new VTXMODEL[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXMODEL) * m_iNumVertices);
 
+	
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		/* 정점의 위치를 내가 원하느 ㄴ초기상태로 변화낳ㄴ나./ */
 		memcpy(&pVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
 		XMStoreFloat3(&pVertices[i].vPosition, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vPosition), PivotMatrix));
+		
 
 		/* 정점의 위치가 바뀌었기때ㅑ문에 노멀도 바뀐다. */
 		memcpy(&pVertices[i].vNormal, &pAIMesh->mNormals[i], sizeof(_float3));
@@ -229,8 +230,14 @@ HRESULT CMesh::Ready_Vertices(const aiMesh* pAIMesh, _fmatrix PivotMatrix)
 
 
 	m_NonAnimVertices.reserve(m_iNumVertices);
+	m_VertexLocalPositions.reserve(m_iNumVertices);
 	for (_uint i = 0; i < m_iNumVertices; ++i)
+	{
 		m_NonAnimVertices.push_back(pVertices[i]);
+		m_VertexLocalPositions.push_back(pVertices[i].vPosition);
+	}
+		
+		
 
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
@@ -259,6 +266,7 @@ HRESULT CMesh::Ready_AnimVertices(const aiMesh* pAIMesh, CModel* pModel)
 	VTXANIMMODEL* pVertices = new VTXANIMMODEL[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXANIMMODEL) * m_iNumVertices);
 
+	
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		/* 사전변환( x) : 뼈의 행렬과 곱해져서 그려진다.
@@ -309,9 +317,13 @@ HRESULT CMesh::Ready_AnimVertices(const aiMesh* pAIMesh, CModel* pModel)
 	}
 
 	m_AnimVertices.reserve(m_iNumVertices);
-
+	m_VertexLocalPositions.reserve(m_iNumVertices);
+	
 	for (_uint i = 0; i < m_iNumVertices; ++i)
+	{
 		m_AnimVertices.push_back(pVertices[i]);
+		m_VertexLocalPositions.push_back(pVertices[i].vPosition);
+	}
 
 	
 
@@ -337,6 +349,10 @@ HRESULT CMesh::Ready_Bin_Vertices()
 	m_BufferDesc.MiscFlags = 0;
 	m_BufferDesc.StructureByteStride = m_iStride;
 
+	m_VertexLocalPositions.reserve(m_NonAnimVertices.size());
+	for (size_t i = 0; i < m_NonAnimVertices.size(); ++i)
+		m_VertexLocalPositions.push_back(m_NonAnimVertices[i].vPosition);
+
 
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = m_NonAnimVertices.data();
@@ -358,8 +374,6 @@ HRESULT CMesh::Ready_Bin_Vertices()
 	m_BufferDesc.MiscFlags = 0;
 	m_BufferDesc.StructureByteStride = 0;
 
-
-
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = m_FaceIndices.data();
 
@@ -380,6 +394,9 @@ HRESULT CMesh::Ready_Bin_AnimVertices()
 	m_BufferDesc.MiscFlags = 0;
 	m_BufferDesc.StructureByteStride = m_iStride;
 
+	m_VertexLocalPositions.reserve(m_AnimVertices.size());
+	for (_uint i = 0; i < m_iNumVertices; ++i)
+		m_VertexLocalPositions.push_back(m_AnimVertices[i].vPosition);
 
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = m_AnimVertices.data();

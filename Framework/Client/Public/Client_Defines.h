@@ -2,7 +2,6 @@
 
 /* 클라이언트에 존재하는 모든 클래스가 인클루드해야할 내용을 담는다. */
 #include <process.h>
-#include <ServerCore/Core_Exports.h>
 namespace Client
 {
 	enum LAYER_TYPE
@@ -46,4 +45,8 @@ namespace Client
 
 extern HWND g_hWnd;
 extern HINSTANCE g_hInstance;
+
+#define SERVER_IP		L"192.168.0.105"
+#define SERVER_PORT		7777
+
 using namespace Client;

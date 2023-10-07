@@ -79,9 +79,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\Bin\</OutDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Server\Default\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
-    <ExternalIncludePath>$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -118,16 +118,17 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;HAS_STD_BYTE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CONSOLE;_DEBUG;_HAS_STD_BYTE=0;_SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/ServerCore/;../../ThirdParty/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/;../../Reference/Headers/Network/;../../Reference/Protobuf/;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libprotobufd.lib;ServerCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../Reference/Librarys/;../../ThirdParty/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Engine.lib;libprotobufd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../Reference/Librarys/;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,42 +148,45 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Protobuf\Enum.pb.cc">
+    <ClCompile Include="..\Private\ServerObject_Manager.cpp" />
+    <ClCompile Include="..\Private\ServerPacketHandler.cpp" />
+    <ClCompile Include="..\Private\Enum.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\Protobuf\Protocol.pb.cc">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\Protobuf\Struct.pb.cc">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Private\ClientPacketHandler.cpp" />
     <ClCompile Include="..\Private\GameSession.cpp" />
     <ClCompile Include="..\Private\GameSessionManager.cpp" />
-    <ClCompile Include="..\Private\Player.cpp" />
-    <ClCompile Include="..\Private\Room.cpp" />
+    <ClCompile Include="..\Private\Protocol.pb.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Private\ServerMain.cpp" />
+    <ClCompile Include="..\Private\ServerObject.cpp" />
+    <ClCompile Include="..\Private\Struct.pb.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Protobuf\Enum.pb.h" />
-    <ClInclude Include="..\..\Protobuf\Protocol.pb.h" />
-    <ClInclude Include="..\..\Protobuf\Struct.pb.h" />
-    <ClInclude Include="..\Public\ClientPacketHandler.h" />
+    <ClInclude Include="..\Public\ServerObject_Manager.h" />
+    <ClInclude Include="..\Public\ServerPacketHandler.h" />
+    <ClInclude Include="..\Public\Enum.pb.h" />
     <ClInclude Include="..\Public\GameSession.h" />
     <ClInclude Include="..\Public\GameSessionManager.h" />
-    <ClInclude Include="..\Public\Player.h" />
-    <ClInclude Include="..\Public\Room.h" />
+    <ClInclude Include="..\Public\Protocol.pb.h" />
+    <ClInclude Include="..\Public\ServerMain.h" />
+    <ClInclude Include="..\Public\Server_Defines.h" />
+    <ClInclude Include="..\Public\ServerObject.h" />
+    <ClInclude Include="..\Public\Struct.pb.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Protobuf\Enum.proto" />
-    <None Include="..\..\Protobuf\GenPackets.bat" />
-    <None Include="..\..\Protobuf\protoc.exe" />
-    <None Include="..\..\Protobuf\Protocol.proto" />
-    <None Include="..\..\Protobuf\Struct.proto" />
+    <None Include="..\..\Protocol\Enum.proto" />
+    <None Include="..\..\Protocol\GenPackets.bat" />
+    <None Include="..\..\Protocol\protoc.exe" />
+    <None Include="..\..\Protocol\Protocol.proto" />
+    <None Include="..\..\Protocol\Struct.proto" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

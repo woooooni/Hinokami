@@ -2,25 +2,43 @@
 #include "GameSessionManager.h"
 #include "GameSession.h"
 
-GameSessionManager GSessionManager;
 
-void GameSessionManager::Add(GameSessionRef session)
+IMPLEMENT_SINGLETON(CGameSessionManager)
+
+CGameSessionManager::CGameSessionManager()
+{
+}
+
+void CGameSessionManager::Add(GameSessionRef session)
 {
 	WRITE_LOCK;
 	_sessions.insert(session);
+	session->SetSessionID(m_iSessionID++);
 }
 
-void GameSessionManager::Remove(GameSessionRef session)
+void CGameSessionManager::Remove(GameSessionRef session)
 {
 	WRITE_LOCK;
 	_sessions.erase(session);
 }
 
-void GameSessionManager::Broadcast(SendBufferRef sendBuffer)
+void CGameSessionManager::Broadcast(SendBufferRef sendBuffer)
 {
 	WRITE_LOCK;
 	for (GameSessionRef session : _sessions)
 	{
+		session->Send(sendBuffer);
+	}
+}
+
+void CGameSessionManager::BroadcastOthers(SendBufferRef sendBuffer, uint32 sessionID)
+{
+	WRITE_LOCK;
+	for (GameSessionRef session : _sessions)
+	{
+		if (session->GetSessionID() == sessionID)
+			continue;
+
 		session->Send(sendBuffer);
 	}
 }

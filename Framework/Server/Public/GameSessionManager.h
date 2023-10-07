@@ -1,19 +1,43 @@
 #pragma once
 
-class GameSession;
 
-using GameSessionRef = shared_ptr<GameSession>;
+#include "Base.h"
+#include "Server_Defines.h"
+#include "GameSession.h"
 
-class GameSessionManager
+BEGIN(Server)
+
+class CGameSession;
+using GameSessionRef = shared_ptr<CGameSession>;
+
+class CGameSessionManager : public CBase
 {
+	DECLARE_SINGLETON(CGameSessionManager)
+
+private:
+	CGameSessionManager();
+	virtual ~CGameSessionManager() = default;
+
 public:
 	void Add(GameSessionRef session);
 	void Remove(GameSessionRef session);
 	void Broadcast(SendBufferRef sendBuffer);
+	void BroadcastOthers(SendBufferRef sendBuffer, uint32 sessionID);
+
+public:
+	uint32 Get_SessionCount()
+	{
+		READ_LOCK;
+		return _sessions.size();
+	}
 
 private:
-	USE_LOCK;
-	Set<GameSessionRef> _sessions;
+	USE_LOCK
+	set<GameSessionRef> _sessions;
+
+private:
+	uint32 m_iSessionID = 0;
+
 };
 
-extern GameSessionManager GSessionManager;
+END

@@ -44,6 +44,12 @@ HRESULT CTexture_Effect::Initialize(void* pArg)
 	return S_OK;
 }
 
+HRESULT CTexture_Effect::Save_EffectInfo()
+{
+
+	return S_OK;
+}
+
 HRESULT CTexture_Effect::Ready_Components(const wstring& strModelFolderPath, const wstring& strModelFileName)
 {
 	/* For.Com_Transform */

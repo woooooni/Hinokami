@@ -11,6 +11,7 @@
 #include "Mesh_Effect.h"
 #include "Camera_Free.h"
 #include "Texture_Effect.h"
+#include "Picking_Manager.h"
 
 USING(Client)
 IMPLEMENT_SINGLETON(CImGui_Manager)
@@ -107,16 +108,17 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
         style.Alpha = m_fWindowAlpha;
     }
 
-    ImGui::BeginTabBar("");
+    ImGui::BeginTabBar("##NoNameTabBar");
     ImGui::Checkbox("Demo_Window", &m_bShowDemo);
 
     IMGUI_NEW_LINE;
 
-    ImGui::Checkbox("Model Editor", &m_bShowModelWindow);
+    ImGui::Checkbox("Model_Editor", &m_bShowModelWindow);
     ImGui::Checkbox("Animation", &m_bShowModelWindow);
     ImGui::Checkbox("Effect", &m_bShowEffectWindow);
     ImGui::Checkbox("Map", &m_bShowMapWindow);
     ImGui::Checkbox("Terrain", &m_bShowTerrainWindow);
+  
 
     if (m_bShowDemo)
         ImGui::ShowDemoWindow(&m_bShowDemo);
@@ -301,22 +303,24 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
 
         IMGUI_NEW_LINE;
 
-#pragma region Rotaion_TODO
-        //
-        //_float3 fRotationAngle = pTransform->Get_RotaionAngle();
+#pragma region Rotaion
+        ImGui::Text("Rotation");
+        _float3 vRotation = pTransform->Get_Rotaion_Degree();
 
+        if (ImGui::DragFloat3("##Effect_Rotation", (_float*)&vRotation, 0.1f))
+        {
+            vRotation.x = XMConvertToRadians(vRotation.x);
+            vRotation.y = XMConvertToRadians(vRotation.y);
+            vRotation.z = XMConvertToRadians(vRotation.z);
 
-        //ImGui::Text("Rotaion");
-        //if (ImGui::DragFloat3("##Rotaion", (_float*)&fRotationAngle, 0.1f, 0.f, 360.f))
-        //{
-        //    
-        //}
+            _vector vRot = XMLoadFloat3(&vRotation);
+            vRot = XMVectorSetW(vRot, 0.f);
 
-        /*pTransform->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(fRotaionX));
-        pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRotaionY));
-        pTransform->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(fRotaionZ));*/
-        // IMGUI_NEW_LINE;
+            pTransform->Set_Rotation(vRot);
+        }
 #pragma endregion
+
+        IMGUI_NEW_LINE;
 
 #pragma region Scale
     // Scale
@@ -369,26 +373,23 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         IMGUI_NEW_LINE;
 
     #pragma region Rotaion_TODO
-        // Rotation
-        /*_float3 fRotation;
+        ImGui::Text("Rotation");
+        _float3 vRotation = pTransform->Get_Rotaion_Degree();
 
-        _float4 vRight, vUp, vLook;
-        XMStoreFloat4(&vRight, pTransform->Get_State(CTransform::STATE::STATE_RIGHT));
-        XMStoreFloat4(&vUp, pTransform->Get_State(CTransform::STATE::STATE_UP));
-        XMStoreFloat4(&vLook, pTransform->Get_State(CTransform::STATE::STATE_LOOK));
-
-
-        ImGui::Text("Rotaion");
-        if (ImGui::DragFloat3("##Rotation_x", (_float*)&vRight, 0.1f, 0.f, 360.f))
+        if (ImGui::DragFloat3("##Effect_Rotation", (_float*)&vRotation, 0.1f))
         {
-            pTransform->Turn
-        }*/
+            vRotation.x = XMConvertToRadians(vRotation.x);
+            vRotation.y = XMConvertToRadians(vRotation.y);
+            vRotation.z = XMConvertToRadians(vRotation.z);
 
-        /*pTransform->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(fRotaionX));
-        pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fRotaionY));
-        pTransform->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(fRotaionZ));*/
-        // IMGUI_NEW_LINE;
+            _vector vRot = XMLoadFloat3(&vRotation);
+            vRot = XMVectorSetW(vRot, 0.f);
+
+            pTransform->Set_Rotation(vRot);
+        }
     #pragma endregion
+
+        IMGUI_NEW_LINE;
 
     #pragma region Scale
         // Scale
@@ -617,15 +618,13 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
 
 void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 {
-    ImGui::Begin("Effect");
-    if (m_pPrevMeshEffect != nullptr)
+    if (nullptr != m_pPrevMeshEffect)
     {
         m_pPrevMeshEffect->Tick(fTimeDelta);
         m_pPrevMeshEffect->LateTick(fTimeDelta);
-
-        const CEffect::MESH_EFFECT_DESC& tDesc = m_pPrevMeshEffect->Get_Mesh_EffectDesc();
-        
     }
+
+    ImGui::Begin("Effect");
 
     static char szEffectName[MAX_PATH] = "";
     static char szEffectFolderPath[MAX_PATH] = "";
@@ -660,8 +659,6 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         m_pPrevMeshEffect = pMeshEffect;
     }
 
-    IMGUI_SAME_LINE;
-
     if (ImGui::Button("Generate_Texture_Effect"))
     {
         Safe_Release(m_pPrevTextureEffect);
@@ -681,28 +678,101 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
         m_pPrevTextureEffect = pTextureEffect;
     }
-    ImGui::End();
 
-    ImGui::Begin("Effect_Desc");
+    
     if (nullptr != m_pPrevMeshEffect)
     {
+        ImGui::Begin("Effect_Desc");
         CEffect::MESH_EFFECT_DESC tEffectDesc = m_pPrevMeshEffect->Get_Mesh_EffectDesc();
 
-        ImGui::Text("SpeedU : ");
-        IMGUI_SAME_LINE;
-        ImGui::DragFloat("##EffectUSpeed", &tEffectDesc.vSpeedUV.x, 0.01f, -100.f, 100.f);
 
+        ImGui::Text("Move_Direction");
+        ImGui::DragFloat3("##Effect_TransformMoveDir", (_float*)&tEffectDesc.vMoveDir, 0.01f, -100.f, 100.f);
 
-        ImGui::Text("SpeedV : ");
+        IMGUI_NEW_LINE;
+
+        ImGui::Text("Turn_Direction");
+        ImGui::DragFloat3("##Effect_TransformTurnDir", (_float*)&tEffectDesc.vTurnDir, 0.01f, -100.f, 100.f);
+
+        IMGUI_NEW_LINE;
+
+        ImGui::Text("U : ");
         IMGUI_SAME_LINE;
-        ImGui::DragFloat("##EffectVSpeed", &tEffectDesc.vSpeedUV.y, 0.01f, -100.f, 100.f);
+        ImGui::DragFloat("##Effect_USpeed", &tEffectDesc.vSpeedUV.x, 0.01f, -100.f, 100.f);
+        
+        
+        ImGui::Text("V : ");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat("##Effect_VSpeed", &tEffectDesc.vSpeedUV.y, 0.01f, -100.f, 100.f);
 
 
         m_pPrevMeshEffect->Set_Mesh_EffectDesc(tEffectDesc);
 
+        
+        CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevMeshEffect->Get_Component(L"Com_Transform"));
+        if (nullptr != pTransform)
+        {
+            // Speed
+            CTransform::TRANSFORMDESC TransformDesc = pTransform->Get_TransformDesc();
+
+            ImGui::Text("Move_Speed");
+            ImGui::DragFloat("##RotationPerSec", &TransformDesc.fSpeedPerSec, 0.01f, 0.f, 100.f);
+
+
+            ImGui::Text("Rotation_Speed");
+            ImGui::DragFloat("##MovePerSec", &TransformDesc.fRotationPerSec, 0.01f, 0.f, 100.f);
+            
+            pTransform->Set_TransformDesc(TransformDesc);
+
+            // Postion
+            _float3 vPos;
+            XMStoreFloat3(&vPos, pTransform->Get_State(CTransform::STATE_POSITION));
+
+            ImGui::Text("Position");
+            ImGui::DragFloat3("##Effect_Position", (_float*)&vPos, 0.01f, -999.f, 999.f, "%.3f");
+
+            pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&vPos), 1.f));
+
+            IMGUI_NEW_LINE;
+
+            ImGui::Text("Rotation");
+            _float3 vRotation = pTransform->Get_Rotaion_Degree();
+            
+            if (ImGui::DragFloat3("##Effect_Rotation", (_float*)&vRotation, 0.1f))
+            {
+                vRotation.x = XMConvertToRadians(vRotation.x);
+                vRotation.y = XMConvertToRadians(vRotation.y);
+                vRotation.z = XMConvertToRadians(vRotation.z);
+
+                _vector vRot = XMLoadFloat3(&vRotation);
+                vRot = XMVectorSetW(vRot, 0.f);
+
+                pTransform->Set_Rotation(vRot);
+            }
+
+            IMGUI_NEW_LINE;
+            // Scale
+            _float3 vScale = pTransform->Get_Scale();
+
+            ImGui::Text("Scale");
+            ImGui::DragFloat3("##Effect_Scale", (_float*)&vScale, 0.01f, 0.01f, 100.f);
+
+            if (vScale.x >= 0.01f
+                && vScale.y >= 0.01f
+                && vScale.z >= 0.01f)
+                pTransform->Set_Scale(XMLoadFloat3(&vScale));
+        }
+
+        ImGui::End();
     }
+
     else if (nullptr != m_pPrevTextureEffect)
     {
+        
+        m_pPrevTextureEffect->Tick(fTimeDelta);
+        m_pPrevTextureEffect->LateTick(fTimeDelta);
+        ImGui::Begin("Effect_Desc");
+
         CEffect::TEXTURE_EFFECT_DESC tEffectDesc = m_pPrevTextureEffect->Get_Texture_EffectDesc();
 
         ImGui::Text("Increment");
@@ -722,9 +792,11 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         ImGui::DragFloat("##Texture_CountY", &tEffectDesc.fMaxCountX, 1.f, 0.f, 100.f);
 
         m_pPrevTextureEffect->Set_Texture_EffectDesc(tEffectDesc);
+        ImGui::End();
     }
-    ImGui::End();
 
+    ImGui::End();
+    
 }
 
 void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
@@ -775,7 +847,7 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
     if (nullptr != m_pPrevObject && nullptr != m_pTerrain)
     {
         _float4 vHitPos;
-        if (m_pTerrain->Is_Picking(&vHitPos))
+        if (CPicking_Manager::GetInstance()->Is_Picking(dynamic_cast<CTransform*>(m_pTerrain->Get_Component(L"Com_Transform")), m_pTerrain->Get_TerrainBufferCom(), &vHitPos))
         {
             CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
             if (nullptr != pTransform)

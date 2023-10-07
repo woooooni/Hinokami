@@ -54,7 +54,6 @@ private:
 
 	vector<VTXANIMMODEL> m_AnimVertices;
 	vector<VTXMODEL> m_NonAnimVertices;
-	vector<FACEINDICES32> m_FaceIndices;
 
 private:
 	HRESULT Ready_Vertices(const aiMesh* pAIMesh, _fmatrix PivotMatrix);

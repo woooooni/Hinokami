@@ -7,15 +7,24 @@
 
 
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
+// Windows 헤더 파일:
 
-#include "Core_Exports.h"
+#include <windows.h>
+
+#include <stdlib.h>
+#include <malloc.h>
+#include <memory.h>
+#include <tchar.h>
 
 
-#include <winsock2.h>
-#include <mswsock.h>
-#include <ws2tcpip.h>
-#pragma comment(lib, "ws2_32.lib")
+
 #include "Protocol.pb.h"
+#include "ServerPacketHandler.h"
 
-using GameSessionRef = shared_ptr<class GameSession>;
-using PlayerRef = shared_ptr<class Player>;
+#include "Base.h"
+
+#ifdef _SERVER
+#pragma pop_macro("min")
+#endif // !_Server
+
+

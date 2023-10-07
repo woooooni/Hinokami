@@ -139,9 +139,6 @@
     <Filter Include="01.Utiltiy\03.Component\08. RigidBody">
       <UniqueIdentifier>{6dbc72dd-ea57-448b-9ae5-1ab0a3691faa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\03.Component\08. Animator">
-      <UniqueIdentifier>{7295782a-c5ae-444d-a318-dbef0ca7bf87}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utiltiy\04. RenderTarget">
       <UniqueIdentifier>{094abac2-e051-4c6c-a95a-e080453a6ea8}</UniqueIdentifier>
     </Filter>
@@ -151,20 +148,50 @@
     <Filter Include="01.Utiltiy\05. Model_Manager">
       <UniqueIdentifier>{855daea8-1daf-4a71-bee6-d2dcb3b418a7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\06. Map_Manager">
-      <UniqueIdentifier>{f84ef70a-bfa5-4643-9a8e-c9d4fc795f63}</UniqueIdentifier>
+    <Filter Include="02. Network">
+      <UniqueIdentifier>{ce4bd7f5-408b-46ea-bb4d-0af3b386288d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\97. Network">
-      <UniqueIdentifier>{eb348517-94de-49fe-a138-f294dc9a1b97}</UniqueIdentifier>
+    <Filter Include="02. Network\00. Memory">
+      <UniqueIdentifier>{b9b08e97-7c3b-437a-bd03-aef6a02c8f9c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\97. Network\Protocol">
-      <UniqueIdentifier>{6263386b-daa1-4161-becb-9e3707ce5298}</UniqueIdentifier>
+    <Filter Include="02. Network\01. Network">
+      <UniqueIdentifier>{d7976ee9-8821-4347-82f1-34f217dd4667}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\97. Network\Manager">
-      <UniqueIdentifier>{199d5911-6544-4e15-b0cc-c3e327b1d5e7}</UniqueIdentifier>
+    <Filter Include="02. Network\02. Thread">
+      <UniqueIdentifier>{1ad1f034-47b9-4c98-9dba-51b88bfc137b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\97. Network\ServerSession">
-      <UniqueIdentifier>{978048be-b028-4b41-b387-18fdd1ebba13}</UniqueIdentifier>
+    <Filter Include="02. Network\01. Network\Buffer">
+      <UniqueIdentifier>{d0d31dfe-eb83-4228-aebc-4650f13dd8a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Network\01. Network\Buffer\Read">
+      <UniqueIdentifier>{efa6efa8-62b5-4832-be61-2aa6f2532da3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Network\01. Network\Buffer\Write">
+      <UniqueIdentifier>{d0b5e1f3-60f1-4463-9b66-f1275ef65ae5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Network\01. Network\Iocp">
+      <UniqueIdentifier>{bc347c11-12b6-4e7b-a27c-79faf3fe8a66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Network\01. Network\Listener">
+      <UniqueIdentifier>{943c691c-2bfe-41f9-9fa5-fcd18f18ba7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Network\01. Network\NetAddress">
+      <UniqueIdentifier>{72251328-b76c-414f-992c-69ae225ffddb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Network\01. Network\Buffer\Recv">
+      <UniqueIdentifier>{8d6e8ef6-0586-4458-8d20-5943ee4ebb0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Network\01. Network\Buffer\Send">
+      <UniqueIdentifier>{ea671a5c-468b-40c1-90e4-fd57e0697d68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Network\01. Network\Service">
+      <UniqueIdentifier>{ddfa6069-ca0b-4acb-b94b-bdaaf731d541}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Network\01. Network\Session">
+      <UniqueIdentifier>{8936eed7-bcbf-457e-9a88-e2f87f74fe8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Network\01. Network\SocketUtils">
+      <UniqueIdentifier>{7198fa5b-0b50-4b6d-b8b2-a54a3813466f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -312,20 +339,62 @@
     <ClInclude Include="..\Public\VIBuffer_Particle.h">
       <Filter>01.Utiltiy\03.Component\02. VIBuffer\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Protobuf\Enum.pb.h">
-      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    <ClInclude Include="..\Public\Network\Allocator.h">
+      <Filter>02. Network\00. Memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Protobuf\Protocol.pb.h">
-      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    <ClInclude Include="..\Public\Network\MemoryPool.h">
+      <Filter>02. Network\00. Memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Protobuf\Struct.pb.h">
-      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    <ClInclude Include="..\Public\Network\CoreTLS.h">
+      <Filter>99.Defines</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Network_Manager.h">
-      <Filter>01.Utiltiy\97. Network\Manager</Filter>
+    <ClInclude Include="..\Public\Network\ServerMemory.h">
+      <Filter>02. Network\00. Memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ServerSession.h">
-      <Filter>01.Utiltiy\97. Network\ServerSession</Filter>
+    <ClInclude Include="..\Public\Network\ObjectPool.h">
+      <Filter>02. Network\00. Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\DeadLockProfiler.h">
+      <Filter>02. Network\02. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\Lock.h">
+      <Filter>02. Network\02. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\ThreadManager.h">
+      <Filter>02. Network\02. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\BufferReader.h">
+      <Filter>02. Network\01. Network\Buffer\Read</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\BufferWriter.h">
+      <Filter>02. Network\01. Network\Buffer\Write</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\IocpCore.h">
+      <Filter>02. Network\01. Network\Iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\IocpEvent.h">
+      <Filter>02. Network\01. Network\Iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\Listener.h">
+      <Filter>02. Network\01. Network\Listener</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\NetAddress.h">
+      <Filter>02. Network\01. Network\NetAddress</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\SendBuffer.h">
+      <Filter>02. Network\01. Network\Buffer\Send</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\RecvBuffer.h">
+      <Filter>02. Network\01. Network\Buffer\Recv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\Service.h">
+      <Filter>02. Network\01. Network\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\Session.h">
+      <Filter>02. Network\01. Network\Session</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network\SocketUtils.h">
+      <Filter>02. Network\01. Network\SocketUtils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -458,37 +527,59 @@
     <ClCompile Include="..\Private\VIBuffer_Particle.cpp">
       <Filter>01.Utiltiy\03.Component\02. VIBuffer\Particle</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Protobuf\Enum.pb.cc">
-      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    <ClCompile Include="..\Private\Allocator.cpp">
+      <Filter>02. Network\00. Memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Protobuf\Protocol.pb.cc">
-      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    <ClCompile Include="..\Private\MemoryPool.cpp">
+      <Filter>02. Network\00. Memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Protobuf\Struct.pb.cc">
-      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
+    <ClCompile Include="..\Private\ServerMemory.cpp">
+      <Filter>02. Network\00. Memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Network_Manager.cpp">
-      <Filter>01.Utiltiy\97. Network\Manager</Filter>
+    <ClCompile Include="..\Private\DeadLockProfiler.cpp">
+      <Filter>02. Network\02. Thread</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ServerSession.cpp">
-      <Filter>01.Utiltiy\97. Network\ServerSession</Filter>
+    <ClCompile Include="..\Private\Lock.cpp">
+      <Filter>02. Network\02. Thread</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\Protobuf\Enum.proto">
-      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
-    </None>
-    <None Include="..\..\Protobuf\GenPackets.bat">
-      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
-    </None>
-    <None Include="..\..\Protobuf\protoc.exe">
-      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
-    </None>
-    <None Include="..\..\Protobuf\Protocol.proto">
-      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
-    </None>
-    <None Include="..\..\Protobuf\Struct.proto">
-      <Filter>01.Utiltiy\97. Network\Protocol</Filter>
-    </None>
+    <ClCompile Include="..\Private\ThreadManager.cpp">
+      <Filter>02. Network\02. Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CoreTLS.cpp">
+      <Filter>99.Defines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BufferReader.cpp">
+      <Filter>02. Network\01. Network\Buffer\Read</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BufferWriter.cpp">
+      <Filter>02. Network\01. Network\Buffer\Write</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\IocpCore.cpp">
+      <Filter>02. Network\01. Network\Iocp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\IocpEvent.cpp">
+      <Filter>02. Network\01. Network\Iocp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Listener.cpp">
+      <Filter>02. Network\01. Network\Listener</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NetAddress.cpp">
+      <Filter>02. Network\01. Network\NetAddress</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SendBuffer.cpp">
+      <Filter>02. Network\01. Network\Buffer\Send</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RecvBuffer.cpp">
+      <Filter>02. Network\01. Network\Buffer\Recv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Service.cpp">
+      <Filter>02. Network\01. Network\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Session.cpp">
+      <Filter>02. Network\01. Network\Session</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SocketUtils.cpp">
+      <Filter>02. Network\01. Network\SocketUtils</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

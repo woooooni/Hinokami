@@ -107,7 +107,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CLIENT;_DEBUG;_WINDOWS;_HAS_STD_BYTE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/;../../ThirdParty/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/;../../Reference/Headers/Network/;../../Reference/Protobuf/;../../ThirdParty/;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -119,7 +119,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libprotobufd.lib;ServerCore.lib;d3d11.lib;DirectXTKd.lib;Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;DirectXTKd.lib;libprotobufd.lib;Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../Reference/Librarys/;../../ThirdParty/;</AdditionalLibraryDirectories>
       <StackReserveSize>
       </StackReserveSize>
@@ -172,9 +172,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Protobuf\Enum.pb.h" />
-    <ClInclude Include="..\..\Protobuf\Protocol.pb.h" />
-    <ClInclude Include="..\..\Protobuf\Struct.pb.h" />
     <ClInclude Include="..\..\ThirdParty\imconfig.h" />
     <ClInclude Include="..\..\ThirdParty\imgui.h" />
     <ClInclude Include="..\..\ThirdParty\imgui_impl_dx11.h" />
@@ -192,6 +189,7 @@
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Dummy.h" />
     <ClInclude Include="..\Public\Effect.h" />
+    <ClInclude Include="..\Public\Enum.pb.h" />
     <ClInclude Include="..\Public\Giyu.h" />
     <ClInclude Include="..\Public\ImGui_Manager.h" />
     <ClInclude Include="..\Public\Kyojuro.h" />
@@ -206,6 +204,10 @@
     <ClInclude Include="..\Public\Picking_Manager.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Prop.h" />
+    <ClInclude Include="..\Public\Protocol.pb.h" />
+    <ClInclude Include="..\Public\ServerSession.h" />
+    <ClInclude Include="..\Public\Network_Manager.h" />
+    <ClInclude Include="..\Public\Struct.pb.h" />
     <ClInclude Include="..\Public\Tanjiro.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Texture_Effect.h" />
@@ -216,18 +218,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Protobuf\Enum.pb.cc">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
-    </ClCompile>
-    <ClCompile Include="..\..\Protobuf\Protocol.pb.cc">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
-    </ClCompile>
-    <ClCompile Include="..\..\Protobuf\Struct.pb.cc">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
-    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\imgui.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
@@ -254,8 +244,15 @@
     <ClCompile Include="..\Private\Building.cpp" />
     <ClCompile Include="..\Private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
+    <ClCompile Include="..\Private\ClientPacketHandler.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
     <ClCompile Include="..\Private\Dummy.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
+    <ClCompile Include="..\Private\Enum.pb.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
     <ClCompile Include="..\Private\ImGui_Manager.cpp" />
     <ClCompile Include="..\Private\Kyojuro.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
@@ -266,17 +263,28 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\Giyu.cpp" />
     <ClCompile Include="..\Private\Mesh_Effect.cpp" />
+    <ClCompile Include="..\Private\Network_Manager.cpp" />
     <ClCompile Include="..\Private\Nezko.cpp" />
     <ClCompile Include="..\Private\Picking_Manager.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Prop.cpp" />
+    <ClCompile Include="..\Private\Protocol.pb.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
+    <ClCompile Include="..\Private\ServerSession.cpp">
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
+    <ClCompile Include="..\Private\Struct.pb.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
+    </ClCompile>
     <ClCompile Include="..\Private\Tanjiro.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\Texture_Effect.cpp" />
     <ClCompile Include="..\Private\Zenitsu.cpp" />
-    <ClCompile Include="..\Public\ClientPacketHandler.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -302,11 +310,10 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTextureEffect.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Protobuf\Enum.proto" />
-    <None Include="..\..\Protobuf\GenPackets.bat" />
-    <None Include="..\..\Protobuf\protoc.exe" />
-    <None Include="..\..\Protobuf\Protocol.proto" />
-    <None Include="..\..\Protobuf\Struct.proto" />
+    <None Include="..\..\Protocol\GenPackets.bat" />
+    <None Include="..\..\Protocol\protoc.exe" />
+    <None Include="..\..\Protocol\Protocol.proto" />
+    <None Include="..\..\Protocol\Struct.proto" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

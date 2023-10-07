@@ -1,0 +1,96 @@
+syntax = "proto3";
+package Protocol;
+
+import "Enum.proto";
+import "Struct.proto";
+
+
+message S_LOGIN
+{
+	uint32 iLevelCount = 1;
+}
+
+message C_LOGIN
+{
+	
+}
+
+message S_ENTER_LEVEL
+{
+	uint64 iLevelID = 1;
+}
+
+message C_ENTER_LEVEL
+{
+	uint64 iLevelID = 1;
+}
+
+message S_CREATE_OBJECT
+{
+	int32 iObjectID = 1;
+	uint32 iObjectType = 2;
+	int32 iLevelIndex = 3;
+	int32 iLayerIndex = 4;
+
+	string strName = 5;
+	string strPrototypeName = 6;
+
+	uint32 iModelType = 7;
+	uint32 iAnimationIndex = 8;
+
+	repeated float mWorldMatrix = 9 [packed = true];
+}
+
+message C_CREATE_OBJECT
+{
+	int32 iObjectID = 1;
+	uint32 iObjectType = 2;
+	int32 iLevelIndex = 3;
+	int32 iLayerIndex = 4;
+
+	string strName = 5;
+	string strPrototypeName = 6;
+
+	uint32 iModelType = 7;
+	uint32 iAnimationIndex = 8;
+
+	repeated float mWorldMatrix = 9 [packed = true];
+}
+
+message S_DELETE_OBJECT
+{
+	int32 iObjectID = 1;
+	uint32 iObjectType = 2;
+	int32 iLevelIndex = 3;
+	int32 iLayerIndex = 4;
+
+	string strName = 5;
+	string strPrototypeName = 6;
+}
+
+message C_DELETE_OBJECT
+{
+	int32 iObjectID = 1;
+	uint32 iObjectType = 2;
+	int32 iLevelIndex = 3;
+	int32 iLayerIndex = 4;
+
+	string strName = 5;
+	string strPrototypeName = 6;
+}
+
+message S_WORLD_MATRIX
+{
+	int32 iObjectID = 1;
+	int32 iLayer = 2;
+	repeated float Matrix = 3 [packed = true];
+}
+
+message S_CHANGE_ANIMATION
+{
+	int32 iObjectID = 1;
+	int32 iLevel = 2;
+	int32 iLayer = 3;
+	int32 iAnimIndex = 4;
+}
+

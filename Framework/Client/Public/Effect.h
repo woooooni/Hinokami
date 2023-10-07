@@ -35,7 +35,8 @@ public:
 	{
 		_float2 vAccUV = _float2(0.f, 0.f);
 		_float2 vSpeedUV = _float2(0.f, 0.f);
-
+		_float3 vMoveDir	= _float3(0.f, 0.f, 0.f);
+		_float3 vTurnDir	= _float3(0.f, 0.f, 0.f);
 	} MESH_EFFECT_DESC;
 
 	enum EFFECT_TYPE
@@ -57,23 +58,19 @@ public:
 	virtual void LateTick(_float fTimeDelta) PURE;
 	virtual HRESULT Render() PURE;
 
-protected: /* For.Texture_Effect */
-	virtual void IncrementUV(_float fTimeDelta);
-	virtual void DecrementUV(_float fTimeDelta);
 
-protected: /* For.Mesh_Effect */
-	virtual void Update_MeshUV(_float fTimeDelta);
-
-protected:
-	// CGameObject을(를) 통해 상속됨
-	virtual HRESULT Ready_Components() override;
 
 public:
 	const TEXTURE_EFFECT_DESC& Get_Texture_EffectDesc() { return m_tTextureEffectDesc; }
 	void Set_Texture_EffectDesc(const TEXTURE_EFFECT_DESC& tEffectDesc) { m_tTextureEffectDesc = tEffectDesc; }
 
 	const MESH_EFFECT_DESC& Get_Mesh_EffectDesc() { return m_tMeshEffectDesc; }
-	void Set_Mesh_EffectDesc(const MESH_EFFECT_DESC& tEffectDesc) { m_tMeshEffectDesc = tEffectDesc; }
+	void Set_Mesh_EffectDesc(const MESH_EFFECT_DESC& tEffectDesc) { memcpy(&m_tMeshEffectDesc, &tEffectDesc, sizeof(MESH_EFFECT_DESC)); }
+
+public:
+	virtual HRESULT Save_EffectInfo() PURE;
+
+
 
 protected:
 	class CShader* m_pShaderCom = nullptr;
@@ -90,6 +87,17 @@ protected:
 protected:
 	_bool			m_bEnd = false;
 	_bool			m_bLoop = true;
+
+protected: /* For.Texture_Effect */
+	virtual void IncrementUV(_float fTimeDelta);
+	virtual void DecrementUV(_float fTimeDelta);
+
+protected: /* For.Mesh_Effect */
+	virtual void Update_MeshUV(_float fTimeDelta);
+
+protected:
+	// CGameObject을(를) 통해 상속됨
+	virtual HRESULT Ready_Components() override;
 
 public:
 	virtual void Free() override;

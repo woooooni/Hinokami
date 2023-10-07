@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="98.Default">
-      <UniqueIdentifier>{068ac4ae-308f-439b-8a7d-d5b077bfb9ee}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99.Defines">
       <UniqueIdentifier>{2bded693-1033-4e35-ab2d-2f7f292e232a}</UniqueIdentifier>
     </Filter>
@@ -45,9 +42,6 @@
     </Filter>
     <Filter Include="02.GameObjects\Logo">
       <UniqueIdentifier>{93a319e0-2584-42f0-a95b-75033f74c5ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="96. Manager\Data">
-      <UniqueIdentifier>{ec8bafee-f593-4a3c-8fdf-d0b90ae21adb}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. State">
       <UniqueIdentifier>{35062dd5-e235-43a2-a38d-3e4b2f7300b7}</UniqueIdentifier>
@@ -112,14 +106,23 @@
     <Filter Include="02.GameObjects\06. Prop">
       <UniqueIdentifier>{1656f416-c6e8-4a9c-bb21-5ebb8a320adc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95. Network">
-      <UniqueIdentifier>{06316bbb-45ed-4560-b5e6-003783fd4b6d}</UniqueIdentifier>
+    <Filter Include="96. Manager\Network">
+      <UniqueIdentifier>{8261542a-0c27-4586-b1bf-5c2f9af465aa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95. Network\Protocol">
-      <UniqueIdentifier>{8028344f-c3cf-4f38-bb0d-35588c68ce1c}</UniqueIdentifier>
+    <Filter Include="96. Manager\Network\Protocol">
+      <UniqueIdentifier>{ffce5b73-6bda-48ff-b77c-d649d8d16272}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95. Network\Handler">
-      <UniqueIdentifier>{491fd68e-f94c-4fb7-a357-c84cbe9cc1e3}</UniqueIdentifier>
+    <Filter Include="96. Manager\Network\00. Manager">
+      <UniqueIdentifier>{5b89282d-8857-4cd2-b88c-b5b0c953abd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. Manager\Network\01. Session">
+      <UniqueIdentifier>{fe617d47-7421-4098-9b31-a0d4f0364c6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. Manager\Network\02. PacketHandler">
+      <UniqueIdentifier>{a9be5bbe-63dd-4dec-a9ef-e1dc814c78df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Default">
+      <UniqueIdentifier>{068ac4ae-308f-439b-8a7d-d5b077bfb9ee}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -240,17 +243,23 @@
     <ClInclude Include="..\Public\Texture_Effect.h">
       <Filter>02.GameObjects\07. Effect\Texture_Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Protobuf\Enum.pb.h">
-      <Filter>95. Network\Protocol</Filter>
+    <ClInclude Include="..\Public\Enum.pb.h">
+      <Filter>96. Manager\Network\Protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Protobuf\Protocol.pb.h">
-      <Filter>95. Network\Protocol</Filter>
+    <ClInclude Include="..\Public\Protocol.pb.h">
+      <Filter>96. Manager\Network\Protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Protobuf\Struct.pb.h">
-      <Filter>95. Network\Protocol</Filter>
+    <ClInclude Include="..\Public\Struct.pb.h">
+      <Filter>96. Manager\Network\Protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ClientPacketHandler.h">
-      <Filter>95. Network\Handler</Filter>
+      <Filter>96. Manager\Network\02. PacketHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Network_Manager.h">
+      <Filter>96. Manager\Network\00. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ServerSession.h">
+      <Filter>96. Manager\Network\01. Session</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -356,17 +365,23 @@
     <ClCompile Include="..\Private\Texture_Effect.cpp">
       <Filter>02.GameObjects\07. Effect\Texture_Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Protobuf\Enum.pb.cc">
-      <Filter>95. Network\Protocol</Filter>
+    <ClCompile Include="..\Private\Enum.pb.cc">
+      <Filter>96. Manager\Network\Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Protobuf\Protocol.pb.cc">
-      <Filter>95. Network\Protocol</Filter>
+    <ClCompile Include="..\Private\Protocol.pb.cc">
+      <Filter>96. Manager\Network\Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Protobuf\Struct.pb.cc">
-      <Filter>95. Network\Protocol</Filter>
+    <ClCompile Include="..\Private\Struct.pb.cc">
+      <Filter>96. Manager\Network\Protocol</Filter>
     </ClCompile>
-    <ClCompile Include="..\Public\ClientPacketHandler.cpp">
-      <Filter>95. Network\Handler</Filter>
+    <ClCompile Include="..\Private\Network_Manager.cpp">
+      <Filter>96. Manager\Network\00. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ClientPacketHandler.cpp">
+      <Filter>96. Manager\Network\02. PacketHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ServerSession.cpp">
+      <Filter>96. Manager\Network\01. Session</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -406,20 +421,17 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Protobuf\Enum.proto">
-      <Filter>95. Network\Protocol</Filter>
+    <None Include="..\..\Protocol\GenPackets.bat">
+      <Filter>96. Manager\Network\Protocol</Filter>
     </None>
-    <None Include="..\..\Protobuf\GenPackets.bat">
-      <Filter>95. Network\Protocol</Filter>
+    <None Include="..\..\Protocol\protoc.exe">
+      <Filter>96. Manager\Network\Protocol</Filter>
     </None>
-    <None Include="..\..\Protobuf\protoc.exe">
-      <Filter>95. Network\Protocol</Filter>
+    <None Include="..\..\Protocol\Protocol.proto">
+      <Filter>96. Manager\Network\Protocol</Filter>
     </None>
-    <None Include="..\..\Protobuf\Protocol.proto">
-      <Filter>95. Network\Protocol</Filter>
-    </None>
-    <None Include="..\..\Protobuf\Struct.proto">
-      <Filter>95. Network\Protocol</Filter>
+    <None Include="..\..\Protocol\Struct.proto">
+      <Filter>96. Manager\Network\Protocol</Filter>
     </None>
   </ItemGroup>
 </Project>

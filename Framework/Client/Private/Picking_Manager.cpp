@@ -28,8 +28,7 @@ void CPicking_Manager::Tick(_float fTimeDelta)
 
 }
 
-template<typename T>
-_bool CPicking_Manager::Is_Picking(CTransform* pTransform, const  vector<T>& Vertices, const vector<FACEINDICES32>& Indices, _uint iPrimitiveCount, __out _vector* vOut)
+_bool CPicking_Manager::Is_Picking(CTransform* pTransform, CVIBuffer* pBuffer, _float4* vOut)
 {
 	if (nullptr == pTransform)
 		return false;
@@ -69,16 +68,15 @@ _bool CPicking_Manager::Is_Picking(CTransform* pTransform, const  vector<T>& Ver
 	_float fDistnace = 0.f;
 	_float fMinDistance = 999999.f;
 
+	const vector<_float3>& Vertices = pBuffer->Get_VertexLocalPositions();
+	const vector<FACEINDICES32>& Indices = pBuffer->Get_FaceIndices();
 
-
-	for (_uint i = 0; i < iPrimitiveCount; ++i)
+	for (_uint i = 0; i < Indices.size(); ++i)
 	{
 		_vector v0, v1, v2;
-		v0 = XMVectorSet(Vertices[Indices[i]._0].vPosition.x, Vertices[Indices[i]._0].vPosition.y, Vertices[Indices[i]._0].vPosition.z, 1.f);
-		v1 = XMVectorSet(Vertices[Indices[i]._1].vPosition.x, Vertices[Indices[i]._1].vPosition.y, Vertices[Indices[i]._1].vPosition.z, 1.f);
-		v2 = XMVectorSet(Vertices[Indices[i]._2].vPosition.x, Vertices[Indices[i]._2].vPosition.y, Vertices[Indices[i]._2].vPosition.z, 1.f);
-
-
+		v0 = XMVectorSet(Vertices[Indices[i]._0].x, Vertices[Indices[i]._0].y, Vertices[Indices[i]._0].z, 1.f);
+		v1 = XMVectorSet(Vertices[Indices[i]._1].x, Vertices[Indices[i]._1].y, Vertices[Indices[i]._1].z, 1.f);
+		v2 = XMVectorSet(Vertices[Indices[i]._2].x, Vertices[Indices[i]._2].y, Vertices[Indices[i]._2].z, 1.f);
 
 		if (true == TriangleTests::Intersects(vRayPosition, vRayDir, v0, v1, v2, fDistnace))
 		{
@@ -86,15 +84,15 @@ _bool CPicking_Manager::Is_Picking(CTransform* pTransform, const  vector<T>& Ver
 			{
 				_float4 vPickingPos;
 				XMStoreFloat4(&vPickingPos, vRayPosition + vRayDir * fDistnace);
-				
+
 				if (vOut != nullptr)
 				{
 					vPickingPos.x = floorf(vPickingPos.x + 0.5f);
 					vPickingPos.y = floorf(vPickingPos.y + 0.5f);
 					vPickingPos.z = floorf(vPickingPos.z + 0.5f);
-					*vOut = XMLoadFloat4(&vPickingPos);
+					*vOut = vPickingPos;
 				}
-				
+
 				return true;
 			}
 		}
@@ -102,6 +100,8 @@ _bool CPicking_Manager::Is_Picking(CTransform* pTransform, const  vector<T>& Ver
 
 	return false;
 }
+
+
 
 void CPicking_Manager::Free()
 {

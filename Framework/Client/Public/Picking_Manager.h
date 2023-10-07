@@ -5,6 +5,7 @@
 
 BEGIN(Engine)
 class CTransform;
+class CVIBuffer;
 END
 
 class CPicking_Manager : public CBase
@@ -20,8 +21,7 @@ public:
 	void	Tick(_float fTimeDelta);
 
 public:
-	template<typename T>
-	_bool Is_Picking(class CTransform* pTransform, const  vector<T>& Vertices, const vector<FACEINDICES32>& Indices, _uint iPrimitiveCount, __out _vector* vOut);
+	_bool Is_Picking(class CTransform* pTransform, class CVIBuffer* pBuffer, __out _float4* vOut);
 
 private:
 	ID3D11Device* m_pDevice;
