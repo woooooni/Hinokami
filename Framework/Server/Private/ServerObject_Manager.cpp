@@ -25,6 +25,10 @@ HRESULT CServerObject_Manager::Reserve_Manager()
 	return S_OK;
 }
 
+void CServerObject_Manager::Tick(_float fTimeDelta)
+{
+}
+
 HRESULT CServerObject_Manager::Add_GameObject(Protocol::S_CREATE_OBJECT& pkt)
 {
 	WRITE_LOCK

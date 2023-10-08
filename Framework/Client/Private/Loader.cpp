@@ -100,8 +100,7 @@ HRESULT CLoader::Loading_For_Level_Logo()
 	///* For.Prototype_GameObject_BackGround */
 	//if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGround::Create(m_pDevice, m_pContext))))
 	//	return E_FAIL;
-	
-	;
+
 
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
@@ -154,8 +153,6 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
-
-	;
 
 	return S_OK;
 }

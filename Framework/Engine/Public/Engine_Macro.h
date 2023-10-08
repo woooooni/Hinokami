@@ -32,6 +32,7 @@
 
 
 #define GET_INST(CLASSNAME)	CLASSNAME::GetInstance()
+#define GI GET_INST(CGameInstance)
 #define GAME_INSTANCE GET_INST(CGameInstance)
 
 #define UTIL CUtils

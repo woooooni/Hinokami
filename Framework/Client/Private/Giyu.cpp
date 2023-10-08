@@ -14,6 +14,7 @@ CGiyu::CGiyu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring
 CGiyu::CGiyu(const CGiyu& rhs)
 	: CCharacter(rhs)
 {
+
 }
 
 HRESULT CGiyu::Initialize_Prototype()

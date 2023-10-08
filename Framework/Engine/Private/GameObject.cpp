@@ -21,6 +21,8 @@ CGameObject::CGameObject(const CGameObject & rhs)
 	, m_strObjectTag(rhs.m_strObjectTag)
 	, m_iObjectID(g_ObjecId++)
 	, m_iObjectType(rhs.m_iObjectType)
+	, m_bDead(false)
+	, m_bReserveDead(false)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);

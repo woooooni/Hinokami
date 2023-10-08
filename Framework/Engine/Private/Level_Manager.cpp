@@ -33,6 +33,7 @@ HRESULT CLevel_Manager::Render_Debug()
 	{
 		if (nullptr != m_pCurrentLevel)
 		{
+			m_pCurrentLevel->Exit_Level();
 			/* 기존에 추가되어있던 레벨용 자원을 정리한다. */
 			GAME_INSTANCE->Clear(m_iCurrentLevelIndex);
 		}
@@ -44,6 +45,8 @@ HRESULT CLevel_Manager::Render_Debug()
 
 		m_pReserveLevel = nullptr;
 		m_iNextLevelIndex = 0;
+
+		m_pCurrentLevel->Enter_Level();
 	}
 	return S_OK;
 }
@@ -55,6 +58,11 @@ HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel* pNewLevel)
 	m_pReserveLevel = pNewLevel;
 
 
+	return S_OK;
+}
+
+HRESULT CLevel_Manager::Enter_Level()
+{
 	return S_OK;
 }
 

@@ -16,6 +16,7 @@ private:
 
 public:
 	HRESULT Reserve_Manager();
+	void Tick(_float fTimeDelta);
 
 public:
 	HRESULT Add_GameObject(Protocol::S_CREATE_OBJECT& pkt);

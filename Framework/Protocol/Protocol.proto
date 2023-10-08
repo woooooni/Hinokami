@@ -7,12 +7,12 @@ import "Struct.proto";
 
 message S_LOGIN
 {
-	uint32 iLevelCount = 1;
+	uint32 iLevelID = 1;
 }
 
 message C_LOGIN
 {
-	
+	bool bLogin_OK = 1;
 }
 
 message S_ENTER_LEVEL
@@ -22,7 +22,17 @@ message S_ENTER_LEVEL
 
 message C_ENTER_LEVEL
 {
+	uint64 bEnter_OK = 1;
+}
+
+message S_EXIT_LEVEL
+{
 	uint64 iLevelID = 1;
+}
+
+message C_EXIT_LEVEL
+{
+	uint64 bExit_OK = 1;
 }
 
 message S_CREATE_OBJECT
@@ -37,8 +47,9 @@ message S_CREATE_OBJECT
 
 	uint32 iModelType = 7;
 	uint32 iAnimationIndex = 8;
+	float fAnimationPlayTime = 9;
 
-	repeated float mWorldMatrix = 9 [packed = true];
+	repeated float mWorldMatrix = 10 [packed = true];
 }
 
 message C_CREATE_OBJECT
@@ -53,8 +64,9 @@ message C_CREATE_OBJECT
 
 	uint32 iModelType = 7;
 	uint32 iAnimationIndex = 8;
+	float fAnimationPlayTime = 9;
 
-	repeated float mWorldMatrix = 9 [packed = true];
+	repeated float mWorldMatrix = 10 [packed = true];
 }
 
 message S_DELETE_OBJECT
@@ -81,9 +93,18 @@ message C_DELETE_OBJECT
 
 message S_WORLD_MATRIX
 {
-	int32 iObjectID = 1;
-	int32 iLayer = 2;
-	repeated float Matrix = 3 [packed = true];
+	int32 iLevelID = 1;
+	int32 iObjectID = 2;
+	int32 iLayer = 3;
+	repeated float mWorldMatrix = 4 [packed = true];
+}
+
+message C_WORLD_MATRIX
+{
+	int32 iLevelID = 1;
+	int32 iObjectID = 2;
+	int32 iLayer = 3;
+	repeated float mWorldMatrix = 4 [packed = true];
 }
 
 message S_CHANGE_ANIMATION
@@ -92,5 +113,14 @@ message S_CHANGE_ANIMATION
 	int32 iLevel = 2;
 	int32 iLayer = 3;
 	int32 iAnimIndex = 4;
+}
+
+message C_CHANGE_ANIMATION
+{
+	int32 iObjectID = 1;
+	int32 iLevel = 2;
+	int32 iLayer = 3;
+	int32 iAnimIndex = 4;
+	float iServerDelayTime = 5;
 }
 

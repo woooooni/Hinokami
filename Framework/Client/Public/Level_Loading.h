@@ -22,10 +22,16 @@ public:
 	virtual HRESULT Tick(_float fTimeDelta) override;
 	virtual HRESULT LateTick(_float fTimeDelta) override;
 
+public:
+	virtual HRESULT Enter_Level() override;
+	virtual HRESULT Exit_Level() override;
+
 private:
 	/* 로딩 다음레벨. */
 	LEVELID			m_eNextLevel = { LEVEL_END };
 	class CLoader*	m_pLoader = { nullptr };
+
+	
 
 public:
 	static class CLevel_Loading* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevel);

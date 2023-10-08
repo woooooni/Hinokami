@@ -63,7 +63,7 @@ HRESULT CLevel_Logo::LateTick(_float fTimeDelta)
 
 	if (GetKeyState(VK_RETURN) & 0x8000)
 	{
-		if (FAILED(GAME_INSTANCE->Open_Level(LEVEL_LOADING,  CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
+		if (FAILED(GAME_INSTANCE->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
 			return E_FAIL;
 	}
 
@@ -72,13 +72,19 @@ HRESULT CLevel_Logo::LateTick(_float fTimeDelta)
 	return S_OK;
 }
 
+HRESULT CLevel_Logo::Enter_Level()
+{
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Exit_Level()
+{
+	return S_OK;
+}
+
 HRESULT CLevel_Logo::Ready_Layer_BackGround()
 {
 	/* 원형객체를 복제하여 사본객체를 생성하고 레이어에 추가한다. */
-	
-
-
-	;
 
 	return S_OK;
 }

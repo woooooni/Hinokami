@@ -100,6 +100,16 @@ HRESULT CLevel_Tool::Render_Debug()
 	return S_OK;
 }
 
+HRESULT CLevel_Tool::Enter_Level()
+{
+	return S_OK;
+}
+
+HRESULT CLevel_Tool::Exit_Level()
+{
+	return S_OK;
+}
+
 HRESULT CLevel_Tool::Ready_Lights()
 {
 	

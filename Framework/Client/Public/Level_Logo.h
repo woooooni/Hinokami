@@ -16,6 +16,10 @@ public:
 	virtual HRESULT Tick(_float fTimeDelta) override;
 	virtual HRESULT LateTick(_float fTimeDelta) override;
 
+public:
+	virtual HRESULT Enter_Level() override;
+	virtual HRESULT Exit_Level() override;
+
 private:
 	HRESULT Ready_Layer_BackGround();
 

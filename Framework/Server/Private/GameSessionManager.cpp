@@ -31,6 +31,19 @@ void CGameSessionManager::Broadcast(SendBufferRef sendBuffer)
 	}
 }
 
+void CGameSessionManager::Broadcast_One(SendBufferRef sendBuffer, uint32 sessionID)
+{
+	WRITE_LOCK;
+	auto iter = find_if(_sessions.begin(), _sessions.end(), [&](GameSessionRef _session) {
+		if (_session->GetSessionID() == sessionID)		
+			return true;
+		return false;
+	});
+
+	if (iter != _sessions.end())
+		(*iter)->Send(sendBuffer);
+}
+
 void CGameSessionManager::BroadcastOthers(SendBufferRef sendBuffer, uint32 sessionID)
 {
 	WRITE_LOCK;

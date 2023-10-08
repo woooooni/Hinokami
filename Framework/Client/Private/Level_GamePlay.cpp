@@ -48,6 +48,16 @@ HRESULT CLevel_GamePlay::LateTick(_float fTimeDelta)
 	return S_OK;
 }
 
+HRESULT CLevel_GamePlay::Enter_Level()
+{
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Exit_Level()
+{
+	return S_OK;
+}
+
 HRESULT CLevel_GamePlay::Ready_Lights()
 {
 	

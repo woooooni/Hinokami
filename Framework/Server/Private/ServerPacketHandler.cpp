@@ -4,7 +4,7 @@
 #include "GameSessionManager.h"
 #include "ServerObject_Manager.h"
 #include "ServerObject.h"
-
+#include "Model.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -52,7 +52,18 @@ bool Handle_S_ENTER_LEVEL(PacketSessionRef& session, Protocol::S_ENTER_LEVEL& pk
 
 				SendPkt.set_strprototypename(tInfo.strPrototypeName);
 				SendPkt.set_imodeltype(tInfo.iModelType);
-				SendPkt.set_ianimationindex(tInfo.iAnimationIndex);
+
+				if (Object->Get_ObjectInfo().iModelType == CModel::TYPE::TYPE_ANIM)
+				{
+					SendPkt.set_ianimationindex(tInfo.iAnimationIndex);
+					SendPkt.set_fanimationplaytime(tInfo.fAnimationPlayTime);
+				}
+				else
+				{
+					SendPkt.set_ianimationindex(0);
+					SendPkt.set_fanimationplaytime(0.f);
+				}
+				
 
 
 				auto matWorld = SendPkt.mutable_mworldmatrix();
@@ -68,6 +79,18 @@ bool Handle_S_ENTER_LEVEL(PacketSessionRef& session, Protocol::S_ENTER_LEVEL& pk
 
 
 	
+	return true;
+}
+
+bool Handle_S_EXIT_LEVEL(PacketSessionRef& session, Protocol::S_EXIT_LEVEL& pkt)
+{
+	Protocol::C_EXIT_LEVEL SendPkt; 
+	SendPkt.set_bexit_ok(true);
+
+	SendBufferRef SendBuffer = ServerPacketHandler::MakeSendBuffer(SendPkt);
+	CGameSessionManager::GetInstance()->BroadcastOthers(SendBuffer, session->GetSessionID());
+	
+
 	return true;
 }
 

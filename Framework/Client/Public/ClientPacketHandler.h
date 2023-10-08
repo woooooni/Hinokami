@@ -13,20 +13,27 @@ enum : uint16
 	PKT_C_LOGIN = 1001,
 	PKT_S_ENTER_LEVEL = 1002,
 	PKT_C_ENTER_LEVEL = 1003,
-	PKT_S_CREATE_OBJECT = 1004,
-	PKT_C_CREATE_OBJECT = 1005,
-	PKT_S_DELETE_OBJECT = 1006,
-	PKT_C_DELETE_OBJECT = 1007,
-	PKT_S_WORLD_MATRIX = 1008,
-	PKT_S_CHANGE_ANIMATION = 1009,
+	PKT_S_EXIT_LEVEL = 1004,
+	PKT_C_EXIT_LEVEL = 1005,
+	PKT_S_CREATE_OBJECT = 1006,
+	PKT_C_CREATE_OBJECT = 1007,
+	PKT_S_DELETE_OBJECT = 1008,
+	PKT_C_DELETE_OBJECT = 1009,
+	PKT_S_WORLD_MATRIX = 1010,
+	PKT_C_WORLD_MATRIX = 1011,
+	PKT_S_CHANGE_ANIMATION = 1012,
+	PKT_C_CHANGE_ANIMATION = 1013,
 };
 
 // Custom Handlers
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
 bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt);
 bool Handle_C_ENTER_LEVEL(PacketSessionRef& session, Protocol::C_ENTER_LEVEL& pkt);
+bool Handle_C_EXIT_LEVEL(PacketSessionRef& session, Protocol::C_EXIT_LEVEL& pkt);
 bool Handle_C_CREATE_OBJECT(PacketSessionRef& session, Protocol::C_CREATE_OBJECT& pkt);
 bool Handle_C_DELETE_OBJECT(PacketSessionRef& session, Protocol::C_DELETE_OBJECT& pkt);
+bool Handle_C_WORLD_MATRIX(PacketSessionRef& session, Protocol::C_WORLD_MATRIX& pkt);
+bool Handle_C_CHANGE_ANIMATION(PacketSessionRef& session, Protocol::C_CHANGE_ANIMATION& pkt);
 
 class ClientPacketHandler
 {
@@ -37,8 +44,11 @@ public:
 			GPacketHandler[i] = Handle_INVALID;
 		GPacketHandler[PKT_C_LOGIN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_LOGIN>(Handle_C_LOGIN, session, buffer, len); };
 		GPacketHandler[PKT_C_ENTER_LEVEL] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ENTER_LEVEL>(Handle_C_ENTER_LEVEL, session, buffer, len); };
+		GPacketHandler[PKT_C_EXIT_LEVEL] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_EXIT_LEVEL>(Handle_C_EXIT_LEVEL, session, buffer, len); };
 		GPacketHandler[PKT_C_CREATE_OBJECT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_CREATE_OBJECT>(Handle_C_CREATE_OBJECT, session, buffer, len); };
 		GPacketHandler[PKT_C_DELETE_OBJECT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_DELETE_OBJECT>(Handle_C_DELETE_OBJECT, session, buffer, len); };
+		GPacketHandler[PKT_C_WORLD_MATRIX] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_WORLD_MATRIX>(Handle_C_WORLD_MATRIX, session, buffer, len); };
+		GPacketHandler[PKT_C_CHANGE_ANIMATION] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_CHANGE_ANIMATION>(Handle_C_CHANGE_ANIMATION, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -48,6 +58,7 @@ public:
 	}
 	static SendBufferRef MakeSendBuffer(Protocol::S_LOGIN& pkt) { return MakeSendBuffer(pkt, PKT_S_LOGIN); }
 	static SendBufferRef MakeSendBuffer(Protocol::S_ENTER_LEVEL& pkt) { return MakeSendBuffer(pkt, PKT_S_ENTER_LEVEL); }
+	static SendBufferRef MakeSendBuffer(Protocol::S_EXIT_LEVEL& pkt) { return MakeSendBuffer(pkt, PKT_S_EXIT_LEVEL); }
 	static SendBufferRef MakeSendBuffer(Protocol::S_CREATE_OBJECT& pkt) { return MakeSendBuffer(pkt, PKT_S_CREATE_OBJECT); }
 	static SendBufferRef MakeSendBuffer(Protocol::S_DELETE_OBJECT& pkt) { return MakeSendBuffer(pkt, PKT_S_DELETE_OBJECT); }
 	static SendBufferRef MakeSendBuffer(Protocol::S_WORLD_MATRIX& pkt) { return MakeSendBuffer(pkt, PKT_S_WORLD_MATRIX); }

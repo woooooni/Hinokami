@@ -7,6 +7,7 @@
 #include "Level_Logo.h"
 #include "Level_GamePlay.h"
 #include "Level_Tool.h"
+#include "Network_Manager.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -38,37 +39,47 @@ HRESULT CLevel_Loading::LateTick(_float fTimeDelta)
 
 	SetWindowText(g_hWnd, strLoadingText.c_str());
 
-	if (GetKeyState(VK_SPACE) & 0x8000)
-	{	
-		if (true == m_pLoader->Get_Finished())
+	//if (GetKeyState(VK_SPACE) & 0x8000)
+	//{	
+	//	
+	//}
+
+	if (true == m_pLoader->Get_Finished())
+	{
+		CLevel* pNewLevel = nullptr;
+
+		switch (m_eNextLevel)
 		{
-			CLevel*		pNewLevel = nullptr;
+		case LEVEL_LOGO:
+			pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_GAMEPLAY:
+			pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+			break;
 
-			switch (m_eNextLevel)
-			{
-			case LEVEL_LOGO:
-				pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_GAMEPLAY:
-				pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
-				break;
-
-			case LEVEL_TOOL:
-				pNewLevel = CLevel_Tool::Create(m_pDevice, m_pContext);
-				break;
-			}
-
-			if (nullptr == pNewLevel)
-				return E_FAIL;
-
-			if (FAILED(GAME_INSTANCE->Open_Level(m_eNextLevel, pNewLevel)))
-				return E_FAIL;		
-
-			;
+		case LEVEL_TOOL:
+			pNewLevel = CLevel_Tool::Create(m_pDevice, m_pContext);
+			break;
 		}
+
+		if (nullptr == pNewLevel)
+			return E_FAIL;
+
+		if (FAILED(GAME_INSTANCE->Open_Level(m_eNextLevel, pNewLevel)))
+			return E_FAIL;
 	}
 
 
+	return S_OK;
+}
+
+HRESULT CLevel_Loading::Enter_Level()
+{
+	return S_OK;
+}
+
+HRESULT CLevel_Loading::Exit_Level()
+{
 	return S_OK;
 }
 

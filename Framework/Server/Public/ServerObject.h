@@ -8,7 +8,6 @@ class CServerObject : public CBase
 public:
 	typedef struct tagObjectInfo
 	{
-
 		int32 iObjectID;
 		uint32 iObjectType;
 
@@ -17,6 +16,7 @@ public:
 
 		uint32 iModelType;
 		uint32 iAnimationIndex;
+		_float fAnimationPlayTime;
 
 		_float4x4 mWorldMatrix;
 	} OBJECT_INFO;

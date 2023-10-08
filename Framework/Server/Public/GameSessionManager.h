@@ -22,6 +22,7 @@ public:
 	void Add(GameSessionRef session);
 	void Remove(GameSessionRef session);
 	void Broadcast(SendBufferRef sendBuffer);
+	void Broadcast_One(SendBufferRef sendBuffer, uint32 sessionID);
 	void BroadcastOthers(SendBufferRef sendBuffer, uint32 sessionID);
 
 public:

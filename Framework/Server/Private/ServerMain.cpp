@@ -5,6 +5,7 @@
 #include "GameSessionManager.h"
 #include "Service.h"
 #include "ThreadManager.h"
+#include "ServerObject_Manager.h"
 
 
 CServerMain::CServerMain()
@@ -34,6 +35,11 @@ HRESULT CServerMain::Initialize()
 				}
 			});
 	}
+
+	if (FAILED(CServerObject_Manager::GetInstance()->Reserve_Manager()))
+		return E_FAIL;
+
+
 
 	cout << "Server Open" << endl;
 

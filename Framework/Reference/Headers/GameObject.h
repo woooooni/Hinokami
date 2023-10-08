@@ -37,6 +37,12 @@ public:
 	_uint Get_ObjectID() { return m_iObjectID; }
 	_uint Get_ObjectType() { return m_iObjectType; }
 
+	void Set_Dead(_bool bDead) { m_bDead = bDead; }
+	_bool Is_Dead() { return m_bDead; }
+
+	void Reserve_Dead(_bool bReserve) { m_bReserveDead = bReserve; }
+	_bool Is_ReserveDead() { return m_bReserveDead; }
+
 protected:
 	virtual HRESULT Ready_Components() PURE;
 	HRESULT Add_Component(const wstring& pComponentTag, class CComponent* pComponent);
@@ -58,6 +64,10 @@ protected:
 	static				_uint g_ObjecId;
 	_int				m_iObjectID = -1;
 	_int				m_iObjectType = -1;
+
+	_bool				m_bReserveDead = false;
+	_bool				m_bDead = false;
+
 
 protected:
 	CComponent* CGameObject::Find_Component(const wstring & strComponentTag);

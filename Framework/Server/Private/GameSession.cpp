@@ -13,7 +13,7 @@ CGameSession::CGameSession()
 void CGameSession::OnConnected()
 {
 	CGameSessionManager::GetInstance()->Add(static_pointer_cast<CGameSession>(shared_from_this()));
-	cout << GetSessionID() + " is Connected" << endl;
+	cout << to_string(GetSessionID()) + " is Connected" << endl;
 }
 
 

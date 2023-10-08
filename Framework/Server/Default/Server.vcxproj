@@ -179,6 +179,7 @@
     <ClInclude Include="..\Public\Server_Defines.h" />
     <ClInclude Include="..\Public\ServerObject.h" />
     <ClInclude Include="..\Public\Struct.pb.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +188,9 @@
     <None Include="..\..\Protocol\protoc.exe" />
     <None Include="..\..\Protocol\Protocol.proto" />
     <None Include="..\..\Protocol\Struct.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Server.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -28,6 +28,9 @@
     <Filter Include="01. Server_Object\Manager">
       <UniqueIdentifier>{b4d329fd-ff43-4b79-b1da-b610f5907dee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. TimeLine">
+      <UniqueIdentifier>{7621594a-8f56-4b85-b3b5-35bcc3503212}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -98,6 +101,7 @@
     <ClInclude Include="..\Public\ServerObject.h">
       <Filter>01. Server_Object</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Protocol\Enum.proto">
@@ -115,5 +119,8 @@
     <None Include="..\..\Protocol\Struct.proto">
       <Filter>97. Network\00. Protocol</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Server.rc" />
   </ItemGroup>
 </Project>

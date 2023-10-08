@@ -48,7 +48,7 @@ struct TableStruct_Protocol_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[10]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[14]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -56,6 +56,9 @@ struct TableStruct_Protocol_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Protocol_2eproto;
 namespace Protocol {
+class C_CHANGE_ANIMATION;
+struct C_CHANGE_ANIMATIONDefaultTypeInternal;
+extern C_CHANGE_ANIMATIONDefaultTypeInternal _C_CHANGE_ANIMATION_default_instance_;
 class C_CREATE_OBJECT;
 struct C_CREATE_OBJECTDefaultTypeInternal;
 extern C_CREATE_OBJECTDefaultTypeInternal _C_CREATE_OBJECT_default_instance_;
@@ -65,9 +68,15 @@ extern C_DELETE_OBJECTDefaultTypeInternal _C_DELETE_OBJECT_default_instance_;
 class C_ENTER_LEVEL;
 struct C_ENTER_LEVELDefaultTypeInternal;
 extern C_ENTER_LEVELDefaultTypeInternal _C_ENTER_LEVEL_default_instance_;
+class C_EXIT_LEVEL;
+struct C_EXIT_LEVELDefaultTypeInternal;
+extern C_EXIT_LEVELDefaultTypeInternal _C_EXIT_LEVEL_default_instance_;
 class C_LOGIN;
 struct C_LOGINDefaultTypeInternal;
 extern C_LOGINDefaultTypeInternal _C_LOGIN_default_instance_;
+class C_WORLD_MATRIX;
+struct C_WORLD_MATRIXDefaultTypeInternal;
+extern C_WORLD_MATRIXDefaultTypeInternal _C_WORLD_MATRIX_default_instance_;
 class S_CHANGE_ANIMATION;
 struct S_CHANGE_ANIMATIONDefaultTypeInternal;
 extern S_CHANGE_ANIMATIONDefaultTypeInternal _S_CHANGE_ANIMATION_default_instance_;
@@ -80,6 +89,9 @@ extern S_DELETE_OBJECTDefaultTypeInternal _S_DELETE_OBJECT_default_instance_;
 class S_ENTER_LEVEL;
 struct S_ENTER_LEVELDefaultTypeInternal;
 extern S_ENTER_LEVELDefaultTypeInternal _S_ENTER_LEVEL_default_instance_;
+class S_EXIT_LEVEL;
+struct S_EXIT_LEVELDefaultTypeInternal;
+extern S_EXIT_LEVELDefaultTypeInternal _S_EXIT_LEVEL_default_instance_;
 class S_LOGIN;
 struct S_LOGINDefaultTypeInternal;
 extern S_LOGINDefaultTypeInternal _S_LOGIN_default_instance_;
@@ -88,14 +100,18 @@ struct S_WORLD_MATRIXDefaultTypeInternal;
 extern S_WORLD_MATRIXDefaultTypeInternal _S_WORLD_MATRIX_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
+template<> ::Protocol::C_CHANGE_ANIMATION* Arena::CreateMaybeMessage<::Protocol::C_CHANGE_ANIMATION>(Arena*);
 template<> ::Protocol::C_CREATE_OBJECT* Arena::CreateMaybeMessage<::Protocol::C_CREATE_OBJECT>(Arena*);
 template<> ::Protocol::C_DELETE_OBJECT* Arena::CreateMaybeMessage<::Protocol::C_DELETE_OBJECT>(Arena*);
 template<> ::Protocol::C_ENTER_LEVEL* Arena::CreateMaybeMessage<::Protocol::C_ENTER_LEVEL>(Arena*);
+template<> ::Protocol::C_EXIT_LEVEL* Arena::CreateMaybeMessage<::Protocol::C_EXIT_LEVEL>(Arena*);
 template<> ::Protocol::C_LOGIN* Arena::CreateMaybeMessage<::Protocol::C_LOGIN>(Arena*);
+template<> ::Protocol::C_WORLD_MATRIX* Arena::CreateMaybeMessage<::Protocol::C_WORLD_MATRIX>(Arena*);
 template<> ::Protocol::S_CHANGE_ANIMATION* Arena::CreateMaybeMessage<::Protocol::S_CHANGE_ANIMATION>(Arena*);
 template<> ::Protocol::S_CREATE_OBJECT* Arena::CreateMaybeMessage<::Protocol::S_CREATE_OBJECT>(Arena*);
 template<> ::Protocol::S_DELETE_OBJECT* Arena::CreateMaybeMessage<::Protocol::S_DELETE_OBJECT>(Arena*);
 template<> ::Protocol::S_ENTER_LEVEL* Arena::CreateMaybeMessage<::Protocol::S_ENTER_LEVEL>(Arena*);
+template<> ::Protocol::S_EXIT_LEVEL* Arena::CreateMaybeMessage<::Protocol::S_EXIT_LEVEL>(Arena*);
 template<> ::Protocol::S_LOGIN* Arena::CreateMaybeMessage<::Protocol::S_LOGIN>(Arena*);
 template<> ::Protocol::S_WORLD_MATRIX* Arena::CreateMaybeMessage<::Protocol::S_WORLD_MATRIX>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
@@ -211,15 +227,15 @@ class S_LOGIN final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kILevelCountFieldNumber = 1,
+    kILevelIDFieldNumber = 1,
   };
-  // uint32 iLevelCount = 1;
-  void clear_ilevelcount();
-  ::PROTOBUF_NAMESPACE_ID::uint32 ilevelcount() const;
-  void set_ilevelcount(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  // uint32 iLevelID = 1;
+  void clear_ilevelid();
+  ::PROTOBUF_NAMESPACE_ID::uint32 ilevelid() const;
+  void set_ilevelid(::PROTOBUF_NAMESPACE_ID::uint32 value);
   private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_ilevelcount() const;
-  void _internal_set_ilevelcount(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_ilevelid() const;
+  void _internal_set_ilevelid(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.S_LOGIN)
@@ -229,7 +245,7 @@ class S_LOGIN final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 ilevelcount_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 ilevelid_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -342,6 +358,18 @@ class C_LOGIN final :
 
   // accessors -------------------------------------------------------
 
+  enum : int {
+    kBLoginOKFieldNumber = 1,
+  };
+  // bool bLogin_OK = 1;
+  void clear_blogin_ok();
+  bool blogin_ok() const;
+  void set_blogin_ok(bool value);
+  private:
+  bool _internal_blogin_ok() const;
+  void _internal_set_blogin_ok(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.C_LOGIN)
  private:
   class _Internal;
@@ -349,6 +377,7 @@ class C_LOGIN final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
+  bool blogin_ok_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -594,6 +623,138 @@ class C_ENTER_LEVEL final :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kBEnterOKFieldNumber = 1,
+  };
+  // uint64 bEnter_OK = 1;
+  void clear_benter_ok();
+  ::PROTOBUF_NAMESPACE_ID::uint64 benter_ok() const;
+  void set_benter_ok(::PROTOBUF_NAMESPACE_ID::uint64 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint64 _internal_benter_ok() const;
+  void _internal_set_benter_ok(::PROTOBUF_NAMESPACE_ID::uint64 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_ENTER_LEVEL)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::uint64 benter_ok_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class S_EXIT_LEVEL final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_EXIT_LEVEL) */ {
+ public:
+  inline S_EXIT_LEVEL() : S_EXIT_LEVEL(nullptr) {}
+  ~S_EXIT_LEVEL() override;
+  explicit constexpr S_EXIT_LEVEL(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_EXIT_LEVEL(const S_EXIT_LEVEL& from);
+  S_EXIT_LEVEL(S_EXIT_LEVEL&& from) noexcept
+    : S_EXIT_LEVEL() {
+    *this = ::std::move(from);
+  }
+
+  inline S_EXIT_LEVEL& operator=(const S_EXIT_LEVEL& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_EXIT_LEVEL& operator=(S_EXIT_LEVEL&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_EXIT_LEVEL& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_EXIT_LEVEL* internal_default_instance() {
+    return reinterpret_cast<const S_EXIT_LEVEL*>(
+               &_S_EXIT_LEVEL_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(S_EXIT_LEVEL& a, S_EXIT_LEVEL& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_EXIT_LEVEL* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_EXIT_LEVEL* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline S_EXIT_LEVEL* New() const final {
+    return new S_EXIT_LEVEL();
+  }
+
+  S_EXIT_LEVEL* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<S_EXIT_LEVEL>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const S_EXIT_LEVEL& from);
+  void MergeFrom(const S_EXIT_LEVEL& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_EXIT_LEVEL* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_EXIT_LEVEL";
+  }
+  protected:
+  explicit S_EXIT_LEVEL(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
     kILevelIDFieldNumber = 1,
   };
   // uint64 iLevelID = 1;
@@ -605,7 +766,7 @@ class C_ENTER_LEVEL final :
   void _internal_set_ilevelid(::PROTOBUF_NAMESPACE_ID::uint64 value);
   public:
 
-  // @@protoc_insertion_point(class_scope:Protocol.C_ENTER_LEVEL)
+  // @@protoc_insertion_point(class_scope:Protocol.S_EXIT_LEVEL)
  private:
   class _Internal;
 
@@ -613,6 +774,138 @@ class C_ENTER_LEVEL final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::uint64 ilevelid_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class C_EXIT_LEVEL final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_EXIT_LEVEL) */ {
+ public:
+  inline C_EXIT_LEVEL() : C_EXIT_LEVEL(nullptr) {}
+  ~C_EXIT_LEVEL() override;
+  explicit constexpr C_EXIT_LEVEL(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_EXIT_LEVEL(const C_EXIT_LEVEL& from);
+  C_EXIT_LEVEL(C_EXIT_LEVEL&& from) noexcept
+    : C_EXIT_LEVEL() {
+    *this = ::std::move(from);
+  }
+
+  inline C_EXIT_LEVEL& operator=(const C_EXIT_LEVEL& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_EXIT_LEVEL& operator=(C_EXIT_LEVEL&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_EXIT_LEVEL& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_EXIT_LEVEL* internal_default_instance() {
+    return reinterpret_cast<const C_EXIT_LEVEL*>(
+               &_C_EXIT_LEVEL_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  friend void swap(C_EXIT_LEVEL& a, C_EXIT_LEVEL& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_EXIT_LEVEL* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_EXIT_LEVEL* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline C_EXIT_LEVEL* New() const final {
+    return new C_EXIT_LEVEL();
+  }
+
+  C_EXIT_LEVEL* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<C_EXIT_LEVEL>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const C_EXIT_LEVEL& from);
+  void MergeFrom(const C_EXIT_LEVEL& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_EXIT_LEVEL* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_EXIT_LEVEL";
+  }
+  protected:
+  explicit C_EXIT_LEVEL(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kBExitOKFieldNumber = 1,
+  };
+  // uint64 bExit_OK = 1;
+  void clear_bexit_ok();
+  ::PROTOBUF_NAMESPACE_ID::uint64 bexit_ok() const;
+  void set_bexit_ok(::PROTOBUF_NAMESPACE_ID::uint64 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint64 _internal_bexit_ok() const;
+  void _internal_set_bexit_ok(::PROTOBUF_NAMESPACE_ID::uint64 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_EXIT_LEVEL)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::uint64 bexit_ok_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -662,7 +955,7 @@ class S_CREATE_OBJECT final :
                &_S_CREATE_OBJECT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    6;
 
   friend void swap(S_CREATE_OBJECT& a, S_CREATE_OBJECT& b) {
     a.Swap(&b);
@@ -726,7 +1019,7 @@ class S_CREATE_OBJECT final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kMWorldMatrixFieldNumber = 9,
+    kMWorldMatrixFieldNumber = 10,
     kStrNameFieldNumber = 5,
     kStrPrototypeNameFieldNumber = 6,
     kIObjectIDFieldNumber = 1,
@@ -735,8 +1028,9 @@ class S_CREATE_OBJECT final :
     kILayerIndexFieldNumber = 4,
     kIModelTypeFieldNumber = 7,
     kIAnimationIndexFieldNumber = 8,
+    kFAnimationPlayTimeFieldNumber = 9,
   };
-  // repeated float mWorldMatrix = 9 [packed = true];
+  // repeated float mWorldMatrix = 10 [packed = true];
   int mworldmatrix_size() const;
   private:
   int _internal_mworldmatrix_size() const;
@@ -840,6 +1134,15 @@ class S_CREATE_OBJECT final :
   void _internal_set_ianimationindex(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
+  // float fAnimationPlayTime = 9;
+  void clear_fanimationplaytime();
+  float fanimationplaytime() const;
+  void set_fanimationplaytime(float value);
+  private:
+  float _internal_fanimationplaytime() const;
+  void _internal_set_fanimationplaytime(float value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.S_CREATE_OBJECT)
  private:
   class _Internal;
@@ -856,6 +1159,7 @@ class S_CREATE_OBJECT final :
   ::PROTOBUF_NAMESPACE_ID::int32 ilayerindex_;
   ::PROTOBUF_NAMESPACE_ID::uint32 imodeltype_;
   ::PROTOBUF_NAMESPACE_ID::uint32 ianimationindex_;
+  float fanimationplaytime_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -905,7 +1209,7 @@ class C_CREATE_OBJECT final :
                &_C_CREATE_OBJECT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    7;
 
   friend void swap(C_CREATE_OBJECT& a, C_CREATE_OBJECT& b) {
     a.Swap(&b);
@@ -969,7 +1273,7 @@ class C_CREATE_OBJECT final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kMWorldMatrixFieldNumber = 9,
+    kMWorldMatrixFieldNumber = 10,
     kStrNameFieldNumber = 5,
     kStrPrototypeNameFieldNumber = 6,
     kIObjectIDFieldNumber = 1,
@@ -978,8 +1282,9 @@ class C_CREATE_OBJECT final :
     kILayerIndexFieldNumber = 4,
     kIModelTypeFieldNumber = 7,
     kIAnimationIndexFieldNumber = 8,
+    kFAnimationPlayTimeFieldNumber = 9,
   };
-  // repeated float mWorldMatrix = 9 [packed = true];
+  // repeated float mWorldMatrix = 10 [packed = true];
   int mworldmatrix_size() const;
   private:
   int _internal_mworldmatrix_size() const;
@@ -1083,6 +1388,15 @@ class C_CREATE_OBJECT final :
   void _internal_set_ianimationindex(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
+  // float fAnimationPlayTime = 9;
+  void clear_fanimationplaytime();
+  float fanimationplaytime() const;
+  void set_fanimationplaytime(float value);
+  private:
+  float _internal_fanimationplaytime() const;
+  void _internal_set_fanimationplaytime(float value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.C_CREATE_OBJECT)
  private:
   class _Internal;
@@ -1099,6 +1413,7 @@ class C_CREATE_OBJECT final :
   ::PROTOBUF_NAMESPACE_ID::int32 ilayerindex_;
   ::PROTOBUF_NAMESPACE_ID::uint32 imodeltype_;
   ::PROTOBUF_NAMESPACE_ID::uint32 ianimationindex_;
+  float fanimationplaytime_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -1148,7 +1463,7 @@ class S_DELETE_OBJECT final :
                &_S_DELETE_OBJECT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    8;
 
   friend void swap(S_DELETE_OBJECT& a, S_DELETE_OBJECT& b) {
     a.Swap(&b);
@@ -1345,7 +1660,7 @@ class C_DELETE_OBJECT final :
                &_C_DELETE_OBJECT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    9;
 
   friend void swap(C_DELETE_OBJECT& a, C_DELETE_OBJECT& b) {
     a.Swap(&b);
@@ -1542,7 +1857,7 @@ class S_WORLD_MATRIX final :
                &_S_WORLD_MATRIX_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    10;
 
   friend void swap(S_WORLD_MATRIX& a, S_WORLD_MATRIX& b) {
     a.Swap(&b);
@@ -1606,33 +1921,43 @@ class S_WORLD_MATRIX final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kMatrixFieldNumber = 3,
-    kIObjectIDFieldNumber = 1,
-    kILayerFieldNumber = 2,
+    kMWorldMatrixFieldNumber = 4,
+    kILevelIDFieldNumber = 1,
+    kIObjectIDFieldNumber = 2,
+    kILayerFieldNumber = 3,
   };
-  // repeated float Matrix = 3 [packed = true];
-  int matrix_size() const;
+  // repeated float mWorldMatrix = 4 [packed = true];
+  int mworldmatrix_size() const;
   private:
-  int _internal_matrix_size() const;
+  int _internal_mworldmatrix_size() const;
   public:
-  void clear_matrix();
+  void clear_mworldmatrix();
   private:
-  float _internal_matrix(int index) const;
+  float _internal_mworldmatrix(int index) const;
   const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
-      _internal_matrix() const;
-  void _internal_add_matrix(float value);
+      _internal_mworldmatrix() const;
+  void _internal_add_mworldmatrix(float value);
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
-      _internal_mutable_matrix();
+      _internal_mutable_mworldmatrix();
   public:
-  float matrix(int index) const;
-  void set_matrix(int index, float value);
-  void add_matrix(float value);
+  float mworldmatrix(int index) const;
+  void set_mworldmatrix(int index, float value);
+  void add_mworldmatrix(float value);
   const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
-      matrix() const;
+      mworldmatrix() const;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
-      mutable_matrix();
+      mutable_mworldmatrix();
 
-  // int32 iObjectID = 1;
+  // int32 iLevelID = 1;
+  void clear_ilevelid();
+  ::PROTOBUF_NAMESPACE_ID::int32 ilevelid() const;
+  void set_ilevelid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_ilevelid() const;
+  void _internal_set_ilevelid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 iObjectID = 2;
   void clear_iobjectid();
   ::PROTOBUF_NAMESPACE_ID::int32 iobjectid() const;
   void set_iobjectid(::PROTOBUF_NAMESPACE_ID::int32 value);
@@ -1641,7 +1966,7 @@ class S_WORLD_MATRIX final :
   void _internal_set_iobjectid(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // int32 iLayer = 2;
+  // int32 iLayer = 3;
   void clear_ilayer();
   ::PROTOBUF_NAMESPACE_ID::int32 ilayer() const;
   void set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value);
@@ -1657,7 +1982,186 @@ class S_WORLD_MATRIX final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField< float > matrix_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< float > mworldmatrix_;
+  ::PROTOBUF_NAMESPACE_ID::int32 ilevelid_;
+  ::PROTOBUF_NAMESPACE_ID::int32 iobjectid_;
+  ::PROTOBUF_NAMESPACE_ID::int32 ilayer_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class C_WORLD_MATRIX final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_WORLD_MATRIX) */ {
+ public:
+  inline C_WORLD_MATRIX() : C_WORLD_MATRIX(nullptr) {}
+  ~C_WORLD_MATRIX() override;
+  explicit constexpr C_WORLD_MATRIX(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_WORLD_MATRIX(const C_WORLD_MATRIX& from);
+  C_WORLD_MATRIX(C_WORLD_MATRIX&& from) noexcept
+    : C_WORLD_MATRIX() {
+    *this = ::std::move(from);
+  }
+
+  inline C_WORLD_MATRIX& operator=(const C_WORLD_MATRIX& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_WORLD_MATRIX& operator=(C_WORLD_MATRIX&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_WORLD_MATRIX& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_WORLD_MATRIX* internal_default_instance() {
+    return reinterpret_cast<const C_WORLD_MATRIX*>(
+               &_C_WORLD_MATRIX_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    11;
+
+  friend void swap(C_WORLD_MATRIX& a, C_WORLD_MATRIX& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_WORLD_MATRIX* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_WORLD_MATRIX* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline C_WORLD_MATRIX* New() const final {
+    return new C_WORLD_MATRIX();
+  }
+
+  C_WORLD_MATRIX* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<C_WORLD_MATRIX>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const C_WORLD_MATRIX& from);
+  void MergeFrom(const C_WORLD_MATRIX& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_WORLD_MATRIX* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_WORLD_MATRIX";
+  }
+  protected:
+  explicit C_WORLD_MATRIX(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMWorldMatrixFieldNumber = 4,
+    kILevelIDFieldNumber = 1,
+    kIObjectIDFieldNumber = 2,
+    kILayerFieldNumber = 3,
+  };
+  // repeated float mWorldMatrix = 4 [packed = true];
+  int mworldmatrix_size() const;
+  private:
+  int _internal_mworldmatrix_size() const;
+  public:
+  void clear_mworldmatrix();
+  private:
+  float _internal_mworldmatrix(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+      _internal_mworldmatrix() const;
+  void _internal_add_mworldmatrix(float value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+      _internal_mutable_mworldmatrix();
+  public:
+  float mworldmatrix(int index) const;
+  void set_mworldmatrix(int index, float value);
+  void add_mworldmatrix(float value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+      mworldmatrix() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+      mutable_mworldmatrix();
+
+  // int32 iLevelID = 1;
+  void clear_ilevelid();
+  ::PROTOBUF_NAMESPACE_ID::int32 ilevelid() const;
+  void set_ilevelid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_ilevelid() const;
+  void _internal_set_ilevelid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 iObjectID = 2;
+  void clear_iobjectid();
+  ::PROTOBUF_NAMESPACE_ID::int32 iobjectid() const;
+  void set_iobjectid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_iobjectid() const;
+  void _internal_set_iobjectid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 iLayer = 3;
+  void clear_ilayer();
+  ::PROTOBUF_NAMESPACE_ID::int32 ilayer() const;
+  void set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_ilayer() const;
+  void _internal_set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_WORLD_MATRIX)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< float > mworldmatrix_;
+  ::PROTOBUF_NAMESPACE_ID::int32 ilevelid_;
   ::PROTOBUF_NAMESPACE_ID::int32 iobjectid_;
   ::PROTOBUF_NAMESPACE_ID::int32 ilayer_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -1709,7 +2213,7 @@ class S_CHANGE_ANIMATION final :
                &_S_CHANGE_ANIMATION_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    12;
 
   friend void swap(S_CHANGE_ANIMATION& a, S_CHANGE_ANIMATION& b) {
     a.Swap(&b);
@@ -1828,6 +2332,182 @@ class S_CHANGE_ANIMATION final :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
+// -------------------------------------------------------------------
+
+class C_CHANGE_ANIMATION final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_CHANGE_ANIMATION) */ {
+ public:
+  inline C_CHANGE_ANIMATION() : C_CHANGE_ANIMATION(nullptr) {}
+  ~C_CHANGE_ANIMATION() override;
+  explicit constexpr C_CHANGE_ANIMATION(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_CHANGE_ANIMATION(const C_CHANGE_ANIMATION& from);
+  C_CHANGE_ANIMATION(C_CHANGE_ANIMATION&& from) noexcept
+    : C_CHANGE_ANIMATION() {
+    *this = ::std::move(from);
+  }
+
+  inline C_CHANGE_ANIMATION& operator=(const C_CHANGE_ANIMATION& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_CHANGE_ANIMATION& operator=(C_CHANGE_ANIMATION&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_CHANGE_ANIMATION& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_CHANGE_ANIMATION* internal_default_instance() {
+    return reinterpret_cast<const C_CHANGE_ANIMATION*>(
+               &_C_CHANGE_ANIMATION_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    13;
+
+  friend void swap(C_CHANGE_ANIMATION& a, C_CHANGE_ANIMATION& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_CHANGE_ANIMATION* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_CHANGE_ANIMATION* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline C_CHANGE_ANIMATION* New() const final {
+    return new C_CHANGE_ANIMATION();
+  }
+
+  C_CHANGE_ANIMATION* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<C_CHANGE_ANIMATION>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const C_CHANGE_ANIMATION& from);
+  void MergeFrom(const C_CHANGE_ANIMATION& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_CHANGE_ANIMATION* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_CHANGE_ANIMATION";
+  }
+  protected:
+  explicit C_CHANGE_ANIMATION(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kIObjectIDFieldNumber = 1,
+    kILevelFieldNumber = 2,
+    kILayerFieldNumber = 3,
+    kIAnimIndexFieldNumber = 4,
+    kIServerDelayTimeFieldNumber = 5,
+  };
+  // int32 iObjectID = 1;
+  void clear_iobjectid();
+  ::PROTOBUF_NAMESPACE_ID::int32 iobjectid() const;
+  void set_iobjectid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_iobjectid() const;
+  void _internal_set_iobjectid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 iLevel = 2;
+  void clear_ilevel();
+  ::PROTOBUF_NAMESPACE_ID::int32 ilevel() const;
+  void set_ilevel(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_ilevel() const;
+  void _internal_set_ilevel(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 iLayer = 3;
+  void clear_ilayer();
+  ::PROTOBUF_NAMESPACE_ID::int32 ilayer() const;
+  void set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_ilayer() const;
+  void _internal_set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 iAnimIndex = 4;
+  void clear_ianimindex();
+  ::PROTOBUF_NAMESPACE_ID::int32 ianimindex() const;
+  void set_ianimindex(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_ianimindex() const;
+  void _internal_set_ianimindex(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // float iServerDelayTime = 5;
+  void clear_iserverdelaytime();
+  float iserverdelaytime() const;
+  void set_iserverdelaytime(float value);
+  private:
+  float _internal_iserverdelaytime() const;
+  void _internal_set_iserverdelaytime(float value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_CHANGE_ANIMATION)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::int32 iobjectid_;
+  ::PROTOBUF_NAMESPACE_ID::int32 ilevel_;
+  ::PROTOBUF_NAMESPACE_ID::int32 ilayer_;
+  ::PROTOBUF_NAMESPACE_ID::int32 ianimindex_;
+  float iserverdelaytime_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_Protocol_2eproto;
+};
 // ===================================================================
 
 
@@ -1839,29 +2519,49 @@ class S_CHANGE_ANIMATION final :
 #endif  // __GNUC__
 // S_LOGIN
 
-// uint32 iLevelCount = 1;
-inline void S_LOGIN::clear_ilevelcount() {
-  ilevelcount_ = 0u;
+// uint32 iLevelID = 1;
+inline void S_LOGIN::clear_ilevelid() {
+  ilevelid_ = 0u;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 S_LOGIN::_internal_ilevelcount() const {
-  return ilevelcount_;
+inline ::PROTOBUF_NAMESPACE_ID::uint32 S_LOGIN::_internal_ilevelid() const {
+  return ilevelid_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 S_LOGIN::ilevelcount() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_LOGIN.iLevelCount)
-  return _internal_ilevelcount();
+inline ::PROTOBUF_NAMESPACE_ID::uint32 S_LOGIN::ilevelid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_LOGIN.iLevelID)
+  return _internal_ilevelid();
 }
-inline void S_LOGIN::_internal_set_ilevelcount(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+inline void S_LOGIN::_internal_set_ilevelid(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   
-  ilevelcount_ = value;
+  ilevelid_ = value;
 }
-inline void S_LOGIN::set_ilevelcount(::PROTOBUF_NAMESPACE_ID::uint32 value) {
-  _internal_set_ilevelcount(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_LOGIN.iLevelCount)
+inline void S_LOGIN::set_ilevelid(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_ilevelid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_LOGIN.iLevelID)
 }
 
 // -------------------------------------------------------------------
 
 // C_LOGIN
+
+// bool bLogin_OK = 1;
+inline void C_LOGIN::clear_blogin_ok() {
+  blogin_ok_ = false;
+}
+inline bool C_LOGIN::_internal_blogin_ok() const {
+  return blogin_ok_;
+}
+inline bool C_LOGIN::blogin_ok() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_LOGIN.bLogin_OK)
+  return _internal_blogin_ok();
+}
+inline void C_LOGIN::_internal_set_blogin_ok(bool value) {
+  
+  blogin_ok_ = value;
+}
+inline void C_LOGIN::set_blogin_ok(bool value) {
+  _internal_set_blogin_ok(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_LOGIN.bLogin_OK)
+}
 
 // -------------------------------------------------------------------
 
@@ -1891,24 +2591,72 @@ inline void S_ENTER_LEVEL::set_ilevelid(::PROTOBUF_NAMESPACE_ID::uint64 value) {
 
 // C_ENTER_LEVEL
 
+// uint64 bEnter_OK = 1;
+inline void C_ENTER_LEVEL::clear_benter_ok() {
+  benter_ok_ = uint64_t{0u};
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint64 C_ENTER_LEVEL::_internal_benter_ok() const {
+  return benter_ok_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint64 C_ENTER_LEVEL::benter_ok() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_ENTER_LEVEL.bEnter_OK)
+  return _internal_benter_ok();
+}
+inline void C_ENTER_LEVEL::_internal_set_benter_ok(::PROTOBUF_NAMESPACE_ID::uint64 value) {
+  
+  benter_ok_ = value;
+}
+inline void C_ENTER_LEVEL::set_benter_ok(::PROTOBUF_NAMESPACE_ID::uint64 value) {
+  _internal_set_benter_ok(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_ENTER_LEVEL.bEnter_OK)
+}
+
+// -------------------------------------------------------------------
+
+// S_EXIT_LEVEL
+
 // uint64 iLevelID = 1;
-inline void C_ENTER_LEVEL::clear_ilevelid() {
+inline void S_EXIT_LEVEL::clear_ilevelid() {
   ilevelid_ = uint64_t{0u};
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint64 C_ENTER_LEVEL::_internal_ilevelid() const {
+inline ::PROTOBUF_NAMESPACE_ID::uint64 S_EXIT_LEVEL::_internal_ilevelid() const {
   return ilevelid_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint64 C_ENTER_LEVEL::ilevelid() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_ENTER_LEVEL.iLevelID)
+inline ::PROTOBUF_NAMESPACE_ID::uint64 S_EXIT_LEVEL::ilevelid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_EXIT_LEVEL.iLevelID)
   return _internal_ilevelid();
 }
-inline void C_ENTER_LEVEL::_internal_set_ilevelid(::PROTOBUF_NAMESPACE_ID::uint64 value) {
+inline void S_EXIT_LEVEL::_internal_set_ilevelid(::PROTOBUF_NAMESPACE_ID::uint64 value) {
   
   ilevelid_ = value;
 }
-inline void C_ENTER_LEVEL::set_ilevelid(::PROTOBUF_NAMESPACE_ID::uint64 value) {
+inline void S_EXIT_LEVEL::set_ilevelid(::PROTOBUF_NAMESPACE_ID::uint64 value) {
   _internal_set_ilevelid(value);
-  // @@protoc_insertion_point(field_set:Protocol.C_ENTER_LEVEL.iLevelID)
+  // @@protoc_insertion_point(field_set:Protocol.S_EXIT_LEVEL.iLevelID)
+}
+
+// -------------------------------------------------------------------
+
+// C_EXIT_LEVEL
+
+// uint64 bExit_OK = 1;
+inline void C_EXIT_LEVEL::clear_bexit_ok() {
+  bexit_ok_ = uint64_t{0u};
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint64 C_EXIT_LEVEL::_internal_bexit_ok() const {
+  return bexit_ok_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint64 C_EXIT_LEVEL::bexit_ok() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_EXIT_LEVEL.bExit_OK)
+  return _internal_bexit_ok();
+}
+inline void C_EXIT_LEVEL::_internal_set_bexit_ok(::PROTOBUF_NAMESPACE_ID::uint64 value) {
+  
+  bexit_ok_ = value;
+}
+inline void C_EXIT_LEVEL::set_bexit_ok(::PROTOBUF_NAMESPACE_ID::uint64 value) {
+  _internal_set_bexit_ok(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_EXIT_LEVEL.bExit_OK)
 }
 
 // -------------------------------------------------------------------
@@ -2125,7 +2873,27 @@ inline void S_CREATE_OBJECT::set_ianimationindex(::PROTOBUF_NAMESPACE_ID::uint32
   // @@protoc_insertion_point(field_set:Protocol.S_CREATE_OBJECT.iAnimationIndex)
 }
 
-// repeated float mWorldMatrix = 9 [packed = true];
+// float fAnimationPlayTime = 9;
+inline void S_CREATE_OBJECT::clear_fanimationplaytime() {
+  fanimationplaytime_ = 0;
+}
+inline float S_CREATE_OBJECT::_internal_fanimationplaytime() const {
+  return fanimationplaytime_;
+}
+inline float S_CREATE_OBJECT::fanimationplaytime() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_CREATE_OBJECT.fAnimationPlayTime)
+  return _internal_fanimationplaytime();
+}
+inline void S_CREATE_OBJECT::_internal_set_fanimationplaytime(float value) {
+  
+  fanimationplaytime_ = value;
+}
+inline void S_CREATE_OBJECT::set_fanimationplaytime(float value) {
+  _internal_set_fanimationplaytime(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_CREATE_OBJECT.fAnimationPlayTime)
+}
+
+// repeated float mWorldMatrix = 10 [packed = true];
 inline int S_CREATE_OBJECT::_internal_mworldmatrix_size() const {
   return mworldmatrix_.size();
 }
@@ -2386,7 +3154,27 @@ inline void C_CREATE_OBJECT::set_ianimationindex(::PROTOBUF_NAMESPACE_ID::uint32
   // @@protoc_insertion_point(field_set:Protocol.C_CREATE_OBJECT.iAnimationIndex)
 }
 
-// repeated float mWorldMatrix = 9 [packed = true];
+// float fAnimationPlayTime = 9;
+inline void C_CREATE_OBJECT::clear_fanimationplaytime() {
+  fanimationplaytime_ = 0;
+}
+inline float C_CREATE_OBJECT::_internal_fanimationplaytime() const {
+  return fanimationplaytime_;
+}
+inline float C_CREATE_OBJECT::fanimationplaytime() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_CREATE_OBJECT.fAnimationPlayTime)
+  return _internal_fanimationplaytime();
+}
+inline void C_CREATE_OBJECT::_internal_set_fanimationplaytime(float value) {
+  
+  fanimationplaytime_ = value;
+}
+inline void C_CREATE_OBJECT::set_fanimationplaytime(float value) {
+  _internal_set_fanimationplaytime(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_CREATE_OBJECT.fAnimationPlayTime)
+}
+
+// repeated float mWorldMatrix = 10 [packed = true];
 inline int C_CREATE_OBJECT::_internal_mworldmatrix_size() const {
   return mworldmatrix_.size();
 }
@@ -2785,7 +3573,27 @@ inline void C_DELETE_OBJECT::set_allocated_strprototypename(std::string* strprot
 
 // S_WORLD_MATRIX
 
-// int32 iObjectID = 1;
+// int32 iLevelID = 1;
+inline void S_WORLD_MATRIX::clear_ilevelid() {
+  ilevelid_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 S_WORLD_MATRIX::_internal_ilevelid() const {
+  return ilevelid_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 S_WORLD_MATRIX::ilevelid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_WORLD_MATRIX.iLevelID)
+  return _internal_ilevelid();
+}
+inline void S_WORLD_MATRIX::_internal_set_ilevelid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  ilevelid_ = value;
+}
+inline void S_WORLD_MATRIX::set_ilevelid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_ilevelid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_WORLD_MATRIX.iLevelID)
+}
+
+// int32 iObjectID = 2;
 inline void S_WORLD_MATRIX::clear_iobjectid() {
   iobjectid_ = 0;
 }
@@ -2805,7 +3613,7 @@ inline void S_WORLD_MATRIX::set_iobjectid(::PROTOBUF_NAMESPACE_ID::int32 value) 
   // @@protoc_insertion_point(field_set:Protocol.S_WORLD_MATRIX.iObjectID)
 }
 
-// int32 iLayer = 2;
+// int32 iLayer = 3;
 inline void S_WORLD_MATRIX::clear_ilayer() {
   ilayer_ = 0;
 }
@@ -2825,51 +3633,162 @@ inline void S_WORLD_MATRIX::set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value) {
   // @@protoc_insertion_point(field_set:Protocol.S_WORLD_MATRIX.iLayer)
 }
 
-// repeated float Matrix = 3 [packed = true];
-inline int S_WORLD_MATRIX::_internal_matrix_size() const {
-  return matrix_.size();
+// repeated float mWorldMatrix = 4 [packed = true];
+inline int S_WORLD_MATRIX::_internal_mworldmatrix_size() const {
+  return mworldmatrix_.size();
 }
-inline int S_WORLD_MATRIX::matrix_size() const {
-  return _internal_matrix_size();
+inline int S_WORLD_MATRIX::mworldmatrix_size() const {
+  return _internal_mworldmatrix_size();
 }
-inline void S_WORLD_MATRIX::clear_matrix() {
-  matrix_.Clear();
+inline void S_WORLD_MATRIX::clear_mworldmatrix() {
+  mworldmatrix_.Clear();
 }
-inline float S_WORLD_MATRIX::_internal_matrix(int index) const {
-  return matrix_.Get(index);
+inline float S_WORLD_MATRIX::_internal_mworldmatrix(int index) const {
+  return mworldmatrix_.Get(index);
 }
-inline float S_WORLD_MATRIX::matrix(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.S_WORLD_MATRIX.Matrix)
-  return _internal_matrix(index);
+inline float S_WORLD_MATRIX::mworldmatrix(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S_WORLD_MATRIX.mWorldMatrix)
+  return _internal_mworldmatrix(index);
 }
-inline void S_WORLD_MATRIX::set_matrix(int index, float value) {
-  matrix_.Set(index, value);
-  // @@protoc_insertion_point(field_set:Protocol.S_WORLD_MATRIX.Matrix)
+inline void S_WORLD_MATRIX::set_mworldmatrix(int index, float value) {
+  mworldmatrix_.Set(index, value);
+  // @@protoc_insertion_point(field_set:Protocol.S_WORLD_MATRIX.mWorldMatrix)
 }
-inline void S_WORLD_MATRIX::_internal_add_matrix(float value) {
-  matrix_.Add(value);
+inline void S_WORLD_MATRIX::_internal_add_mworldmatrix(float value) {
+  mworldmatrix_.Add(value);
 }
-inline void S_WORLD_MATRIX::add_matrix(float value) {
-  _internal_add_matrix(value);
-  // @@protoc_insertion_point(field_add:Protocol.S_WORLD_MATRIX.Matrix)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
-S_WORLD_MATRIX::_internal_matrix() const {
-  return matrix_;
+inline void S_WORLD_MATRIX::add_mworldmatrix(float value) {
+  _internal_add_mworldmatrix(value);
+  // @@protoc_insertion_point(field_add:Protocol.S_WORLD_MATRIX.mWorldMatrix)
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
-S_WORLD_MATRIX::matrix() const {
-  // @@protoc_insertion_point(field_list:Protocol.S_WORLD_MATRIX.Matrix)
-  return _internal_matrix();
+S_WORLD_MATRIX::_internal_mworldmatrix() const {
+  return mworldmatrix_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+S_WORLD_MATRIX::mworldmatrix() const {
+  // @@protoc_insertion_point(field_list:Protocol.S_WORLD_MATRIX.mWorldMatrix)
+  return _internal_mworldmatrix();
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
-S_WORLD_MATRIX::_internal_mutable_matrix() {
-  return &matrix_;
+S_WORLD_MATRIX::_internal_mutable_mworldmatrix() {
+  return &mworldmatrix_;
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
-S_WORLD_MATRIX::mutable_matrix() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.S_WORLD_MATRIX.Matrix)
-  return _internal_mutable_matrix();
+S_WORLD_MATRIX::mutable_mworldmatrix() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S_WORLD_MATRIX.mWorldMatrix)
+  return _internal_mutable_mworldmatrix();
+}
+
+// -------------------------------------------------------------------
+
+// C_WORLD_MATRIX
+
+// int32 iLevelID = 1;
+inline void C_WORLD_MATRIX::clear_ilevelid() {
+  ilevelid_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_WORLD_MATRIX::_internal_ilevelid() const {
+  return ilevelid_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_WORLD_MATRIX::ilevelid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_WORLD_MATRIX.iLevelID)
+  return _internal_ilevelid();
+}
+inline void C_WORLD_MATRIX::_internal_set_ilevelid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  ilevelid_ = value;
+}
+inline void C_WORLD_MATRIX::set_ilevelid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_ilevelid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_WORLD_MATRIX.iLevelID)
+}
+
+// int32 iObjectID = 2;
+inline void C_WORLD_MATRIX::clear_iobjectid() {
+  iobjectid_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_WORLD_MATRIX::_internal_iobjectid() const {
+  return iobjectid_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_WORLD_MATRIX::iobjectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_WORLD_MATRIX.iObjectID)
+  return _internal_iobjectid();
+}
+inline void C_WORLD_MATRIX::_internal_set_iobjectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  iobjectid_ = value;
+}
+inline void C_WORLD_MATRIX::set_iobjectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_iobjectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_WORLD_MATRIX.iObjectID)
+}
+
+// int32 iLayer = 3;
+inline void C_WORLD_MATRIX::clear_ilayer() {
+  ilayer_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_WORLD_MATRIX::_internal_ilayer() const {
+  return ilayer_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_WORLD_MATRIX::ilayer() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_WORLD_MATRIX.iLayer)
+  return _internal_ilayer();
+}
+inline void C_WORLD_MATRIX::_internal_set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  ilayer_ = value;
+}
+inline void C_WORLD_MATRIX::set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_ilayer(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_WORLD_MATRIX.iLayer)
+}
+
+// repeated float mWorldMatrix = 4 [packed = true];
+inline int C_WORLD_MATRIX::_internal_mworldmatrix_size() const {
+  return mworldmatrix_.size();
+}
+inline int C_WORLD_MATRIX::mworldmatrix_size() const {
+  return _internal_mworldmatrix_size();
+}
+inline void C_WORLD_MATRIX::clear_mworldmatrix() {
+  mworldmatrix_.Clear();
+}
+inline float C_WORLD_MATRIX::_internal_mworldmatrix(int index) const {
+  return mworldmatrix_.Get(index);
+}
+inline float C_WORLD_MATRIX::mworldmatrix(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.C_WORLD_MATRIX.mWorldMatrix)
+  return _internal_mworldmatrix(index);
+}
+inline void C_WORLD_MATRIX::set_mworldmatrix(int index, float value) {
+  mworldmatrix_.Set(index, value);
+  // @@protoc_insertion_point(field_set:Protocol.C_WORLD_MATRIX.mWorldMatrix)
+}
+inline void C_WORLD_MATRIX::_internal_add_mworldmatrix(float value) {
+  mworldmatrix_.Add(value);
+}
+inline void C_WORLD_MATRIX::add_mworldmatrix(float value) {
+  _internal_add_mworldmatrix(value);
+  // @@protoc_insertion_point(field_add:Protocol.C_WORLD_MATRIX.mWorldMatrix)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+C_WORLD_MATRIX::_internal_mworldmatrix() const {
+  return mworldmatrix_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+C_WORLD_MATRIX::mworldmatrix() const {
+  // @@protoc_insertion_point(field_list:Protocol.C_WORLD_MATRIX.mWorldMatrix)
+  return _internal_mworldmatrix();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+C_WORLD_MATRIX::_internal_mutable_mworldmatrix() {
+  return &mworldmatrix_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+C_WORLD_MATRIX::mutable_mworldmatrix() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.C_WORLD_MATRIX.mWorldMatrix)
+  return _internal_mutable_mworldmatrix();
 }
 
 // -------------------------------------------------------------------
@@ -2956,9 +3875,121 @@ inline void S_CHANGE_ANIMATION::set_ianimindex(::PROTOBUF_NAMESPACE_ID::int32 va
   // @@protoc_insertion_point(field_set:Protocol.S_CHANGE_ANIMATION.iAnimIndex)
 }
 
+// -------------------------------------------------------------------
+
+// C_CHANGE_ANIMATION
+
+// int32 iObjectID = 1;
+inline void C_CHANGE_ANIMATION::clear_iobjectid() {
+  iobjectid_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_CHANGE_ANIMATION::_internal_iobjectid() const {
+  return iobjectid_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_CHANGE_ANIMATION::iobjectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_CHANGE_ANIMATION.iObjectID)
+  return _internal_iobjectid();
+}
+inline void C_CHANGE_ANIMATION::_internal_set_iobjectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  iobjectid_ = value;
+}
+inline void C_CHANGE_ANIMATION::set_iobjectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_iobjectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_CHANGE_ANIMATION.iObjectID)
+}
+
+// int32 iLevel = 2;
+inline void C_CHANGE_ANIMATION::clear_ilevel() {
+  ilevel_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_CHANGE_ANIMATION::_internal_ilevel() const {
+  return ilevel_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_CHANGE_ANIMATION::ilevel() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_CHANGE_ANIMATION.iLevel)
+  return _internal_ilevel();
+}
+inline void C_CHANGE_ANIMATION::_internal_set_ilevel(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  ilevel_ = value;
+}
+inline void C_CHANGE_ANIMATION::set_ilevel(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_ilevel(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_CHANGE_ANIMATION.iLevel)
+}
+
+// int32 iLayer = 3;
+inline void C_CHANGE_ANIMATION::clear_ilayer() {
+  ilayer_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_CHANGE_ANIMATION::_internal_ilayer() const {
+  return ilayer_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_CHANGE_ANIMATION::ilayer() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_CHANGE_ANIMATION.iLayer)
+  return _internal_ilayer();
+}
+inline void C_CHANGE_ANIMATION::_internal_set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  ilayer_ = value;
+}
+inline void C_CHANGE_ANIMATION::set_ilayer(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_ilayer(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_CHANGE_ANIMATION.iLayer)
+}
+
+// int32 iAnimIndex = 4;
+inline void C_CHANGE_ANIMATION::clear_ianimindex() {
+  ianimindex_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_CHANGE_ANIMATION::_internal_ianimindex() const {
+  return ianimindex_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 C_CHANGE_ANIMATION::ianimindex() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_CHANGE_ANIMATION.iAnimIndex)
+  return _internal_ianimindex();
+}
+inline void C_CHANGE_ANIMATION::_internal_set_ianimindex(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  ianimindex_ = value;
+}
+inline void C_CHANGE_ANIMATION::set_ianimindex(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_ianimindex(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_CHANGE_ANIMATION.iAnimIndex)
+}
+
+// float iServerDelayTime = 5;
+inline void C_CHANGE_ANIMATION::clear_iserverdelaytime() {
+  iserverdelaytime_ = 0;
+}
+inline float C_CHANGE_ANIMATION::_internal_iserverdelaytime() const {
+  return iserverdelaytime_;
+}
+inline float C_CHANGE_ANIMATION::iserverdelaytime() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_CHANGE_ANIMATION.iServerDelayTime)
+  return _internal_iserverdelaytime();
+}
+inline void C_CHANGE_ANIMATION::_internal_set_iserverdelaytime(float value) {
+  
+  iserverdelaytime_ = value;
+}
+inline void C_CHANGE_ANIMATION::set_iserverdelaytime(float value) {
+  _internal_set_iserverdelaytime(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_CHANGE_ANIMATION.iServerDelayTime)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

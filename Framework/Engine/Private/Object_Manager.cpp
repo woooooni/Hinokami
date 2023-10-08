@@ -46,7 +46,7 @@ HRESULT CObject_Manager::Add_Prototype(const wstring& strPrototypeTag, CGameObje
 }
 
 
-HRESULT CObject_Manager::Add_GameObject(_uint iLevelIndex, const _uint iLayerType, const wstring & strPrototypeTag, void * pArg)
+HRESULT CObject_Manager::Add_GameObject(_uint iLevelIndex, const _uint iLayerType, const wstring & strPrototypeTag, void * pArg, __out class CGameObject** ppOut)
 {
 	/* 복제할 사본을 차즌ㄷ나. */
 	CGameObject*		pPrototype = Find_Prototype(strPrototypeTag, iLayerType);
@@ -62,6 +62,9 @@ HRESULT CObject_Manager::Add_GameObject(_uint iLevelIndex, const _uint iLayerTyp
 		return E_FAIL;
 	
 	pLayer->Add_GameObject(pGameObject);
+
+	if (ppOut != nullptr)
+		*ppOut = pGameObject;
 	
 	return S_OK;
 }
