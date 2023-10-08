@@ -12,7 +12,7 @@ private:
 	virtual ~CTexture() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(const wstring& strTextureFilePath, _uint iNumTextures);
+	virtual HRESULT Initialize_Prototype(const wstring & strTextureFilePath, _uint iNumTextures, _bool bWithPath);
 	virtual HRESULT Initialize(void* pArg);
 
 public:
@@ -32,6 +32,11 @@ public:
 	}
 	_uint Get_TextureCount() { return m_iNumTextures; }
 
+
+private:
+	HRESULT Load_Texture(const wstring& strTextureFilePath, _uint iNumTextures);
+	HRESULT Load_Texture_In_Path(const wstring& strTextureFilePath);
+
 private:
 	/* 셰이더에 직접 바인딩 될 수 있는 객체 */
 	vector<ID3D11ShaderResourceView*>				m_SRVs;
@@ -41,7 +46,7 @@ private:
 	vector<wstring>	m_FileNames;
 
 public:
-	static CTexture* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strTextureFilePath, _uint iNumTextures = 1);
+	static CTexture* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strTextureFilePath, _uint iNumTextures = 1, _bool bWithPath = false);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free();
 };

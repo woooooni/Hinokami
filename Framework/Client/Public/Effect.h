@@ -19,22 +19,25 @@ class CEffect abstract : public CGameObject
 {
 public:
 	typedef struct tagTextureEffectDesc
-	{
-		_bool			bIncrement = true;
-
-		_float2			fUVIndex		= _float2(0.f, 0.f);
-
-		_float			fMaxCountX		= 0.f;
-		_float			fMaxCountY		= 0.f;
+	{	
+		_bool			bIncrement		= true;
+		_float			fMaxCountX		= 1.f;
+		_float			fMaxCountY		= 1.f;
 
 		_float			fAccUVIndex		= 0.f;
 		_float			fNextIndexSpeed = 0.f;
+
+		_float			fAlpha			= 0.f;
+
+		_float2			fUVIndex		 = _float2(0.f, 0.f);
+		
+		_float4			fDiffuseColor	= _float4(0.f, 0.f, 0.f, 0.f);
 	} TEXTURE_EFFECT_DESC;
 
 	typedef struct tagMeshEffectDesc
 	{
-		_float2 vAccUV = _float2(0.f, 0.f);
-		_float2 vSpeedUV = _float2(0.f, 0.f);
+		_float2 vAccUV		= _float2(0.f, 0.f);
+		_float2 vSpeedUV	= _float2(0.f, 0.f);
 		_float3 vMoveDir	= _float3(0.f, 0.f, 0.f);
 		_float3 vTurnDir	= _float3(0.f, 0.f, 0.f);
 	} MESH_EFFECT_DESC;
@@ -87,6 +90,7 @@ protected:
 protected:
 	_bool			m_bEnd = false;
 	_bool			m_bLoop = true;
+	_bool			m_bIncrement = true;
 
 protected: /* For.Texture_Effect */
 	virtual void IncrementUV(_float fTimeDelta);

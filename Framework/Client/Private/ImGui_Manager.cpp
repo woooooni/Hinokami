@@ -618,11 +618,6 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
 
 void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 {
-    if (nullptr != m_pPrevMeshEffect)
-    {
-        m_pPrevMeshEffect->Tick(fTimeDelta);
-        m_pPrevMeshEffect->LateTick(fTimeDelta);
-    }
 
     ImGui::Begin("Effect");
 
@@ -682,6 +677,9 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
     
     if (nullptr != m_pPrevMeshEffect)
     {
+        m_pPrevMeshEffect->Tick(fTimeDelta);
+        m_pPrevMeshEffect->LateTick(fTimeDelta);
+
         ImGui::Begin("Effect_Desc");
         CEffect::MESH_EFFECT_DESC tEffectDesc = m_pPrevMeshEffect->Get_Mesh_EffectDesc();
 
@@ -785,11 +783,15 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
         ImGui::Text("Texture Count X");
         IMGUI_SAME_LINE;
-        ImGui::Text("Texture Count Y");
+        ImGui::DragFloat("##Texture_CountX", &tEffectDesc.fMaxCountX, 1.f, 1.f, 20.f);
+        
 
-        ImGui::DragFloat("##Texture_CountX", &tEffectDesc.fMaxCountX, 1.f, 0.f, 100.f);
+        ImGui::Text("Texture Count Y");
         IMGUI_SAME_LINE;
-        ImGui::DragFloat("##Texture_CountY", &tEffectDesc.fMaxCountX, 1.f, 0.f, 100.f);
+        ImGui::DragFloat("##Texture_CountY", &tEffectDesc.fMaxCountY, 1.f, 1.f, 20.f);
+
+        ImGui::Text("R\tG\tB\tA");
+        ImGui::DragFloat4("##Texture_Effect_Color", (_float*)&tEffectDesc.fDiffuseColor, 0.01f, 0.f, 1.f);
 
         m_pPrevTextureEffect->Set_Texture_EffectDesc(tEffectDesc);
         ImGui::End();

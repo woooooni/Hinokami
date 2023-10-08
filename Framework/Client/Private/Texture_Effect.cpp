@@ -50,6 +50,14 @@ HRESULT CTexture_Effect::Save_EffectInfo()
 	return S_OK;
 }
 
+void CTexture_Effect::Set_TextureIndex(_uint iIdx)
+{
+	if (m_pEffectTexture->Get_TextureCount() <= iIdx)
+		m_iTextureIndex = 0;
+	else
+		m_iTextureIndex = iIdx;
+}
+
 HRESULT CTexture_Effect::Ready_Components(const wstring& strModelFolderPath, const wstring& strModelFileName)
 {
 	/* For.Com_Transform */
@@ -75,7 +83,7 @@ HRESULT CTexture_Effect::Ready_Components(const wstring& strModelFolderPath, con
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Particle"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBuffer)))
 		return E_FAIL;
 
 
@@ -112,9 +120,12 @@ HRESULT CTexture_Effect::Render()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_tTextureEffectDesc", &m_tTextureEffectDesc, sizeof(TEXTURE_EFFECT_DESC))))
 		return E_FAIL;
 
+
+
 	if (FAILED(m_pEffectTexture->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", m_iTextureIndex)))
 		return E_FAIL;
 	
+
 	m_pShaderCom->Begin(0);
 
 	m_pVIBuffer->Render();

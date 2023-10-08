@@ -148,11 +148,6 @@ HRESULT CTerrain::Bind_ShaderResources()
 	if (FAILED(GAME_INSTANCE->Bind_TransformToShader(m_pShaderCom, "g_ProjMatrix", CPipeLine::D3DTS_PROJ)))
 		return E_FAIL;
 
-	//if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
-	//	return E_FAIL;
-
-	;
-
 
 
 

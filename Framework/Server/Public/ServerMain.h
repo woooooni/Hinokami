@@ -21,6 +21,9 @@ public:
 public:
 	_bool Is_ShutDown() { return m_bShutDown; }
 
+//private:
+//	IN_ADDR Get_MyIPAddress();
+
 private:
 	_bool m_bShutDown;
 

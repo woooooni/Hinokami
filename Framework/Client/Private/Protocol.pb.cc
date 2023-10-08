@@ -100,7 +100,8 @@ constexpr S_CREATE_OBJECT::S_CREATE_OBJECT(
   , ilayerindex_(0)
   , imodeltype_(0u)
   , ianimationindex_(0u)
-  , fanimationplaytime_(0){}
+  , fanimationplaytime_(0)
+  , fanimationtickpersecond_(0){}
 struct S_CREATE_OBJECTDefaultTypeInternal {
   constexpr S_CREATE_OBJECTDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -282,6 +283,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_Protocol_2eproto::offsets[] PR
   PROTOBUF_FIELD_OFFSET(::Protocol::S_CREATE_OBJECT, imodeltype_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_CREATE_OBJECT, ianimationindex_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_CREATE_OBJECT, fanimationplaytime_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_CREATE_OBJECT, fanimationtickpersecond_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_CREATE_OBJECT, mworldmatrix_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_CREATE_OBJECT, _internal_metadata_),
@@ -366,13 +368,13 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 24, -1, sizeof(::Protocol::S_EXIT_LEVEL)},
   { 30, -1, sizeof(::Protocol::C_EXIT_LEVEL)},
   { 36, -1, sizeof(::Protocol::S_CREATE_OBJECT)},
-  { 51, -1, sizeof(::Protocol::C_CREATE_OBJECT)},
-  { 66, -1, sizeof(::Protocol::S_DELETE_OBJECT)},
-  { 77, -1, sizeof(::Protocol::C_DELETE_OBJECT)},
-  { 88, -1, sizeof(::Protocol::S_WORLD_MATRIX)},
-  { 97, -1, sizeof(::Protocol::C_WORLD_MATRIX)},
-  { 106, -1, sizeof(::Protocol::S_CHANGE_ANIMATION)},
-  { 115, -1, sizeof(::Protocol::C_CHANGE_ANIMATION)},
+  { 52, -1, sizeof(::Protocol::C_CREATE_OBJECT)},
+  { 67, -1, sizeof(::Protocol::S_DELETE_OBJECT)},
+  { 78, -1, sizeof(::Protocol::C_DELETE_OBJECT)},
+  { 89, -1, sizeof(::Protocol::S_WORLD_MATRIX)},
+  { 98, -1, sizeof(::Protocol::C_WORLD_MATRIX)},
+  { 107, -1, sizeof(::Protocol::S_CHANGE_ANIMATION)},
+  { 116, -1, sizeof(::Protocol::C_CHANGE_ANIMATION)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -399,37 +401,37 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "ER_LEVEL\022\020\n\010iLevelID\030\001 \001(\004\"\"\n\rC_ENTER_LE"
   "VEL\022\021\n\tbEnter_OK\030\001 \001(\004\" \n\014S_EXIT_LEVEL\022\020"
   "\n\010iLevelID\030\001 \001(\004\" \n\014C_EXIT_LEVEL\022\020\n\010bExi"
-  "t_OK\030\001 \001(\004\"\361\001\n\017S_CREATE_OBJECT\022\021\n\tiObjec"
+  "t_OK\030\001 \001(\004\"\222\002\n\017S_CREATE_OBJECT\022\021\n\tiObjec"
   "tID\030\001 \001(\005\022\023\n\013iObjectType\030\002 \001(\r\022\023\n\013iLevel"
   "Index\030\003 \001(\005\022\023\n\013iLayerIndex\030\004 \001(\005\022\017\n\007strN"
   "ame\030\005 \001(\t\022\030\n\020strPrototypeName\030\006 \001(\t\022\022\n\ni"
   "ModelType\030\007 \001(\r\022\027\n\017iAnimationIndex\030\010 \001(\r"
-  "\022\032\n\022fAnimationPlayTime\030\t \001(\002\022\030\n\014mWorldMa"
-  "trix\030\n \003(\002B\002\020\001\"\361\001\n\017C_CREATE_OBJECT\022\021\n\tiO"
-  "bjectID\030\001 \001(\005\022\023\n\013iObjectType\030\002 \001(\r\022\023\n\013iL"
-  "evelIndex\030\003 \001(\005\022\023\n\013iLayerIndex\030\004 \001(\005\022\017\n\007"
-  "strName\030\005 \001(\t\022\030\n\020strPrototypeName\030\006 \001(\t\022"
-  "\022\n\niModelType\030\007 \001(\r\022\027\n\017iAnimationIndex\030\010"
-  " \001(\r\022\032\n\022fAnimationPlayTime\030\t \001(\002\022\030\n\014mWor"
-  "ldMatrix\030\n \003(\002B\002\020\001\"\216\001\n\017S_DELETE_OBJECT\022\021"
-  "\n\tiObjectID\030\001 \001(\005\022\023\n\013iObjectType\030\002 \001(\r\022\023"
-  "\n\013iLevelIndex\030\003 \001(\005\022\023\n\013iLayerIndex\030\004 \001(\005"
-  "\022\017\n\007strName\030\005 \001(\t\022\030\n\020strPrototypeName\030\006 "
-  "\001(\t\"\216\001\n\017C_DELETE_OBJECT\022\021\n\tiObjectID\030\001 \001"
-  "(\005\022\023\n\013iObjectType\030\002 \001(\r\022\023\n\013iLevelIndex\030\003"
-  " \001(\005\022\023\n\013iLayerIndex\030\004 \001(\005\022\017\n\007strName\030\005 \001"
-  "(\t\022\030\n\020strPrototypeName\030\006 \001(\t\"_\n\016S_WORLD_"
-  "MATRIX\022\020\n\010iLevelID\030\001 \001(\005\022\021\n\tiObjectID\030\002 "
-  "\001(\005\022\016\n\006iLayer\030\003 \001(\005\022\030\n\014mWorldMatrix\030\004 \003("
-  "\002B\002\020\001\"_\n\016C_WORLD_MATRIX\022\020\n\010iLevelID\030\001 \001("
-  "\005\022\021\n\tiObjectID\030\002 \001(\005\022\016\n\006iLayer\030\003 \001(\005\022\030\n\014"
-  "mWorldMatrix\030\004 \003(\002B\002\020\001\"[\n\022S_CHANGE_ANIMA"
-  "TION\022\021\n\tiObjectID\030\001 \001(\005\022\016\n\006iLevel\030\002 \001(\005\022"
-  "\016\n\006iLayer\030\003 \001(\005\022\022\n\niAnimIndex\030\004 \001(\005\"u\n\022C"
-  "_CHANGE_ANIMATION\022\021\n\tiObjectID\030\001 \001(\005\022\016\n\006"
-  "iLevel\030\002 \001(\005\022\016\n\006iLayer\030\003 \001(\005\022\022\n\niAnimInd"
-  "ex\030\004 \001(\005\022\030\n\020iServerDelayTime\030\005 \001(\002b\006prot"
-  "o3"
+  "\022\032\n\022fAnimationPlayTime\030\t \001(\002\022\037\n\027fAnimati"
+  "onTickPerSecond\030\n \001(\002\022\030\n\014mWorldMatrix\030\013 "
+  "\003(\002B\002\020\001\"\361\001\n\017C_CREATE_OBJECT\022\021\n\tiObjectID"
+  "\030\001 \001(\005\022\023\n\013iObjectType\030\002 \001(\r\022\023\n\013iLevelInd"
+  "ex\030\003 \001(\005\022\023\n\013iLayerIndex\030\004 \001(\005\022\017\n\007strName"
+  "\030\005 \001(\t\022\030\n\020strPrototypeName\030\006 \001(\t\022\022\n\niMod"
+  "elType\030\007 \001(\r\022\027\n\017iAnimationIndex\030\010 \001(\r\022\032\n"
+  "\022fAnimationPlayTime\030\t \001(\002\022\030\n\014mWorldMatri"
+  "x\030\n \003(\002B\002\020\001\"\216\001\n\017S_DELETE_OBJECT\022\021\n\tiObje"
+  "ctID\030\001 \001(\005\022\023\n\013iObjectType\030\002 \001(\r\022\023\n\013iLeve"
+  "lIndex\030\003 \001(\005\022\023\n\013iLayerIndex\030\004 \001(\005\022\017\n\007str"
+  "Name\030\005 \001(\t\022\030\n\020strPrototypeName\030\006 \001(\t\"\216\001\n"
+  "\017C_DELETE_OBJECT\022\021\n\tiObjectID\030\001 \001(\005\022\023\n\013i"
+  "ObjectType\030\002 \001(\r\022\023\n\013iLevelIndex\030\003 \001(\005\022\023\n"
+  "\013iLayerIndex\030\004 \001(\005\022\017\n\007strName\030\005 \001(\t\022\030\n\020s"
+  "trPrototypeName\030\006 \001(\t\"_\n\016S_WORLD_MATRIX\022"
+  "\020\n\010iLevelID\030\001 \001(\005\022\021\n\tiObjectID\030\002 \001(\005\022\016\n\006"
+  "iLayer\030\003 \001(\005\022\030\n\014mWorldMatrix\030\004 \003(\002B\002\020\001\"_"
+  "\n\016C_WORLD_MATRIX\022\020\n\010iLevelID\030\001 \001(\005\022\021\n\tiO"
+  "bjectID\030\002 \001(\005\022\016\n\006iLayer\030\003 \001(\005\022\030\n\014mWorldM"
+  "atrix\030\004 \003(\002B\002\020\001\"[\n\022S_CHANGE_ANIMATION\022\021\n"
+  "\tiObjectID\030\001 \001(\005\022\016\n\006iLevel\030\002 \001(\005\022\016\n\006iLay"
+  "er\030\003 \001(\005\022\022\n\niAnimIndex\030\004 \001(\005\"u\n\022C_CHANGE"
+  "_ANIMATION\022\021\n\tiObjectID\030\001 \001(\005\022\016\n\006iLevel\030"
+  "\002 \001(\005\022\016\n\006iLayer\030\003 \001(\005\022\022\n\niAnimIndex\030\004 \001("
+  "\005\022\030\n\020iServerDelayTime\030\005 \001(\002b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -437,7 +439,7 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_Protocol_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Protocol_2eproto = {
-  false, false, 1442, descriptor_table_protodef_Protocol_2eproto, "Protocol.proto", 
+  false, false, 1475, descriptor_table_protodef_Protocol_2eproto, "Protocol.proto", 
   &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 14,
   schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
   file_level_metadata_Protocol_2eproto, file_level_enum_descriptors_Protocol_2eproto, file_level_service_descriptors_Protocol_2eproto,
@@ -1616,8 +1618,8 @@ S_CREATE_OBJECT::S_CREATE_OBJECT(const S_CREATE_OBJECT& from)
       GetArenaForAllocation());
   }
   ::memcpy(&iobjectid_, &from.iobjectid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&fanimationplaytime_) -
-    reinterpret_cast<char*>(&iobjectid_)) + sizeof(fanimationplaytime_));
+    static_cast<size_t>(reinterpret_cast<char*>(&fanimationtickpersecond_) -
+    reinterpret_cast<char*>(&iobjectid_)) + sizeof(fanimationtickpersecond_));
   // @@protoc_insertion_point(copy_constructor:Protocol.S_CREATE_OBJECT)
 }
 
@@ -1626,8 +1628,8 @@ strname_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlre
 strprototypename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&iobjectid_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&fanimationplaytime_) -
-    reinterpret_cast<char*>(&iobjectid_)) + sizeof(fanimationplaytime_));
+    0, static_cast<size_t>(reinterpret_cast<char*>(&fanimationtickpersecond_) -
+    reinterpret_cast<char*>(&iobjectid_)) + sizeof(fanimationtickpersecond_));
 }
 
 S_CREATE_OBJECT::~S_CREATE_OBJECT() {
@@ -1662,8 +1664,8 @@ void S_CREATE_OBJECT::Clear() {
   strname_.ClearToEmpty();
   strprototypename_.ClearToEmpty();
   ::memset(&iobjectid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&fanimationplaytime_) -
-      reinterpret_cast<char*>(&iobjectid_)) + sizeof(fanimationplaytime_));
+      reinterpret_cast<char*>(&fanimationtickpersecond_) -
+      reinterpret_cast<char*>(&iobjectid_)) + sizeof(fanimationtickpersecond_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1740,12 +1742,19 @@ const char* S_CREATE_OBJECT::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPAC
           ptr += sizeof(float);
         } else goto handle_unusual;
         continue;
-      // repeated float mWorldMatrix = 10 [packed = true];
+      // float fAnimationTickPerSecond = 10;
       case 10:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 82)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 85)) {
+          fanimationtickpersecond_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else goto handle_unusual;
+        continue;
+      // repeated float mWorldMatrix = 11 [packed = true];
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 90)) {
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedFloatParser(_internal_mutable_mworldmatrix(), ptr, ctx);
           CHK_(ptr);
-        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 85) {
+        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 93) {
           _internal_add_mworldmatrix(::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr));
           ptr += sizeof(float);
         } else goto handle_unusual;
@@ -1841,9 +1850,15 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(9, this->_internal_fanimationplaytime(), target);
   }
 
-  // repeated float mWorldMatrix = 10 [packed = true];
+  // float fAnimationTickPerSecond = 10;
+  if (!(this->fanimationtickpersecond() <= 0 && this->fanimationtickpersecond() >= 0)) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteFloatToArray(10, this->_internal_fanimationtickpersecond(), target);
+  }
+
+  // repeated float mWorldMatrix = 11 [packed = true];
   if (this->_internal_mworldmatrix_size() > 0) {
-    target = stream->WriteFixedPacked(10, _internal_mworldmatrix(), target);
+    target = stream->WriteFixedPacked(11, _internal_mworldmatrix(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1862,7 +1877,7 @@ size_t S_CREATE_OBJECT::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated float mWorldMatrix = 10 [packed = true];
+  // repeated float mWorldMatrix = 11 [packed = true];
   {
     unsigned int count = static_cast<unsigned int>(this->_internal_mworldmatrix_size());
     size_t data_size = 4UL * count;
@@ -1935,6 +1950,11 @@ size_t S_CREATE_OBJECT::ByteSizeLong() const {
     total_size += 1 + 4;
   }
 
+  // float fAnimationTickPerSecond = 10;
+  if (!(this->fanimationtickpersecond() <= 0 && this->fanimationtickpersecond() >= 0)) {
+    total_size += 1 + 4;
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
         _internal_metadata_, total_size, &_cached_size_);
@@ -1994,6 +2014,9 @@ void S_CREATE_OBJECT::MergeFrom(const S_CREATE_OBJECT& from) {
   if (!(from.fanimationplaytime() <= 0 && from.fanimationplaytime() >= 0)) {
     _internal_set_fanimationplaytime(from._internal_fanimationplaytime());
   }
+  if (!(from.fanimationtickpersecond() <= 0 && from.fanimationtickpersecond() >= 0)) {
+    _internal_set_fanimationtickpersecond(from._internal_fanimationtickpersecond());
+  }
 }
 
 void S_CREATE_OBJECT::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -2029,8 +2052,8 @@ void S_CREATE_OBJECT::InternalSwap(S_CREATE_OBJECT* other) {
       &other->strprototypename_, other->GetArenaForAllocation()
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(S_CREATE_OBJECT, fanimationplaytime_)
-      + sizeof(S_CREATE_OBJECT::fanimationplaytime_)
+      PROTOBUF_FIELD_OFFSET(S_CREATE_OBJECT, fanimationtickpersecond_)
+      + sizeof(S_CREATE_OBJECT::fanimationtickpersecond_)
       - PROTOBUF_FIELD_OFFSET(S_CREATE_OBJECT, iobjectid_)>(
           reinterpret_cast<char*>(&iobjectid_),
           reinterpret_cast<char*>(&other->iobjectid_));

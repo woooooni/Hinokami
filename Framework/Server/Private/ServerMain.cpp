@@ -6,7 +6,7 @@
 #include "Service.h"
 #include "ThreadManager.h"
 #include "ServerObject_Manager.h"
-
+#include "Utils.h"
 
 CServerMain::CServerMain()
 {
@@ -18,7 +18,7 @@ HRESULT CServerMain::Initialize()
 	ServerPacketHandler::Init();
 
 	ServerServiceRef service = std::make_shared<ServerService>(
-		NetAddress(L"192.168.0.105", 7777),
+		NetAddress(L"192.168.1.33", 7777),
 		std::make_shared<IocpCore>(),
 		std::make_shared<CGameSession>, // TODO : SessionManager µî
 		10);

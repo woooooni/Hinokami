@@ -16,6 +16,8 @@ CEffect::CEffect(const CEffect& rhs)
 	, m_pRendererCom(rhs.m_pRendererCom)
 	, m_pTransformCom(rhs.m_pTransformCom)
 	, m_eType(rhs.m_eType)
+	, m_tMeshEffectDesc(rhs.m_tMeshEffectDesc)
+	, m_tTextureEffectDesc(rhs.m_tTextureEffectDesc)
 {
 	Safe_AddRef(m_pShaderCom);
 	Safe_AddRef(m_pRendererCom);

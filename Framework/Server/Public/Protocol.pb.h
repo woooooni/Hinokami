@@ -1019,7 +1019,7 @@ class S_CREATE_OBJECT final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kMWorldMatrixFieldNumber = 10,
+    kMWorldMatrixFieldNumber = 11,
     kStrNameFieldNumber = 5,
     kStrPrototypeNameFieldNumber = 6,
     kIObjectIDFieldNumber = 1,
@@ -1029,8 +1029,9 @@ class S_CREATE_OBJECT final :
     kIModelTypeFieldNumber = 7,
     kIAnimationIndexFieldNumber = 8,
     kFAnimationPlayTimeFieldNumber = 9,
+    kFAnimationTickPerSecondFieldNumber = 10,
   };
-  // repeated float mWorldMatrix = 10 [packed = true];
+  // repeated float mWorldMatrix = 11 [packed = true];
   int mworldmatrix_size() const;
   private:
   int _internal_mworldmatrix_size() const;
@@ -1143,6 +1144,15 @@ class S_CREATE_OBJECT final :
   void _internal_set_fanimationplaytime(float value);
   public:
 
+  // float fAnimationTickPerSecond = 10;
+  void clear_fanimationtickpersecond();
+  float fanimationtickpersecond() const;
+  void set_fanimationtickpersecond(float value);
+  private:
+  float _internal_fanimationtickpersecond() const;
+  void _internal_set_fanimationtickpersecond(float value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.S_CREATE_OBJECT)
  private:
   class _Internal;
@@ -1160,6 +1170,7 @@ class S_CREATE_OBJECT final :
   ::PROTOBUF_NAMESPACE_ID::uint32 imodeltype_;
   ::PROTOBUF_NAMESPACE_ID::uint32 ianimationindex_;
   float fanimationplaytime_;
+  float fanimationtickpersecond_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -2893,7 +2904,27 @@ inline void S_CREATE_OBJECT::set_fanimationplaytime(float value) {
   // @@protoc_insertion_point(field_set:Protocol.S_CREATE_OBJECT.fAnimationPlayTime)
 }
 
-// repeated float mWorldMatrix = 10 [packed = true];
+// float fAnimationTickPerSecond = 10;
+inline void S_CREATE_OBJECT::clear_fanimationtickpersecond() {
+  fanimationtickpersecond_ = 0;
+}
+inline float S_CREATE_OBJECT::_internal_fanimationtickpersecond() const {
+  return fanimationtickpersecond_;
+}
+inline float S_CREATE_OBJECT::fanimationtickpersecond() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_CREATE_OBJECT.fAnimationTickPerSecond)
+  return _internal_fanimationtickpersecond();
+}
+inline void S_CREATE_OBJECT::_internal_set_fanimationtickpersecond(float value) {
+  
+  fanimationtickpersecond_ = value;
+}
+inline void S_CREATE_OBJECT::set_fanimationtickpersecond(float value) {
+  _internal_set_fanimationtickpersecond(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_CREATE_OBJECT.fAnimationTickPerSecond)
+}
+
+// repeated float mWorldMatrix = 11 [packed = true];
 inline int S_CREATE_OBJECT::_internal_mworldmatrix_size() const {
   return mworldmatrix_.size();
 }

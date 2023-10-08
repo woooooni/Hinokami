@@ -34,6 +34,9 @@ public:
 public:
 	HRESULT Save_EffectInfo() override;
 
+public:
+	void Set_TextureIndex(_uint iIdx);
+
 protected:
 	virtual HRESULT Ready_Components(const wstring& strModelFolderPath, const wstring& strModelFileName);
 
