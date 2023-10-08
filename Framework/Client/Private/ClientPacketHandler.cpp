@@ -8,6 +8,7 @@
 #include "ServerSession.h"
 #include "Level_Manager.h"
 #include "Utils.h"
+#include "Animation.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -43,11 +44,18 @@ bool Handle_C_CREATE_OBJECT(PacketSessionRef& session, Protocol::C_CREATE_OBJECT
 	if (nullptr == pObj)
 		return false;
 
+	
+	pObj->Set_ObjectID(pkt.iobjectid());
 	pObj->Set_ObjectTag(CUtils::ToWString(pkt.strname()));
 
 	if (pkt.imodeltype() == CModel::TYPE::TYPE_ANIM)
 	{
+		CModel* pModelCom = dynamic_cast<CModel*>(pObj->Get_Component(L"Com_Model"));
+		if (nullptr == pModelCom)
+			return false;
 
+		pModelCom->Set_AnimationIndex_Force(pkt.ianimationindex());
+		pModelCom->Get_Animations()[pModelCom->Get_CurrAnimationIndex()]->Set_AnimationPlayTime(pkt.fanimationplaytime());
 	}
 
 	CTransform* pTranform = dynamic_cast<CTransform*>(pObj->Get_Component(L"Com_Transform"));

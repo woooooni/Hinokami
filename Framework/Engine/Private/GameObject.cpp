@@ -77,8 +77,6 @@ HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring& pPrototypeT
 	if (nullptr != Find_Component(pComponentTag))
 		return E_FAIL;
 
-	
-
 
 	CComponent* pComponent = GAME_INSTANCE->Clone_Component(iLevelIndex, pPrototypeTag, this, pArg);
 	if (nullptr == pComponent)

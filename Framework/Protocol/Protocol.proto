@@ -48,8 +48,9 @@ message S_CREATE_OBJECT
 	uint32 iModelType = 7;
 	uint32 iAnimationIndex = 8;
 	float fAnimationPlayTime = 9;
+	float fAnimationTickPerSecond = 10;
 
-	repeated float mWorldMatrix = 10 [packed = true];
+	repeated float mWorldMatrix = 11 [packed = true];
 }
 
 message C_CREATE_OBJECT

@@ -17,6 +17,7 @@ CAnimation::CAnimation(const CAnimation& rhs)
 	, m_fTickPerSecond(rhs.m_fTickPerSecond)
 	, m_fPlayTime(rhs.m_fPlayTime)
 	, m_strName(rhs.m_strName)
+	, m_fSpeed(rhs.m_fTickPerSecond)
 	/*, m_pSRV(rhs.m_pSRV)*/
 {
 	for (auto& pChannel : m_Channels)
@@ -80,8 +81,11 @@ void CAnimation::Reset_Animation()
 	m_fPlayTime = 0.f; 
 	m_bPause = false;
 
-	for (auto& iCurrentKeyFrame : m_ChannelKeyFrames)
-		iCurrentKeyFrame = 0;
+	for (auto& pChannel : m_Channels)
+	{
+		for (auto& iCurrentKeyFrame : m_ChannelKeyFrames)
+			iCurrentKeyFrame = 0;
+	}
 }
 
 HRESULT CAnimation::Play_Animation(_float fTimeDelta)
@@ -160,6 +164,19 @@ CChannel* CAnimation::Get_Channel(const wstring& strChannelName)
 	}
 
 	return nullptr;
+}
+
+void CAnimation::Set_AnimationPlayTime(_float fPlayTime)
+{
+	m_fPlayTime = fPlayTime;
+
+	_uint		iChannelIndex = 0;
+	for (auto& pChannel : m_Channels)
+	{
+		m_ChannelKeyFrames[iChannelIndex] = pChannel->Update_Transformation(m_fPlayTime, m_ChannelKeyFrames[iChannelIndex], m_HierarchyNodes[iChannelIndex], nullptr);
+		m_ChannelOldKeyFrames[iChannelIndex] = m_ChannelKeyFrames[iChannelIndex];
+		++iChannelIndex;
+	}
 }
 
 #pragma region Deprecated

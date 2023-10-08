@@ -25,6 +25,9 @@ public:
 
 	HRESULT Set_Animation(const wstring& strAnimationName);
 	void Set_AnimIndex(_uint iAnimIndex);
+
+	HRESULT Set_Animation_Force(const wstring& strAnimationName);
+	void Set_AnimationIndex_Force(_uint iAnimIndex);
 	
 	void Complete_Interpolation();
 

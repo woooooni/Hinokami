@@ -34,6 +34,7 @@ public:
 	void Set_ObjectTag(const wstring& strTag) { m_strObjectTag = strTag; }
 	const wstring& Get_ObjectTag() { return m_strObjectTag; }
 	
+	void Set_ObjectID(_uint iID) { m_iObjectID = iID; }
 	_uint Get_ObjectID() { return m_iObjectID; }
 	_uint Get_ObjectType() { return m_iObjectType; }
 

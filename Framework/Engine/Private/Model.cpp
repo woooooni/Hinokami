@@ -218,6 +218,31 @@ void CModel::Set_AnimIndex(_uint iAnimIndex)
 	m_bInterpolationAnimation = true;
 }
 
+HRESULT CModel::Set_Animation_Force(const wstring& strAnimationName)
+{
+	for (size_t i = 0; i < m_Animations.size(); ++i)
+	{
+		if (strAnimationName == m_Animations[i]->Get_AnimationName())
+		{
+			Set_AnimationIndex_Force(i);
+			return S_OK;
+		}
+	}
+
+	return E_FAIL;
+}
+
+void CModel::Set_AnimationIndex_Force(_uint iAnimIndex)
+{
+	if (iAnimIndex >= m_Animations.size())
+		iAnimIndex = 0;
+
+	m_Animations[m_iCurrentAnimIndex]->Reset_Animation();
+	m_iCurrentAnimIndex = iAnimIndex;
+	m_iNextAnimIndex = -1;
+	m_bInterpolationAnimation = false;
+}
+
 void CModel::Complete_Interpolation()
 {
 	m_iCurrentAnimIndex = m_iNextAnimIndex;

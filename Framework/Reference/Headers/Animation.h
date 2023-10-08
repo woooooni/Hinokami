@@ -19,6 +19,7 @@ public:
 	HRESULT Play_Animation(class CModel* pModel, CAnimation* pNextAnimation, _float fTimeDelta);
 	void Reset_Animation();
 
+
 public:
 	// HRESULT Ready_AnimationTexture();
 	// HRESULT SetUp_AnimationTexture_OnShader(class CShader* pShader, const char* pConstantName);
@@ -29,7 +30,11 @@ public:
 	class CChannel* Get_Channel(const wstring & strChannelName);
 	const vector<class CChannel*>& Get_Channels() { return m_Channels; }
 	_float Get_Duration() { return m_fDuration; }
-	_float Get_CurrFrame() { return m_fPlayTime; }
+
+	void Set_AnimationPlayTime(_float fPlayTime);
+	_float Get_PlayTime() { return m_fPlayTime; }
+
+	void Set_TickPerSecond(_float fTickPerSecond) { m_fTickPerSecond = fTickPerSecond; }
 	_float Get_TickPerSecond() { return m_fTickPerSecond; }
 
 public:
@@ -39,9 +44,10 @@ public:
 	void Set_Pause(_bool bPause) { m_bPause = bPause; }
 	_bool Is_Pause() { return m_bPause; }
 
-
 	const wstring& Get_AnimationName() { return m_strName; }
 	void Set_AnimationName(const wstring& strName) { m_strName = strName; }
+	
+
 
 
 private:
