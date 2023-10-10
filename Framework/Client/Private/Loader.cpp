@@ -16,6 +16,11 @@
 #include "Prop.h"
 #include "Utils.h"
 
+#include "UI.h"
+#include "UI_Logo_Title.h"
+#include "UI_Logo_BackGround.h"
+
+
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: m_pDevice(pDevice)
@@ -85,9 +90,6 @@ _int CLoader::Loading()
 
 HRESULT CLoader::Loading_For_Level_Logo()
 {
-	
-
-
 	/* For.Texture */
 	m_strLoading = TEXT("텍스쳐를 로딩 중 입니다.");
 
@@ -97,9 +99,17 @@ HRESULT CLoader::Loading_For_Level_Logo()
 	/* For.GameObject */
 	m_strLoading = TEXT("객체원형을 로딩 중 입니다.");
 
-	///* For.Prototype_GameObject_BackGround */
-	//if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGround::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+
+	
+	///* For.Prototype_GameObject_UI_Logo_Title */
+	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Logo_Title"), CUI_Logo_Title::Create(m_pDevice, m_pContext,
+		{ 190.f, 140.f, 350.f, 350.f }), LAYER_TYPE::LAYER_UI)))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_UI_Logo_BackGround */
+	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Logo_BackGround"), CUI_Logo_BackGround::Create(m_pDevice, m_pContext,
+		{ g_iWinSizeX / 2.f, g_iWinSizeY / 2.f, g_iWinSizeX, g_iWinSizeY }), LAYER_TYPE::LAYER_UI)))
+		return E_FAIL;
 
 
 	m_strLoading = TEXT("로딩 끝.");

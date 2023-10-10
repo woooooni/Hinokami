@@ -15,6 +15,7 @@ private:
 
 public:
 	class CHierarchyNode* Get_HierarchyNode(const wstring& strNodeName);
+	_uint Get_HierarchyNodeIndex(const wstring& strNodeName);
 
 	_uint Get_NumMeshes() const {
 		return m_iNumMeshes;
@@ -41,6 +42,7 @@ public:
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eType, const wstring& strModelFilePath, const wstring& strModelFileName, _fmatrix PivotMatrix);
 	virtual HRESULT Initialize(void* pArg);
+	virtual HRESULT Initialize_Bin(void* pArg);
 
 public:
 	HRESULT SetUp_OnShader(class CShader* pShader, _uint iMaterialIndex, aiTextureType eTextureType, const char* pConstantName);
@@ -78,6 +80,7 @@ private:
 	_float4x4					m_PivotMatrix;
 	TYPE						m_eModelType = TYPE_END;
 	_bool						m_bFromBinary = false;
+
 private:
 	_uint							m_iNumMeshes = 0;
 	vector<class CMesh*>			m_Meshes;
@@ -100,17 +103,14 @@ private:
 
 
 private:
-	ID3D11Texture1D* m_pMatrixTexture = nullptr;
-	ID3D11ShaderResourceView* m_pSRV;
-	vector<_float4x4> m_Matrices;
+	ID3D11ShaderResourceView* m_pAnimSRV;
 
-//private:
-//	vector<ID3D11ShaderResourceView*> m_MatrixTextures;
 
 private:
 	HRESULT Ready_MeshContainers(_fmatrix PivotMatrix);
 	HRESULT Ready_Materials(const wstring& pModelFilePath);
 	HRESULT Ready_HierarchyNodes(aiNode * pNode, class CHierarchyNode* pParent, _uint iDepth);
+	HRESULT Ready_HierarchyNodes_Bin();
 	HRESULT Ready_Animations();
 	HRESULT Ready_Animation_Texture();
 

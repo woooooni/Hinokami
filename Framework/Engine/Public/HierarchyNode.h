@@ -10,6 +10,7 @@ class ENGINE_DLL CHierarchyNode final : public CBase
 {
 private:
 	CHierarchyNode();
+	CHierarchyNode(const CHierarchyNode& rhs);
 	virtual ~CHierarchyNode() = default;
 
 public:
@@ -65,6 +66,7 @@ private:
 public:
 	static CHierarchyNode* Create(aiNode * pAINode, class CHierarchyNode* pParent, _uint iDepth);
 	static CHierarchyNode* Create_Bin();
+	CHierarchyNode* Clone();
 	virtual void Free();
 
 	friend class CModel_Manager;

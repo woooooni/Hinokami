@@ -32,6 +32,7 @@ namespace Client
 		OBJ_MESH_EFFECT,
 		OBJ_TEXTURE_EFFECT,
 		OBJ_TERRAIN,
+		OBJ_UI,
 		OBJ_DUMMY,
 		OBJ_END
 	};
@@ -46,7 +47,7 @@ namespace Client
 extern HWND g_hWnd;
 extern HINSTANCE g_hInstance;
 
-#define SERVER_IP		L"192.168.0.105"
+#define SERVER_IP		L"192.168.1.33"
 #define SERVER_PORT		7777
 
 using namespace Client;

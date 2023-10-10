@@ -17,14 +17,12 @@ CAnimation::CAnimation(const CAnimation& rhs)
 	, m_fTickPerSecond(rhs.m_fTickPerSecond)
 	, m_fPlayTime(rhs.m_fPlayTime)
 	, m_strName(rhs.m_strName)
-	, m_fSpeed(rhs.m_fTickPerSecond)
+	, m_fSpeed(rhs.m_fSpeed)
 	/*, m_pSRV(rhs.m_pSRV)*/
 {
 	for (auto& pChannel : m_Channels)
 		Safe_AddRef(pChannel);
 
-	/*if(nullptr != m_pSRV)
-		Safe_AddRef(m_pSRV);*/
 }
 
 HRESULT CAnimation::Initialize_Prototype(aiAnimation* pAIAnimation)
@@ -110,7 +108,7 @@ HRESULT CAnimation::Play_Animation(_float fTimeDelta)
 	/* 하이어라키 노드에 저장해준다. */
 	for (auto& pChannel : m_Channels)
 	{
-		m_ChannelKeyFrames[iChannelIndex] = pChannel->Update_Transformation(m_fPlayTime, m_ChannelKeyFrames[iChannelIndex], m_HierarchyNodes[iChannelIndex], nullptr);
+		m_ChannelKeyFrames[iChannelIndex] = pChannel->Update_Transformation(m_fPlayTime, m_ChannelKeyFrames[iChannelIndex], m_HierarchyNodes[iChannelIndex], nullptr, &m_fRatio);
 		m_ChannelOldKeyFrames[iChannelIndex] = m_ChannelKeyFrames[iChannelIndex];
 		++iChannelIndex;
 	}
@@ -122,15 +120,15 @@ HRESULT CAnimation::Play_Animation(CModel* pModel, CAnimation* pNextAnimation, _
 {
 	if (pModel->Is_InterpolatingAnimation())
 	{
+		m_fPlayTime += m_fSpeed * m_fTickPerSecond * fTimeDelta;
+
 		_uint		iChannelIndex = 0;
 		for (auto& pChannel : m_Channels)
 		{
-			pChannel->Interpolation(m_fPlayTime, fTimeDelta, pNextAnimation, m_ChannelOldKeyFrames[iChannelIndex], m_HierarchyNodes[iChannelIndex], pModel);
+			pChannel->Interpolation(m_fPlayTime, fTimeDelta, this, pNextAnimation, m_ChannelOldKeyFrames[iChannelIndex], m_HierarchyNodes[iChannelIndex], pModel, &m_fRatio);
 			++iChannelIndex;
 		}
 	}
-
-
 
 	return S_OK;
 }
@@ -177,100 +175,8 @@ void CAnimation::Set_AnimationPlayTime(_float fPlayTime)
 		m_ChannelOldKeyFrames[iChannelIndex] = m_ChannelKeyFrames[iChannelIndex];
 		++iChannelIndex;
 	}
+
 }
-
-#pragma region Deprecated
-//HRESULT CAnimation::Ready_AnimationTexture()
-//{
-//	CGameInstance* GAME_INSTANCE = GET_INSTANCE(CGameInstance);
-//	
-//	_matrix TempMatrix = XMMatrixIdentity();
-//	_float4x4 TempMat;
-//	vector<vector<_float4x4>> Matrices;
-//
-//	Matrices.resize(_uint(m_fDuration));
-//
-//
-//	for (_uint i = 0; i < _uint(m_fDuration); ++i)
-//	{
-//		Matrices[i].reserve(m_iNumChannels);
-//
-//		_uint		iChannelIndex = 0;
-//		for (auto& pChannel : m_Channels)
-//		{
-//			m_ChannelKeyFrames[iChannelIndex] = pChannel->Update_Transformation(i, m_ChannelKeyFrames[iChannelIndex], m_HierarchyNodes[iChannelIndex], &TempMatrix);
-//			++iChannelIndex;
-//		}
-//
-//		XMStoreFloat4x4(&TempMat, TempMatrix);
-//		Matrices[i].push_back(TempMat);
-//	}
-//
-//
-//	ID3D11Texture2D* pTexture;
-//	D3D11_TEXTURE2D_DESC TextureDesc;
-//	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
-//	TextureDesc.Width = m_iNumChannels * 4;
-//	TextureDesc.Height = _uint(m_fDuration);
-//	TextureDesc.ArraySize = 1;
-//	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT; // 16바이트
-//	TextureDesc.Usage = D3D11_USAGE_IMMUTABLE;
-//	TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-//	TextureDesc.MipLevels = 1;
-//	TextureDesc.SampleDesc.Count = 1;
-//
-//	const _uint iLineSize = m_iNumChannels * sizeof(_float4x4);
-//	const _uint iPageSize = iLineSize * _uint(m_fDuration);
-//	void* pFullData = nullptr;
-//	pFullData = ::malloc(iPageSize);
-//	
-//
-//	_uint iStartOffset = 0;
-//	for (_uint i = 0; i < _uint(m_fDuration); ++i)
-//	{
-//		BYTE* iStart = reinterpret_cast<BYTE*>(pFullData) + iStartOffset;
-//		void* pData = iStart;
-//		::memcpy(pData, Matrices[i].data(), iLineSize);
-//		iStartOffset += iLineSize;
-//	}
-//
-//
-//	// 리소스 만들기
-//	D3D11_SUBRESOURCE_DATA Subresource;
-//
-//	Subresource.pSysMem = pFullData;
-//	Subresource.SysMemPitch = m_iNumChannels * sizeof(_float4x4);
-//
-//	if (FAILED(GAME_INSTANCE->Get_Device()->CreateTexture2D(&TextureDesc, &Subresource, &pTexture)))
-//		return E_FAIL;
-//
-//	::free(pFullData);
-//	pFullData = nullptr;
-//
-//	D3D11_SHADER_RESOURCE_VIEW_DESC SrvDesc;
-//	ZeroMemory(&SrvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-//	SrvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-//	SrvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-//	SrvDesc.Texture2D.MipLevels = 1;
-//
-//	if (FAILED(GAME_INSTANCE->Get_Device()->CreateShaderResourceView(pTexture, &SrvDesc, &m_pSRV)))
-//		return E_FAIL;
-//
-//
-//
-//
-//	return S_OK;
-//}
-//
-//HRESULT CAnimation::SetUp_AnimationTexture_OnShader(CShader* pShader, const char* pConstantName)
-//{
-//	if (FAILED(pShader->Bind_Texture(pConstantName, m_pSRV)))
-//		return E_FAIL;
-//
-//	return S_OK;
-//}
-
-#pragma endregion
 
 CAnimation* CAnimation::Create(aiAnimation* pAIAnimation)
 {

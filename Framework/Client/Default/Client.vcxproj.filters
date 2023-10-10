@@ -124,6 +124,12 @@
     <Filter Include="98.Default">
       <UniqueIdentifier>{068ac4ae-308f-439b-8a7d-d5b077bfb9ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\08. UI">
+      <UniqueIdentifier>{906b0f1e-6358-4af4-a69c-333e75dfe3c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08. UI\Logo">
+      <UniqueIdentifier>{15129fc4-724b-462f-bf8b-3bbe5060b78e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -261,6 +267,15 @@
     <ClInclude Include="..\Public\ServerSession.h">
       <Filter>96. Manager\Network\01. Session</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI.h">
+      <Filter>02.GameObjects\08. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Logo_BackGround.h">
+      <Filter>02.GameObjects\08. UI\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Logo_Title.h">
+      <Filter>02.GameObjects\08. UI\Logo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -382,6 +397,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\ServerSession.cpp">
       <Filter>96. Manager\Network\01. Session</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>02.GameObjects\08. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Logo_BackGround.cpp">
+      <Filter>02.GameObjects\08. UI\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Logo_Title.cpp">
+      <Filter>02.GameObjects\08. UI\Logo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

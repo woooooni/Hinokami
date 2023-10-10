@@ -24,13 +24,14 @@ void CLevel_Manager::LateTick(_float fTimeDelta)
 
 HRESULT CLevel_Manager::Render_Debug()
 {
-	WRITE_LOCK
+	
 	if (nullptr != m_pCurrentLevel)
 		m_pCurrentLevel->Render_Debug();
 
 
 	if (nullptr != m_pReserveLevel)
 	{
+		WRITE_LOCK
 		if (nullptr != m_pCurrentLevel)
 		{
 			m_pCurrentLevel->Exit_Level();
@@ -58,11 +59,6 @@ HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel* pNewLevel)
 	m_pReserveLevel = pNewLevel;
 
 
-	return S_OK;
-}
-
-HRESULT CLevel_Manager::Enter_Level()
-{
 	return S_OK;
 }
 

@@ -1,12 +1,12 @@
-#pragma once
+ï»¿#pragma once
 
 
 #include "VIBuffer.h"
 #include "Model.h"
 
 
-/* ¸ğµ¨À» ±¸¼ºÇÏ´Â ÇÏ³ªÀÇ ¸Ş½Ã. */
-/* ÀÌ ¸Ş½Ã¸¦ ±¸¼ºÇÏ´Â Á¤Á¡, ÀÎµ¦½º ¹öÆÛ¸¦ º¸°üÇÑ´Ù. */
+/* ëª¨ë¸ì„ êµ¬ì„±í•˜ëŠ” í•˜ë‚˜ì˜ ë©”ì‹œ. */
+/* ì´ ë©”ì‹œë¥¼ êµ¬ì„±í•˜ëŠ” ì •ì , ì¸ë±ìŠ¤ ë²„í¼ë¥¼ ë³´ê´€í•œë‹¤. */
 
 BEGIN(Engine)
 
@@ -33,9 +33,8 @@ public:
 
 public:
 	HRESULT SetUp_HierarchyNodes(class CModel* pModel, aiMesh* pAIMesh);
-	void SetUp_BoneMatrices(ID3D11Texture1D* pTexture, vector<_float4x4>& Matrices, _fmatrix PivotMatrix);
 
-	
+
 public:
 	_uint Get_BoneCount() { return m_iNumBones; }
 
@@ -44,11 +43,11 @@ private:
 	_uint				m_iMaterialIndex = 0;
 	_bool				m_bFromBinary = false;
 private:
-	/* ÀÌ ¸Ş½Ã¿¡ ¿µÇâ¤·¸£ ÁÖ´Â »ÀÀÇ °¹¼ö. */
+	/* ì´ ë©”ì‹œì— ì˜í–¥ã…‡ë¥´ ì£¼ëŠ” ë¼ˆì˜ ê°¯ìˆ˜. */
 	_uint							m_iNumBones = 0;
 
-	/* ÀÌ ¸Ş½Ã¿¡ ¿µÇâÀ» ÁÖ´Â »ÀµéÀ» ¸ğ¾Æ³õ´À´Ù. */
-	/* why ? : ¸Ş½Ã º°·Î ·»´õ¸µÇÒ ¶§ ÀÌ ¸Ş½Ã¿¡ ¿µÇâ¤·¸£ ÁÖ´Â –—¸£ÀÇ Çà·ÄÀ» ¸ğ¾Æ¼­ ¼Î{¤·µğ·¯¤Ç µµ¤Ã¤¤Áú·Á°í. */
+	/* ì´ ë©”ì‹œì— ì˜í–¥ì„ ì£¼ëŠ” ë¼ˆë“¤ì„ ëª¨ì•„ë†“ëŠë‹¤. */
+	/* why ? : ë©”ì‹œ ë³„ë¡œ ë Œë”ë§í•  ë•Œ ì´ ë©”ì‹œì— ì˜í–¥ã…‡ë¥´ ì£¼ëŠ” Â–Â—ë¥´ì˜ í–‰ë ¬ì„ ëª¨ì•„ì„œ ì…°{ã…‡ë””ëŸ¬ã…— ë„ã…“ã„´ì§ˆë ¤ê³ . */
 	vector<class CHierarchyNode*>	m_Bones;
 
 

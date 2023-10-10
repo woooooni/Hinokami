@@ -67,6 +67,7 @@ public:
 	void Go_Dir(_fvector vDir, _float fTimeDelta);
 
 	void Set_Scale(_fvector vScaleInfo);
+	void Set_Sclae(_float3 vScale);
 	_float3 Get_Scale();
 
 	_float3 Get_Rotaion_Degree();

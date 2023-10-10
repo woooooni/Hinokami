@@ -74,7 +74,7 @@ HRESULT CChannel::Initialize(aiNodeAnim* pAIChannel)
 }
 
 
-_uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, CHierarchyNode* pNode, __out _matrix* pOutMatrix)
+_uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, CHierarchyNode* pNode, __out _matrix* pOutMatrix, __out _float* pRatio)
 {
 	_float3			vScale;
 	_float4			vRotation;
@@ -98,6 +98,9 @@ _uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, 
 
 		_float		fRatio = (fPlayTime - m_KeyFrames[iCurrentKeyFrame].fTime) /
 			(m_KeyFrames[iCurrentKeyFrame + 1].fTime - m_KeyFrames[iCurrentKeyFrame].fTime);
+
+		if (nullptr != pRatio)
+			*pRatio = fRatio;
 
 		_float3		vSourScale, vDestScale;
 		_float4		vSourRotation, vDestRotation;
@@ -129,15 +132,17 @@ _uint CChannel::Update_Transformation(_float fPlayTime, _uint iCurrentKeyFrame, 
 	return iCurrentKeyFrame;
 }
 
-_uint CChannel::Interpolation(_float fPlayTime, _float fTimeDelta, CAnimation* pNextAnimation, _uint iCurrentKeyFrame, CHierarchyNode* pNode, CModel* pModel)
+_uint CChannel::Interpolation(_float fPlayTime, _float fTimeDelta, CAnimation* pCurrAnimation, CAnimation* pNextAnimation, _uint iCurrentKeyFrame, CHierarchyNode* pNode, CModel* pModel, __out _float* pRatio)
 {
 	_float3			vScale;
 	_float4			vRotation;
 	_float3			vPosition;
 
+
+	_float fDuration = pCurrAnimation->Get_Duration() >= pNextAnimation->Get_Duration() ? pNextAnimation->Get_Duration() : pCurrAnimation->Get_Duration();
 	m_fInterpolationTime += pNextAnimation->Get_TickPerSecond() * fTimeDelta * 10.f;
 
-	if (m_fInterpolationTime >= pNextAnimation->Get_Duration())
+	if (m_fInterpolationTime >= fDuration)
 	{
 		// TODO : No Interpolation & Set Next Animation
 		if(pModel->Is_InterpolatingAnimation())
@@ -151,7 +156,10 @@ _uint CChannel::Interpolation(_float fPlayTime, _float fTimeDelta, CAnimation* p
 		CChannel* pChannel = pNextAnimation->Get_Channel(m_strName);
 		KEYFRAME NextKeyFrame = pChannel->Get_FirstFrame();
 
-		_float		fRatio = m_fInterpolationTime / pNextAnimation->Get_Duration();
+		
+		_float		fRatio = m_fInterpolationTime / fDuration;
+		if (nullptr != pRatio)
+			*pRatio = fRatio;
 
 		_float3		vSourScale, vDestScale;
 		_float4		vSourRotation, vDestRotation;

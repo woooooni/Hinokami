@@ -39,11 +39,6 @@ HRESULT CLevel_Loading::LateTick(_float fTimeDelta)
 
 	SetWindowText(g_hWnd, strLoadingText.c_str());
 
-	//if (GetKeyState(VK_SPACE) & 0x8000)
-	//{	
-	//	
-	//}
-
 	if (true == m_pLoader->Get_Finished())
 	{
 		CLevel* pNewLevel = nullptr;

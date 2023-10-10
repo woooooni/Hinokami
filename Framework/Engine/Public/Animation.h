@@ -21,14 +21,14 @@ public:
 
 
 public:
-	// HRESULT Ready_AnimationTexture();
-	// HRESULT SetUp_AnimationTexture_OnShader(class CShader* pShader, const char* pConstantName);
 	const list<KEYFRAME> Get_Curr_KeyFrames();
 	const list<KEYFRAME> Get_First_KeyFrames();
 
 public:
 	class CChannel* Get_Channel(const wstring & strChannelName);
 	const vector<class CChannel*>& Get_Channels() { return m_Channels; }
+
+	_float Get_Ratio() { return m_fRatio; }
 	_float Get_Duration() { return m_fDuration; }
 
 	void Set_AnimationPlayTime(_float fPlayTime);
@@ -64,6 +64,7 @@ private:
 	_float						m_fTickPerSecond = 0.f;
 	_float						m_fPlayTime = 0.f;
 	_float						m_fSpeed = 1.f;
+	_float						m_fRatio = 0.f;
 
 private: /* 복제된 애니메이션 마다 따로 가진다. */
 	vector<class CHierarchyNode*>	m_HierarchyNodes;

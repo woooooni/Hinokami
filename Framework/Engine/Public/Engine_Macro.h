@@ -123,8 +123,8 @@
 
 
 // VTF
-#define MAX_MODEL_TRANSFORMS 250
-#define MAX_MODEL_KEYFRAMES 150
+#define MAX_MODEL_TRANSFORMS 1000
+#define MAX_MODEL_KEYFRAMES 300
 
 //
 ///*---------------

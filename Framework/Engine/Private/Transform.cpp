@@ -1,6 +1,8 @@
 #include "..\Public\Transform.h"
 #include "Shader.h"
 
+
+USING(Engine)
 CTransform::CTransform(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
 {
@@ -126,6 +128,18 @@ void CTransform::Set_Scale(_fvector vScaleInfo)
 		XMVector3Normalize(Get_State(CTransform::STATE_UP)) * XMVectorGetY(vScaleInfo));
 	Set_State(CTransform::STATE_LOOK, 
 		XMVector3Normalize(Get_State(CTransform::STATE_LOOK)) * XMVectorGetZ(vScaleInfo));	
+}
+
+void CTransform::Set_Sclae(_float3 vScale)
+{
+	WRITE_LOCK
+
+	Set_State(CTransform::STATE_RIGHT, 
+		XMVector3Normalize(Get_State(CTransform::STATE_RIGHT)) * vScale.x);
+	Set_State(CTransform::STATE_UP, 
+		XMVector3Normalize(Get_State(CTransform::STATE_UP)) * vScale.y);
+	Set_State(CTransform::STATE_LOOK, 
+		XMVector3Normalize(Get_State(CTransform::STATE_LOOK)) * vScale.z);
 }
 
 _float3 CTransform::Get_Scale()
@@ -333,3 +347,5 @@ void CTransform::Free()
 {
 	__super::Free();
 }
+
+

@@ -8,6 +8,7 @@
 #include "Dummy.h"
 #include "Terrain.h"
 #include "Camera_Free.h"
+#include "Network_Manager.h"
 
 
 CLevel_Tool::CLevel_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -80,6 +81,10 @@ HRESULT CLevel_Tool::Initialize()
 		return E_FAIL;
 
 	m_pImGuiManager->Set_Camera(pCamera);
+
+
+
+
 	return S_OK;
 }
 
@@ -102,6 +107,11 @@ HRESULT CLevel_Tool::Render_Debug()
 
 HRESULT CLevel_Tool::Enter_Level()
 {
+	/*Protocol::S_ENTER_LEVEL tSendPkt;
+	tSendPkt.set_ilevelid(LEVEL_TOOL);
+	SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(tSendPkt);
+	CNetwork_Manager::GetInstance()->Send(sendBuffer);*/
+
 	return S_OK;
 }
 
