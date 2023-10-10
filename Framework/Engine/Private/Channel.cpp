@@ -142,7 +142,7 @@ _uint CChannel::Interpolation(_float fPlayTime, _float fTimeDelta, CAnimation* p
 	_float fDuration = pCurrAnimation->Get_Duration() >= pNextAnimation->Get_Duration() ? pNextAnimation->Get_Duration() : pCurrAnimation->Get_Duration();
 	m_fInterpolationTime += pNextAnimation->Get_TickPerSecond() * fTimeDelta * 10.f;
 
-	if (m_fInterpolationTime >= fDuration)
+	if (m_fInterpolationTime >= pNextAnimation->Get_Duration())
 	{
 		// TODO : No Interpolation & Set Next Animation
 		if(pModel->Is_InterpolatingAnimation())
@@ -157,7 +157,7 @@ _uint CChannel::Interpolation(_float fPlayTime, _float fTimeDelta, CAnimation* p
 		KEYFRAME NextKeyFrame = pChannel->Get_FirstFrame();
 
 		
-		_float		fRatio = m_fInterpolationTime / fDuration;
+		_float		fRatio = m_fInterpolationTime / pNextAnimation->Get_Duration();
 		if (nullptr != pRatio)
 			*pRatio = fRatio;
 
