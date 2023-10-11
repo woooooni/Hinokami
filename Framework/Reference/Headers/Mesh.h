@@ -33,6 +33,8 @@ public:
 
 public:
 	HRESULT SetUp_HierarchyNodes(class CModel* pModel, aiMesh* pAIMesh);
+	HRESULT SetUp_HierarchyNodes(class CModel* pModel);
+	void SetUp_BoneMatrices(ID3D11Texture1D* pTexture, vector<_float4x4>& Matrices, _fmatrix PivotMatrix);
 
 
 public:
@@ -49,6 +51,7 @@ private:
 	/* 이 메시에 영향을 주는 뼈들을 모아놓느다. */
 	/* why ? : 메시 별로 렌더링할 때 이 메시에 영향ㅇ르 주는 르의 행렬을 모아서 셰{ㅇ디러ㅗ 도ㅓㄴ질려고. */
 	vector<class CHierarchyNode*>	m_Bones;
+	vector<wstring>		m_BoneNames;
 
 
 	vector<VTXANIMMODEL> m_AnimVertices;

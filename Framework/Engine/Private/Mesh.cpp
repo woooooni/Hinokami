@@ -16,8 +16,10 @@ CMesh::CMesh(const CMesh& rhs)
 	, m_AnimVertices(rhs.m_AnimVertices)
 	, m_NonAnimVertices(rhs.m_NonAnimVertices)
 	, m_bFromBinary(rhs.m_bFromBinary)
+	, m_BoneNames(rhs.m_BoneNames)
+	, m_iNumBones(rhs.m_iNumBones)
 {
-
+	
 }
 
 HRESULT CMesh::Initialize_Prototype(CModel::TYPE eModelType, const aiMesh* pAIMesh, CModel* pModel, _fmatrix PivotMatrix)
@@ -95,11 +97,11 @@ HRESULT CMesh::Initialize(void* pArg)
 
 HRESULT CMesh::Initialize_Bin(CModel* pModel, const vector<wstring>& BoneNames)
 {
-	/* 현재 메시에 영향ㅇ르 ㅈ2ㅜ는 뼈들을 순회한다ㅏ. */
 	for (_uint i = 0; i < m_iNumBones; ++i)
 	{
 		CHierarchyNode* pHierarchyNode = pModel->Get_HierarchyNode(BoneNames[i]);
 		m_Bones.push_back(pHierarchyNode);
+		m_BoneNames.push_back(pHierarchyNode->Get_Name());
 		Safe_AddRef(pHierarchyNode);
 	}
 
@@ -111,6 +113,7 @@ HRESULT CMesh::Initialize_Bin(CModel* pModel, const vector<wstring>& BoneNames)
 			return S_OK;
 
 		m_iNumBones = 1;
+		m_BoneNames.push_back(pNode->Get_Name());
 		m_Bones.push_back(pNode);
 
 	}
@@ -137,7 +140,34 @@ HRESULT CMesh::SetUp_HierarchyNodes(CModel* pModel, aiMesh* pAIMesh)
 		pHierarchyNode->Set_OffsetMatrix(XMMatrixTranspose(XMLoadFloat4x4(&OffsetMatrix)));
 
 		m_Bones.push_back(pHierarchyNode);
+		m_BoneNames.push_back(pHierarchyNode->Get_Name());
 
+		Safe_AddRef(pHierarchyNode);
+	}
+
+	if (0 == m_iNumBones)
+	{
+
+		CHierarchyNode* pNode = pModel->Get_HierarchyNode(m_strName);
+
+		if (nullptr == pNode)
+			return S_OK;
+
+		m_iNumBones = 1;
+		m_BoneNames.push_back(pNode->Get_Name());
+		m_Bones.push_back(pNode);
+
+	}
+
+	return S_OK;
+}
+
+HRESULT CMesh::SetUp_HierarchyNodes(CModel* pModel)
+{
+	for (_uint i = 0; i < m_iNumBones; ++i)
+	{
+		CHierarchyNode* pHierarchyNode = pModel->Get_HierarchyNode(m_BoneNames[i]);
+		m_Bones.push_back(pHierarchyNode);
 		Safe_AddRef(pHierarchyNode);
 	}
 
@@ -159,6 +189,32 @@ HRESULT CMesh::SetUp_HierarchyNodes(CModel* pModel, aiMesh* pAIMesh)
 }
 
 
+/* 메시의 정점을 그리기위해 셰이더에 넘기기위한 뼈행렬의 배열을 구성한다. */
+void CMesh::SetUp_BoneMatrices(ID3D11Texture1D* pTexture, vector<_float4x4>& Matrices, _fmatrix PivotMatrix)
+{
+	D3D11_MAPPED_SUBRESOURCE SubResource;
+	ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+	if (0 == m_iNumBones)
+	{
+		_float4x4 pMatirx;
+		XMStoreFloat4x4(&pMatirx, XMMatrixIdentity());
+
+		m_pContext->Map(pTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
+		memcpy(SubResource.pData, &pMatirx, sizeof(_float4x4));
+		m_pContext->Unmap(pTexture, 0);
+
+		return;
+	}
+
+	for (_uint i = 0; i < m_iNumBones; ++i)
+		XMStoreFloat4x4(&Matrices[i], XMMatrixTranspose(m_Bones[i]->Get_OffSetMatrix() * m_Bones[i]->Get_CombinedTransformation() * PivotMatrix));
+
+	m_pContext->Map(pTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
+	memcpy(SubResource.pData, Matrices.data(), sizeof(_float4x4) * Matrices.size());
+	m_pContext->Unmap(pTexture, 0);
+}
+
 HRESULT CMesh::Ready_Vertices(const aiMesh* pAIMesh, _fmatrix PivotMatrix)
 {
 	m_iNumVertexBuffers = 1;
@@ -176,13 +232,11 @@ HRESULT CMesh::Ready_Vertices(const aiMesh* pAIMesh, _fmatrix PivotMatrix)
 	VTXMODEL* pVertices = new VTXMODEL[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXMODEL) * m_iNumVertices);
 
-
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		/* 정점의 위치를 내가 원하느 ㄴ초기상태로 변화낳ㄴ나./ */
 		memcpy(&pVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
 		XMStoreFloat3(&pVertices[i].vPosition, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vPosition), PivotMatrix));
-
 
 		/* 정점의 위치가 바뀌었기때ㅑ문에 노멀도 바뀐다. */
 		memcpy(&pVertices[i].vNormal, &pAIMesh->mNormals[i], sizeof(_float3));
@@ -199,14 +253,8 @@ HRESULT CMesh::Ready_Vertices(const aiMesh* pAIMesh, _fmatrix PivotMatrix)
 
 
 	m_NonAnimVertices.reserve(m_iNumVertices);
-	m_VertexLocalPositions.reserve(m_iNumVertices);
 	for (_uint i = 0; i < m_iNumVertices; ++i)
-	{
 		m_NonAnimVertices.push_back(pVertices[i]);
-		m_VertexLocalPositions.push_back(pVertices[i].vPosition);
-	}
-
-
 
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
@@ -235,7 +283,6 @@ HRESULT CMesh::Ready_AnimVertices(const aiMesh* pAIMesh, CModel* pModel)
 	VTXANIMMODEL* pVertices = new VTXANIMMODEL[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXANIMMODEL) * m_iNumVertices);
 
-
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		/* 사전변환( x) : 뼈의 행렬과 곱해져서 그려진다.
@@ -261,38 +308,34 @@ HRESULT CMesh::Ready_AnimVertices(const aiMesh* pAIMesh, CModel* pModel)
 
 			if (0.0f == pVertices[iVertexIndex].vBlendWeight.x)
 			{
-				pVertices[iVertexIndex].vBlendIndex.x = pModel->Get_HierarchyNodeIndex(CUtils::ToWString(pAIBone->mName.C_Str()));
+				pVertices[iVertexIndex].vBlendIndex.x = i;
 				pVertices[iVertexIndex].vBlendWeight.x = pAIBone->mWeights[j].mWeight;
 			}
 
 			else if (0.0f == pVertices[iVertexIndex].vBlendWeight.y)
 			{
-				pVertices[iVertexIndex].vBlendIndex.y = pModel->Get_HierarchyNodeIndex(CUtils::ToWString(pAIBone->mName.C_Str()));
+				pVertices[iVertexIndex].vBlendIndex.y = i;
 				pVertices[iVertexIndex].vBlendWeight.y = pAIBone->mWeights[j].mWeight;
 			}
 
 			else if (0.0f == pVertices[iVertexIndex].vBlendWeight.z)
 			{
-				pVertices[iVertexIndex].vBlendIndex.z = pModel->Get_HierarchyNodeIndex(CUtils::ToWString(pAIBone->mName.C_Str()));
+				pVertices[iVertexIndex].vBlendIndex.z = i;
 				pVertices[iVertexIndex].vBlendWeight.z = pAIBone->mWeights[j].mWeight;
 			}
 
 			else if (0.0f == pVertices[iVertexIndex].vBlendWeight.w)
 			{
-				pVertices[iVertexIndex].vBlendIndex.w = pModel->Get_HierarchyNodeIndex(CUtils::ToWString(pAIBone->mName.C_Str()));
+				pVertices[iVertexIndex].vBlendIndex.w = i;
 				pVertices[iVertexIndex].vBlendWeight.w = pAIBone->mWeights[j].mWeight;
 			}
 		}
 	}
 
 	m_AnimVertices.reserve(m_iNumVertices);
-	m_VertexLocalPositions.reserve(m_iNumVertices);
 
 	for (_uint i = 0; i < m_iNumVertices; ++i)
-	{
 		m_AnimVertices.push_back(pVertices[i]);
-		m_VertexLocalPositions.push_back(pVertices[i].vPosition);
-	}
 
 
 
@@ -318,10 +361,6 @@ HRESULT CMesh::Ready_Bin_Vertices()
 	m_BufferDesc.MiscFlags = 0;
 	m_BufferDesc.StructureByteStride = m_iStride;
 
-	m_VertexLocalPositions.reserve(m_NonAnimVertices.size());
-	for (size_t i = 0; i < m_NonAnimVertices.size(); ++i)
-		m_VertexLocalPositions.push_back(m_NonAnimVertices[i].vPosition);
-
 
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = m_NonAnimVertices.data();
@@ -343,6 +382,8 @@ HRESULT CMesh::Ready_Bin_Vertices()
 	m_BufferDesc.MiscFlags = 0;
 	m_BufferDesc.StructureByteStride = 0;
 
+
+
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = m_FaceIndices.data();
 
@@ -363,9 +404,6 @@ HRESULT CMesh::Ready_Bin_AnimVertices()
 	m_BufferDesc.MiscFlags = 0;
 	m_BufferDesc.StructureByteStride = m_iStride;
 
-	m_VertexLocalPositions.reserve(m_AnimVertices.size());
-	for (_uint i = 0; i < m_iNumVertices; ++i)
-		m_VertexLocalPositions.push_back(m_AnimVertices[i].vPosition);
 
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = m_AnimVertices.data();
@@ -448,4 +486,5 @@ void CMesh::Free()
 
 
 	m_Bones.clear();
+
 }

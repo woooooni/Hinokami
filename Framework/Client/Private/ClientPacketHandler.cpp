@@ -54,7 +54,7 @@ bool Handle_C_CREATE_OBJECT(PacketSessionRef& session, Protocol::C_CREATE_OBJECT
 		if (nullptr == pModelCom)
 			return false;
 
-		pModelCom->Set_AnimationIndex_Force(pkt.ianimationindex());
+		// pModelCom->Set_AnimationIndex_Force(pkt.ianimationindex());
 		pModelCom->Get_Animations()[pModelCom->Get_CurrAnimationIndex()]->Set_AnimationPlayTime(pkt.fanimationplaytime());
 	}
 

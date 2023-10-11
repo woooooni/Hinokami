@@ -12,8 +12,8 @@ CHierarchyNode::CHierarchyNode(const CHierarchyNode& rhs)
 	, m_strParentName(rhs.m_strParentName)
 	, m_OriginTransformation(rhs.m_OriginTransformation)
 	, m_iDepth(rhs.m_iDepth)
+	, m_OffsetMatrix(rhs.m_OffsetMatrix)
 {
-	XMStoreFloat4x4(&m_OffsetMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_CombinedTransformation, XMMatrixIdentity());
 	m_Transformation = m_OriginTransformation;
 }
