@@ -115,10 +115,10 @@ HRESULT CTerrain::Ready_Components()
 		TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
-	/* Com_Texture*/
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Terrain"),
-		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
-		return E_FAIL;
+	///* Com_Texture*/
+	//if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Terrain"),
+	//	TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+	//	return E_FAIL;
 
 	/* Com_Transform */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
@@ -138,10 +138,6 @@ HRESULT CTerrain::Bind_ShaderResources()
 
 	if (FAILED(m_pTransformCom->Bind_ShaderResources(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
-
-
-	
-
 
 	if (FAILED(GAME_INSTANCE->Bind_TransformToShader(m_pShaderCom, "g_ViewMatrix", CPipeLine::D3DTS_VIEW)))
 		return E_FAIL;

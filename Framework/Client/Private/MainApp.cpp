@@ -150,22 +150,17 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 	/* For.Prototype_Component_Texture_Effect*/
 	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/"), 0, true))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Effect/Sequence/"), 0, true))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Logo_BackGround*/
 	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo_BackGround"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Logo/Logo_BackGround.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Logo/Logo_BackGround.png"), 1))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Logo_Title */
 	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo_Title"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Logo/Game_Title.png"), 1))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Terrain*/
-	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Tile0.jpg")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Logo/Game_Title.png"), 1))))
 		return E_FAIL;
 
 

@@ -65,6 +65,7 @@ private:
 	_float						m_fPlayTime = 0.f;
 	_float						m_fSpeed = 1.f;
 	_float						m_fRatio = 0.f;
+	_float						m_fTweeningRatio = 0.f;
 
 private: /* 복제된 애니메이션 마다 따로 가진다. */
 	vector<class CHierarchyNode*>	m_HierarchyNodes;
