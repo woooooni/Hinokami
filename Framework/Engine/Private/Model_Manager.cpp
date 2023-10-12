@@ -316,7 +316,7 @@ HRESULT CModel_Manager::Export_Material(const wstring& strFinalFolderPath, CMode
 		tinyxml2::XMLElement* Element = nullptr;
 
 		Element = Document->NewElement("Name");
-		Element->SetText(Material.strName);
+		Element->SetText(CUtils::ToString(Material.strName).c_str());
 		Node->LinkEndChild(Element);
 
 		Element = Document->NewElement("Diffuse_Texture");
@@ -546,7 +546,7 @@ HRESULT CModel_Manager::Import_Material(const wstring strFinalPath, const wstrin
 		tinyxml2::XMLElement* Node = nullptr;
 		Node = MaterialNode->FirstChildElement();
 
-		lstrcpy(MaterialDesc.strName,CUtils::ToWString(Node->GetText()).c_str());
+		lstrcpy(MaterialDesc.strName, CUtils::ToWString(Node->GetText()).c_str());
 
 
 		// Diffuse Texture

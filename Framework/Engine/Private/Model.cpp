@@ -349,7 +349,7 @@ HRESULT CModel::Swap_Animation(_uint iSrcIndex, _uint iDestIndex)
 	m_Animations[iDestIndex] = m_Animations[iSrcIndex];
 	m_Animations[iSrcIndex] = Temp;
 
-	m_iCurrentAnimIndex = iSrcIndex;
+	m_iCurrentAnimIndex = iDestIndex;
 
 	return S_OK;
 }
@@ -371,9 +371,8 @@ HRESULT CModel::Delete_Animation(_uint iIndex)
 
 	m_Animations.erase(iter);
 
-
-	m_iCurrentAnimIndex = m_Animations.size() >= m_iCurrentAnimIndex ? --m_iCurrentAnimIndex : m_iCurrentAnimIndex;
 	m_iCurrentAnimIndex = 0 > m_iCurrentAnimIndex ? 0 : m_iCurrentAnimIndex;
+	m_iCurrentAnimIndex = m_Animations.size() >= m_iCurrentAnimIndex ? m_iCurrentAnimIndex - 1 : m_iCurrentAnimIndex;
 
 	return S_OK;
 }
