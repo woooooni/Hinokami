@@ -46,7 +46,7 @@ public:
 	/* 1. 해당 애니메이션에서 사용하는 모든 뼈들의  Transformation 행렬을 갱신한다. */
 	/* 2. Transformation를 최상위 부모로부터 자식으로 계속 누적시켜간다.(CombinedTransformation) */
 	/* 3. 애니메이션에 의해 움직인 뼈들의 CombinedTransfromation을 셋팅한다. */
-	HRESULT Play_Animation(_float fTimeDelta);
+	HRESULT Play_Animation(class CTransform* pTransform, _float fTimeDelta);
 	HRESULT Render(class CShader* pShader, _uint iMeshIndex, _uint iPassIndex = 0);
 
 
@@ -85,12 +85,15 @@ private:
 	vector<MATERIALDESC>					m_Materials;
 
 private:
+	CHierarchyNode* m_pRootNode;
 	vector<class CHierarchyNode*>			m_HierarchyNodes;
 
 private:
 	_uint								m_iCurrentAnimIndex = 0;
 	_int								m_iNextAnimIndex = -1;
 	_bool								m_bInterpolationAnimation = false;
+	_bool								m_bFirstRootConvert = false;
+	_float4								m_vPreAnimPos = {0.f, 0.f, 0.f, 1.f };
 
 	_uint								m_iNumAnimations = 0;
 	vector<class CAnimation*>			m_Animations;

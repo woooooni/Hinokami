@@ -44,6 +44,10 @@ bool Handle_C_CREATE_OBJECT(PacketSessionRef& session, Protocol::C_CREATE_OBJECT
 	if (nullptr == pObj)
 		return false;
 
+	CTransform* pTranform = dynamic_cast<CTransform*>(pObj->Get_Component(L"Com_Transform"));
+	if (nullptr == pTranform)
+		return false;
+
 	
 	pObj->Set_ObjectID(pkt.iobjectid());
 	pObj->Set_ObjectTag(CUtils::ToWString(pkt.strname()));
@@ -55,12 +59,10 @@ bool Handle_C_CREATE_OBJECT(PacketSessionRef& session, Protocol::C_CREATE_OBJECT
 			return false;
 
 		// pModelCom->Set_AnimationIndex_Force(pkt.ianimationindex());
-		pModelCom->Get_Animations()[pModelCom->Get_CurrAnimationIndex()]->Set_AnimationPlayTime(pkt.fanimationplaytime());
+		// pModelCom->Get_Animations()[pModelCom->Get_CurrAnimationIndex()]->Set_AnimationPlayTime(pTranform, pkt.fanimationplaytime());
 	}
 
-	CTransform* pTranform = dynamic_cast<CTransform*>(pObj->Get_Component(L"Com_Transform"));
-	if (nullptr == pTranform)
-		return false;
+	
 
 	
 }

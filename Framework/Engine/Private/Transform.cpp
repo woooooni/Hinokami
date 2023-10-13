@@ -118,6 +118,14 @@ void CTransform::Go_Dir(_fvector vDir, _float fTimeDelta)
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
+void CTransform::Go_Dir(_fvector vDir, _float fSpeed, _float fTimeDelta)
+{
+	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
+	vPosition += XMVector3Normalize(vDir) * fSpeed * fTimeDelta;
+
+	Set_State(CTransform::STATE_POSITION, vPosition);
+}
+
 void CTransform::Set_Scale(_fvector vScaleInfo)
 {
 	WRITE_LOCK
@@ -348,4 +356,6 @@ void CTransform::Free()
 	__super::Free();
 }
 
-
+void Add_Pos(_fvector vAddPos)
+{
+}

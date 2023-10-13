@@ -86,7 +86,7 @@ void CAnimation::Reset_Animation()
 	}
 }
 
-HRESULT CAnimation::Play_Animation(_float fTimeDelta)
+HRESULT CAnimation::Play_Animation(CTransform* pTransform, _float fTimeDelta)
 {
 	m_fPlayTime += m_fSpeed * m_fTickPerSecond * fTimeDelta;
 
@@ -108,7 +108,7 @@ HRESULT CAnimation::Play_Animation(_float fTimeDelta)
 	/* 하이어라키 노드에 저장해준다. */
 	for (auto& pChannel : m_Channels)
 	{
-		m_ChannelKeyFrames[iChannelIndex] = pChannel->Update_Transformation(m_fPlayTime, m_ChannelKeyFrames[iChannelIndex], m_HierarchyNodes[iChannelIndex], nullptr, &m_fRatio);
+		m_ChannelKeyFrames[iChannelIndex] = pChannel->Update_Transformation(m_fPlayTime, fTimeDelta, m_ChannelKeyFrames[iChannelIndex], pTransform, m_HierarchyNodes[iChannelIndex], nullptr, &m_fRatio);
 		m_ChannelOldKeyFrames[iChannelIndex] = m_ChannelKeyFrames[iChannelIndex];
 		++iChannelIndex;
 	}
@@ -116,7 +116,7 @@ HRESULT CAnimation::Play_Animation(_float fTimeDelta)
 	return S_OK;
 }
 
-HRESULT CAnimation::Play_Animation(CModel* pModel, CAnimation* pNextAnimation, _float fTimeDelta)
+HRESULT CAnimation::Play_Animation(CModel* pModel, CTransform* pTransform, CAnimation* pNextAnimation, _float fTimeDelta)
 {
 	if (pModel->Is_InterpolatingAnimation())
 	{
@@ -125,7 +125,7 @@ HRESULT CAnimation::Play_Animation(CModel* pModel, CAnimation* pNextAnimation, _
 		_uint		iChannelIndex = 0;
 		for (auto& pChannel : m_Channels)
 		{
-			pChannel->Interpolation(m_fPlayTime, fTimeDelta, this, pNextAnimation, m_ChannelOldKeyFrames[iChannelIndex], m_HierarchyNodes[iChannelIndex], pModel, &m_fRatio);
+			pChannel->Interpolation(m_fPlayTime, fTimeDelta, this, pNextAnimation, pTransform, m_ChannelOldKeyFrames[iChannelIndex], m_HierarchyNodes[iChannelIndex], pModel, &m_fRatio);
 			++iChannelIndex;
 		}
 	}
@@ -164,14 +164,14 @@ CChannel* CAnimation::Get_Channel(const wstring& strChannelName)
 	return nullptr;
 }
 
-void CAnimation::Set_AnimationPlayTime(_float fPlayTime)
+void CAnimation::Set_AnimationPlayTime(CTransform* pTransform, _float fPlayTime, _float fTimeDelta)
 {
 	m_fPlayTime = fPlayTime;
 
 	_uint		iChannelIndex = 0;
 	for (auto& pChannel : m_Channels)
 	{
-		m_ChannelKeyFrames[iChannelIndex] = pChannel->Update_Transformation(m_fPlayTime, m_ChannelKeyFrames[iChannelIndex], m_HierarchyNodes[iChannelIndex], nullptr);
+		m_ChannelKeyFrames[iChannelIndex] = pChannel->Update_Transformation(m_fPlayTime, fTimeDelta, m_ChannelKeyFrames[iChannelIndex], pTransform, m_HierarchyNodes[iChannelIndex], nullptr);
 		m_ChannelOldKeyFrames[iChannelIndex] = m_ChannelKeyFrames[iChannelIndex];
 		++iChannelIndex;
 	}

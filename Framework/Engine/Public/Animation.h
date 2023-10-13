@@ -15,8 +15,8 @@ public:
 	HRESULT Initialize_Prototype(aiAnimation* pAIAnimation);
 	HRESULT Initialize(class CModel* pModel);
 
-	HRESULT Play_Animation(_float fTimeDelta);
-	HRESULT Play_Animation(class CModel* pModel, CAnimation* pNextAnimation, _float fTimeDelta);
+	HRESULT Play_Animation(class CTransform* pTransform, _float fTimeDelta);
+	HRESULT Play_Animation(class CModel* pModel, class CTransform* pTransform, CAnimation* pNextAnimation, _float fTimeDelta);
 	void Reset_Animation();
 
 
@@ -31,7 +31,7 @@ public:
 	_float Get_Ratio() { return m_fRatio; }
 	_float Get_Duration() { return m_fDuration; }
 
-	void Set_AnimationPlayTime(_float fPlayTime);
+	void Set_AnimationPlayTime(class CTransform* pTransform, _float fPlayTime, _float fTimeDelta);
 	_float Get_PlayTime() { return m_fPlayTime; }
 
 	void Set_TickPerSecond(_float fTickPerSecond) { m_fTickPerSecond = fTickPerSecond; }

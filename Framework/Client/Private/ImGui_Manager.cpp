@@ -365,9 +365,9 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         XMStoreFloat3(&vPos, pTransform->Get_State(CTransform::STATE_POSITION));
         
         ImGui::Text("Position");
-        ImGui::DragFloat3("##Position", (_float*)&vPos, 0.01f, -999.f, 999.f, "%.3f");
-
-        pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&vPos), 1.f));
+        if(ImGui::DragFloat3("##Object_Position", (_float*)&vPos, 0.01f, -1000.f, 1000.f, "%.3f"))
+            pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&vPos), 1.f));
+        
     #pragma endregion
 
         IMGUI_NEW_LINE;
@@ -376,7 +376,7 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         ImGui::Text("Rotation");
         _float3 vRotation = pTransform->Get_Rotaion_Degree();
 
-        if (ImGui::DragFloat3("##Effect_Rotation", (_float*)&vRotation, 0.1f))
+        if (ImGui::DragFloat3("##Object_Rotation", (_float*)&vRotation, 0.1f))
         {
             vRotation.x = XMConvertToRadians(vRotation.x);
             vRotation.y = XMConvertToRadians(vRotation.y);
@@ -396,12 +396,21 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         _float3 vScale = pTransform->Get_Scale();
 
         ImGui::Text("Scale");
-        ImGui::DragFloat3("##Scale", (_float*)&vScale, 0.01f, 0.01f, 100.f);
+        if (ImGui::DragFloat3("##Object_Scale", (_float*)&vScale, 0.01f, 0.01f, 100.f))
+        {
+            if (vScale.x >= 0.01f && vScale.y >= 0.01f && vScale.z >= 0.01f)
+                pTransform->Set_Scale(XMLoadFloat3(&vScale));
+            else
+            {
+                vScale.x = 0.01f;
+                vScale.y = 0.01f; 
+                vScale.z = 0.01f;
+                pTransform->Set_Scale(XMLoadFloat3(&vScale));
+            }
+                
+        }
 
-        if(vScale.x >= 0.01f
-            && vScale.y >= 0.01f
-            && vScale.z >= 0.01f)
-            pTransform->Set_Scale(XMLoadFloat3(&vScale));
+       
     #pragma endregion
         
 

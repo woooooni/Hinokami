@@ -37,18 +37,23 @@ public:
 		return XMLoadFloat4x4(&m_CombinedTransformation);
 	}
 
+	_matrix Get_RootCombinedTransformation(){
+		return XMLoadFloat4x4(&m_RootAnim_CombinedTransformation);
+	}
+
 
 public:
 	void Set_Transformation(_fmatrix Transformation) {
 		XMStoreFloat4x4(&m_Transformation, Transformation);
 	}
+	_matrix Get_TransformationMatrix() { return XMLoadFloat4x4(&m_Transformation); }
 
 public:
 	HRESULT Initialize(aiNode * pAINode, class CHierarchyNode* pParent, _uint iDepth);
 	HRESULT Initialize_Bin(class CModel* pModel);
 
 public:
-	void Set_CombinedTransformation();
+	void Set_CombinedTransformation(const wstring& strRootBoneName);
 	void Set_OffsetMatrix(_fmatrix OffsetMatrix);
 
 private:
@@ -59,6 +64,7 @@ private:
 	_float4x4			m_Transformation;
 	_float4x4			m_OriginTransformation;
 	_float4x4			m_CombinedTransformation;
+	_float4x4			m_RootAnim_CombinedTransformation;
 
 	CHierarchyNode*		m_pParent = nullptr;
 	_uint				m_iDepth = 0;

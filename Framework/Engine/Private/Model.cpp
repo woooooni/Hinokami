@@ -5,6 +5,7 @@
 #include "Animation.h"
 #include "Shader.h"
 #include "Utils.h"
+#include "Transform.h"
 #include <fstream>
 #include <filesystem>
 
@@ -52,7 +53,13 @@ CModel::CModel(const CModel& rhs)
 
 	for (auto& pNode : rhs.m_HierarchyNodes)
 	{
-		m_HierarchyNodes.push_back(pNode->Clone());
+		CHierarchyNode* pNewNode = pNode->Clone();
+		m_HierarchyNodes.push_back(pNewNode);
+
+		if (pNode->Get_Name() == L"Root")
+			m_pRootNode = pNewNode;
+		
+
 		Safe_AddRef(pNode);
 	}
 
@@ -272,6 +279,7 @@ void CModel::Set_AnimIndex(_uint iAnimIndex)
 	m_Animations[m_iCurrentAnimIndex]->Reset_Animation();
 	m_iNextAnimIndex = iAnimIndex;
 	m_bInterpolationAnimation = true;
+	m_bFirstRootConvert = true;
 }
 
 void CModel::Complete_Interpolation()
@@ -293,7 +301,7 @@ HRESULT CModel::SetUp_OnShader(CShader* pShader, _uint iMaterialIndex, aiTexture
 	return m_Materials[iMaterialIndex].pTexture[eTextureType]->Bind_ShaderResource(pShader, pConstantName);
 }
 
-HRESULT CModel::Play_Animation(_float fTimeDelta)
+HRESULT CModel::Play_Animation(CTransform* pTransform, _float fTimeDelta)
 {
 	if (m_iCurrentAnimIndex >= m_iNumAnimations)
 		return E_FAIL;
@@ -301,20 +309,44 @@ HRESULT CModel::Play_Animation(_float fTimeDelta)
 
 	if (m_bInterpolationAnimation)
 	{
-		m_Animations[m_iCurrentAnimIndex]->Play_Animation(this, m_Animations[m_iNextAnimIndex], fTimeDelta);
+		m_Animations[m_iCurrentAnimIndex]->Play_Animation(this, pTransform, m_Animations[m_iNextAnimIndex], fTimeDelta);
 	}
 	else
 	{
-		m_Animations[m_iCurrentAnimIndex]->Play_Animation(fTimeDelta);
+		m_Animations[m_iCurrentAnimIndex]->Play_Animation(pTransform, fTimeDelta);
 	}
 
-	/* 지역행렬을 순차적으로(부모에서 자식으로) 누적하여 m_CombinedTransformation를 만든다.  */
 	for (auto& pHierarchyNode : m_HierarchyNodes)
 	{
-		pHierarchyNode->Set_CombinedTransformation();
+		pHierarchyNode->Set_CombinedTransformation(m_pRootNode->Get_Name());
 	}
 
+	m_vPreAnimPos.w = 1.f;
 
+	_vector vPos = pTransform->Get_State(CTransform::STATE_POSITION);
+	_matrix mWorldMatrix = pTransform->Get_WorldMatrix();
+
+	_vector vNextPos = XMVectorSetW(m_pRootNode->Get_RootCombinedTransformation().r[CTransform::STATE_POSITION] + m_pRootNode->Get_OffSetMatrix().r[CTransform::STATE_POSITION], 1.f);
+	_vector vAnimLook = XMVector3Normalize((XMLoadFloat4(&m_vPreAnimPos) - vNextPos));
+
+	_vector vTotalLook = XMVector3Normalize(XMVector3TransformNormal(vAnimLook, mWorldMatrix));
+	vTotalLook = XMVectorSetY(vTotalLook, XMVectorGetY(vTotalLook) * -1.f);
+
+	_float fPivotDis = XMVectorGetX(XMVector3Length(vNextPos));
+	if (0.f < fPivotDis && m_bFirstRootConvert)
+	{
+		vPos -= vTotalLook * fPivotDis;
+		m_bFirstRootConvert = false;
+	}
+
+	_float fMoveDis = XMVectorGetX(XMVector3Length(vAnimLook));
+	vPos += vTotalLook * fMoveDis;
+	vPos = XMVectorSetW(vPos, 1.f);
+
+	pTransform->Set_State(CTransform::STATE_POSITION, vPos);
+
+	XMStoreFloat4(&m_vPreAnimPos, vNextPos);
+	
 
 	return S_OK;
 }
@@ -459,6 +491,7 @@ HRESULT CModel::Ready_HierarchyNodes(aiNode* pNode, CHierarchyNode* pParent, _ui
 
 	if (nullptr == pHierarchyNode)
 		return E_FAIL;
+
 
 	m_HierarchyNodes.push_back(pHierarchyNode);
 

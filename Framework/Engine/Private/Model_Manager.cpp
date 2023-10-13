@@ -515,7 +515,6 @@ HRESULT CModel_Manager::Import_Mesh(const wstring strFinalPath, CModel* pModel)
 		pModel->m_Meshes.push_back(Mesh);
 	}
 
-
 	return S_OK;
 }
 #pragma endregion

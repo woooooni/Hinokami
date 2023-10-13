@@ -63,7 +63,7 @@ void CCharacter::LateTick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return;
 
-	m_pModelCom->Play_Animation(fTimeDelta);
+	m_pModelCom->Play_Animation(m_pTransformCom, fTimeDelta);
 
 	for (auto& pPart : m_Parts)
 		pPart->LateTick(fTimeDelta);

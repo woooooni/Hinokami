@@ -73,7 +73,7 @@ void CDummy::LateTick(_float fTimeDelta)
 		return;
 
 	if(m_pModelCom->Get_ModelType() == CModel::TYPE::TYPE_ANIM)
-		m_pModelCom->Play_Animation(fTimeDelta);
+		m_pModelCom->Play_Animation(m_pTransformCom, fTimeDelta);
 	
 }
 

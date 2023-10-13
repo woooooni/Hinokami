@@ -68,12 +68,22 @@ HRESULT CHierarchyNode::Initialize_Bin(CModel* pModel)
 }
 
 
-void CHierarchyNode::Set_CombinedTransformation()
+void CHierarchyNode::Set_CombinedTransformation(const wstring& strRootBoneName)
 {
 	if (nullptr != m_pParent)
+	{
+		if (m_strName == strRootBoneName)
+		{
+			XMStoreFloat4x4(&m_RootAnim_CombinedTransformation, XMLoadFloat4x4(&m_Transformation) * XMLoadFloat4x4(&m_pParent->m_CombinedTransformation));
+			*((_float4*)m_Transformation.m[3]) = _float4{ 0.f, 0.f, 0.f, 1.f };
+		}
 		XMStoreFloat4x4(&m_CombinedTransformation, XMLoadFloat4x4(&m_Transformation) * XMLoadFloat4x4(&m_pParent->m_CombinedTransformation));
+	}
 	else
+	{
 		m_CombinedTransformation = m_Transformation;
+	}
+		
 }
 
 void CHierarchyNode::Set_OffsetMatrix(_fmatrix OffsetMatrix)
