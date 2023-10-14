@@ -18,6 +18,7 @@ CAnimation::CAnimation(const CAnimation& rhs)
 	, m_fPlayTime(rhs.m_fPlayTime)
 	, m_strName(rhs.m_strName)
 	, m_fSpeed(rhs.m_fSpeed)
+	, m_bRootAnimation(rhs.m_bRootAnimation)
 	/*, m_pSRV(rhs.m_pSRV)*/
 {
 	for (auto& pChannel : m_Channels)
@@ -108,7 +109,7 @@ HRESULT CAnimation::Play_Animation(CTransform* pTransform, _float fTimeDelta)
 	/* 하이어라키 노드에 저장해준다. */
 	for (auto& pChannel : m_Channels)
 	{
-		m_ChannelKeyFrames[iChannelIndex] = pChannel->Update_Transformation(m_fPlayTime, fTimeDelta, m_ChannelKeyFrames[iChannelIndex], pTransform, m_HierarchyNodes[iChannelIndex], nullptr, &m_fRatio);
+		m_ChannelKeyFrames[iChannelIndex] = pChannel->Update_Transformation(m_fPlayTime, fTimeDelta, m_ChannelKeyFrames[iChannelIndex], pTransform, m_HierarchyNodes[iChannelIndex],&m_fRatio);
 		m_ChannelOldKeyFrames[iChannelIndex] = m_ChannelKeyFrames[iChannelIndex];
 		++iChannelIndex;
 	}
@@ -175,7 +176,6 @@ void CAnimation::Set_AnimationPlayTime(CTransform* pTransform, _float fPlayTime,
 		m_ChannelOldKeyFrames[iChannelIndex] = m_ChannelKeyFrames[iChannelIndex];
 		++iChannelIndex;
 	}
-
 }
 
 CAnimation* CAnimation::Create(aiAnimation* pAIAnimation)

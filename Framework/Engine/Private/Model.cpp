@@ -306,8 +306,10 @@ HRESULT CModel::Play_Animation(CTransform* pTransform, _float fTimeDelta)
 	if (m_iCurrentAnimIndex >= m_iNumAnimations)
 		return E_FAIL;
 
+	_vector vPrevAnimPos, vNextAnimPos;
+	vPrevAnimPos = m_pRootNode->Get_RootCombinedTransformation().r[CTransform::STATE_POSITION];
 
-	if (m_bInterpolationAnimation)
+	if (m_bInterpolationAnimation) 
 	{
 		m_Animations[m_iCurrentAnimIndex]->Play_Animation(this, pTransform, m_Animations[m_iNextAnimIndex], fTimeDelta);
 	}
@@ -315,37 +317,37 @@ HRESULT CModel::Play_Animation(CTransform* pTransform, _float fTimeDelta)
 	{
 		m_Animations[m_iCurrentAnimIndex]->Play_Animation(pTransform, fTimeDelta);
 	}
+		
 
 	for (auto& pHierarchyNode : m_HierarchyNodes)
-	{
 		pHierarchyNode->Set_CombinedTransformation(m_pRootNode->Get_Name());
-	}
 
-	m_vPreAnimPos.w = 1.f;
+	if (m_bInterpolationAnimation)	
+		return S_OK;
+	
 
-	_vector vPos = pTransform->Get_State(CTransform::STATE_POSITION);
-	_matrix mWorldMatrix = pTransform->Get_WorldMatrix();
-
-	_vector vNextPos = XMVectorSetW(m_pRootNode->Get_RootCombinedTransformation().r[CTransform::STATE_POSITION] + m_pRootNode->Get_OffSetMatrix().r[CTransform::STATE_POSITION], 1.f);
-	_vector vAnimLook = XMVector3Normalize((XMLoadFloat4(&m_vPreAnimPos) - vNextPos));
-
-	_vector vTotalLook = XMVector3Normalize(XMVector3TransformNormal(vAnimLook, mWorldMatrix));
-	vTotalLook = XMVectorSetY(vTotalLook, XMVectorGetY(vTotalLook) * -1.f);
-
-	_float fPivotDis = XMVectorGetX(XMVector3Length(vNextPos));
-	if (0.f < fPivotDis && m_bFirstRootConvert)
+	if (m_Animations[m_iCurrentAnimIndex]->Is_RootAnimation())
 	{
-		vPos -= vTotalLook * fPivotDis;
-		m_bFirstRootConvert = false;
+		vNextAnimPos = m_pRootNode->Get_RootCombinedTransformation().r[CTransform::STATE_POSITION];
+		if (m_bFirstRootConvert)
+		{
+			vNextAnimPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+			vPrevAnimPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+			m_bFirstRootConvert = 0.f;
+		}
+
+
+		_vector vPos = pTransform->Get_State(CTransform::STATE_POSITION);
+		_vector vDir = vPrevAnimPos - vNextAnimPos;
+		_vector vWorldDir = XMVector3Normalize(XMVector3TransformNormal(vDir, pTransform->Get_WorldMatrix()));
+		XMVectorSetY(vWorldDir, XMVectorGetY(vWorldDir) * -1.f);
+
+		_float fDist = XMVectorGetX(XMVector3Length(vDir));
+
+		vPos += vWorldDir * fDist * fTimeDelta;
+		pTransform->Set_State(CTransform::STATE_POSITION, vPos);
+
 	}
-
-	_float fMoveDis = XMVectorGetX(XMVector3Length(vAnimLook));
-	vPos += vTotalLook * fMoveDis;
-	vPos = XMVectorSetW(vPos, 1.f);
-
-	pTransform->Set_State(CTransform::STATE_POSITION, vPos);
-
-	XMStoreFloat4(&m_vPreAnimPos, vNextPos);
 	
 
 	return S_OK;
@@ -403,8 +405,8 @@ HRESULT CModel::Delete_Animation(_uint iIndex)
 
 	m_Animations.erase(iter);
 
-	m_iCurrentAnimIndex = 0 > m_iCurrentAnimIndex ? 0 : m_iCurrentAnimIndex;
-	m_iCurrentAnimIndex = m_Animations.size() >= m_iCurrentAnimIndex ? m_iCurrentAnimIndex - 1 : m_iCurrentAnimIndex;
+	m_iCurrentAnimIndex = 0 > m_iCurrentAnimIndex - 1 ? 0 : m_iCurrentAnimIndex;
+	m_iCurrentAnimIndex = m_Animations.size() >= m_iCurrentAnimIndex ? m_Animations.size() - 1 : m_iCurrentAnimIndex;
 
 	return S_OK;
 }
@@ -530,11 +532,15 @@ HRESULT CModel::Ready_Animation_Texture()
 
 	m_Matrices.resize(m_HierarchyNodes.size());
 
-	D3D11_TEXTURE1D_DESC TextureDesc;
-	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE1D_DESC));
+	D3D11_TEXTURE2D_DESC TextureDesc;
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
 	TextureDesc.Width = 4096;
+	TextureDesc.Height = 2;
 
+	
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.SampleDesc.Count = 1;
 	TextureDesc.MipLevels = 1;
 	TextureDesc.ArraySize = 1;
 	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -544,7 +550,7 @@ HRESULT CModel::Ready_Animation_Texture()
 	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	TextureDesc.MiscFlags = 0;
 
-	if (FAILED(m_pDevice->CreateTexture1D(&TextureDesc, nullptr, &m_pMatrixTexture)))
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pMatrixTexture)))
 		return E_FAIL;
 
 	if (FAILED(m_pDevice->CreateShaderResourceView(m_pMatrixTexture, nullptr, &m_pSRV)))

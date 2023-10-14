@@ -46,6 +46,9 @@ public:
 
 	const wstring& Get_AnimationName() { return m_strName; }
 	void Set_AnimationName(const wstring& strName) { m_strName = strName; }
+
+	void Set_RootAnimation(_bool bRootAnimation) { m_bRootAnimation = bRootAnimation; }
+	_bool Is_RootAnimation() { return m_bRootAnimation; }
 	
 
 
@@ -73,6 +76,7 @@ private: /* 복제된 애니메이션 마다 따로 가진다. */
 	vector<_uint>					m_ChannelOldKeyFrames;
 
 	_bool m_bPause = false;
+	_bool m_bRootAnimation = false;
 	// ID3D11ShaderResourceView* m_pSRV = nullptr;
 
 public:

@@ -372,6 +372,7 @@ HRESULT CModel_Manager::Export_Animation(const wstring& strFinalFolderPath, CMod
 		File->Write<_float>(Animation->m_fDuration);
 		File->Write<_float>(Animation->m_fTickPerSecond);
 		File->Write<_float>(Animation->m_fSpeed);
+		File->Write<_bool>(Animation->m_bRootAnimation);
 
 		File->Write<_uint>(Animation->m_iNumChannels);
 		for (auto& Channel : Animation->m_Channels)
@@ -633,6 +634,7 @@ HRESULT CModel_Manager::Import_Animation(const wstring strFinalPath, CModel* pMo
 		File->Read<_float>(pAnimation->m_fDuration);
 		File->Read<_float>(pAnimation->m_fTickPerSecond);
 		File->Read<_float>(pAnimation->m_fSpeed);
+		File->Read<_bool>(pAnimation->m_bRootAnimation);
 
 		File->Read<_uint>(pAnimation->m_iNumChannels);
 		for (_uint j = 0; j < pAnimation->m_iNumChannels; ++j)

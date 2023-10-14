@@ -74,7 +74,7 @@ HRESULT CChannel::Initialize(aiNodeAnim* pAIChannel)
 }
 
 
-_uint CChannel::Update_Transformation(_float fPlayTime, _float fTimeDelta, _uint iCurrentKeyFrame, CTransform* pTransform, CHierarchyNode* pNode, __out _matrix* pOutMatrix, __out _float* pRatio)
+_uint CChannel::Update_Transformation(_float fPlayTime, _float fTimeDelta, _uint iCurrentKeyFrame, CTransform* pTransform, CHierarchyNode* pNode, __out _float* pRatio)
 {
 	_float3			vScale;
 	_float4			vRotation;
@@ -122,10 +122,6 @@ _uint CChannel::Update_Transformation(_float fPlayTime, _float fTimeDelta, _uint
 
 
 	_matrix	TransformationMatrix = XMMatrixAffineTransformation(XMLoadFloat3(&vScale), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRotation), XMVectorSetW(XMLoadFloat3(&vPosition), 1.f));
-
-
-	if(pOutMatrix != nullptr)
-		*pOutMatrix = TransformationMatrix;
 
 	if (nullptr != pNode)
 	{

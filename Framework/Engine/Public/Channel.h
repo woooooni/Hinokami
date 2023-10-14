@@ -17,7 +17,7 @@ public:
 
 public:
 	HRESULT Initialize(aiNodeAnim* pAIChannel);
-	_uint Update_Transformation(_float fPlayTime, _float fTimeDelta, _uint iCurrentKeyFrame, class CTransform* pTransform, class CHierarchyNode* pNode, __out _matrix* pOutMatrix = nullptr, __out _float* pRatio = nullptr);
+	_uint Update_Transformation(_float fPlayTime, _float fTimeDelta, _uint iCurrentKeyFrame, class CTransform* pTransform, class CHierarchyNode* pNode, __out _float* pRatio = nullptr);
 	_uint Interpolation(_float fPlayTime, _float fTimeDelta, class CAnimation* pCurrAnimation, class CAnimation* pNextAnimation, class CTransform* pTransform, _uint iCurrentKeyFrame, class CHierarchyNode* pNode, class CModel* pModel, __out _float* pRatio = nullptr);
 
 public:

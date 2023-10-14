@@ -91,8 +91,8 @@ private:
 
 	_float m_fWindowAlpha = 1.f;
 
-	wstring m_strFilePath = TEXT("../Bin/Resources/Meshes/");
-	wstring m_strFileName;
+	wstring m_strFilePath = TEXT("../Bin/Export/Zenitsu/");
+	wstring m_strFileName = TEXT("Zenitsu");
 	wstring m_strExportPath = TEXT("../Bin/Resources/Export/");
 	_uint m_iSelectedModelType = 0;
 

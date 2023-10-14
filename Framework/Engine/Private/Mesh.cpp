@@ -190,7 +190,7 @@ HRESULT CMesh::SetUp_HierarchyNodes(CModel* pModel)
 
 
 /* 메시의 정점을 그리기위해 셰이더에 넘기기위한 뼈행렬의 배열을 구성한다. */
-void CMesh::SetUp_BoneMatrices(ID3D11Texture1D* pTexture, vector<_float4x4>& Matrices, _fmatrix PivotMatrix)
+void CMesh::SetUp_BoneMatrices(ID3D11Texture2D* pTexture, vector<_float4x4>& Matrices, _fmatrix PivotMatrix)
 {
 	D3D11_MAPPED_SUBRESOURCE SubResource;
 	ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));

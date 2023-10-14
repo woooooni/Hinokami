@@ -13,6 +13,7 @@
 #include "Texture_Effect.h"
 #include "Picking_Manager.h"
 
+
 USING(Client)
 IMPLEMENT_SINGLETON(CImGui_Manager)
 
@@ -611,6 +612,15 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
         if (ImGui::Button("||"))
             pCurrAnimation->Set_Pause(true);
 
+        IMGUI_SAME_LINE;
+        if (ImGui::Button("Sort"))
+        {
+            vector<class CAnimation*>& Animations = pModelCom->Get_Animations();
+            sort(Animations.begin(), Animations.end(), [&](CAnimation* pSrcAnimation, CAnimation* pDestAnimation) {
+                return pSrcAnimation->Get_AnimationName() < pDestAnimation->Get_AnimationName();
+            });
+        }
+
         _float fSpeed = pCurrAnimation->Get_AnimationSpeed();
         ImGui::Text("Speed");
         IMGUI_SAME_LINE;
@@ -619,6 +629,13 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
             pCurrAnimation->Set_AnimationSpeed(fSpeed);
         }
 
+        IMGUI_NEW_LINE;
+
+        _bool bRootAnimation = pCurrAnimation->Is_RootAnimation();
+        ImGui::Text("Root_Animation");
+        IMGUI_SAME_LINE;
+        ImGui::Checkbox("##IsRootAnimation", &bRootAnimation);
+        pCurrAnimation->Set_RootAnimation(bRootAnimation);
     }
     ImGui::End();
     
