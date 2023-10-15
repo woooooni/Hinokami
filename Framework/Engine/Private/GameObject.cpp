@@ -4,7 +4,7 @@
 
 _uint CGameObject::g_ObjecId = 0;
 
-CGameObject::CGameObject(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, wstring strObjectTag, _int iObjectType)
+CGameObject::CGameObject(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strObjectTag, _int iObjectType)
 	: m_pDevice(pDevice)
 	, m_pContext(pContext)
 	, m_strObjectTag(strObjectTag)
@@ -18,6 +18,7 @@ CGameObject::CGameObject(ID3D11Device * pDevice, ID3D11DeviceContext * pContext,
 CGameObject::CGameObject(const CGameObject & rhs)
 	: m_pDevice(rhs.m_pDevice)
 	, m_pContext(rhs.m_pContext)
+	, m_strPrototypeTag(rhs.m_strPrototypeTag)
 	, m_strObjectTag(rhs.m_strObjectTag)
 	, m_iObjectID(g_ObjecId++)
 	, m_iObjectType(rhs.m_iObjectType)

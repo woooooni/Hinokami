@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Client_Defines.h"
 #include "Engine_Macro.h"
 
 #include "Base.h"
@@ -75,7 +76,13 @@ private:
 	void Tick_Map_Tool(_float fTimeDelta);
 	void Tick_Terrain_Tool(_float fTimeDelta);
 	
+private:
+	HRESULT Load_Map_Data(const wstring& strMapFileName);
+	HRESULT Save_Map_Data(const wstring& strMapFileName);
 
+private:
+	void PickingGroundObj();
+	void PickingTerrainObj();
 
 private:
 	ID3D11Device* m_pDevice = nullptr;

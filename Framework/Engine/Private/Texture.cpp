@@ -13,6 +13,7 @@ CTexture::CTexture(const CTexture& rhs)
 	: CComponent(rhs)
 	, m_iNumTextures(rhs.m_iNumTextures)
 	, m_SRVs(rhs.m_SRVs)
+	, m_FileNames(rhs.m_FileNames)
 {
 	for (auto& pSRV : m_SRVs)
 		Safe_AddRef(pSRV);

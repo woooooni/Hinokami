@@ -242,6 +242,11 @@ list<CGameObject*>& CGameInstance::Find_GameObjects(_uint iLevelIndex, const _ui
 	return m_pObject_Manager->Find_GameObjects(iLevelIndex, iLayerType);
 }
 
+HRESULT CGameInstance::Clear_Layer(_uint iLevelIndex, const _uint iLayerType)
+{
+	return m_pObject_Manager->Clear_Layer(iLevelIndex, iLayerType);
+}
+
 
 
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring& strProtoTypeTag, CComponent* pPrototype)

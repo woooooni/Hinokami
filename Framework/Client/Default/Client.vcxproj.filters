@@ -19,9 +19,6 @@
     <Filter Include="01.Levels\99.Loading">
       <UniqueIdentifier>{d3df9124-96f6-4c1d-a02e-1d2d51e29c9b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\99.Loading\Loader">
-      <UniqueIdentifier>{04c05968-cb34-4cec-89e2-639b898c25fc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects">
       <UniqueIdentifier>{d435cd37-10c5-4f6c-a2f1-ee72504bbb59}</UniqueIdentifier>
     </Filter>
@@ -124,11 +121,26 @@
     <Filter Include="98.Default">
       <UniqueIdentifier>{068ac4ae-308f-439b-8a7d-d5b077bfb9ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\08. UI">
+    <Filter Include="02.GameObjects\98. UI">
       <UniqueIdentifier>{906b0f1e-6358-4af4-a69c-333e75dfe3c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\08. UI\Logo">
+    <Filter Include="02.GameObjects\98. UI\Logo">
       <UniqueIdentifier>{15129fc4-724b-462f-bf8b-3bbe5060b78e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08. Tree">
+      <UniqueIdentifier>{927451e5-89b1-49c5-911b-6968ed211588}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\09. Bush">
+      <UniqueIdentifier>{320893f2-a22a-459e-bb04-9461610b9d7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95. Loader">
+      <UniqueIdentifier>{04c05968-cb34-4cec-89e2-639b898c25fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Ground">
+      <UniqueIdentifier>{ffba9ea1-f7fd-46c7-960e-8ca4fdb9d88d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\98.Weapon">
+      <UniqueIdentifier>{52f54d3c-6963-4c9f-9c46-c47469ad2a56}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -163,7 +175,7 @@
       <Filter>01.Levels\99.Loading</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Loader.h">
-      <Filter>01.Levels\99.Loading\Loader</Filter>
+      <Filter>95. Loader</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BackGround.h">
       <Filter>02.GameObjects\00. BackGround</Filter>
@@ -268,13 +280,25 @@
       <Filter>96. Manager\Network\01. Session</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI.h">
-      <Filter>02.GameObjects\08. UI</Filter>
+      <Filter>02.GameObjects\98. UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_Logo_BackGround.h">
-      <Filter>02.GameObjects\08. UI\Logo</Filter>
+      <Filter>02.GameObjects\98. UI\Logo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_Logo_Title.h">
-      <Filter>02.GameObjects\08. UI\Logo</Filter>
+      <Filter>02.GameObjects\98. UI\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree.h">
+      <Filter>02.GameObjects\08. Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Grass.h">
+      <Filter>02.GameObjects\09. Bush</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Ground.h">
+      <Filter>02.GameObjects\10. Ground</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon.h">
+      <Filter>02.GameObjects\03. Character\98.Weapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -297,7 +321,7 @@
       <Filter>01.Levels\99.Loading</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Loader.cpp">
-      <Filter>01.Levels\99.Loading\Loader</Filter>
+      <Filter>95. Loader</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BackGround.cpp">
       <Filter>02.GameObjects\00. BackGround</Filter>
@@ -399,13 +423,25 @@
       <Filter>96. Manager\Network\01. Session</Filter>
     </ClCompile>
     <ClCompile Include="UI.cpp">
-      <Filter>02.GameObjects\08. UI</Filter>
+      <Filter>02.GameObjects\98. UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Logo_BackGround.cpp">
-      <Filter>02.GameObjects\08. UI\Logo</Filter>
+      <Filter>02.GameObjects\98. UI\Logo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Logo_Title.cpp">
-      <Filter>02.GameObjects\08. UI\Logo</Filter>
+      <Filter>02.GameObjects\98. UI\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree.cpp">
+      <Filter>02.GameObjects\08. Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Grass.cpp">
+      <Filter>02.GameObjects\09. Bush</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Ground.cpp">
+      <Filter>02.GameObjects\10. Ground</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon.cpp">
+      <Filter>02.GameObjects\03. Character\98.Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

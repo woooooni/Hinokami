@@ -1,21 +1,22 @@
 #include "stdafx.h"
 #include "GameInstance.h"
-#include "Prop.h"
+#include "Weapon.h"
+
 
 
 USING(Client)
-CProp::CProp(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
-	: CGameObject(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_PROP)
+CWeapon::CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
+	: CGameObject(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_WEAPON)
 {
 }
 
-CProp::CProp(const CProp& rhs)
+CWeapon::CWeapon(const CWeapon& rhs)
 	: CGameObject(rhs)
 	, m_pShaderCom(rhs.m_pShaderCom)
 	, m_pRendererCom(rhs.m_pRendererCom)
 	, m_pTransformCom(rhs.m_pTransformCom)
 	, m_pModelCom(rhs.m_pModelCom)
-	, m_strPropName(rhs.m_strPropName)
+	, m_strWeaponName(rhs.m_strWeaponName)
 {	
 	Safe_AddRef(m_pShaderCom);
 	Safe_AddRef(m_pRendererCom);
@@ -23,25 +24,27 @@ CProp::CProp(const CProp& rhs)
 	Safe_AddRef(m_pModelCom);
 }
 
-
-HRESULT CProp::Initialize_Prototype(const wstring& strFilePath, const wstring& strFileName)
+HRESULT CWeapon::Initialize_Prototype(const wstring& strFilePath, const wstring& strFileName)
 {
-	if (FAILED(__super::Initialize_Prototype()))
+	if(FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
 	_tchar szFileName[MAX_PATH];
 	_tchar szExt[MAX_PATH];
 	_wsplitpath_s(strFileName.c_str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
 
-	m_strPropName = szFileName;
+	m_strWeaponName = szFileName;
 
-	if (FAILED(GAME_INSTANCE->Import_Model_Data(LEVEL_STATIC, L"Prototype_Component_Model_" + m_strPropName, CModel::TYPE::TYPE_NONANIM, strFilePath, strFileName, nullptr)))
+	if (FAILED(GAME_INSTANCE->Import_Model_Data(LEVEL_STATIC, L"Prototype_Component_Model_" + m_strWeaponName, CModel::TYPE::TYPE_NONANIM, strFilePath, strFileName, nullptr)))
 		return E_FAIL;
+
+
 
 	return S_OK;
 }
 
-HRESULT CProp::Initialize(void* pArg)
+
+HRESULT CWeapon::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -52,20 +55,23 @@ HRESULT CProp::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CProp::Tick(_float fTimeDelta)
+void CWeapon::Tick(_float fTimeDelta)
 {
 
 }
 
-void CProp::LateTick(_float fTimeDelta)
+void CWeapon::LateTick(_float fTimeDelta)
 {
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 
-HRESULT CProp::Render()
+HRESULT CWeapon::Render()
 {
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
+
+	
+
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TP(), sizeof(_float4x4))))
 		return E_FAIL;
@@ -87,10 +93,11 @@ HRESULT CProp::Render()
 		if (FAILED(m_pModelCom->Render(m_pShaderCom, i)))
 			return E_FAIL;
 	}
+
 	return S_OK;
 }
 
-HRESULT CProp::Ready_Components()
+HRESULT CWeapon::Ready_Components()
 {
 	CTransform::TRANSFORMDESC		TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
@@ -106,39 +113,40 @@ HRESULT CProp::Ready_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Model"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_") + m_strPropName, TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_") + m_strWeaponName, TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
 
-CProp* CProp::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const wstring& strFilePath, const wstring& strFileName)
+CWeapon* CWeapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const wstring& strFilePath, const wstring& strFileName)
 {
-	CProp* pInstance = new CProp(pDevice, pContext, strObjectTag);
+	CWeapon* pInstance = new CWeapon(pDevice, pContext, strObjectTag);
 	if (FAILED(pInstance->Initialize_Prototype(strFilePath, strFileName)))
 	{
-		MSG_BOX("Create Failed : CProp");
+		MSG_BOX("Create Failed : CWeapon");
 		Safe_Release(pInstance);
 		return nullptr;
 	}
 	return pInstance;
 }
 
-CGameObject* CProp::Clone(void* pArg)
+
+CGameObject* CWeapon::Clone(void* pArg)
 {
-	CProp* pInstance = new CProp(*this);
+	CWeapon* pInstance = new CWeapon(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CNezko");
+		MSG_BOX("Failed to Cloned : CWeapon");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CProp::Free()
+void CWeapon::Free()
 {
 	__super::Free();
 

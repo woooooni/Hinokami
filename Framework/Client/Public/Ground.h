@@ -14,13 +14,13 @@ END
 
 
 BEGIN(Client)
-class CProp final : public CGameObject
+class CGround final : public CGameObject
 {
 
 private:
-	CProp(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
-	CProp(const CProp& rhs);
-	virtual ~CProp() = default;
+	CGround(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	CGround(const CGround& rhs);
+	virtual ~CGround() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype(const wstring& strFilePath, const wstring& strFileName);
@@ -48,7 +48,7 @@ private:
 	wstring m_strPropName;
 
 public:
-	static CProp* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const wstring& strFilePath, const wstring& strFileName);
+	static CGround* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const wstring& strFilePath, const wstring& strFileName);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

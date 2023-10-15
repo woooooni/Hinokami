@@ -40,6 +40,7 @@ HRESULT CObject_Manager::Add_Prototype(const wstring& strPrototypeTag, CGameObje
 	if (nullptr != Find_Prototype(strPrototypeTag, iLayerType))
 		return E_FAIL;
 
+	pPrototype->Set_PrototypeTag(strPrototypeTag);
 	m_pPrototypes[iLayerType].emplace(strPrototypeTag, pPrototype);
 
 	return S_OK;
@@ -153,6 +154,20 @@ list<CGameObject*>& CObject_Manager::Find_GameObjects(_uint iLevelIndex, const _
 	}
 
 	return m_pLayers[iLevelIndex][iLayerType]->Find_GameObjects();
+}
+
+HRESULT CObject_Manager::Clear_Layer(_uint iLevelIndex, const _uint iLayerType)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex, iLayerType);
+	if (nullptr == pLayer)
+	{
+		MSG_BOX("Clear_Layer Failed.");
+		return E_FAIL;
+	}
+
+	pLayer->Free();
+
+	return S_OK;
 }
 
 void CObject_Manager::Tick(_float fTimeDelta)

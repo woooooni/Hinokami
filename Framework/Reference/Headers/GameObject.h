@@ -10,7 +10,7 @@ class ENGINE_DLL CGameObject abstract : public CBase
 {
 protected:
 	/* 원형을 생성할 때 */
-	CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjectTag, _int iObjectType);
+	CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, _int iObjectType);
 
 	/* 사본을 생성할 때 */
 	CGameObject(const CGameObject& rhs); /* 복사 생성자. */
@@ -31,6 +31,9 @@ public:
 
 
 public:
+	void Set_PrototypeTag(const wstring& strPrototypeTag) { m_strPrototypeTag = strPrototypeTag; }
+	const wstring& Get_PrototypeTag() { return m_strPrototypeTag; }
+
 	void Set_ObjectTag(const wstring& strTag) { m_strObjectTag = strTag; }
 	const wstring& Get_ObjectTag() { return m_strObjectTag; }
 	
@@ -60,6 +63,7 @@ protected:
 
 protected:
 	_float				m_fCamDistance = 0.f;
+	wstring				m_strPrototypeTag = L"";
 	wstring				m_strObjectTag = L"";
 
 	static				_uint g_ObjecId;

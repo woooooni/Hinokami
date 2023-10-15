@@ -14,7 +14,10 @@
 #include <filesystem>
 #include "Building.h"
 #include "Prop.h"
+#include "Grass.h"
+#include "Tree.h"
 #include "Utils.h"
+#include "Ground.h"
 
 #include "UI.h"
 #include "UI_Logo_Title.h"
@@ -179,7 +182,7 @@ HRESULT CLoader::Loading_For_Level_Tool()
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
 	/* For.Prototype_GameObject_Camera_Free */
-	// Loading_Proto_AllObjects(L"../Bin/Export/Map/");
+	// Loading_Proto_AllObjects(L"../Bin/Resources/Map/");
 
 
 	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
@@ -230,7 +233,7 @@ HRESULT CLoader::Loading_Proto_AllObjects(const wstring& strPath)
 		{
 			if (strFilePath.find(L"Buildings") != wstring::npos)
 			{
-				if (FAILED(GAME_INSTANCE->Add_Prototype(wstring(strFileName),
+				if (FAILED(GI->Add_Prototype(wstring(strFileName),
 					CBuilding::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_BUILDING)))
 				{
 					return E_FAIL;
@@ -238,12 +241,50 @@ HRESULT CLoader::Loading_Proto_AllObjects(const wstring& strPath)
 			}
 			else if (strFilePath.find(L"Objects") != wstring::npos)
 			{
-				if (FAILED(GAME_INSTANCE->Add_Prototype(wstring(strFileName),
+				if (FAILED(GI->Add_Prototype(wstring(strFileName),
 					CProp::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_PROP)))
 				{
 					return E_FAIL;
 				}
 			}
+			else if (strFilePath.find(L"Grass") != wstring::npos)
+			{
+				if (FAILED(GI->Add_Prototype(wstring(strFileName),
+					CGrass::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_GRASS)))
+					return E_FAIL;
+			}
+			else if (strFilePath.find(L"Grounds") != wstring::npos)
+			{
+				if (FAILED(GI->Add_Prototype(wstring(strFileName),
+					CGround::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_GROUND)))
+					return E_FAIL;
+			}
+			else if (strFilePath.find(L"Rocks") != wstring::npos)
+			{
+				if (FAILED(GI->Add_Prototype(wstring(strFileName),
+					CProp::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_GROUND)))
+					return E_FAIL;
+			}
+			else if (strFilePath.find(L"Tree") != wstring::npos)
+			{
+				if (FAILED(GI->Add_Prototype(wstring(strFileName),
+					CTree::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_TREE)))
+					return E_FAIL;
+			}
+			else if (strFilePath.find(L"Road") != wstring::npos)
+			{
+				if (FAILED(GI->Add_Prototype(wstring(strFileName),
+					CProp::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_ROAD)))
+					return E_FAIL;
+			}
+
+			else if (strFilePath.find(L"Mountain") != wstring::npos)
+			{
+				if (FAILED(GI->Add_Prototype(wstring(strFileName),
+					CProp::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_MOUNTAIN)))
+					return E_FAIL;
+			}
+
 		}
 
 	}

@@ -28,7 +28,7 @@ void CPicking_Manager::Tick(_float fTimeDelta)
 
 }
 
-_bool CPicking_Manager::Is_Picking(CTransform* pTransform, CVIBuffer* pBuffer, _float4* vOut)
+_bool CPicking_Manager::Is_Picking(CTransform* pTransform, CVIBuffer* pBuffer, _bool bCutPos, _float4* vOut)
 {
 	if (nullptr == pTransform)
 		return false;
@@ -40,7 +40,8 @@ _bool CPicking_Manager::Is_Picking(CTransform* pTransform, CVIBuffer* pBuffer, _
 	_vector vMousePos = XMVectorSet(
 		_float(pt.x / (g_iWinSizeX * .5f) - 1.f),
 		_float(pt.y / (g_iWinSizeY * -.5f) + 1.f),
-		0.f, 0.f);
+		1.f, 1.f);
+
 
 
 	_matrix ViewMatrixInv = GAME_INSTANCE->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
@@ -83,22 +84,25 @@ _bool CPicking_Manager::Is_Picking(CTransform* pTransform, CVIBuffer* pBuffer, _
 			if (fDistnace < fMinDistance)
 			{
 				_float4 vPickingPos;
-				XMStoreFloat4(&vPickingPos, vRayPosition + vRayDir * fDistnace);
+				XMStoreFloat4(&vPickingPos, 
+					XMVector3TransformCoord(vRayPosition, pTransform->Get_WorldMatrix()) 
+					+ XMVector3TransformNormal(vRayDir, pTransform->Get_WorldMatrix()) * fDistnace);
 
 				if (vOut != nullptr)
 				{
-					vPickingPos.x = floorf(vPickingPos.x + 0.5f);
-					vPickingPos.y = floorf(vPickingPos.y + 0.5f);
-					vPickingPos.z = floorf(vPickingPos.z + 0.5f);
+					if (bCutPos)
+					{
+						vPickingPos.x = floorf(vPickingPos.x + 0.5f);
+						vPickingPos.y = floorf(vPickingPos.y + 0.5f);
+						vPickingPos.z = floorf(vPickingPos.z + 0.5f);
+					}
 					*vOut = vPickingPos;
 				}
-
-				return true;
+				fMinDistance = fDistnace;
 			}
 		}
 	}
-
-	return false;
+	return fMinDistance < 999999.f;
 }
 
 

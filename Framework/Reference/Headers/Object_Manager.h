@@ -29,6 +29,8 @@ public:
 	class CGameObject* Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring& strObjectTag);
 	list<CGameObject*>& Find_GameObjects(_uint iLevelIndex, const _uint iLayerType);
 
+public:
+	HRESULT Clear_Layer(_uint iLevelIndex, const _uint iLayerType);
 
 public:
 	void Tick(_float fTimeDelta);

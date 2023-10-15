@@ -22,11 +22,8 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	, m_VertexLocalPositions(rhs.m_VertexLocalPositions)
 	, m_FaceIndices(rhs.m_FaceIndices)
 {
-	
-
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
-
 }
 
 HRESULT CVIBuffer::Initialize_Prototype()

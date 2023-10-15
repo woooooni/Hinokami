@@ -1,17 +1,22 @@
 #include "stdafx.h"
 #include "ImGui_Manager.h"
-#include "GameObject.h"
-#include "Component_Manager.h"
-#include "Animation.h"
 #include "GameInstance.h"
+#include "Animation.h"
 #include "Dummy.h"
 #include "Terrain.h"
 #include "Key_Manager.h"
-#include "Utils.h"
 #include "Mesh_Effect.h"
 #include "Camera_Free.h"
 #include "Texture_Effect.h"
 #include "Picking_Manager.h"
+
+
+#include "Prop.h"
+#include "Ground.h"
+#include "Mesh.h"
+#include "Utils.h"
+#include "FileUtils.h"
+#include <filesystem>
 
 
 USING(Client)
@@ -831,10 +836,27 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
 {
     ImGui::Begin("Map");
 
+    static char pMapFileName[MAX_PATH] = "Temp";
+
+    ImGui::Text("Map_Name");
+    IMGUI_SAME_LINE;
+    ImGui::InputText("##Map_FileName", pMapFileName, MAX_PATH);
+    if (ImGui::Button("Save_Map"))
+        Save_Map_Data(CUtils::ToWString(pMapFileName));
+
+    IMGUI_SAME_LINE;
+
+    if (ImGui::Button("Load_Map"))
+        Load_Map_Data(CUtils::ToWString(pMapFileName));
+
+
+    IMGUI_NEW_LINE;
     static char pSelectedObjectName[MAX_PATH] = "Temp";
     static _bool bSelected = false;
     static LAYER_TYPE eSelectedLayer = LAYER_TYPE::LAYER_END;
     static string strPrototypeName;
+
+    
 
     for (_uint i = 0; i < LAYER_TYPE::LAYER_END; ++i)
     {
@@ -874,42 +896,38 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
 
     if (nullptr != m_pPrevObject && nullptr != m_pTerrain)
     {
-        _float4 vHitPos;
-        if (CPicking_Manager::GetInstance()->Is_Picking(dynamic_cast<CTransform*>(m_pTerrain->Get_Component(L"Com_Transform")), m_pTerrain->Get_TerrainBufferCom(), &vHitPos))
+        PickingGroundObj();
+
+
+        if (KEY_TAP(KEY::LBTN))
         {
-            CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
-            if (nullptr != pTransform)
-                pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat4(&vHitPos));
-
-            if (KEY_TAP(KEY::LBTN))
+            CGameObject* pCloneObject = m_pPrevObject->Clone(nullptr);
+            if (nullptr == pCloneObject)
             {
-                CGameObject* pCloneObject = m_pPrevObject->Clone(nullptr);
-                if (nullptr == pCloneObject)
-                {
-                    MSG_BOX("Clone_Failed.");
-                    Safe_Release(m_pPrevObject);
-                    m_pPrevObject = nullptr;
-                }
-                CTransform* pObjectTransform = dynamic_cast<CTransform*>(pCloneObject->Get_Component(L"Com_Transform"));
-                if (pObjectTransform == nullptr)
-                {
-                    MSG_BOX("Get_TransformCom Failed.");
-                    Safe_Release(m_pPrevObject);
-                    m_pPrevObject = nullptr;
-                }
+                MSG_BOX("Clone_Failed.");
+                Safe_Release(m_pPrevObject);
+                m_pPrevObject = nullptr;
+            }
+            CTransform* pPrevObjTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
+            CTransform* pObjectTransform = dynamic_cast<CTransform*>(pCloneObject->Get_Component(L"Com_Transform"));
+            if (pObjectTransform == nullptr)
+            {
+                MSG_BOX("Get_TransformCom Failed.");
+                Safe_Release(m_pPrevObject);
+                m_pPrevObject = nullptr;
+            }
 
-                pObjectTransform->Set_State(CTransform::STATE::STATE_RIGHT, pTransform->Get_State(CTransform::STATE::STATE_RIGHT));
-                pObjectTransform->Set_State(CTransform::STATE::STATE_UP, pTransform->Get_State(CTransform::STATE::STATE_UP));
-                pObjectTransform->Set_State(CTransform::STATE::STATE_LOOK, pTransform->Get_State(CTransform::STATE::STATE_LOOK));
-                pObjectTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat4(&vHitPos));
+            pObjectTransform->Set_State(CTransform::STATE::STATE_RIGHT, pPrevObjTransform->Get_State(CTransform::STATE::STATE_RIGHT));
+            pObjectTransform->Set_State(CTransform::STATE::STATE_UP, pPrevObjTransform->Get_State(CTransform::STATE::STATE_UP));
+            pObjectTransform->Set_State(CTransform::STATE::STATE_LOOK, pPrevObjTransform->Get_State(CTransform::STATE::STATE_LOOK));
+            pObjectTransform->Set_State(CTransform::STATE::STATE_POSITION, pPrevObjTransform->Get_State(CTransform::STATE_POSITION));
 
-                if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, eSelectedLayer, pCloneObject)))
-                {
-                    MSG_BOX("Add_GameObject Failed.");
-                    Safe_Release(m_pPrevObject);
-                    Safe_Release(pCloneObject);
-                    m_pPrevObject = nullptr;
-                }
+            if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, eSelectedLayer, pCloneObject)))
+            {
+                MSG_BOX("Add_GameObject Failed.");
+                Safe_Release(m_pPrevObject);
+                Safe_Release(pCloneObject);
+                m_pPrevObject = nullptr;
             }
         }
 
@@ -951,7 +969,6 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
     
 
 
-    
     ImGui::End();
 }
 
@@ -999,6 +1016,183 @@ void CImGui_Manager::Tick_Terrain_Tool(_float fTimeDelta)
     }
     ImGui::End();
 }
+
+HRESULT CImGui_Manager::Load_Map_Data(const wstring& strMapFileName)
+{
+    wstring strMapFilePath = L"../Bin/Data/Map/" + strMapFileName + L"/" + strMapFileName + L".map";
+
+    shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
+    File->Open(strMapFilePath, FileMode::Read);
+
+    for (_uint i = 0; i < LAYER_TYPE::LAYER_END; ++i)
+    {
+        if (i == LAYER_TYPE::LAYER_CAMERA
+            || i == LAYER_TYPE::LAYER_TERRAIN
+            || i == LAYER_TYPE::LAYER_BACKGROUND
+            || i == LAYER_TYPE::LAYER_SKYBOX
+            || i == LAYER_TYPE::LAYER_UI
+            || i == LAYER_TYPE::LAYER_PLAYER
+            || i == LAYER_TYPE::LAYER_PROJECTILE
+            || i == LAYER_TYPE::LAYER_EFFECT)
+            continue;
+
+        GI->Clear_Layer(LEVEL_TOOL, i);
+
+        // 2. ObjectCount
+        _uint iObjectCount = File->Read<_uint>();
+
+        for (_uint j = 0; j < iObjectCount; ++j)
+        {
+            // 3. Object_Prototype_Tag
+            wstring strPrototypeTag = CUtils::ToWString(File->Read<string>());
+            wstring strObjectTag = CUtils::ToWString(File->Read<string>());
+
+            CGameObject* pObj = nullptr;
+            if (FAILED(GI->Add_GameObject(LEVEL_TOOL, i, strPrototypeTag, nullptr, &pObj)))
+            {
+                MSG_BOX("Load_Objects_Failed.");
+                return E_FAIL;
+            }
+
+            if (nullptr == pObj)
+            {
+                MSG_BOX("Add_Object_Failed.");
+                return E_FAIL;
+            }
+            pObj->Set_ObjectTag(strObjectTag);
+
+            CTransform* pTransform = dynamic_cast<CTransform*>(pObj->Get_Component(L"Com_Transform"));
+            if(nullptr == pTransform)
+            {
+                MSG_BOX("Get_Transform_Failed.");
+                return E_FAIL;
+            }
+
+            // 6. Obejct States
+            _float4 vRight, vUp, vLook, vPos;
+
+            File->Read<_float4>(vRight);
+            File->Read<_float4>(vUp);
+            File->Read<_float4>(vLook);
+            File->Read<_float4>(vPos);
+
+            pTransform->Set_State(CTransform::STATE_RIGHT, XMLoadFloat4(&vRight));
+            pTransform->Set_State(CTransform::STATE_UP, XMLoadFloat4(&vUp));
+            pTransform->Set_State(CTransform::STATE_LOOK, XMLoadFloat4(&vLook));
+            pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vPos));
+        }
+    }
+    MSG_BOX("Map_Loaded.");
+    return S_OK;
+}
+
+HRESULT CImGui_Manager::Save_Map_Data(const wstring& strMapFileName)
+{
+    wstring strMapFilePath = L"../Bin/Data/Map/" + strMapFileName + L"/" + strMapFileName + L".map";
+
+    auto path = filesystem::path(strMapFilePath);
+    filesystem::create_directories(path.parent_path());
+
+
+    shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
+    File->Open(strMapFilePath, FileMode::Write);
+    for (_uint i = 0; i < LAYER_TYPE::LAYER_END; ++i)
+    {
+        if (i == LAYER_TYPE::LAYER_CAMERA
+            || i == LAYER_TYPE::LAYER_TERRAIN
+            || i == LAYER_TYPE::LAYER_BACKGROUND
+            || i == LAYER_TYPE::LAYER_SKYBOX
+            || i == LAYER_TYPE::LAYER_UI
+            || i == LAYER_TYPE::LAYER_PLAYER
+            || i == LAYER_TYPE::LAYER_PROJECTILE
+            || i == LAYER_TYPE::LAYER_EFFECT)
+            continue;
+
+        // 2. ObjectCount
+        list<CGameObject*>& GameObjects = GI->Find_GameObjects(LEVEL_TOOL, i);
+        File->Write<_uint>(GameObjects.size());
+
+        for (auto& Object : GameObjects)
+        {
+            CTransform* pTransform = dynamic_cast<CTransform*>(Object->Get_Component(L"Com_Transform"));
+            if (nullptr == pTransform)
+            {
+                MSG_BOX("Find_Transform_Failed.");
+                return E_FAIL;
+            }
+
+            // 3. Object_Prototype_Tag
+            File->Write<string>(CUtils::ToString(Object->Get_PrototypeTag()));
+
+            // 4. Object_Tag
+            File->Write<string>(CUtils::ToString(Object->Get_ObjectTag()));
+
+            // 5. Obejct States
+            _float4 vRight, vUp, vLook, vPos;
+
+            XMStoreFloat4(&vRight, pTransform->Get_State(CTransform::STATE_RIGHT));
+            XMStoreFloat4(&vUp, pTransform->Get_State(CTransform::STATE_UP));
+            XMStoreFloat4(&vLook, pTransform->Get_State(CTransform::STATE_LOOK));
+            XMStoreFloat4(&vPos, pTransform->Get_State(CTransform::STATE_POSITION));
+
+            File->Write<_float4>(vRight);
+            File->Write<_float4>(vUp);
+            File->Write<_float4>(vLook);
+            File->Write<_float4>(vPos);
+        }
+
+    }
+
+    MSG_BOX("Map_Saved.");
+    return S_OK;
+}
+
+void CImGui_Manager::PickingTerrainObj()
+{
+    _float4 vHitPos;
+    if (CPicking_Manager::GetInstance()->Is_Picking(m_pTerrain->Get_TransformCom(), m_pTerrain->Get_TerrainBufferCom(), true, &vHitPos))
+    {
+        CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
+        if (nullptr != pTransform)
+            pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat4(&vHitPos));
+
+        return;
+    }
+
+}
+
+void CImGui_Manager::PickingGroundObj()
+{
+    _float4 vHitPos;
+    list<CGameObject*>& PickingObjects = GI->Find_GameObjects(LEVEL_TOOL, LAYER_TYPE::LAYER_GROUND);
+    for (auto& PickingObject : PickingObjects)
+    {
+        CGround* pGround = dynamic_cast<CGround*>(PickingObject);
+        if (nullptr == pGround)
+            continue;
+
+        CTransform* pTransform = pGround->Get_TransformCom();
+        if (nullptr == pTransform)
+            continue;
+
+
+        const vector<CMesh*>& Meshes = pGround->Get_ModelCom()->Get_Meshes();
+        for (auto& pMesh : Meshes)
+        {
+            if (CPicking_Manager::GetInstance()->Is_Picking(pTransform, pMesh, false, &vHitPos))
+            {
+                CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
+                if (nullptr != pTransform)
+                    pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat4(&vHitPos));
+
+                return;
+            }
+        }
+    }
+
+    PickingTerrainObj();
+}
+
 
 void CImGui_Manager::Free()
 {

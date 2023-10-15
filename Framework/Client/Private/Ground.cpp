@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "GameInstance.h"
-#include "Prop.h"
+#include "Ground.h"
 
 
 USING(Client)
-CProp::CProp(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
-	: CGameObject(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_PROP)
+CGround::CGround(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
+	: CGameObject(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_GROUND)
 {
 }
 
-CProp::CProp(const CProp& rhs)
+CGround::CGround(const CGround& rhs)
 	: CGameObject(rhs)
 	, m_pShaderCom(rhs.m_pShaderCom)
 	, m_pRendererCom(rhs.m_pRendererCom)
@@ -24,7 +24,7 @@ CProp::CProp(const CProp& rhs)
 }
 
 
-HRESULT CProp::Initialize_Prototype(const wstring& strFilePath, const wstring& strFileName)
+HRESULT CGround::Initialize_Prototype(const wstring& strFilePath, const wstring& strFileName)
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -41,7 +41,7 @@ HRESULT CProp::Initialize_Prototype(const wstring& strFilePath, const wstring& s
 	return S_OK;
 }
 
-HRESULT CProp::Initialize(void* pArg)
+HRESULT CGround::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -52,17 +52,17 @@ HRESULT CProp::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CProp::Tick(_float fTimeDelta)
+void CGround::Tick(_float fTimeDelta)
 {
 
 }
 
-void CProp::LateTick(_float fTimeDelta)
+void CGround::LateTick(_float fTimeDelta)
 {
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 
-HRESULT CProp::Render()
+HRESULT CGround::Render()
 {
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -90,7 +90,7 @@ HRESULT CProp::Render()
 	return S_OK;
 }
 
-HRESULT CProp::Ready_Components()
+HRESULT CGround::Ready_Components()
 {
 	CTransform::TRANSFORMDESC		TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
@@ -113,21 +113,21 @@ HRESULT CProp::Ready_Components()
 }
 
 
-CProp* CProp::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const wstring& strFilePath, const wstring& strFileName)
+CGround* CGround::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const wstring& strFilePath, const wstring& strFileName)
 {
-	CProp* pInstance = new CProp(pDevice, pContext, strObjectTag);
+	CGround* pInstance = new CGround(pDevice, pContext, strObjectTag);
 	if (FAILED(pInstance->Initialize_Prototype(strFilePath, strFileName)))
 	{
-		MSG_BOX("Create Failed : CProp");
+		MSG_BOX("Create Failed : CGround");
 		Safe_Release(pInstance);
 		return nullptr;
 	}
 	return pInstance;
 }
 
-CGameObject* CProp::Clone(void* pArg)
+CGameObject* CGround::Clone(void* pArg)
 {
-	CProp* pInstance = new CProp(*this);
+	CGround* pInstance = new CGround(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
@@ -138,7 +138,7 @@ CGameObject* CProp::Clone(void* pArg)
 	return pInstance;
 }
 
-void CProp::Free()
+void CGround::Free()
 {
 	__super::Free();
 

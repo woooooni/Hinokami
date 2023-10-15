@@ -131,25 +131,6 @@ void CCharacter::Input(_float fTimeDelta)
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
-
-	/*if (KEY_TAP(KEY::O))
-	{
-		_uint iCurrAnimIdx = m_pModelCom->Get_CurrAnimationIndex();
-		if (iCurrAnimIdx <= 0)
-			m_pModelCom->Set_AnimIndex(0);
-		else
-			m_pModelCom->Set_AnimIndex(--iCurrAnimIdx);
-	}
-
-	if (KEY_TAP(KEY::P))
-	{
-		_uint iCurrAnimIdx = m_pModelCom->Get_CurrAnimationIndex();
-
-		if (iCurrAnimIdx >= m_pModelCom->Get_MaxAnimIndex())
-			m_pModelCom->Set_AnimIndex(m_pModelCom->Get_MaxAnimIndex());
-		else
-			m_pModelCom->Set_AnimIndex(++iCurrAnimIdx);
-	}*/
 }
 
 

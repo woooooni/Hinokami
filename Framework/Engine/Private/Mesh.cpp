@@ -252,9 +252,14 @@ HRESULT CMesh::Ready_Vertices(const aiMesh* pAIMesh, _fmatrix PivotMatrix)
 	m_SubResourceData.pSysMem = pVertices;
 
 
+	m_VertexLocalPositions.reserve(m_iNumVertices);
 	m_NonAnimVertices.reserve(m_iNumVertices);
 	for (_uint i = 0; i < m_iNumVertices; ++i)
+	{
 		m_NonAnimVertices.push_back(pVertices[i]);
+		m_VertexLocalPositions.push_back(m_NonAnimVertices[i].vPosition);
+	}
+		
 
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
@@ -332,10 +337,14 @@ HRESULT CMesh::Ready_AnimVertices(const aiMesh* pAIMesh, CModel* pModel)
 		}
 	}
 
+	m_VertexLocalPositions.reserve(m_iNumVertices);
 	m_AnimVertices.reserve(m_iNumVertices);
-
 	for (_uint i = 0; i < m_iNumVertices; ++i)
+	{
 		m_AnimVertices.push_back(pVertices[i]);
+		m_VertexLocalPositions.push_back(pVertices[i].vPosition);
+	}
+		
 
 
 
@@ -364,6 +373,10 @@ HRESULT CMesh::Ready_Bin_Vertices()
 
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = m_NonAnimVertices.data();
+
+	m_VertexLocalPositions.reserve(m_iNumVertices);
+	for (_uint i = 0; i < m_iNumVertices; ++i)
+		m_VertexLocalPositions.push_back(m_NonAnimVertices[i].vPosition);
 
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;
@@ -407,6 +420,10 @@ HRESULT CMesh::Ready_Bin_AnimVertices()
 
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = m_AnimVertices.data();
+
+	m_VertexLocalPositions.reserve(m_iNumVertices);
+	for (_uint i = 0; i < m_iNumVertices; ++i)
+		m_VertexLocalPositions.push_back(m_AnimVertices[i].vPosition);
 
 	if (FAILED(__super::Create_VertexBuffer()))
 		return E_FAIL;

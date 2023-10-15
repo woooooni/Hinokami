@@ -26,7 +26,6 @@ public:
 
 public:
 	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
-	HRESULT Enter_Level();
 
 private:
 	_uint						m_iCurrentLevelIndex = { 0 };

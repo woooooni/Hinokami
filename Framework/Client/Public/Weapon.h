@@ -14,13 +14,13 @@ END
 
 
 BEGIN(Client)
-class CProp final : public CGameObject
+class CWeapon final : public CGameObject
 {
 
 private:
-	CProp(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
-	CProp(const CProp& rhs);
-	virtual ~CProp() = default;
+	CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	CWeapon(const CWeapon& rhs);
+	virtual ~CWeapon() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype(const wstring& strFilePath, const wstring& strFileName);
@@ -33,8 +33,7 @@ public:
 	CShader* Get_ShaderCom() { return m_pShaderCom; }
 	CTransform* Get_TransformCom() { return m_pTransformCom; }
 	CModel* Get_ModelCom() { return m_pModelCom; }
-	
-	
+
 private:
 	virtual HRESULT Ready_Components() override;
 
@@ -44,11 +43,14 @@ protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CTransform* m_pTransformCom = nullptr;
 	CModel* m_pModelCom = nullptr;
 
+
 private:
-	wstring m_strPropName;
+	wstring m_strWeaponName;
 
 public:
-	static CProp* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const wstring& strFilePath, const wstring& strFileName);
+	static CWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, 
+		const wstring& strObjectTag, const wstring& strFilePath, const wstring& strFileName);
+
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

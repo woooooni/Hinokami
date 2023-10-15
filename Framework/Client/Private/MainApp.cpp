@@ -120,7 +120,7 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 	/* For.Prototype_Component_VIBuffer_Terrain*/
 	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Terrain"),
-		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 128, 128))))
+		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 512, 512))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_VtxNorTex*/

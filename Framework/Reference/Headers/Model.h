@@ -19,6 +19,7 @@ public:
 	_uint Get_NumMeshes() const {
 		return m_iNumMeshes;
 	}
+	const vector<class CMesh*>& Get_Meshes() { return m_Meshes; }
 
 	_uint Get_MaterialIndex(_uint iMeshIndex);
 	class CTexture* Get_MaterialTexture(_uint iMeshIndex, _uint iTextureType);
@@ -76,6 +77,7 @@ private:
 	_float4x4					m_PivotMatrix;
 	TYPE						m_eModelType = TYPE_END;
 	_bool						m_bFromBinary = false;
+
 private:
 	_uint							m_iNumMeshes = 0;
 	vector<class CMesh*>			m_Meshes;

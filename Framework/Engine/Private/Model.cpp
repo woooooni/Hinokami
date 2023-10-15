@@ -134,27 +134,27 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const wstring& strModelFolderPa
 
 HRESULT CModel::Initialize(void* pArg)
 {
+	_uint		iNumMeshes = 0;
+
+	vector<CMesh*>		MeshContainers;
+
+	for (auto& pPrototype : m_Meshes)
+	{
+		CMesh* pMeshContainer = (CMesh*)pPrototype->Clone();
+		if (nullptr == pMeshContainer)
+			return E_FAIL;
+
+		MeshContainers.push_back(pMeshContainer);
+
+		Safe_Release(pPrototype);
+	}
+
+	m_Meshes.clear();
+
+	m_Meshes = MeshContainers;
+
 	if (TYPE_ANIM == m_eModelType)
 	{
-		_uint		iNumMeshes = 0;
-
-		vector<CMesh*>		MeshContainers;
-
-		for (auto& pPrototype : m_Meshes)
-		{
-			CMesh* pMeshContainer = (CMesh*)pPrototype->Clone();
-			if (nullptr == pMeshContainer)
-				return E_FAIL;
-
-			MeshContainers.push_back(pMeshContainer);
-
-			Safe_Release(pPrototype);
-		}
-
-		m_Meshes.clear();
-
-		m_Meshes = MeshContainers;
-
 		for (auto& pMeshContainer : m_Meshes)
 		{
 			if (nullptr != pMeshContainer)

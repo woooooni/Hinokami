@@ -7,7 +7,7 @@ enum FileMode
 	Read,
 };
 
-class CFileUtils
+class ENGINE_DLL CFileUtils
 {
 public:
 	CFileUtils();

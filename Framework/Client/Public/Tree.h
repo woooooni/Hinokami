@@ -14,13 +14,13 @@ END
 
 
 BEGIN(Client)
-class CProp final : public CGameObject
+class CTree final : public CGameObject
 {
 
 private:
-	CProp(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
-	CProp(const CProp& rhs);
-	virtual ~CProp() = default;
+	CTree(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	CTree(const CTree& rhs);
+	virtual ~CTree() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype(const wstring& strFilePath, const wstring& strFileName);
@@ -33,8 +33,7 @@ public:
 	CShader* Get_ShaderCom() { return m_pShaderCom; }
 	CTransform* Get_TransformCom() { return m_pTransformCom; }
 	CModel* Get_ModelCom() { return m_pModelCom; }
-	
-	
+
 private:
 	virtual HRESULT Ready_Components() override;
 
@@ -48,7 +47,7 @@ private:
 	wstring m_strPropName;
 
 public:
-	static CProp* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const wstring& strFilePath, const wstring& strFileName);
+	static CTree* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const wstring& strFilePath, const wstring& strFileName);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 
