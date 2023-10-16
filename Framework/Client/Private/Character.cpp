@@ -3,12 +3,14 @@
 #include "Character.h"
 #include "HierarchyNode.h"
 #include "Key_Manager.h"
+#include "Part.h"
 
 
 USING(Client)
 CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
 	: CGameObject(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_CHARACTER)
 {
+	
 }
 
 CCharacter::CCharacter(const CCharacter& rhs)
@@ -44,22 +46,14 @@ HRESULT CCharacter::Initialize(void* pArg)
 
 void CCharacter::Tick(_float fTimeDelta)
 {
-	if (!m_bMainPlayable)
-		return;
+	Input(fTimeDelta);
 
-	if (m_bControlable)
-		Input(fTimeDelta);
-
-	// Update_Weapon();
 	for (auto& pPart : m_Parts)
 		pPart->Tick(fTimeDelta);
 }
 
 void CCharacter::LateTick(_float fTimeDelta)
 {
-	if (!m_bMainPlayable)
-		return;
-
 	if (nullptr == m_pRendererCom)
 		return;
 
@@ -79,9 +73,6 @@ HRESULT CCharacter::Render()
 {
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
-
-	
-
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TP(), sizeof(_float4x4))))
 		return E_FAIL;
@@ -107,6 +98,25 @@ HRESULT CCharacter::Render()
 	return S_OK;
 }
 
+CHierarchyNode* CCharacter::Get_Socket(PARTTYPE eType)
+{
+	if (eType >= PARTTYPE::PART_END)
+		return nullptr;
+
+
+	return m_Sockets[eType];
+}
+
+CHierarchyNode* CCharacter::Get_Socket(const wstring& strSocketName)
+{
+	for (auto& pSocket : m_Sockets)
+	{
+		if (pSocket->Get_Name() == strSocketName)
+			return pSocket;
+	}
+	return nullptr;
+}
+
 
 
 
@@ -130,6 +140,15 @@ void CCharacter::Input(_float fTimeDelta)
 	if (KEY_HOLD(KEY::UP_ARROW))
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
+	}
+
+	if (KEY_TAP(KEY::OPEN_SQUARE_BRACKET))
+	{
+		m_pModelCom->Set_AnimIndex(m_pModelCom->Get_CurrAnimationIndex() - 1);
+	}
+	if (KEY_TAP(KEY::CLOSE_SQUARE_BRACKET))
+	{
+		m_pModelCom->Set_AnimIndex(m_pModelCom->Get_CurrAnimationIndex() + 1);
 	}
 }
 

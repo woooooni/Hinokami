@@ -213,6 +213,31 @@ HRESULT CModel_Manager::Import_Model_Data(_uint iLevelIndex,
 	return S_OK;
 	
 }
+HRESULT CModel_Manager::Ready_Model_Data_FromPath(_uint iLevelIndex, _uint eType, const wstring& strFolderPath)
+{
+	for (auto& p : std::filesystem::directory_iterator(strFolderPath))
+	{
+		if (p.is_directory())
+			Ready_Model_Data_FromPath(iLevelIndex, eType, p.path());
+
+
+		wstring strFilePath = CUtils::PathToWString(p.path().wstring());
+
+		_tchar strFileName[MAX_PATH];
+		_tchar strFolderName[MAX_PATH];
+		_tchar strExt[MAX_PATH];
+
+		_wsplitpath_s(strFilePath.c_str(), nullptr, 0, strFolderName, MAX_PATH, strFileName, MAX_PATH, strExt, MAX_PATH);
+
+		
+		if (0 == lstrcmp(TEXT(".fbx"), strExt) || 0 == lstrcmp(TEXT(".mesh"), strExt))
+		{
+			if (FAILED(Import_Model_Data(iLevelIndex, wstring(L"Prototype_Component_Model_") + strFileName, eType, strFolderPath + L"/", wstring(strFileName) + strExt, nullptr)))
+				return E_FAIL;
+		}
+	}
+	return S_OK;
+}
 #pragma endregion
 
 #pragma region Export_Mesh

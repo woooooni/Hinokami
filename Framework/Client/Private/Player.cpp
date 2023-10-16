@@ -27,7 +27,7 @@ HRESULT CPlayer::Initialize_Prototype()
 HRESULT CPlayer::Initialize(void* pArg)
 {
 
-	CGameObject* pGameObject = GAME_INSTANCE->Clone_GameObject(L"Prototype_GameObject_Giyu", LAYER_TYPE::LAYER_PLAYER);
+	CGameObject* pGameObject = GAME_INSTANCE->Clone_GameObject(L"Prototype_GameObject_Giyu", LAYER_TYPE::LAYER_CHARACTER);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
@@ -39,11 +39,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	}
 
 	m_Characters.push_back(pCharacter);
-	
 	Set_MainCharacter(pCharacter);
-
-	
-	
 	
     return S_OK;
 }
@@ -70,20 +66,21 @@ HRESULT CPlayer::Render()
 
 HRESULT CPlayer::Set_MainCharacter(CCharacter* pCharacter)
 {
-	if (nullptr == pCharacter)
-		return E_FAIL;
+	//if (nullptr == pCharacter)
+	//	return E_FAIL;
 
-	if (m_pCurrCharacter)
-	{
-		m_pCurrCharacter->Set_Controlable(false);
-		m_pCurrCharacter->Set_MainCharacter(false);
-	}
+	//if (m_pCurrCharacter)
+	//{
+	//	m_pCurrCharacter->Set_Controlable(false);
+	//	m_pCurrCharacter->Set_MainCharacter(false);
+	//}
 
-	m_pCurrCharacter = pCharacter;
+	//m_pCurrCharacter = pCharacter;
 
-	m_pCurrCharacter->Set_Controlable(true);
-	m_pCurrCharacter->Set_MainCharacter(true);
+	//m_pCurrCharacter->Set_Controlable(true);
+	//m_pCurrCharacter->Set_MainCharacter(true);
 
+	//return S_OK;
 	return S_OK;
 }
 

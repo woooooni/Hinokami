@@ -101,7 +101,6 @@ private:
 	wstring m_strFilePath = TEXT("../Bin/Export/Zenitsu/");
 	wstring m_strFileName = TEXT("Zenitsu");
 	wstring m_strExportPath = TEXT("../Bin/Resources/Export/");
-	_uint m_iSelectedModelType = 0;
 
 public:
 	class CGameObject* m_pTarget = nullptr;

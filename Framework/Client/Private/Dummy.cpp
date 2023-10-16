@@ -161,24 +161,7 @@ HRESULT CDummy::Import_Model()
 
 void CDummy::Input(_float fTimeDelta)
 {
-	if (KEY_HOLD(KEY::DOWN_ARROW))
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta);
-	}
 
-	if (KEY_HOLD(KEY::LEFT_ARROW))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -1.f);
-	}
-
-	if (KEY_HOLD(KEY::RIGHT_ARROW))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
-	}
-	if (KEY_HOLD(KEY::UP_ARROW))
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
-	}
 }
 
 

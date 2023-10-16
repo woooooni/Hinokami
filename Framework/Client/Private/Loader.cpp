@@ -9,6 +9,9 @@
 #include "Zenitsu.h"
 #include "Kyojuro.h"
 #include "Giyu.h"
+#include "Sweath.h"
+#include "Sword.h"
+
 #include "Dummy.h"
 #include "Terrain.h"
 #include <filesystem>
@@ -185,24 +188,44 @@ HRESULT CLoader::Loading_For_Level_Tool()
 	// Loading_Proto_AllObjects(L"../Bin/Resources/Map/");
 
 
-	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
 		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
 
-	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_Dummy"),
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Dummy"),
 		CDummy::Create(m_pDevice, m_pContext, TEXT("Dummy")), LAYER_TYPE::LAYER_PLAYER)))
 		return E_FAIL;
 
- 	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
+ 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
 		CTerrain::Create(m_pDevice, m_pContext), LAYER_TYPE::LAYER_TERRAIN)))
 		return E_FAIL;
 
+	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
+	//	CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+	//	return E_FAIL;
+
+
+	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu_Sword"),
+	//	CSword::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sword"), TEXT("Prototype_Component_Model_Sword_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+	//	return E_FAIL;
+
+	//if(FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu_Sweath"),
+	//	CSweath::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sweath"), TEXT("Prototype_Component_Model_Sweath_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+	//	return E_FAIL;
+	
+		
 	
 
 	m_strLoading = TEXT("모델을 로딩 중 입니다.");
 	_matrix		PivotMatrix = XMMatrixIdentity();
 
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+
+	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Zenitsu/")))
+	//	return E_FAIL;
+
+	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Weapon/Zenitsu/")))
+	//	return E_FAIL;
 
 	
 

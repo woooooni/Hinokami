@@ -31,6 +31,12 @@ public:
 		return m_FileNames[iIdx];
 	}
 	_uint Get_TextureCount() { return m_iNumTextures; }
+	ID3D11ShaderResourceView* Get_Srv(_uint iIdx) 
+	{
+		if (iIdx >= m_SRVs.size())
+			return nullptr;
+		return m_SRVs[iIdx];
+	};
 
 
 private:

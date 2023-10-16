@@ -76,9 +76,6 @@
     <Filter Include="02.GameObjects\03. Character\03. Kyojuro">
       <UniqueIdentifier>{2589e047-34fe-4253-8753-f2d83685afd5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03. Character\04. Giyu">
-      <UniqueIdentifier>{471c5856-a3a8-4243-9e9f-b94b15ad18d7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\03. Character\99. Dummy">
       <UniqueIdentifier>{3b5162f8-31c0-4401-b6d0-d22ac970a862}</UniqueIdentifier>
     </Filter>
@@ -139,8 +136,17 @@
     <Filter Include="02.GameObjects\10. Ground">
       <UniqueIdentifier>{ffba9ea1-f7fd-46c7-960e-8ca4fdb9d88d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03. Character\98.Weapon">
+    <Filter Include="02.GameObjects\03. Character\04. Giyu">
+      <UniqueIdentifier>{471c5856-a3a8-4243-9e9f-b94b15ad18d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\98.Parts">
       <UniqueIdentifier>{52f54d3c-6963-4c9f-9c46-c47469ad2a56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\98.Parts\Sword">
+      <UniqueIdentifier>{0b3cccce-536b-4b1e-b9fd-9467addac644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\98.Parts\Sweath">
+      <UniqueIdentifier>{c72bdae7-92fa-47ba-9f17-80093c43d6fa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -297,8 +303,14 @@
     <ClInclude Include="..\Public\Ground.h">
       <Filter>02.GameObjects\10. Ground</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Weapon.h">
-      <Filter>02.GameObjects\03. Character\98.Weapon</Filter>
+    <ClInclude Include="..\Public\Part.h">
+      <Filter>02.GameObjects\03. Character\98.Parts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sword.h">
+      <Filter>02.GameObjects\03. Character\98.Parts\Sword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sweath.h">
+      <Filter>02.GameObjects\03. Character\98.Parts\Sweath</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -440,8 +452,14 @@
     <ClCompile Include="..\Private\Ground.cpp">
       <Filter>02.GameObjects\10. Ground</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Weapon.cpp">
-      <Filter>02.GameObjects\03. Character\98.Weapon</Filter>
+    <ClCompile Include="..\Private\Part.cpp">
+      <Filter>02.GameObjects\03. Character\98.Parts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sword.cpp">
+      <Filter>02.GameObjects\03. Character\98.Parts\Sword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sweath.cpp">
+      <Filter>02.GameObjects\03. Character\98.Parts\Sweath</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

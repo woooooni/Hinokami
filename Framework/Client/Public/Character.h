@@ -21,9 +21,13 @@ class CCharacter abstract : public CGameObject
 public:
 #pragma region CHARACTER_STATES
 	enum STATE { STATE_IDLE, STATE_WALK, STATE_RUN, STATE_DASH, STATE_JUMP, STATE_ATTACK, STATE_SKILL, STATE_DAMAGED, STATE_KNOCKDOWN, STATE_DIE, STATE_END };
+
 #pragma endregion
 
-	enum PARTTYPE { PART_WEAPON, PART_END };
+	enum PARTTYPE { PART_SWORD, PART_SWEATH, PART_END };
+	enum SOCKET_TYPE { SOCKET_SWORD, SOCKET_SWEATH, SOCKET_RIGHT_HAND, SOCKET_LEFT_FOOT, SOCKET_RIGHT_FOOT, SOCEKT_END };
+
+
 
 protected:
 	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
@@ -42,15 +46,21 @@ public:
 	CTransform* Get_TransformCom() { return m_pTransformCom; }
 	CModel* Get_ModelCom() { return m_pModelCom; }
 	CStateMachine* Get_StateCom() { return m_pStateCom; }
+
 public:
-	void Set_Controlable(_bool _bControlable) { m_bControlable = _bControlable; }
-	void Set_MainCharacter(_bool _bMain) { m_bMainPlayable = _bMain; }
-	_bool Is_Controlable() { return m_bControlable; }
-	_bool Is_MainPlayable() { return m_bMainPlayable; }
+	CHierarchyNode* Get_Socket(PARTTYPE eType);
+	CHierarchyNode* Get_Socket(const wstring& strSocketName);
+
+//public:
+//	void Set_Controlable(_bool _bControlable) { m_bControlable = _bControlable; }
+//	void Set_MainCharacter(_bool _bMain) { m_bMainPlayable = _bMain; }
+//	_bool Is_Controlable() { return m_bControlable; }
+//	_bool Is_MainPlayable() { return m_bMainPlayable; }
 
 protected:
 	virtual HRESULT Ready_Components() PURE;
 	virtual HRESULT Ready_States() PURE;
+
 
 protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CShader* m_pShaderCom = nullptr;
@@ -62,11 +72,9 @@ protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 protected:
 	vector<CGameObject*>				m_Parts;
 	typedef vector<CGameObject*>		PARTS;
-	vector<class CHierarchyNode*>		m_Sockets;
 
-protected:
-	_bool m_bControlable = false;
-	_bool m_bMainPlayable = false;
+	vector<class CHierarchyNode*>		m_Sockets;
+	typedef vector<CGameObject*>		Sockets;
 
 
 protected:

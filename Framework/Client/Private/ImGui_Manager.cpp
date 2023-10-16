@@ -76,7 +76,9 @@ void CImGui_Manager::Tick(_float fTimeDelta)
     ImGui::NewFrame();
 
     Tick_Basic_Tool(fTimeDelta);
-
+    Tick_Hierachy(fTimeDelta);
+    Tick_Inspector(fTimeDelta);
+    
 
     
    
@@ -129,8 +131,6 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
     if (m_bShowDemo)
         ImGui::ShowDemoWindow(&m_bShowDemo);
 
-    Tick_Hierachy(fTimeDelta);
-    Tick_Inspector(fTimeDelta);
 
     if (m_bShowModelWindow)
     {
@@ -352,76 +352,14 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
     ImGui::Begin("Model Editor");
     if (nullptr != m_pDummy)
     {
-        CTransform* pTransform = dynamic_cast<CTransform*>(m_pDummy->Get_Component(L"Com_Transform"));
-        if (nullptr == pTransform)
+        if (ImGui::Button("Reset Transform"))
         {
-            ImGui::End();
-            return;
-        }
-        IMGUI_NEW_LINE;
-
-        ImGui::Text("Transform");
-        ImGui::BeginChild("##Transform");
-        
-        IMGUI_NEW_LINE;
-
-    #pragma region Position
-        // Postion
-        _float3 vPos; 
-        XMStoreFloat3(&vPos, pTransform->Get_State(CTransform::STATE_POSITION));
-        
-        ImGui::Text("Position");
-        if(ImGui::DragFloat3("##Object_Position", (_float*)&vPos, 0.01f, -1000.f, 1000.f, "%.3f"))
-            pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&vPos), 1.f));
-        
-    #pragma endregion
-
-        IMGUI_NEW_LINE;
-
-    #pragma region Rotaion_TODO
-        ImGui::Text("Rotation");
-        _float3 vRotation = pTransform->Get_Rotaion_Degree();
-
-        if (ImGui::DragFloat3("##Object_Rotation", (_float*)&vRotation, 0.1f))
-        {
-            vRotation.x = XMConvertToRadians(vRotation.x);
-            vRotation.y = XMConvertToRadians(vRotation.y);
-            vRotation.z = XMConvertToRadians(vRotation.z);
-
-            _vector vRot = XMLoadFloat3(&vRotation);
-            vRot = XMVectorSetW(vRot, 0.f);
-
-            pTransform->Set_Rotation(vRot);
-        }
-    #pragma endregion
-
-        IMGUI_NEW_LINE;
-
-    #pragma region Scale
-        // Scale
-        _float3 vScale = pTransform->Get_Scale();
-
-        ImGui::Text("Scale");
-        if (ImGui::DragFloat3("##Object_Scale", (_float*)&vScale, 0.01f, 0.01f, 100.f))
-        {
-            if (vScale.x >= 0.01f && vScale.y >= 0.01f && vScale.z >= 0.01f)
-                pTransform->Set_Scale(XMLoadFloat3(&vScale));
-            else
-            {
-                vScale.x = 0.01f;
-                vScale.y = 0.01f; 
-                vScale.z = 0.01f;
-                pTransform->Set_Scale(XMLoadFloat3(&vScale));
-            }
-                
+            m_pDummy->Get_TransformCom()->Set_State(CTransform::STATE::STATE_RIGHT, XMVectorSet(1.f, 0.f, 0.f, 0.f));
+            m_pDummy->Get_TransformCom()->Set_State(CTransform::STATE::STATE_UP, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+            m_pDummy->Get_TransformCom()->Set_State(CTransform::STATE::STATE_LOOK, XMVectorSet(0.f, 0.f, 1.f, 0.f));
+            m_pDummy->Get_TransformCom()->Set_State(CTransform::STATE::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
         }
 
-       
-    #pragma endregion
-        
-
-        IMGUI_NEW_LINE;
-        IMGUI_NEW_LINE;
 
         char szFilePath[MAX_PATH];
         char szFileName[MAX_PATH];
@@ -447,34 +385,46 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         }
 
 
-        static char szExportFolderName[MAX_PATH];
-        ImGui::Text("Export_Folder_Name");
-        ImGui::InputText("##ModelExportFolder", szExportFolderName, MAX_PATH);
+
+        {
+            const char* szImportModelTypes[] = { "NON_ANIM", "ANIM" };
+            static const char* szImportModelType = NULL;
+            static _int iSelectedImportModelType = -1;
+
+            if (ImGui::BeginCombo("##ImportModelType", szImportModelType))
+            {
+                for (int n = 0; n < IM_ARRAYSIZE(szImportModelTypes); n++)
+                {
+                    bool is_selected = (szImportModelType == szImportModelTypes[n]); // You can store your selection however you want, outside or inside your objects
+                    if (ImGui::Selectable(szImportModelTypes[n], is_selected))
+                    {
+                        szImportModelType = szImportModelTypes[n];
+                        iSelectedImportModelType = n;
+                    }
+
+                }
+
+                ImGui::EndCombo();
+            }
+
+
+            if (ImGui::Button("Import"))
+            {
+                if (iSelectedImportModelType != -1)
+                    m_pDummy->Ready_ModelCom(iSelectedImportModelType, m_strFilePath, m_strFileName);
+                else
+                    MSG_BOX("모델 타입을 선택해주세요");
+                
+            }
+        }
         
 
 
-        const char* items[] = { "NON_ANIM", "ANIM"};
-        static const char* szCurrent = NULL;
-        if (ImGui::BeginCombo("##ModelType", szCurrent))
-        {
-            for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-            {
-                bool is_selected = (szCurrent == items[n]); // You can store your selection however you want, outside or inside your objects
-                if (ImGui::Selectable(items[n], is_selected))
-                {
-                    szCurrent = items[n];
-                    m_iSelectedModelType = n;
-                }
-                    
-            }
+        IMGUI_NEW_LINE;
 
-            ImGui::EndCombo();
-        }
-
-        if (ImGui::Button("Import"))
-        {
-            m_pDummy->Ready_ModelCom(m_iSelectedModelType, m_strFilePath, m_strFileName);
-        }
+        static char szExportFolderName[MAX_PATH];
+        ImGui::Text("Export_Folder_Name");
+        ImGui::InputText("##ModelExportFolder", szExportFolderName, MAX_PATH);
 
         if (ImGui::Button("Export"))
         {
@@ -490,44 +440,45 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
         IMGUI_NEW_LINE;
         IMGUI_NEW_LINE;
 
-        static char szAllObjectExportFolderName[MAX_PATH] = "";
-        ImGui::Text("Export_All_Object_To_SubFolder");
-        ImGui::InputText("##All_ModelExportFolder", szAllObjectExportFolderName, MAX_PATH);
-
-
-        const char* szArrModelTypes[] = { "NON_ANIM", "ANIM" };
-        static const char* szAllObjectModelType;
-        static _int iSelectedModelType = -1;
-        if (ImGui::BeginCombo("##AllObject_ModelType", szAllObjectModelType))
         {
-            for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+            static char szAllObjectExportFolderName[MAX_PATH] = "";
+            ImGui::Text("Export_All_Object_To_SubFolder");
+            ImGui::InputText("##All_ModelExportFolder", szAllObjectExportFolderName, MAX_PATH);
+
+
+            const char* szExportModelTypes[] = { "NON_ANIM", "ANIM" };
+            static const char* szExportObjectModelType;
+            static _int iSelectedExportModelType = -1;
+            if (ImGui::BeginCombo("##ExportAllObject_ModelType", szExportObjectModelType))
             {
-                bool is_selected = (szAllObjectModelType == items[n]); // You can store your selection however you want, outside or inside your objects
-                if (ImGui::Selectable(items[n], is_selected))
+                for (int n = 0; n < IM_ARRAYSIZE(szExportModelTypes); n++)
                 {
-                    szAllObjectModelType = szArrModelTypes[n];
-                    iSelectedModelType = n;
+                    bool is_selected = (szExportObjectModelType == szExportModelTypes[n]); // You can store your selection however you want, outside or inside your objects
+                    if (ImGui::Selectable(szExportModelTypes[n], is_selected))
+                    {
+                        szExportObjectModelType = szExportModelTypes[n];
+                        iSelectedExportModelType = n;
+                    }
+
                 }
-
+                ImGui::EndCombo();
             }
-            ImGui::EndCombo();
-        }
-        if (ImGui::Button("Export_All"))
-        {
-            if (0 != strcmp(szAllObjectExportFolderName, "") && iSelectedModelType != -1)
+
+            if (ImGui::Button("Export_All"))
             {
-                if (FAILED(GAME_INSTANCE->Export_Model_Data_FromPath(iSelectedModelType, CUtils::ToWString(szAllObjectExportFolderName))))
-                    MSG_BOX("Export Failed.");
+                if (0 != strcmp(szAllObjectExportFolderName, "") && iSelectedExportModelType != -1)
+                {
+                    if (FAILED(GAME_INSTANCE->Export_Model_Data_FromPath(iSelectedExportModelType, CUtils::ToWString(szAllObjectExportFolderName))))
+                        MSG_BOX("Export Failed.");
+                    else
+                        MSG_BOX("Export Complete!");
+                }
                 else
-                    MSG_BOX("Export Complete!");
-            }
-            else
-            {
-                MSG_BOX("폴더 경로를 입력하세요.");
+                {
+                    MSG_BOX("폴더 경로 혹은 모델 타입 지정을 확인하세요.");
+                }
             }
         }
-
-        ImGui::EndChild();
     }
     ImGui::End();
 }
@@ -685,6 +636,9 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         m_pPrevMeshEffect = pMeshEffect;
     }
 
+
+    IMGUI_NEW_LINE;
+
     if (ImGui::Button("Generate_Texture_Effect"))
     {
         Safe_Release(m_pPrevTextureEffect);
@@ -821,8 +775,28 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         IMGUI_SAME_LINE;
         ImGui::DragFloat("##Texture_CountY", &tEffectDesc.fMaxCountY, 1.f, 1.f, 20.f);
 
+        
         ImGui::Text("R\tG\tB\tA");
+        IMGUI_SAME_LINE;
         ImGui::DragFloat4("##Texture_Effect_Color", (_float*)&tEffectDesc.fDiffuseColor, 0.01f, 0.f, 1.f);
+        
+
+
+        CTexture* pTexture = m_pPrevTextureEffect->Get_TextureCom();
+        if (ImGui::BeginListBox("##TextureEffect_Textures", ImVec2(300.f, 300.f)))
+        {
+            for (_uint i = 0; i < pTexture->Get_TextureCount(); ++i)
+            {
+                wstring strTextureName = pTexture->Get_Name(i);
+                if (strTextureName == L"")
+                    continue;
+
+                if(ImGui::ImageButton(pTexture->Get_Srv(i), ImVec2(50.f, 50.f)))
+                    m_pPrevTextureEffect->Set_TextureIndex(i);
+                
+            }
+            ImGui::EndListBox();
+        }
 
         m_pPrevTextureEffect->Set_Texture_EffectDesc(tEffectDesc);
         ImGui::End();

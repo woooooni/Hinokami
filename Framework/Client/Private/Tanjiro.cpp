@@ -2,6 +2,8 @@
 #include "Tanjiro.h"
 #include "GameInstance.h"
 #include "HierarchyNode.h"
+#include "Sword.h"
+#include "Sweath.h"
 
 USING(Client)
 
@@ -14,6 +16,7 @@ CTanjiro::CTanjiro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const w
 CTanjiro::CTanjiro(const CTanjiro& rhs)
 	: CCharacter(rhs)
 {
+
 }
 
 HRESULT CTanjiro::Initialize_Prototype()
@@ -33,11 +36,11 @@ HRESULT CTanjiro::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	/*if (FAILED(Ready_Sockets()))
+	if (FAILED(Ready_Sockets()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Parts()))
-		return E_FAIL;*/
+		return E_FAIL;
 
 	if (FAILED(Ready_States()))
 		return E_FAIL;
@@ -65,9 +68,6 @@ HRESULT CTanjiro::Render()
 
 HRESULT CTanjiro::Ready_Components()
 {
-	
-
-
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORMDESC));
@@ -87,18 +87,11 @@ HRESULT CTanjiro::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Tanjiro"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Zenitsu"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_StateMachine"), TEXT("Com_StateMachine"), (CComponent**)&m_pStateCom)))
 		return E_FAIL;
-
-	_vector vScale;
-	vScale.m128_f32[0] = 0.1f;
-	vScale.m128_f32[1] = 0.1f;
-	vScale.m128_f32[2] = 0.1f;
-
-	m_pTransformCom->Set_Scale(vScale);
 
 	return S_OK;
 }
@@ -113,50 +106,45 @@ HRESULT CTanjiro::Ready_Sockets()
 	if (nullptr == m_pModelCom)
 		return E_FAIL;
 
-	CHierarchyNode* pWeaponSocket = m_pModelCom->Get_HierarchyNode(L"SWORD");
-	if (nullptr == pWeaponSocket)
-		return E_FAIL;
+	m_Sockets.resize(SOCEKT_END);
 
-	m_Sockets.push_back(pWeaponSocket);
+	m_Sockets[SOCKET_SWORD] = m_pModelCom->Get_HierarchyNode(L"R_Hand_1");
+	m_Sockets[SOCKET_RIGHT_HAND] = m_pModelCom->Get_HierarchyNode(L"R_Hand_1");
+	m_Sockets[SOCKET_SWEATH] = m_pModelCom->Get_HierarchyNode(L"L_Weapon_1");
 
 	return S_OK;
 }
 
 HRESULT CTanjiro::Ready_Parts()
 {
-	
+	CSweath::SWEATH_DESC			SweathDesc;
+	SweathDesc.pParentTransform = m_pTransformCom;
+	SweathDesc.pSocketBone = m_Sockets[SOCKET_SWEATH];
+	XMStoreFloat4x4(&SweathDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 
-
-	/* For.Sword */
-	CGameObject* pGameObject = GAME_INSTANCE->Clone_GameObject(TEXT("Prototype_GameObject_Sword"), LAYER_TYPE::LAYER_PLAYER);
-
+	CGameObject* pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sweath_Zenitsu"), LAYER_TYPE::LAYER_CHARACTER, &SweathDesc);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
 	m_Parts.push_back(pGameObject);
 
-	return S_OK;
-}
 
-HRESULT CTanjiro::Update_Weapon()
-{
-	if (nullptr == m_Sockets[PART_WEAPON])
+	CSword::SWORD_DESC			SwordDesc;
+
+	SweathDesc.pParentTransform = m_pTransformCom;
+	SweathDesc.pSocketBone = m_Sockets[SOCKET_SWORD];
+	XMStoreFloat4x4(&SweathDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
+
+	pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sword_Zenitsu"), LAYER_TYPE::LAYER_CHARACTER);
+	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	/* 행렬. */
-	/*_matrix			WeaponMatrix = 뼈의 스페이스 변환(OffsetMatrix)
-		* 뼈의 행렬(CombinedTransformation)
-		* 모델의 PivotMatrix * 프렐이어의월드행렬. ;*/
+	m_Parts.push_back(pGameObject);
 
-	_matrix WeaponMatrix = m_Sockets[PART_WEAPON]->Get_OffSetMatrix()
-		* m_Sockets[PART_WEAPON]->Get_CombinedTransformation()
-		* m_pModelCom->Get_PivotMatrix()
-		* m_pTransformCom->Get_WorldMatrix();
-
-	m_Parts[PART_WEAPON]->SetUp_State(WeaponMatrix);
 
 	return S_OK;
 }
+
 
 CTanjiro* CTanjiro::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
 {
@@ -187,3 +175,4 @@ void CTanjiro::Free()
 {
 	__super::Free();
 }
+

@@ -88,6 +88,7 @@ HRESULT CTexture::Load_Texture(const wstring& strTextureFilePath, _uint iNumText
 
 HRESULT CTexture::Load_Texture_In_Path(const wstring& strTextureFilePath)
 {
+	_uint iTextureCount = 0;
 	for (auto& p : std::filesystem::directory_iterator(strTextureFilePath))
 	{
 
@@ -121,7 +122,9 @@ HRESULT CTexture::Load_Texture_In_Path(const wstring& strTextureFilePath)
 
 		m_FileNames.push_back(wstring(szName) + szExt);
 		m_SRVs.push_back(pSRV);
+		++iTextureCount;
 	}
+	m_iNumTextures = iTextureCount;
 	return S_OK;
 }
 

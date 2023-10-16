@@ -346,7 +346,6 @@ HRESULT CModel::Play_Animation(CTransform* pTransform, _float fTimeDelta)
 
 		vPos += vWorldDir * fDist * fTimeDelta;
 		pTransform->Set_State(CTransform::STATE_POSITION, vPos);
-
 	}
 	
 

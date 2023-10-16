@@ -203,6 +203,7 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Mesh_Effect.h" />
     <ClInclude Include="..\Public\Nezko.h" />
+    <ClInclude Include="..\Public\Part.h" />
     <ClInclude Include="..\Public\Picking_Manager.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Prop.h" />
@@ -210,6 +211,7 @@
     <ClInclude Include="..\Public\ServerSession.h" />
     <ClInclude Include="..\Public\Network_Manager.h" />
     <ClInclude Include="..\Public\Struct.pb.h" />
+    <ClInclude Include="..\Public\Sweath.h" />
     <ClInclude Include="..\Public\Tanjiro.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Texture_Effect.h" />
@@ -217,7 +219,7 @@
     <ClInclude Include="..\Public\UI.h" />
     <ClInclude Include="..\Public\UI_Logo_BackGround.h" />
     <ClInclude Include="..\Public\UI_Logo_Title.h" />
-    <ClInclude Include="..\Public\Weapon.h" />
+    <ClInclude Include="..\Public\Sword.h" />
     <ClInclude Include="..\Public\Zenitsu.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -274,6 +276,7 @@
     <ClCompile Include="..\Private\Mesh_Effect.cpp" />
     <ClCompile Include="..\Private\Network_Manager.cpp" />
     <ClCompile Include="..\Private\Nezko.cpp" />
+    <ClCompile Include="..\Private\Part.cpp" />
     <ClCompile Include="..\Private\Picking_Manager.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Prop.cpp" />
@@ -288,6 +291,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\Sweath.cpp" />
     <ClCompile Include="..\Private\Tanjiro.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
@@ -296,7 +300,7 @@
     <ClCompile Include="..\Private\Tree.cpp" />
     <ClCompile Include="..\Private\UI_Logo_BackGround.cpp" />
     <ClCompile Include="..\Private\UI_Logo_Title.cpp" />
-    <ClCompile Include="..\Private\Weapon.cpp" />
+    <ClCompile Include="..\Private\Sword.cpp" />
     <ClCompile Include="..\Private\Zenitsu.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">

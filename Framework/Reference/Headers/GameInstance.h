@@ -47,7 +47,6 @@ public: /* For.Level_Manager */
 	HRESULT Render_Debug();
 
 public: /* For.Object_Manager */
-public:
 	HRESULT Add_Prototype(const wstring & strPrototypeTag, class CGameObject* pPrototype, _uint iLayerType);
 	HRESULT Add_GameObject(_uint iLevelIndex, const _uint iLayerType, const wstring & strPrototypeTag, void* pArg = nullptr, __out class CGameObject** ppOut = nullptr);
 	HRESULT Add_GameObject(_uint iLevelIndex, const _uint iLayerType, class CGameObject* pGameObject);
@@ -86,6 +85,7 @@ public:
 
 public:
 	/* For. Model_Manager */
+	HRESULT Ready_Model_Data_FromPath(_uint iLevelIndex, _uint eType, const wstring & strFolderPath);
 	HRESULT Export_Model_Data(class CModel* pModel, const wstring & strSubFolderName, wstring strFileName);
 	HRESULT Import_Model_Data(_uint iLevelIndex, const wstring & strProtoTypeTag, _uint eType, wstring strFolderPath, wstring strFileName, __out class CModel** ppOut = nullptr);
 	HRESULT Export_Model_Data_FromPath(_uint eType, wstring strFolderPath);

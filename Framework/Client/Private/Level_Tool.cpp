@@ -40,6 +40,9 @@ HRESULT CLevel_Tool::Initialize()
 	if (FAILED(Ready_Layer_Player(LAYER_TYPE::LAYER_PLAYER)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Character(LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Monster(LAYER_TYPE::LAYER_MONSTER)))
 		return E_FAIL;
 
@@ -168,9 +171,6 @@ HRESULT CLevel_Tool::Ready_Lights()
 
 HRESULT CLevel_Tool::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 {
-	
-
-
 	CCamera::CAMERADESC			CameraDesc;
 
 	CameraDesc.vEye = _float4(0.f, 30.f, -30.f, 1.f);
@@ -194,6 +194,16 @@ HRESULT CLevel_Tool::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 {
 	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, _uint(eLayerType), TEXT("Prototype_GameObject_Dummy"))))
 		return E_FAIL;
+
+
+
+	return S_OK;
+}
+
+HRESULT CLevel_Tool::Ready_Layer_Character(const LAYER_TYPE eLayerType)
+{
+	/*if (FAILED(GI->Add_GameObject(LEVEL_TOOL, _uint(eLayerType), TEXT("Prototype_GameObject_Zenitsu"))))
+		return E_FAIL;*/
 
 	return S_OK;
 }

@@ -24,7 +24,6 @@ protected:
 private:
 	HRESULT Ready_Sockets();
 	HRESULT Ready_Parts();
-	HRESULT Update_Weapon();
 
 public:
 	static CKyojuro* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);

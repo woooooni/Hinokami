@@ -357,10 +357,14 @@ KEY_STATE CGameInstance::GetKeyState(KEY _eKey)
 
 const POINT& CGameInstance::GetMousePos()
 {
-
-	return POINT();
+	return m_pKey_Manager->GetMousePos();
 }
 
+
+HRESULT CGameInstance::Ready_Model_Data_FromPath(_uint iLevelIndex, _uint eType, const wstring& strFolderPath)
+{
+	return m_pModel_Manager->Ready_Model_Data_FromPath(iLevelIndex, eType, strFolderPath);
+}
 
 HRESULT CGameInstance::Export_Model_Data(CModel* pModel, const wstring& strSubFolderName, wstring strFileName)
 {

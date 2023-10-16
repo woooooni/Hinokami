@@ -37,6 +37,9 @@ public:
 public:
 	void Set_TextureIndex(_uint iIdx);
 
+public:
+	CTexture* Get_TextureCom() { return m_pEffectTexture; }
+
 protected:
 	virtual HRESULT Ready_Components(const wstring& strModelFolderPath, const wstring& strModelFileName);
 
