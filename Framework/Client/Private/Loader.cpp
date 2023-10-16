@@ -109,12 +109,12 @@ HRESULT CLoader::Loading_For_Level_Logo()
 	
 	///* For.Prototype_GameObject_UI_Logo_Title */
 	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Logo_Title"), CUI_Logo_Title::Create(m_pDevice, m_pContext,
-		{ 190.f, 140.f, 350.f, 350.f }), LAYER_TYPE::LAYER_UI)))
+		{ 230.f, 190.f, 350.f, 350.f }), LAYER_TYPE::LAYER_UI)))
 		return E_FAIL;
 
 	///* For.Prototype_GameObject_UI_Logo_BackGround */
 	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Logo_BackGround"), CUI_Logo_BackGround::Create(m_pDevice, m_pContext,
-		{ g_iWinSizeX / 2.f, g_iWinSizeY / 2.f, g_iWinSizeX, g_iWinSizeY }), LAYER_TYPE::LAYER_UI)))
+		{ g_iWinSizeX / 2.f + 50.f, g_iWinSizeY / 2.f, g_iWinSizeX + 100.f, g_iWinSizeY }), LAYER_TYPE::LAYER_UI)))
 		return E_FAIL;
 
 
