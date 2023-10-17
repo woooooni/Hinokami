@@ -221,6 +221,17 @@ void CTransform::Turn(_fvector vAxis, _float fTimeDelta)
 	Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(Get_State(CTransform::STATE_LOOK), RotationMatrix));
 }
 
+void CTransform::Turn(_fvector vAxis, _float fSpeed, _float fTimeDelta)
+{
+	_matrix		RotationMatrix = XMMatrixRotationAxis(vAxis, fSpeed * fTimeDelta);
+
+	WRITE_LOCK
+
+		Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(Get_State(CTransform::STATE_RIGHT), RotationMatrix));
+	Set_State(CTransform::STATE_UP, XMVector3TransformNormal(Get_State(CTransform::STATE_UP), RotationMatrix));
+	Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(Get_State(CTransform::STATE_LOOK), RotationMatrix));
+}
+
 void CTransform::Rotation(_fvector vAxis, _float fRadian)
 {
 	// Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(60.0f));

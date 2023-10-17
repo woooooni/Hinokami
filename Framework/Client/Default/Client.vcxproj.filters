@@ -91,12 +91,6 @@
     <Filter Include="02.GameObjects\07. Effect">
       <UniqueIdentifier>{26cf5b1a-34c4-4aeb-bd80-ee795d3c6f23}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07. Effect\Mesh_Effect">
-      <UniqueIdentifier>{af553d2f-0ac3-4811-81f7-df9f9c1117ed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\07. Effect\Texture_Effect">
-      <UniqueIdentifier>{6889ef20-0b7a-4d6a-a6a6-38c9a9f46a2d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\06. Prop">
       <UniqueIdentifier>{1656f416-c6e8-4a9c-bb21-5ebb8a320adc}</UniqueIdentifier>
     </Filter>
@@ -147,6 +141,24 @@
     </Filter>
     <Filter Include="02.GameObjects\03. Character\98.Parts\Sweath">
       <UniqueIdentifier>{c72bdae7-92fa-47ba-9f17-80093c43d6fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\Logo\BackGround">
+      <UniqueIdentifier>{576c95cf-4897-414e-aee1-74bf486b7843}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\Logo\Title">
+      <UniqueIdentifier>{3b1875ff-3e42-4a88-87d2-7415603e9d11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\Loading">
+      <UniqueIdentifier>{f71f4672-e277-4fd6-af61-bf2ad0348021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\Loading\Loading_Tanjiro">
+      <UniqueIdentifier>{160b9423-3162-4acf-b494-8d802e26247a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\Loading\BackGround">
+      <UniqueIdentifier>{f1f218ba-d3f9-44ad-817d-3486bba25b74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. Manager\ImGui\Libs\tinyxml">
+      <UniqueIdentifier>{084b0b4f-c18d-4efb-a33a-45b35f9b1a0c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -258,14 +270,8 @@
     <ClInclude Include="..\Public\Effect.h">
       <Filter>02.GameObjects\07. Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Mesh_Effect.h">
-      <Filter>02.GameObjects\07. Effect\Mesh_Effect</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Picking_Manager.h">
       <Filter>96. Manager\Picking</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Texture_Effect.h">
-      <Filter>02.GameObjects\07. Effect\Texture_Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Enum.pb.h">
       <Filter>96. Manager\Network\Protocol</Filter>
@@ -288,12 +294,6 @@
     <ClInclude Include="..\Public\UI.h">
       <Filter>02.GameObjects\98. UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Logo_BackGround.h">
-      <Filter>02.GameObjects\98. UI\Logo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UI_Logo_Title.h">
-      <Filter>02.GameObjects\98. UI\Logo</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Tree.h">
       <Filter>02.GameObjects\08. Tree</Filter>
     </ClInclude>
@@ -311,6 +311,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Sweath.h">
       <Filter>02.GameObjects\03. Character\98.Parts\Sweath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Logo_BackGround.h">
+      <Filter>02.GameObjects\98. UI\Logo\BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Logo_Title.h">
+      <Filter>02.GameObjects\98. UI\Logo\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\tinyxml2.h">
+      <Filter>96. Manager\ImGui\Libs\tinyxml</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -407,14 +416,8 @@
     <ClCompile Include="..\Private\Effect.cpp">
       <Filter>02.GameObjects\07. Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Mesh_Effect.cpp">
-      <Filter>02.GameObjects\07. Effect\Mesh_Effect</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Picking_Manager.cpp">
       <Filter>96. Manager\Picking</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Texture_Effect.cpp">
-      <Filter>02.GameObjects\07. Effect\Texture_Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Enum.pb.cc">
       <Filter>96. Manager\Network\Protocol</Filter>
@@ -437,12 +440,6 @@
     <ClCompile Include="UI.cpp">
       <Filter>02.GameObjects\98. UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_Logo_BackGround.cpp">
-      <Filter>02.GameObjects\98. UI\Logo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UI_Logo_Title.cpp">
-      <Filter>02.GameObjects\98. UI\Logo</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Tree.cpp">
       <Filter>02.GameObjects\08. Tree</Filter>
     </ClCompile>
@@ -460,6 +457,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Sweath.cpp">
       <Filter>02.GameObjects\03. Character\98.Parts\Sweath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Logo_BackGround.cpp">
+      <Filter>02.GameObjects\98. UI\Logo\BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Logo_Title.cpp">
+      <Filter>02.GameObjects\98. UI\Logo\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\tinyxml2.cpp">
+      <Filter>96. Manager\ImGui\Libs\tinyxml</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

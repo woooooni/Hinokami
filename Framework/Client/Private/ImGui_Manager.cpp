@@ -5,9 +5,7 @@
 #include "Dummy.h"
 #include "Terrain.h"
 #include "Key_Manager.h"
-#include "Mesh_Effect.h"
 #include "Camera_Free.h"
-#include "Texture_Effect.h"
 #include "Picking_Manager.h"
 
 
@@ -16,8 +14,9 @@
 #include "Mesh.h"
 #include "Utils.h"
 #include "FileUtils.h"
+#include "Effect.h"
 #include <filesystem>
-
+#include "tinyxml2.h"
 
 USING(Client)
 IMPLEMENT_SINGLETON(CImGui_Manager)
@@ -37,6 +36,9 @@ HRESULT CImGui_Manager::Reserve_Manager(HWND hWnd, ID3D11Device* pDevice, ID3D11
 
     Safe_AddRef(m_pDevice);
     Safe_AddRef(m_pContext);
+
+
+    Load_EffectsModelPath(L"../Bin/Resources/Effect/Model/");
 
 
     // Init ImGui
@@ -62,7 +64,7 @@ HRESULT CImGui_Manager::Reserve_Manager(HWND hWnd, ID3D11Device* pDevice, ID3D11
 
     ImGui::StyleColorsDark();
 
-    ImGui_ImplWin32_Init(hWnd);
+    ImGui_ImplWin32_Init(g_hWnd);
     ImGui_ImplDX11_Init(pDevice, pContext);
 
     return S_OK;
@@ -313,7 +315,7 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
         ImGui::Text("Rotation");
         _float3 vRotation = pTransform->Get_Rotaion_Degree();
 
-        if (ImGui::DragFloat3("##Effect_Rotation", (_float*)&vRotation, 0.1f))
+        if (ImGui::DragFloat3("##Object_Rotation", (_float*)&vRotation, 0.1f))
         {
             vRotation.x = XMConvertToRadians(vRotation.x);
             vRotation.y = XMConvertToRadians(vRotation.y);
@@ -603,204 +605,279 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
     ImGui::Begin("Effect");
 
-    static char szEffectName[MAX_PATH] = "";
-    static char szEffectFolderPath[MAX_PATH] = "";
-    static char szEffectFileName[MAX_PATH] = "";
-    
-    ImGui::Text("Effect_Name");
-    ImGui::InputText("##EffectName", szEffectName, MAX_PATH);
-    IMGUI_NEW_LINE;
-    ImGui::Text("Effect_FolderPath");
-    ImGui::InputText("##EffectFolderPath", szEffectFolderPath, MAX_PATH);
-    IMGUI_NEW_LINE;
-    ImGui::Text("Effect_FileName");
-    ImGui::InputText("##EffectFileName", szEffectFileName, MAX_PATH);
-    
-    if(ImGui::Button("Generate_Mesh_Effect"))
+
+
+    static char szEffectModelName[MAX_PATH] = "Temp";
+    if (ImGui::BeginListBox("##Effect_Model_List", ImVec2(200.f, 200.f)))
     {
-        Safe_Release(m_pPrevTextureEffect);
-        Safe_Release(m_pPrevMeshEffect);
-
-        CEffect::MESH_EFFECT_DESC tDesc;
-        ZeroMemory(&tDesc, sizeof(CEffect::MESH_EFFECT_DESC));
-
-        CMesh_Effect* pMeshEffect = CMesh_Effect::Create(m_pDevice, m_pContext, 
-            CUtils::ToWString(szEffectName), 
-            L"Mesh_Effect", 
-            CUtils::ToWString(szEffectFolderPath), 
-            CUtils::ToWString(szEffectFileName), 
-            tDesc);
-
-        pMeshEffect->Initialize(nullptr);
-
-        m_pPrevMeshEffect = pMeshEffect;
+        for (size_t i = 0; i < m_EffectsModelFiles.size(); ++i)
+        {
+            if (ImGui::Selectable(szEffectModelName, CUtils::ToWString(szEffectModelName) == m_EffectsModelFiles[i]))
+            {
+                strcpy_s(szEffectModelName, CUtils::ToString(m_EffectsModelFiles[i]).c_str());
+            }
+        }
+        ImGui::EndListBox();
     }
 
 
-    IMGUI_NEW_LINE;
 
-    if (ImGui::Button("Generate_Texture_Effect"))
+    const char* szEffectTypes[] = { "EFFECT_TEXTURE", "EFFECT_MESH" };
+
+    static const char* szEffectType;
+    static _int iSelecetedEffectType = -1;
+    if (ImGui::BeginCombo("##Generate_EffectType", szEffectType))
     {
-        Safe_Release(m_pPrevTextureEffect);
-        Safe_Release(m_pPrevMeshEffect);
+        for (int n = 0; n < IM_ARRAYSIZE(szEffectTypes); n++)
+        {
+            bool is_selected = (szEffectType == szEffectTypes[n]); // You can store your selection however you want, outside or inside your objects
+            if (ImGui::Selectable(szEffectTypes[n], is_selected))
+            {
+                szEffectType = szEffectTypes[n];
+                iSelecetedEffectType = n;
+            }
 
-        CEffect::TEXTURE_EFFECT_DESC tDesc;
-        ZeroMemory(&tDesc, sizeof(CEffect::TEXTURE_EFFECT_DESC));
-
-        CTexture_Effect* pTextureEffect = CTexture_Effect::Create(m_pDevice, m_pContext,
-            CUtils::ToWString(szEffectName),
-            L"Texture_Effect",
-            CUtils::ToWString(szEffectFolderPath),
-            CUtils::ToWString(szEffectFileName),
-            tDesc);
-
-        pTextureEffect->Initialize(nullptr);
-
-        m_pPrevTextureEffect = pTextureEffect;
+        }
+        ImGui::EndCombo();
     }
 
-    
-    if (nullptr != m_pPrevMeshEffect)
+
+    if (ImGui::Button("Generate_Effect"))
     {
-        m_pPrevMeshEffect->Tick(fTimeDelta);
-        m_pPrevMeshEffect->LateTick(fTimeDelta);
+        if (iSelecetedEffectType < 0)
+        {
+            MSG_BOX("이펙트 타입을 설정하세요.");
+            ImGui::End();
+            return;
+        }
 
-        ImGui::Begin("Effect_Desc");
-        CEffect::MESH_EFFECT_DESC tEffectDesc = m_pPrevMeshEffect->Get_Mesh_EffectDesc();
+        if (iSelecetedEffectType == CEffect::EFFECT_TYPE::EFFECT_MESH
+            && 0 == strcmp(szEffectModelName, ""))
+        {
+            MSG_BOX("모델 이펙트는 프로토 타입을 선택 해야합니다.");
+            ImGui::End();
+            return;
+        }
+
+        if (nullptr != m_pPrevEffect)
+            Safe_Release(m_pPrevEffect);
+
+        CEffect::EFFECT_DESC tEffectDesc;
+        if (iSelecetedEffectType == CEffect::EFFECT_TYPE::EFFECT_MESH)
+            m_pPrevEffect = CEffect::Create(m_pDevice, m_pContext, L"Prev_Effect", CEffect::EFFECT_TYPE(iSelecetedEffectType), CUtils::ToWString(szEffectModelName), tEffectDesc);
+        else
+            m_pPrevEffect = CEffect::Create(m_pDevice, m_pContext, L"Prev_Effect", CEffect::EFFECT_TYPE(iSelecetedEffectType), L"", tEffectDesc);
 
 
-        ImGui::Text("Move_Direction");
-        ImGui::DragFloat3("##Effect_TransformMoveDir", (_float*)&tEffectDesc.vMoveDir, 0.01f, -100.f, 100.f);
+        if (nullptr == m_pPrevEffect)
+        {
+            MSG_BOX("이펙트 생성 실패.");
+            ImGui::End();
+            return;
+        }
+        else
+        {
+            if (FAILED(m_pPrevEffect->Initialize(nullptr)))
+            {
+                MSG_BOX("이펙트 초기화 실패.");
+                Safe_Release(m_pPrevEffect);
+                ImGui::End();
+                return;
+            }
+        }
+    }
+
+
+
+    if (nullptr != m_pPrevEffect)
+    {
+        CEffect::EFFECT_DESC tEffectDesc = m_pPrevEffect->Get_EffectDesc();
+        CTransform* pTransform = m_pPrevEffect->Get_TransformCom();
+
+        CTexture* pDiffuseTexture = m_pPrevEffect->Get_DiffuseTexture();
+        CTexture* pAlphaTexture = m_pPrevEffect->Get_DiffuseTexture();
+
+        IMGUI_NEW_LINE;
+        ImGui::Text("============================================");
+        ImGui::Text("Texture");
+        ImGui::Text("============================================");
+        {
+            ImGui::Text("Diffuse Texture");
+            if (ImGui::BeginListBox("##Effect_DiffuseTexture_List", ImVec2(200.f, 300.f)))
+            {
+                for (size_t i = 0; i < pDiffuseTexture->Get_TextureCount(); ++i)
+                {
+                    if (ImGui::ImageButton(pDiffuseTexture->Get_Srv(i), ImVec2(150.f, 150.f)))
+                    {
+                        tEffectDesc.iDiffuseTextureIndex = i;
+                    }
+                }
+                ImGui::EndListBox();
+            }
+
+            IMGUI_SAME_LINE;
+            if (ImGui::Button("Reset_Diffuse"))
+            {
+                tEffectDesc.iDiffuseTextureIndex = -1;
+            }
+
+        }
+
+        IMGUI_NEW_LINE;
+        {
+            ImGui::Text("Alpha Texture");
+            if (ImGui::BeginListBox("##Effect_AlphaTexture_List", ImVec2(200.f, 300.f)))
+            {
+                for (size_t i = 0; i < pAlphaTexture->Get_TextureCount(); ++i)
+                {
+                    if (ImGui::ImageButton(pAlphaTexture->Get_Srv(i), ImVec2(150.f, 150.f)))
+                    {
+                        tEffectDesc.iAlphaTextureIndex = i;
+                    }
+                }
+                ImGui::EndListBox();
+            }
+
+            IMGUI_SAME_LINE;
+            if (ImGui::Button("Reset_Alpha"))
+            {
+                tEffectDesc.iAlphaTextureIndex = -1;
+            }
+        }
+
+
+
+        IMGUI_NEW_LINE;
+        IMGUI_NEW_LINE;
+        ImGui::Text("============================================");
+        ImGui::Text("Texture & Color");
+        ImGui::Text("============================================");
+
+        IMGUI_NEW_LINE;
+        ImGui::Text("ARGB");
+        ImGui::DragFloat3("##AddtiveDiffuseColor", (_float*)&tEffectDesc.fAdditiveDiffuseColor, 0.01f, 0.f, 1.f);
+        ImGui::DragFloat("##AddtiveAlpha", &tEffectDesc.fAlpha, 0.01f, 0.f, 1.f);
+
+
+        IMGUI_NEW_LINE;
+        ImGui::Text("UV_Speed : ");
+        ImGui::DragFloat("##Effect_UV_Speed", &tEffectDesc.fIndexSpeed, 0.01f, 0.f, 100.f);
+
+        
+        IMGUI_NEW_LINE;
+        ImGui::Text("Max_Count_X : ");
+        ImGui::DragFloat("##Max_CountX", &tEffectDesc.fMaxCountX, 1.f, 1.f, 100.f);
+
+        IMGUI_NEW_LINE;
+        ImGui::Text("Max_Count_Y : ");
+        ImGui::DragFloat("##Max_CountY", &tEffectDesc.fMaxCountY, 1.f, 1.f, 100.f);
+
+
+        
+        
+
+
+
+        IMGUI_NEW_LINE;
+        IMGUI_NEW_LINE;
+        ImGui::Text("============================================");
+        ImGui::Text("Scale");
+        ImGui::Text("============================================");
+
+        _float3 vScale = pTransform->Get_Scale();
+        ImGui::DragFloat3("##Effect_Scale", (_float*)&vScale, 0.01f, 0.01f, 100.f);
+        if(vScale.x >= 0.01f && vScale.y >= 0.01f && vScale.z >= 0.01f)
+            pTransform->Set_Sclae(vScale);
+
+
+        IMGUI_NEW_LINE;
+        IMGUI_NEW_LINE;
+        ImGui::Text("============================================");
+        ImGui::Text("Rotation");
+        ImGui::Text("============================================");
+
+
+
+        
+        IMGUI_NEW_LINE;
+        IMGUI_NEW_LINE;
+        ImGui::Text("============================================");
+        ImGui::Text("Movement");
+        ImGui::Text("============================================");
+
+        if(ImGui::Button("ResetTransform"))
+        {
+            if (nullptr != pTransform)
+            {
+                _float3 vScale = pTransform->Get_Scale();
+                pTransform->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.f, 0.f, 0.f, 0.f) * vScale.x);
+                pTransform->Set_State(CTransform::STATE_UP, XMVectorSet(0.f, 1.f, 0.f, 0.f) * vScale.y);
+                pTransform->Set_State(CTransform::STATE_LOOK, XMVectorSet(0.f, 0.f, 1.f, 0.f) * vScale.z);
+                pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+            }
+        }
 
         IMGUI_NEW_LINE;
 
-        ImGui::Text("Turn_Direction");
-        ImGui::DragFloat3("##Effect_TransformTurnDir", (_float*)&tEffectDesc.vTurnDir, 0.01f, -100.f, 100.f);
+        ImGui::Text("Move_Speed : ");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat("##Effect_Move_Speed", &tEffectDesc.fMoveSpeed, 0.f, 0.01f, 100.f);
+
+        ImGui::Text("Move_Direction : ");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat3("##Effect_Move_Direction", (_float*)&tEffectDesc.vMoveDir, 0.f, 0.01f, 100.f);
+
+        ImGui::Text("Turn_Speed : ");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat("##Effect_Turn_Speed", &tEffectDesc.fTurnSpeed, 0.f, 0.01f, 100.f);
+
+        ImGui::Text("Turn_Direction : ");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat3("##Effect_Turn_Direction", (_float*)&tEffectDesc.vTurnDir, 0.f, 0.01f, 100.f);
+
+
+        
+        m_pPrevEffect->Set_EffectDesc(tEffectDesc);
+
 
         IMGUI_NEW_LINE;
+        ImGui::Text("============================================");
+        ImGui::Text("Save & Load");
+        ImGui::Text("============================================");
 
-        ImGui::Text("U : ");
+        static char szExportEffectFolder[MAX_PATH] = "";
+        static char szExportEffectName[MAX_PATH] = "";
+
+        ImGui::Text("Effect_ExportSubFolder");
         IMGUI_SAME_LINE;
-        ImGui::DragFloat("##Effect_USpeed", &tEffectDesc.vSpeedUV.x, 0.01f, -100.f, 100.f);
-        
-        
-        ImGui::Text("V : ");
+        ImGui::InputText("##EffectExportSubFolder", szExportEffectFolder, MAX_PATH);
+
+        ImGui::Text("Effect_Name");
         IMGUI_SAME_LINE;
-        ImGui::DragFloat("##Effect_VSpeed", &tEffectDesc.vSpeedUV.y, 0.01f, -100.f, 100.f);
-
-
-        m_pPrevMeshEffect->Set_Mesh_EffectDesc(tEffectDesc);
-
-        
-        CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevMeshEffect->Get_Component(L"Com_Transform"));
-        if (nullptr != pTransform)
+        ImGui::InputText("##EffectExportName", szExportEffectName, MAX_PATH);
+        if (ImGui::Button("Save_Effect"))
         {
-            // Speed
-            CTransform::TRANSFORMDESC TransformDesc = pTransform->Get_TransformDesc();
-
-            ImGui::Text("Move_Speed");
-            ImGui::DragFloat("##RotationPerSec", &TransformDesc.fSpeedPerSec, 0.01f, 0.f, 100.f);
-
-
-            ImGui::Text("Rotation_Speed");
-            ImGui::DragFloat("##MovePerSec", &TransformDesc.fRotationPerSec, 0.01f, 0.f, 100.f);
-            
-            pTransform->Set_TransformDesc(TransformDesc);
-
-            // Postion
-            _float3 vPos;
-            XMStoreFloat3(&vPos, pTransform->Get_State(CTransform::STATE_POSITION));
-
-            ImGui::Text("Position");
-            ImGui::DragFloat3("##Effect_Position", (_float*)&vPos, 0.01f, -999.f, 999.f, "%.3f");
-
-            pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&vPos), 1.f));
-
-            IMGUI_NEW_LINE;
-
-            ImGui::Text("Rotation");
-            _float3 vRotation = pTransform->Get_Rotaion_Degree();
-            
-            if (ImGui::DragFloat3("##Effect_Rotation", (_float*)&vRotation, 0.1f))
+            if (0 != strcmp(szExportEffectName, ""))
             {
-                vRotation.x = XMConvertToRadians(vRotation.x);
-                vRotation.y = XMConvertToRadians(vRotation.y);
-                vRotation.z = XMConvertToRadians(vRotation.z);
+                char szFullPath[MAX_PATH] = "../Bin/Export/Effect/";
 
-                _vector vRot = XMLoadFloat3(&vRotation);
-                vRot = XMVectorSetW(vRot, 0.f);
+                strcat_s(szFullPath, szExportEffectFolder);
+                strcat_s(szFullPath, "/");
+                strcat_s(szFullPath, szExportEffectName);
+                strcat_s(szFullPath, ".effect");
 
-                pTransform->Set_Rotation(vRot);
+                Save_Effect(CUtils::ToWString(szFullPath));
             }
-
-            IMGUI_NEW_LINE;
-            // Scale
-            _float3 vScale = pTransform->Get_Scale();
-
-            ImGui::Text("Scale");
-            ImGui::DragFloat3("##Effect_Scale", (_float*)&vScale, 0.01f, 0.01f, 100.f);
-
-            if (vScale.x >= 0.01f
-                && vScale.y >= 0.01f
-                && vScale.z >= 0.01f)
-                pTransform->Set_Scale(XMLoadFloat3(&vScale));
+            else
+            {
+                MSG_BOX("이름을 입력해주세요.");
+            }
         }
 
-        ImGui::End();
+        m_pPrevEffect->Tick(fTimeDelta);
+        m_pPrevEffect->LateTick(fTimeDelta);
     }
 
-    else if (nullptr != m_pPrevTextureEffect)
-    {
-        
-        m_pPrevTextureEffect->Tick(fTimeDelta);
-        m_pPrevTextureEffect->LateTick(fTimeDelta);
-        ImGui::Begin("Effect_Desc");
-
-        CEffect::TEXTURE_EFFECT_DESC tEffectDesc = m_pPrevTextureEffect->Get_Texture_EffectDesc();
-
-        ImGui::Text("Increment");
-        IMGUI_SAME_LINE;
-        ImGui::Checkbox("##Effect_Increment", &tEffectDesc.bIncrement);
-
-        ImGui::Text("Speed : ");
-        IMGUI_SAME_LINE;
-        ImGui::DragFloat("##Effect_Index_Speed", &tEffectDesc.fNextIndexSpeed, 0.01f, 0.f, 100.f);
-
-        ImGui::Text("Texture Count X");
-        IMGUI_SAME_LINE;
-        ImGui::DragFloat("##Texture_CountX", &tEffectDesc.fMaxCountX, 1.f, 1.f, 20.f);
-        
-
-        ImGui::Text("Texture Count Y");
-        IMGUI_SAME_LINE;
-        ImGui::DragFloat("##Texture_CountY", &tEffectDesc.fMaxCountY, 1.f, 1.f, 20.f);
-
-        
-        ImGui::Text("R\tG\tB\tA");
-        IMGUI_SAME_LINE;
-        ImGui::DragFloat4("##Texture_Effect_Color", (_float*)&tEffectDesc.fDiffuseColor, 0.01f, 0.f, 1.f);
-        
-
-
-        CTexture* pTexture = m_pPrevTextureEffect->Get_TextureCom();
-        if (ImGui::BeginListBox("##TextureEffect_Textures", ImVec2(300.f, 300.f)))
-        {
-            for (_uint i = 0; i < pTexture->Get_TextureCount(); ++i)
-            {
-                wstring strTextureName = pTexture->Get_Name(i);
-                if (strTextureName == L"")
-                    continue;
-
-                if(ImGui::ImageButton(pTexture->Get_Srv(i), ImVec2(50.f, 50.f)))
-                    m_pPrevTextureEffect->Set_TextureIndex(i);
-                
-            }
-            ImGui::EndListBox();
-        }
-
-        m_pPrevTextureEffect->Set_Texture_EffectDesc(tEffectDesc);
-        ImGui::End();
-    }
 
     ImGui::End();
     
@@ -1121,6 +1198,116 @@ HRESULT CImGui_Manager::Save_Map_Data(const wstring& strMapFileName)
     return S_OK;
 }
 
+HRESULT CImGui_Manager::Save_Effect(const wstring& strFullPath)
+{
+    auto path = filesystem::path(strFullPath);
+    if (filesystem::exists(path))
+    {
+        MSG_BOX("File is Exist. Press Other Name.");
+        return E_FAIL;
+    }
+        
+    
+
+    filesystem::create_directories(path.parent_path());
+
+    _tchar strFileName[MAX_PATH];
+    _wsplitpath_s(strFullPath.c_str(), nullptr, 0, nullptr, 0, strFileName, MAX_PATH, nullptr, 0);
+
+
+    shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
+    File->Open(strFullPath, FileMode::Write);
+
+    File->Write<CEffect::EFFECT_TYPE>(m_pPrevEffect->Get_EffectType());
+    
+    const CEffect::EFFECT_DESC& tDesc = m_pPrevEffect->Get_EffectDesc();
+    File->Write<_float>(tDesc.fTurnSpeed);
+    File->Write<_float>(tDesc.fMoveSpeed);
+    File->Write<_float>(tDesc.fMaxCountX);
+    File->Write<_float>(tDesc.fMaxCountY);
+    File->Write<_float>(tDesc.fAlpha);
+    File->Write<_float>(tDesc.fIndexSpeed);
+    File->Write<_float3>(tDesc.fAdditiveDiffuseColor);
+    File->Write<_float3>(tDesc.vMoveDir);
+    File->Write<_float3>(tDesc.vTurnDir);
+
+
+    File->Write<_bool>(m_pPrevEffect->Is_Loop());
+    File->Write<_bool>(m_pPrevEffect->Is_Increment());
+
+    File->Write<_float3>(m_pPrevEffect->Get_TransformCom()->Get_Scale());
+ 
+
+    MSG_BOX("Effect Saved.");
+    return S_OK;
+}
+
+HRESULT CImGui_Manager::Load_Effect(const wstring& strFullPath)
+{
+    auto path = filesystem::path(strFullPath);
+    filesystem::create_directories(path.parent_path());
+
+    _tchar strFileName[MAX_PATH];
+    _wsplitpath_s(strFullPath.c_str(), nullptr, 0, nullptr, 0, strFileName, MAX_PATH, nullptr, 0);
+
+
+    shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
+    File->Open(strFullPath, FileMode::Write);
+
+    File->Write<CEffect::EFFECT_TYPE>(m_pPrevEffect->Get_EffectType());
+
+    const CEffect::EFFECT_DESC& tDesc = m_pPrevEffect->Get_EffectDesc();
+    File->Write<_float>(tDesc.fTurnSpeed);
+    File->Write<_float>(tDesc.fMoveSpeed);
+    File->Write<_float>(tDesc.fMaxCountX);
+    File->Write<_float>(tDesc.fMaxCountY);
+    File->Write<_float>(tDesc.fAlpha);
+    File->Write<_float>(tDesc.fIndexSpeed);
+    File->Write<_float3>(tDesc.fAdditiveDiffuseColor);
+    File->Write<_float3>(tDesc.vMoveDir);
+    File->Write<_float3>(tDesc.vTurnDir);
+
+
+    File->Write<_bool>(m_pPrevEffect->Is_Loop());
+    File->Write<_bool>(m_pPrevEffect->Is_Increment());
+
+    File->Write<_float3>(m_pPrevEffect->Get_TransformCom()->Get_Scale());
+
+    return S_OK;
+}
+
+HRESULT CImGui_Manager::Load_EffectsModelPath(const wstring& strEffectPath)
+{
+
+    for (auto& p : std::filesystem::directory_iterator(strEffectPath))
+    {
+        if (p.is_directory())
+            Load_EffectsModelPath(p.path());
+
+        wstring strFullPath = CUtils::PathToWString(p.path().wstring());
+        _tchar strFileName[MAX_PATH];
+        _tchar strFolderName[MAX_PATH];
+        _tchar strExt[MAX_PATH];
+
+        _wsplitpath_s(strFullPath.c_str(), nullptr, 0, strFolderName, MAX_PATH, strFileName, MAX_PATH, strExt, MAX_PATH);
+
+
+        if (0 == lstrcmp(TEXT(".fbx"), strExt) || 0 == lstrcmp(TEXT(".mesh"), strExt))
+        {
+            if(FAILED(GI->Import_Model_Data(LEVEL_STATIC, 
+                wstring(L"Prototype_Model_") + strFileName, 
+                CModel::TYPE::TYPE_NONANIM, 
+                strFolderName, 
+                wstring(strFileName) + strExt, nullptr)))
+                return E_FAIL;
+
+            m_EffectsModelFiles.push_back(wstring(L"Prototype_Model_") + strFileName);
+        }
+    }
+
+    return S_OK;
+}
+
 void CImGui_Manager::PickingTerrainObj()
 {
     _float4 vHitPos;
@@ -1183,3 +1370,4 @@ void CImGui_Manager::Free()
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
 }
+

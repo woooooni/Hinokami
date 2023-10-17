@@ -3,7 +3,6 @@
 
 #include "GameInstance.h"
 #include "Level_Loading.h"
-#include "ImGui_Manager.h"
 #include "Network_Manager.h"
 #include "SocketUtils.h"
 
@@ -42,7 +41,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_TOOL)))
 		return E_FAIL;
 
 
@@ -90,9 +89,6 @@ HRESULT CMainApp::Open_Level(LEVELID eLevelID)
 
 HRESULT CMainApp::Initialize_Client()
 {
-	// Manager Reserve
-	if(FAILED(CImGui_Manager::GetInstance()->Reserve_Manager(g_hWnd, m_pDevice, m_pContext)))
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -108,10 +104,10 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	Safe_AddRef(m_pRenderer_Com);
 
 
-	/* For.Prototype_Component_VIBuffer_Rect */
-	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Particle"),
-		CVIBuffer_Particle::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	///* For.Prototype_Component_VIBuffer_Particle */
+	//if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Particle"),
+	//	CVIBuffer_Particle::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Rect */
 	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -150,7 +146,7 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 	/* For.Prototype_Component_Texture_Effect*/
 	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Effect/Sequence/"), 0, true))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Effect/Texture/"), 0, true))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Logo_BackGround*/

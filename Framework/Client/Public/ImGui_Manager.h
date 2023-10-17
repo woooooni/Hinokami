@@ -81,6 +81,11 @@ private:
 	HRESULT Save_Map_Data(const wstring& strMapFileName);
 
 private:
+	HRESULT Save_Effect(const wstring& strFullPath);
+	HRESULT Load_Effect(const wstring& strFullPath);
+	HRESULT Load_EffectsModelPath(const wstring& strEffectPath);
+
+private:
 	void PickingGroundObj();
 	void PickingTerrainObj();
 
@@ -102,11 +107,14 @@ private:
 	wstring m_strFileName = TEXT("Zenitsu");
 	wstring m_strExportPath = TEXT("../Bin/Resources/Export/");
 
+
+private:
+	vector<wstring> m_EffectsModelFiles;
+
 public:
 	class CGameObject* m_pTarget = nullptr;
 	class CGameObject* m_pPrevObject = nullptr;
-	class CMesh_Effect* m_pPrevMeshEffect = nullptr;
-	class CTexture_Effect* m_pPrevTextureEffect = nullptr;
+	class CEffect* m_pPrevEffect = nullptr;
 
 	class CDummy* m_pDummy = nullptr;
 	class CTerrain* m_pTerrain = nullptr;

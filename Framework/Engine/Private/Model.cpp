@@ -362,7 +362,7 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 			return E_FAIL;
 	}
 
-	pShader->Begin(0);
+	pShader->Begin(iPassIndex);
 
 	m_Meshes[iMeshIndex]->Render();
 

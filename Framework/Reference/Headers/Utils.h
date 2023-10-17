@@ -16,5 +16,8 @@ public:
 	static void Replace(OUT wstring& str, wstring comp, wstring rep);
 
 	static wstring PathToWString(wstring strPath);
+
+	static _float3 ToEulerAngles(_vector Quaternion);
+
 };
 

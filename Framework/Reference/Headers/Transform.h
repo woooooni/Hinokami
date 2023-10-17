@@ -78,6 +78,7 @@ public:
 	void Set_Rotation(_fvector vRadianEulerAngle);
 
 	void Turn(_fvector vAxis, _float fTimeDelta);
+	void Turn(_fvector vAxis, _float fSpeed, _float fTimeDelta);
 	void Rotation(_fvector vAxis, _float fRadian);
 	void Rotation_Acc(_fvector vAxis, _float fRadian);
 

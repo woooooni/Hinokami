@@ -21,6 +21,7 @@
 #include "Tree.h"
 #include "Utils.h"
 #include "Ground.h"
+#include "ImGui_Manager.h"
 
 #include "UI.h"
 #include "UI_Logo_Title.h"
@@ -175,6 +176,9 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 HRESULT CLoader::Loading_For_Level_Tool()
 {
+	/* For.ImGuiManager */
+	m_strLoading = TEXT("툴 작업을 준비중입니다.");
+
 
 	/* For.Shader */
 	m_strLoading = TEXT("셰이더를 로딩 중 입니다.");
