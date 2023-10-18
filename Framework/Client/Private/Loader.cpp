@@ -23,10 +23,12 @@
 #include "Ground.h"
 #include "ImGui_Manager.h"
 
+
 #include "UI.h"
 #include "UI_Logo_Title.h"
 #include "UI_Logo_BackGround.h"
-
+#include "UI_Logo_SelectBase.h"
+#include "UI_NextFog.h"
 
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -100,6 +102,28 @@ HRESULT CLoader::Loading_For_Level_Logo()
 	/* For.Texture */
 	m_strLoading = TEXT("텍스쳐를 로딩 중 입니다.");
 
+	/* For.Prototype_Component_Texture_Logo_BackGround*/
+	if (FAILED(GI->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo_BackGround"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Logo/Logo_BackGround.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Logo_Title */
+	if (FAILED(GI->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo_Title"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Logo/Game_Title.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Logo_NonSelected */
+	if (FAILED(GI->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo_NonSelected"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Logo/Title_Base.png"), 1))))
+		return E_FAIL;
+
+
+	/* For.Prototype_Component_Texture_Logo_Selected */
+	if (FAILED(GI->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo_Selected"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Logo/Title_Select.png"), 1))))
+		return E_FAIL;
+
+
 	/* For.Shader */
 	m_strLoading = TEXT("셰이더를 로딩 중 입니다.");
 
@@ -110,12 +134,21 @@ HRESULT CLoader::Loading_For_Level_Logo()
 	
 	///* For.Prototype_GameObject_UI_Logo_Title */
 	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Logo_Title"), CUI_Logo_Title::Create(m_pDevice, m_pContext,
-		{ 230.f, 190.f, 350.f, 350.f }), LAYER_TYPE::LAYER_UI)))
+		{ g_iWinSizeX - 350.f, 190.f, 350.f, 350.f }), LAYER_TYPE::LAYER_UI)))
 		return E_FAIL;
 
 	///* For.Prototype_GameObject_UI_Logo_BackGround */
 	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Logo_BackGround"), CUI_Logo_BackGround::Create(m_pDevice, m_pContext,
-		{ g_iWinSizeX / 2.f + 50.f, g_iWinSizeY / 2.f, g_iWinSizeX + 100.f, g_iWinSizeY }), LAYER_TYPE::LAYER_UI)))
+		{ 1232.f * 0.5f, g_iWinSizeY / 2.f, 1232.f, g_iWinSizeY }), LAYER_TYPE::LAYER_UI)))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_UI_Logo_SelectBase */
+	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Logo_SelectBase"), CUI_Logo_SelectBase::Create(m_pDevice, m_pContext), LAYER_TYPE::LAYER_UI)))
+		return E_FAIL;
+
+	///* For.Prototype_GameObject_UI_Logo_NextFog */
+	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Logo_NextFog"), CUI_NextFog::Create(m_pDevice, m_pContext,
+		{ g_iWinSizeX / 2.f, g_iWinSizeY / 2.f, g_iWinSizeX, g_iWinSizeY }), LAYER_TYPE::LAYER_UI)))
 		return E_FAIL;
 
 
@@ -137,33 +170,14 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 	/* For.Shader */
 	m_strLoading = TEXT("셰이더를 로딩 중 입니다.");
-	/* For.Prototype_Component_Shader_Model */
-	if (FAILED(GAME_INSTANCE->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Model"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModel.hlsl"), VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Shader_AnimModel */
-	if (FAILED(GAME_INSTANCE->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_AnimModel"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements))))
-		return E_FAIL;
 
 
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
-	/* For.Prototype_GameObject_Camera_Free */
-	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
-		CCamera_Free::Create(m_pDevice, m_pContext, L"Main_Camera"), LAYER_TYPE::LAYER_CAMERA)))
-		return E_FAIL;
-	
-	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_Player"),
-		CPlayer::Create(m_pDevice, m_pContext), LAYER_TYPE::LAYER_PLAYER)))
-		return E_FAIL;
-
 
 
 	m_strLoading = TEXT("모델을 로딩 중 입니다.");
-	_matrix		PivotMatrix = XMMatrixIdentity();
-	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+
 
 
 	
@@ -189,7 +203,7 @@ HRESULT CLoader::Loading_For_Level_Tool()
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
 	/* For.Prototype_GameObject_Camera_Free */
-	// Loading_Proto_AllObjects(L"../Bin/Resources/Map/");
+
 
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
@@ -204,18 +218,18 @@ HRESULT CLoader::Loading_For_Level_Tool()
 		CTerrain::Create(m_pDevice, m_pContext), LAYER_TYPE::LAYER_TERRAIN)))
 		return E_FAIL;
 
-	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
-	//	CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-	//	return E_FAIL;
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
+		CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
 
 
-	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu_Sword"),
-	//	CSword::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sword"), TEXT("Prototype_Component_Model_Sword_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-	//	return E_FAIL;
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu_Sword"),
+		CSword::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sword"), TEXT("Prototype_Component_Model_Sword_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
 
-	//if(FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu_Sweath"),
-	//	CSweath::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sweath"), TEXT("Prototype_Component_Model_Sweath_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-	//	return E_FAIL;
+	if(FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu_Sweath"),
+		CSweath::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sweath"), TEXT("Prototype_Component_Model_Sweath_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
 	
 		
 	
@@ -224,7 +238,9 @@ HRESULT CLoader::Loading_For_Level_Tool()
 	_matrix		PivotMatrix = XMMatrixIdentity();
 
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
-
+	Loading_Proto_AllObjects(L"../Bin/Export/Map/");
+	if(FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/")))
+		return E_FAIL;
 	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Zenitsu/")))
 	//	return E_FAIL;
 
@@ -245,7 +261,7 @@ HRESULT CLoader::Loading_Proto_AllObjects(const wstring& strPath)
 	{
 		if (p.is_directory())
 		{
-			Loading_Proto_AllObjects(p.path());
+			Loading_Proto_AllObjects(p.path().wstring());
 		}
 
  		wstring strFilePath = CUtils::PathToWString(p.path().wstring());
@@ -311,7 +327,6 @@ HRESULT CLoader::Loading_Proto_AllObjects(const wstring& strPath)
 					CProp::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_MOUNTAIN)))
 					return E_FAIL;
 			}
-
 		}
 
 	}

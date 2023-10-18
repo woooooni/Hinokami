@@ -20,8 +20,13 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevel)
 {
 	m_eNextLevel = eNextLevel;
 
-	if (m_eNextLevel == LEVEL_TOOL)	
+	if (m_eNextLevel == LEVEL_TOOL)
+	{
 		CImGui_Manager::GetInstance()->Reserve_Manager(g_hWnd, m_pDevice, m_pContext);
+
+
+	}
+		
 	/* m_eNextLevel 에 대한 로딩작업을 수행한다. */
 	/* 로딩을 겁나 하고있다. */
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, m_eNextLevel);

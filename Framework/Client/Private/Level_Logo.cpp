@@ -7,6 +7,8 @@
 #include "Service.h"
 #include "ThreadManager.h"
 #include "Network_Manager.h"
+#include "UI.h"
+#include "UI_Logo_SelectBase.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -16,6 +18,9 @@ CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 HRESULT CLevel_Logo::Initialize()
 {
 	if (FAILED(Ready_Layer_BackGround()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_UI()))
 		return E_FAIL;
 
 #pragma region Server Enter Code
@@ -87,10 +92,52 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround()
 	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_BackGround")))
 		return E_FAIL;
 
+	
+	return S_OK;
+}
 
-	if(FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI,L"Prototype_GameObject_UI_Logo_Title")))
+HRESULT CLevel_Logo::Ready_Layer_UI()
+{
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_Title")))
 		return E_FAIL;
 	
+
+	CUI::UI_INFO tUIInfo;
+	ZeroMemory(&tUIInfo, sizeof(CUI::UI_INFO));
+
+	tUIInfo.fX = g_iWinSizeX - 784.f * .5f;
+	tUIInfo.fY = g_iWinSizeY - 500.f;
+	tUIInfo.fCX = 784.f;
+	tUIInfo.fCY = 104.f;
+
+
+	for (_uint i = 0; i < 4; ++i)
+	{
+		tUIInfo.fY += 100.f;
+
+		CGameObject* pGameObject = GI->Clone_GameObject(L"Prototype_GameObject_UI_Logo_SelectBase", LAYER_TYPE::LAYER_UI, &tUIInfo);
+		if (nullptr == pGameObject)
+			return E_FAIL;
+
+		CUI* pUI = dynamic_cast<CUI_Logo_SelectBase*>(pGameObject);
+		if (nullptr == pUI)
+			return E_FAIL;
+
+		if (0 == i)
+			pUI->Set_Text(L"GameStart");
+		else if (1 == i)
+			pUI->Set_Text(L"Tool");
+		else if (2 == i)
+			pUI->Set_Text(L"Setting");
+		else if (3 == i)
+			pUI->Set_Text(L"Exit");
+
+		if (FAILED(GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, pUI)))
+			return E_FAIL;
+	}
+	
+
+
 	return S_OK;
 }
 

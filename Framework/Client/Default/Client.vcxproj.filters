@@ -160,6 +160,12 @@
     <Filter Include="96. Manager\ImGui\Libs\tinyxml">
       <UniqueIdentifier>{084b0b4f-c18d-4efb-a33a-45b35f9b1a0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\98. UI\Logo\Select_Menu">
+      <UniqueIdentifier>{ac00662f-cbc7-47fa-ad82-04773ac1efe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\Manager">
+      <UniqueIdentifier>{1fb7ef61-258f-42e2-914a-b7fdabf11cb4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -321,6 +327,12 @@
     <ClInclude Include="..\Public\tinyxml2.h">
       <Filter>96. Manager\ImGui\Libs\tinyxml</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Logo_SelectBase.h">
+      <Filter>02.GameObjects\98. UI\Logo\Select_Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_NextFog.h">
+      <Filter>02.GameObjects\98. UI\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -437,9 +449,6 @@
     <ClCompile Include="..\Private\ServerSession.cpp">
       <Filter>96. Manager\Network\01. Session</Filter>
     </ClCompile>
-    <ClCompile Include="UI.cpp">
-      <Filter>02.GameObjects\98. UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Tree.cpp">
       <Filter>02.GameObjects\08. Tree</Filter>
     </ClCompile>
@@ -466,6 +475,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\tinyxml2.cpp">
       <Filter>96. Manager\ImGui\Libs\tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Logo_SelectBase.cpp">
+      <Filter>02.GameObjects\98. UI\Logo\Select_Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI.cpp">
+      <Filter>02.GameObjects\98. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_NextFog.cpp">
+      <Filter>02.GameObjects\98. UI\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -501,6 +519,9 @@
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTextureEffect.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

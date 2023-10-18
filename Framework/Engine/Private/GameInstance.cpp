@@ -196,7 +196,7 @@ HRESULT CGameInstance::Add_Prototype(const wstring& strPrototypeTag, CGameObject
 	return m_pObject_Manager->Add_Prototype(strPrototypeTag, pPrototype, iLayerType);
 }
 
-HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, _uint iLayerType, const wstring & strPrototypeTag, void * pArg, __out class CGameObject** ppOut)
+HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, _uint iLayerType, const wstring & strPrototypeTag, void* pArg, __out class CGameObject** ppOut)
 {
 	if (nullptr == m_pObject_Manager)
 		return E_FAIL;
@@ -386,9 +386,9 @@ HRESULT CGameInstance::Add_Fonts(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return m_pFont_Manager->Add_Fonts(pDevice, pContext, strFontTag, strFontFilePath);
 }
 
-HRESULT CGameInstance::Render_Fonts(const wstring& strFontTag, const wstring& strTextm, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
+HRESULT CGameInstance::Render_Fonts(const wstring& strFontTag, const _tchar* strText, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
 {
-	return m_pFont_Manager->Render_Fonts(strFontTag, strTextm, vPosition, vColor, fAngle, vOrigin, vScale);
+	return m_pFont_Manager->Render_Fonts(strFontTag, strText, vPosition, vColor, fAngle, vOrigin, vScale);
 }
 
 //void CGameInstance::Set_ServerSession(ServerSessionRef session)

@@ -41,7 +41,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_TOOL)))
+	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
 
@@ -89,6 +89,10 @@ HRESULT CMainApp::Open_Level(LEVELID eLevelID)
 
 HRESULT CMainApp::Initialize_Client()
 {
+	if(FAILED(GI->Add_Fonts(m_pDevice, m_pContext, L"Batang", L"../Bin/Resources/Font/Batang.spritefont")))
+		return E_FAIL;
+	if(FAILED(GI->Add_Fonts(m_pDevice, m_pContext, L"Maple", L"../Bin/Resources/Font/Maplestory.spritefont")))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -116,7 +120,12 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 	/* For.Prototype_Component_VIBuffer_Terrain*/
 	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Terrain"),
-		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 512, 512))))
+		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 256, 256))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_UI*/
+	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_UI"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_UI.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_VtxNorTex*/
@@ -144,20 +153,18 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements))))
 		return E_FAIL;
 
+
+	// Texture
 	/* For.Prototype_Component_Texture_Effect*/
 	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Effect/Texture/"), 0, true))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Logo_BackGround*/
-	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo_BackGround"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Logo/Logo_BackGround.png"), 1))))
+	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_NextFog"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/NextFog/"), 0, true))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Logo_Title */
-	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo_Title"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Logo/Game_Title.png"), 1))))
-		return E_FAIL;
+
 
 
 	/* For.Prototype_Component_Transform */

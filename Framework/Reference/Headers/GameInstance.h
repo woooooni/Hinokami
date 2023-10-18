@@ -99,7 +99,7 @@ public:
 /* For. Font_Manager */
 public:
 	HRESULT Add_Fonts(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring & strFontTag, const wstring & strFontFilePath);
-	HRESULT Render_Fonts(const wstring & strFontTag, const wstring & strTextm, _float2 vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f),
+	HRESULT Render_Fonts(const wstring & strFontTag, const _tchar * strText, _float2 vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f),
 		_float fAngle = 0.f, _float2 vOrigin = _float2(0.f, 0.f), _float2 vScale = _float2(1.f, 1.f));
 
 

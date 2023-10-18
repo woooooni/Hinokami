@@ -33,7 +33,7 @@ HRESULT CUI_Logo_BackGround::Initialize(void* pArg)
 	
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&_float3(m_tInfo.fCX, m_tInfo.fCY, 1.f)));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION,
-		XMVectorSet(m_tInfo.fX - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
+		XMVectorSet(m_tInfo.fX - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 1.f, 1.f));
 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.f));

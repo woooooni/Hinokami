@@ -217,8 +217,10 @@
     <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\UI.h" />
     <ClInclude Include="..\Public\UI_Logo_BackGround.h" />
+    <ClInclude Include="..\Public\UI_Logo_SelectBase.h" />
     <ClInclude Include="..\Public\UI_Logo_Title.h" />
     <ClInclude Include="..\Public\Sword.h" />
+    <ClInclude Include="..\Public\UI_NextFog.h" />
     <ClInclude Include="..\Public\Zenitsu.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -299,9 +301,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Private\Tree.cpp" />
+    <ClCompile Include="..\Private\UI.cpp" />
     <ClCompile Include="..\Private\UI_Logo_BackGround.cpp" />
+    <ClCompile Include="..\Private\UI_Logo_SelectBase.cpp" />
     <ClCompile Include="..\Private\UI_Logo_Title.cpp" />
     <ClCompile Include="..\Private\Sword.cpp" />
+    <ClCompile Include="..\Private\UI_NextFog.cpp" />
     <ClCompile Include="..\Private\Zenitsu.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -310,7 +315,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc" />
@@ -320,6 +324,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimModel.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl" />

@@ -13,6 +13,8 @@ END
 
 class CUI abstract : public CGameObject
 {
+public:
+	enum UI_MOUSESTATE { MOUSE_ENTER, MOUSE_ON, MOUSE_EXIT, MOUSE_END };
 
 public:
 	typedef struct tagUI_Info
@@ -32,13 +34,21 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype() override { return S_OK; }
 	virtual HRESULT Initialize(void* pArg) override { return S_OK; }
-	virtual void Tick(_float fTimeDelta) override {}
+	virtual void Tick(_float fTimeDelta) override;
 	virtual void LateTick(_float fTimeDelta) override {}
 	virtual HRESULT Render() override { return S_OK; }
 
 public:
 	const UI_INFO& Get_UI_Info() { return m_tInfo; }
 	void Set_UI_Info(const UI_INFO& tInfo) { m_tInfo = tInfo; }
+
+public:
+	void Set_Text(const wstring& strText) { m_strText = strText; }
+
+protected:
+	virtual void On_MouseEnter(_float fTimeDelta) {}
+	virtual void On_Mouse(_float fTimeDelta) {}
+	virtual void On_MouseExit(_float fTimeDelta) {}
 
 
 protected:
@@ -53,8 +63,12 @@ protected:
 
 protected:
 	UI_INFO m_tInfo = { 0 };
+	UI_MOUSESTATE m_eMouseState = UI_MOUSESTATE::MOUSE_END;
+
 	_float4x4 m_ViewMatrix;
 	_float4x4 m_ProjMatrix;
+
+	wstring m_strText = L"";
 
 public:
 	virtual void Free() override;
