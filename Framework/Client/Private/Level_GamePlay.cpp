@@ -121,7 +121,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
 	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if(FAILED(GI->Add_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
+ 	if(FAILED(GI->Add_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Free"), &CameraDesc)))
 		return E_FAIL;
 	
 	
@@ -135,7 +135,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Tanjiro"), nullptr, &pTanjiro)))
 		return E_FAIL;
 
-	CGameObject* pObject = GI->Find_GameObejct(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, L"Main_Camera");
+	/*CGameObject* pObject = GI->Find_GameObejct(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, L"Main_Camera");
 	if (nullptr == pObject)
 		return E_FAIL;
 
@@ -148,7 +148,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 		return E_FAIL;
 
 	if(FAILED(pCamera->Set_TargetTransform(pCharacter->Get_TransformCom())))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	return S_OK;
 }

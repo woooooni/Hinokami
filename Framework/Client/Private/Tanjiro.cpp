@@ -212,7 +212,11 @@ HRESULT CTanjiro::Ready_Parts()
 
 	SwordDesc.pParentTransform = m_pTransformCom;
 	SwordDesc.pSocketBone = m_Sockets[SOCKET_SWORD];
+	XMStoreFloat4(&SwordDesc.vRotationDir, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	SwordDesc.fRotationDegree = 180.f;
+
 	XMStoreFloat4x4(&SwordDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
+
 
 	pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sword_Tanjiro"), LAYER_TYPE::LAYER_CHARACTER, &SwordDesc);
 	if (nullptr == pGameObject)

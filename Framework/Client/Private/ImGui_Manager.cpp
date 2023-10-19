@@ -622,7 +622,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
     {
         for (size_t i = 0; i < m_EffectsModelFiles.size(); ++i)
         {
-            if (ImGui::Selectable(szEffectModelName, CUtils::ToWString(szEffectModelName) == m_EffectsModelFiles[i]))
+            if (ImGui::Selectable(CUtils::ToString(m_EffectsModelFiles[i]).c_str(), CUtils::ToWString(szEffectModelName) == m_EffectsModelFiles[i]))
             {
                 strcpy_s(szEffectModelName, CUtils::ToString(m_EffectsModelFiles[i]).c_str());
             }

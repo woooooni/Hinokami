@@ -25,9 +25,10 @@ HRESULT CSword::Initialize_Prototype(const wstring& strPrototypeSwordModel)
 
 HRESULT CSword::Initialize(void* pArg)
 {
+	SWORD_DESC* pWeaponDesc = nullptr;
 	if (nullptr != pArg)
 	{
-		SWORD_DESC*		pWeaponDesc = (SWORD_DESC*)pArg;
+		pWeaponDesc = (SWORD_DESC*)pArg;
 		
 		m_pSocketBone = pWeaponDesc->pSocketBone;
 		Safe_AddRef(m_pSocketBone);
@@ -43,8 +44,22 @@ HRESULT CSword::Initialize(void* pArg)
 
 	/* 부모 소켓행렬을 기준으로 자식의 상태를 제어한다.  */
 	// m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.0f));
-	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.0f));
+	
 	// m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.7f, 0.f, 0.f, 1.f));
+
+	if (pWeaponDesc != nullptr)
+	{
+		// m_pTransformCom->Rotation(XMLoadFloat4(&pWeaponDesc->vRotationDir), XMConvertToRadians(pWeaponDesc->fRotationDegree));
+		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(0.f));
+		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-90.f));
+		m_pTransformCom->Rotation_Acc(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(180.f));
+		
+		
+	}
+	else
+	{
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.0f));
+	}
 
 	return S_OK;
 }

@@ -45,6 +45,7 @@ private:
 	HRESULT Loading_For_Level_Logo();
 	HRESULT Loading_For_Level_GamePlay();
 	HRESULT Loading_For_Level_Tool();
+	HRESULT Load_Map_Data(const wstring& strMapFileName);
 
 private:
 	// 툴에서 사용할 모든 fbx 원형 객체를 로딩한다.

@@ -37,26 +37,26 @@ HRESULT CCamera_Main::Initialize(void * pArg)
 
 void CCamera_Main::Tick(_float fTimeDelta)
 {
-	Follow(fTimeDelta);
+	
+	_vector vCameraRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	_vector vCameraUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	_vector vCameraLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_vector vCameraPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	_long	MouseMove = 0;
 
-	if (MouseMove = GAME_INSTANCE->Get_DIMMoveState(DIMM_X))
-	{
-		Matrix CameraWorld = m_pTransformCom->Get_WorldFloat4x4();
-		Matrix RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(MouseMove * fTimeDelta));
 
-		RotationMatrix.Translation(m_pTargetTransform->Get_State(CTransform::STATE_POSITION));
 
-		CameraWorld * RotationMatrix;
+	//MouseMove = 0;
+	//if (MouseMove = GI->Get_DIMMoveState(DIMM_Y))
+	//{
+	//	_float fMoveDir = clamp(_float(MouseMove), -1.f, 1.f);
+	//	m_pTransformCom->Rotation_Acc(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fMoveDir * fTimeDelta);
+	//}
 
-		m_pTransformCom->Set_WorldMatrix(CameraWorld * RotationMatrix);
-	}
 
-	if (MouseMove = GAME_INSTANCE->Get_DIMMoveState(DIMM_Y))
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMove * fTimeDelta * 0.05f);
-	}
+
+	
 
 	
 

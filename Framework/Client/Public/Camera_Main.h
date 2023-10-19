@@ -26,7 +26,7 @@ private:
 	void Follow(_float fTimeDelta);
 
 private:
-	_float m_fOffsetDistance = 5.f;
+	_float m_fOffsetDistance = 10.f;
 	_float3 m_vOffsetPosition = { 0.f, 7.f, -5.f };
 
 public:

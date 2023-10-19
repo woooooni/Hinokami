@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Camera_Free.h"
 #include "Camera_Main.h"
+#include "FileUtils.h"
 
 
 #include "Tanjiro.h"
@@ -183,10 +184,13 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
-
-	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Main"),
-		CCamera_Main::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
+		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
+
+	/*if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Main"),
+		CCamera_Main::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
+		return E_FAIL;*/
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
 		CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
@@ -224,6 +228,12 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 
 
+
+	if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
+		return E_FAIL;
+
+	if(FAILED(Load_Map_Data(L"Test")))
+		return E_FAIL;
 
 	
 
@@ -284,17 +294,77 @@ HRESULT CLoader::Loading_For_Level_Tool()
 
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 	Loading_Proto_AllObjects(L"../Bin/Export/Map/");
-	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Zenitsu/")))
-	//	return E_FAIL;
-
-	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Weapon/Zenitsu/")))
-	//	return E_FAIL;
-
-	
 
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
 
+	return S_OK;
+}
+
+HRESULT CLoader::Load_Map_Data(const wstring& strMapFileName)
+{
+	wstring strMapFilePath = L"../Bin/Data/Map/" + strMapFileName + L"/" + strMapFileName + L".map";
+
+	shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
+	File->Open(strMapFilePath, FileMode::Read);
+
+	for (_uint i = 0; i < LAYER_TYPE::LAYER_END; ++i)
+	{
+		if (i == LAYER_TYPE::LAYER_CAMERA
+			|| i == LAYER_TYPE::LAYER_TERRAIN
+			|| i == LAYER_TYPE::LAYER_BACKGROUND
+			|| i == LAYER_TYPE::LAYER_SKYBOX
+			|| i == LAYER_TYPE::LAYER_UI
+			|| i == LAYER_TYPE::LAYER_PLAYER
+			|| i == LAYER_TYPE::LAYER_PROJECTILE
+			|| i == LAYER_TYPE::LAYER_EFFECT)
+			continue;
+
+		// 2. ObjectCount
+		_uint iObjectCount = File->Read<_uint>();
+
+		for (_uint j = 0; j < iObjectCount; ++j)
+		{
+			// 3. Object_Prototype_Tag
+			wstring strPrototypeTag = CUtils::ToWString(File->Read<string>());
+			wstring strObjectTag = CUtils::ToWString(File->Read<string>());
+
+			CGameObject* pObj = nullptr;
+			if (FAILED(GI->Add_GameObject(LEVEL_TOOL, i, strPrototypeTag, nullptr, &pObj)))
+			{
+				MSG_BOX("Load_Objects_Failed.");
+				return E_FAIL;
+			}
+
+			if (nullptr == pObj)
+			{
+				MSG_BOX("Add_Object_Failed.");
+				return E_FAIL;
+			}
+			pObj->Set_ObjectTag(strObjectTag);
+
+			CTransform* pTransform = dynamic_cast<CTransform*>(pObj->Get_Component(L"Com_Transform"));
+			if (nullptr == pTransform)
+			{
+				MSG_BOX("Get_Transform_Failed.");
+				return E_FAIL;
+			}
+
+			// 6. Obejct States
+			_float4 vRight, vUp, vLook, vPos;
+
+			File->Read<_float4>(vRight);
+			File->Read<_float4>(vUp);
+			File->Read<_float4>(vLook);
+			File->Read<_float4>(vPos);
+
+			pTransform->Set_State(CTransform::STATE_RIGHT, XMLoadFloat4(&vRight));
+			pTransform->Set_State(CTransform::STATE_UP, XMLoadFloat4(&vUp));
+			pTransform->Set_State(CTransform::STATE_LOOK, XMLoadFloat4(&vLook));
+			pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vPos));
+		}
+	}
+	MSG_BOX("Map_Loaded.");
 	return S_OK;
 }
 
