@@ -20,7 +20,7 @@ public:
 
 public:
 	HRESULT Add_State(_uint eStateTag, class CState* pState);
-	HRESULT Change_State(_uint eStateTag);
+	HRESULT Change_State(_uint eStateTag, void* pArg = nullptr);
 		
 
 private:

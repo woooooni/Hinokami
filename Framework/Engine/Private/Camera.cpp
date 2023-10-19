@@ -30,10 +30,20 @@ HRESULT CCamera::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_CameraDesc.vEye));
 	m_pTransformCom->LookAt(XMLoadFloat4(&m_CameraDesc.vAt));
 
+	ZeroMemory(&m_ShakeDesc, sizeof(CAM_SHAKE));
+	m_ShakeDesc.bEnd = true;
+
 	return S_OK;
 }
 
 void CCamera::Tick(_float fTimeDelta)
+{
+
+
+
+}
+
+void CCamera::LateTick(_float fTimeDelta)
 {
 	CPipeLine* pPipeLine = CPipeLine::GetInstance();
 
@@ -41,13 +51,17 @@ void CCamera::Tick(_float fTimeDelta)
 	pPipeLine->Set_Transform(CPipeLine::D3DTS_PROJ, XMMatrixPerspectiveFovLH(m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar));
 }
 
-void CCamera::LateTick(_float fTimeDelta)
-{
-}
-
 HRESULT CCamera::Render()
 {
 	return S_OK;
+}
+
+void CCamera::Cam_Shake(_float fDuration, _float fForce)
+{
+	m_ShakeDesc.fAccTime = 0.f;
+	m_ShakeDesc.fDuration = fDuration;
+	m_ShakeDesc.fForce = fForce;
+	
 }
 
 HRESULT CCamera::Ready_Components()

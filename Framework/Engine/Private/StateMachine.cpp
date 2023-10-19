@@ -38,7 +38,7 @@ HRESULT CStateMachine::Add_State(_uint eStateTag, CState* pState)
 	m_States.emplace(eStateTag, pState);
 }
 
-HRESULT CStateMachine::Change_State(_uint eStateTag)
+HRESULT CStateMachine::Change_State(_uint eStateTag, void* pArg)
 {
 	CState* pState = Find_State(eStateTag);
 	if (nullptr == pState)
@@ -48,7 +48,7 @@ HRESULT CStateMachine::Change_State(_uint eStateTag)
 		m_pCurrState->Exit_State();
 
 	m_pCurrState = pState;
-	m_pCurrState->Enter_State();
+	m_pCurrState->Enter_State(pArg);
 
 	return S_OK;
 }

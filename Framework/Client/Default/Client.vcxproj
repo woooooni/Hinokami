@@ -183,6 +183,7 @@
     <ClInclude Include="..\..\ThirdParty\imstb_truetype.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Building.h" />
+    <ClInclude Include="..\Public\Camera_Main.h" />
     <ClInclude Include="..\Public\Grass.h" />
     <ClInclude Include="..\Public\Camera_Free.h" />
     <ClInclude Include="..\Public\Character.h" />
@@ -209,7 +210,11 @@
     <ClInclude Include="..\Public\Protocol.pb.h" />
     <ClInclude Include="..\Public\ServerSession.h" />
     <ClInclude Include="..\Public\Network_Manager.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Attack.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Damaged.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Dead.h" />
     <ClInclude Include="..\Public\State_Tanjiro_Idle.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Run.h" />
     <ClInclude Include="..\Public\Struct.pb.h" />
     <ClInclude Include="..\Public\Sweath.h" />
     <ClInclude Include="..\Public\Tanjiro.h" />
@@ -256,6 +261,7 @@
     </ClCompile>
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Building.cpp" />
+    <ClCompile Include="..\Private\Camera_Main.cpp" />
     <ClCompile Include="..\Private\Grass.cpp" />
     <ClCompile Include="..\Private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
@@ -291,7 +297,11 @@
     <ClCompile Include="..\Private\ServerSession.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\State_Tanjiro_Attack.cpp" />
+    <ClCompile Include="..\Private\State_Tanjiro_Damaged.cpp" />
+    <ClCompile Include="..\Private\State_Tanjiro_Dead.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Idle.cpp" />
+    <ClCompile Include="..\Private\State_Tanjiro_Run.cpp" />
     <ClCompile Include="..\Private\Struct.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>

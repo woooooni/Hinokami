@@ -6,9 +6,6 @@ class CTanjiro final : public CCharacter
 {
 
 private:
-	enum TANJIRO_STATE { IDLE, MOVE, RUN, SKILL, DAMAGED, DEAD };
-
-private:
 	CTanjiro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
 	CTanjiro(const CTanjiro& rhs);
 	virtual ~CTanjiro() = default;

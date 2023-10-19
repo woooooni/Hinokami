@@ -4,6 +4,9 @@
 #include "BackGround.h"
 #include "Player.h"
 #include "Camera_Free.h"
+#include "Camera_Main.h"
+
+
 #include "Tanjiro.h"
 #include "Nezko.h"
 #include "Zenitsu.h"
@@ -181,8 +184,8 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
 
-	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
-		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Main"),
+		CCamera_Main::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),

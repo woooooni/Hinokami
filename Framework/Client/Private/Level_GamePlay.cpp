@@ -2,6 +2,8 @@
 #include "..\Public\Level_GamePlay.h"
 #include "GameInstance.h"
 #include "Camera.h"
+#include "Camera_Main.h"
+#include "Character.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -119,15 +121,33 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
 	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, _uint(eLayerType), TEXT("Prototype_GameObject_Camera_Free"), &CameraDesc)))
+	if(FAILED(GI->Add_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
 		return E_FAIL;
+	
+	
 
 	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 {
-	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Tanjiro"))))
+	CGameObject* pTanjiro = nullptr;
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Tanjiro"), nullptr, &pTanjiro)))
+		return E_FAIL;
+
+	CGameObject* pObject = GI->Find_GameObejct(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, L"Main_Camera");
+	if (nullptr == pObject)
+		return E_FAIL;
+
+	CCamera_Main* pCamera = dynamic_cast<CCamera_Main*>(pObject);
+	if (nullptr == pCamera)
+		return E_FAIL;
+
+	CCharacter* pCharacter = dynamic_cast<CCharacter*>(pTanjiro);
+	if (nullptr == pCharacter)
+		return E_FAIL;
+
+	if(FAILED(pCamera->Set_TargetTransform(pCharacter->Get_TransformCom())))
 		return E_FAIL;
 
 	return S_OK;

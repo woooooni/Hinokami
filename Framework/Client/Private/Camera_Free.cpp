@@ -98,6 +98,7 @@ void CCamera_Free::Tick(_float fTimeDelta)
 
 void CCamera_Free::LateTick(_float fTimeDelta)
 {
+	__super::LateTick(fTimeDelta);
 }
 
 HRESULT CCamera_Free::Render()

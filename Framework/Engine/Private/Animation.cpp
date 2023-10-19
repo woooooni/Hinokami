@@ -80,6 +80,7 @@ void CAnimation::Reset_Animation()
 {
 	m_fPlayTime = 0.f; 
 	m_bPause = false;
+	m_bFinished = false;
 
 	for (auto& pChannel : m_Channels)
 	{
@@ -94,13 +95,20 @@ HRESULT CAnimation::Play_Animation(CTransform* pTransform, _float fTimeDelta)
 
 	if (m_fPlayTime >= m_fDuration)
 	{
-		m_fPlayTime = 0.f;
-
-		for (auto& pChannel : m_Channels)
+		
+		if (m_bLoop)
 		{
-			for (auto& iCurrentKeyFrame : m_ChannelKeyFrames)
-				iCurrentKeyFrame = 0;
+			m_fPlayTime = 0.f;
+			for (auto& pChannel : m_Channels)
+			{
+				for (auto& iCurrentKeyFrame : m_ChannelKeyFrames)
+					iCurrentKeyFrame = 0;
+			}
 		}
+		else
+			m_fPlayTime = m_fDuration;
+
+		m_bFinished = true;
 	}
 
 	_uint		iChannelIndex = 0;

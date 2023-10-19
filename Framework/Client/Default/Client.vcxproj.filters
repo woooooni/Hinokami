@@ -378,6 +378,21 @@
     <ClInclude Include="..\Public\State_Tanjiro_Idle.h">
       <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_Tanjiro_Damaged.h">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Tanjiro_Dead.h">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Tanjiro_Run.h">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Camera_Main.h">
+      <Filter>02.GameObjects\02. Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Tanjiro_Attack.h">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -540,6 +555,21 @@
       <Filter>02.GameObjects\98. UI\01. Loading\Loading_Icon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Tanjiro_Idle.cpp">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Tanjiro_Damaged.cpp">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Tanjiro_Dead.cpp">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Tanjiro_Run.cpp">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Camera_Main.cpp">
+      <Filter>02.GameObjects\02. Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Tanjiro_Attack.cpp">
       <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
     </ClCompile>
   </ItemGroup>

@@ -48,7 +48,6 @@ public:
 	/* 2. Transformation를 최상위 부모로부터 자식으로 계속 누적시켜간다.(CombinedTransformation) */
 	/* 3. 애니메이션에 의해 움직인 뼈들의 CombinedTransfromation을 셋팅한다. */
 	HRESULT Play_Animation(class CTransform* pTransform, _float fTimeDelta);
-	// HRESULT Update_RootMotion(_vector vPrevAnimPos, _vector vNextAnimPos, CTransform* pTransform);
 	HRESULT Render(class CShader* pShader, _uint iMeshIndex, _uint iPassIndex = 0);
 
 
@@ -56,6 +55,7 @@ public:
 	HRESULT Delete_Animation(_uint iIndex);
 	_bool Is_InterpolatingAnimation() { return m_bInterpolationAnimation; }
 
+	_bool Is_Animation_Finished(_uint iAnimationIndex);
 
 public:
 	vector<class CAnimation*>& Get_Animations() { return m_Animations; }

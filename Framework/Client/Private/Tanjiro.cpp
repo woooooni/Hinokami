@@ -5,6 +5,10 @@
 #include "Sword.h"
 #include "Sweath.h"
 #include "State_Tanjiro_Idle.h"
+#include "State_Tanjiro_Damaged.h"
+#include "State_Tanjiro_Dead.h"
+#include "State_Tanjiro_Run.h"
+#include "State_Tanjiro_Attack.h"
 
 USING(Client)
 
@@ -52,6 +56,7 @@ HRESULT CTanjiro::Initialize(void* pArg)
 void CTanjiro::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+	m_pStateCom->Tick_State(fTimeDelta);
 }
 
 void CTanjiro::LateTick(_float fTimeDelta)
@@ -101,12 +106,74 @@ HRESULT CTanjiro::Ready_States()
 {
 	list<wstring> strAnimationName;
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseNut01_1");
-	m_pStateCom->Add_State(TANJIRO_STATE::IDLE, CState_Tanjiro_Idle::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
+	m_pStateCom->Add_State(CCharacter::STATE_IDLE, CState_Tanjiro_Idle::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
+
+	
+
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseRun01_1");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseDashF01_1");
+	m_pStateCom->Add_State(CCharacter::STATE_RUN,
+		CState_Tanjiro_Run::Create(m_pDevice, 
+			m_pContext, 
+			m_pTransformCom, 
+			m_pStateCom, 
+			m_pModelCom, 
+			strAnimationName));
+
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Death");
+
+
+	m_pStateCom->Add_State(CCharacter::STATE_DIE,
+		CState_Tanjiro_Dead::Create(m_pDevice,
+			m_pContext,
+			m_pTransformCom,
+			m_pStateCom,
+			m_pModelCom,
+			strAnimationName));
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_B");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_F");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_L");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_R");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_U");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_B");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_F");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_L");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_R");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_U");
+
+	m_pStateCom->Add_State(CCharacter::STATE_DAMAGED,
+		CState_Tanjiro_Damaged::Create(m_pDevice,
+			m_pContext,
+			m_pTransformCom,
+			m_pStateCom,
+			m_pModelCom,
+			strAnimationName));
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW01");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW02");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW03");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW03D01");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW03U01");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW04");
+
+	m_pStateCom->Add_State(CCharacter::STATE_ATTACK,
+		CState_Tanjiro_Attack::Create(m_pDevice,
+			m_pContext,
+			m_pTransformCom,
+			m_pStateCom,
+			m_pModelCom,
+			strAnimationName));
 
 
 
-
-	m_pStateCom->Change_State(TANJIRO_STATE::IDLE);
+	m_pStateCom->Change_State(CCharacter::STATE_IDLE);
 	return S_OK;
 }
 

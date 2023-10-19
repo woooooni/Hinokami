@@ -53,7 +53,9 @@ public:
 	void Set_Loop(_bool bLoop) { m_bLoop = bLoop; }
 	_bool Is_Loop() { return m_bLoop; }
 
-
+	
+	void Set_Finished(_bool bFinished) { m_bFinished = bFinished; }
+	_bool Is_Finished() { return m_bFinished; }
 private:
 	wstring						m_strName;
 
@@ -79,6 +81,7 @@ private: /* 복제된 애니메이션 마다 따로 가진다. */
 	_bool m_bPause = false;
 	_bool m_bRootAnimation = false;
 	_bool m_bLoop = false;
+	_bool m_bFinished = false;
 	// ID3D11ShaderResourceView* m_pSRV = nullptr;
 
 public:

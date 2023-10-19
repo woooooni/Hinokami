@@ -19,6 +19,17 @@ public:
 		CTransform::TRANSFORMDESC		TransformDesc;
 	}CAMERADESC;
 
+
+private:
+	typedef struct tagCamShake
+	{
+		_float fDuration;
+		_float fForce;
+		
+		_float fAccTime = 0.f;
+		_bool bEnd;
+	}CAM_SHAKE;
+
 protected:
 	CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjTag, _uint iObjectID);
 	CCamera(const CCamera& rhs, CTransform::TRANSFORMDESC* pArg);
@@ -31,12 +42,30 @@ public:
 	virtual void LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	void Cam_Shake(_float fDuration, _float fForce);
+
+public:
+	HRESULT Set_TargetTransform(class CTransform* pTargetTransform) 
+	{ 
+		if (nullptr == pTargetTransform)
+			return E_FAIL;
+
+		m_pTargetTransform = pTargetTransform; 
+		return S_OK;
+	}
+
 
 
 protected:
 	class CTransform*			m_pTransformCom = nullptr;
-	CAMERADESC					m_CameraDesc;
+	class CTransform*			m_pTargetTransform = nullptr;
 
+
+	CAMERADESC					m_CameraDesc;
+	CAM_SHAKE					m_ShakeDesc;
+
+	
 protected:
 	virtual HRESULT Ready_Components() override;
 

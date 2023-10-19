@@ -410,6 +410,18 @@ HRESULT CModel::Delete_Animation(_uint iIndex)
 	return S_OK;
 }
 
+_bool CModel::Is_Animation_Finished(_uint iAnimationIndex)
+{
+	if (iAnimationIndex >= m_Animations.size())
+	{
+		MSG_BOX("Animation Index Over.");
+		return false;
+	}
+
+	return m_Animations[iAnimationIndex]->Is_Finished();
+}
+
+
 _int CModel::Find_AnimationIndex(const wstring& strAnimationTag)
 {
 	_int iIndex = 0;

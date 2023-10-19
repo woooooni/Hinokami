@@ -18,7 +18,7 @@ public:
 	HRESULT Initialize(const list<wstring>& AnimationList);
 
 public:
-	virtual void Enter_State() override;
+	virtual void Enter_State(void* pArg = nullptr) override;
 	virtual void Tick_State(_float fTimeDelta) override;
 	virtual void Exit_State() override;
 

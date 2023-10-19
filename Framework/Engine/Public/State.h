@@ -13,7 +13,7 @@ protected:
 
 
 public:
-	virtual void Enter_State() PURE;
+	virtual void Enter_State(void* pArg = nullptr) PURE;
 	virtual void Tick_State(_float fTimeDelta) PURE;
 	virtual void Exit_State() PURE;
 

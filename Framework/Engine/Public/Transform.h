@@ -34,6 +34,10 @@ public:
 		return XMLoadFloat4x4(&m_WorldMatrix);
 	}
 
+	void Set_WorldMatrix(_fmatrix WorldMatrix) {
+		XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix);
+	}
+
 	_float4x4 Get_WorldFloat4x4() const {
 		return m_WorldMatrix;
 	}
@@ -49,6 +53,9 @@ public:
 	}
 
 	void Set_State(STATE eState, _fvector vState);
+
+	_float Get_TickPerSecond() { return m_TransformDesc.fSpeedPerSec; }
+	void Set_TickPerSecond(_float fTickPerSecond) { m_TransformDesc.fSpeedPerSec = fTickPerSecond; }
 
 public:
 	virtual HRESULT Initialize_Prototype();
