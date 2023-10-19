@@ -218,7 +218,11 @@ HRESULT CModel_Manager::Ready_Model_Data_FromPath(_uint iLevelIndex, _uint eType
 	for (auto& p : std::filesystem::directory_iterator(strFolderPath))
 	{
 		if (p.is_directory())
-			Ready_Model_Data_FromPath(iLevelIndex, eType, p.path());
+		{
+			Ready_Model_Data_FromPath(iLevelIndex, eType, p.path().wstring());
+			continue;
+		}
+			
 
 
 		wstring strFilePath = CUtils::PathToWString(p.path().wstring());
@@ -398,6 +402,7 @@ HRESULT CModel_Manager::Export_Animation(const wstring& strFinalFolderPath, CMod
 		File->Write<_float>(Animation->m_fTickPerSecond);
 		File->Write<_float>(Animation->m_fSpeed);
 		File->Write<_bool>(Animation->m_bRootAnimation);
+		File->Write<_bool>(Animation->m_bLoop);
 
 		File->Write<_uint>(Animation->m_iNumChannels);
 		for (auto& Channel : Animation->m_Channels)
@@ -660,6 +665,7 @@ HRESULT CModel_Manager::Import_Animation(const wstring strFinalPath, CModel* pMo
 		File->Read<_float>(pAnimation->m_fTickPerSecond);
 		File->Read<_float>(pAnimation->m_fSpeed);
 		File->Read<_bool>(pAnimation->m_bRootAnimation);
+		File->Read<_bool>(pAnimation->m_bLoop);
 
 		File->Read<_uint>(pAnimation->m_iNumChannels);
 		for (_uint j = 0; j < pAnimation->m_iNumChannels; ++j)

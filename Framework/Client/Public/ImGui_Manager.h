@@ -25,6 +25,14 @@ class CImGui_Manager : public CBase
 {
 	DECLARE_SINGLETON(CImGui_Manager)
 
+public:
+	typedef struct tagModelExportDesc
+	{
+		wstring strModelPath;
+		_uint iModelType;
+	}MODEL_EXPORT_DESC;
+
+
 private:
 	CImGui_Manager();
 	virtual ~CImGui_Manager() = default;
@@ -89,6 +97,7 @@ private:
 	void PickingGroundObj();
 	void PickingTerrainObj();
 
+
 private:
 	ID3D11Device* m_pDevice = nullptr;
 	ID3D11DeviceContext* m_pContext = nullptr;
@@ -119,6 +128,7 @@ public:
 	class CDummy* m_pDummy = nullptr;
 	class CTerrain* m_pTerrain = nullptr;
 	class CCamera_Free* m_pCamera = nullptr;
+
 
 public:
 	virtual void Free() override;

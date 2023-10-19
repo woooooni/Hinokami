@@ -120,9 +120,11 @@ HRESULT CZenitsu::Ready_Parts()
 	CSweath::SWEATH_DESC			SweathDesc;
 	SweathDesc.pParentTransform = m_pTransformCom;
 	SweathDesc.pSocketBone = m_Sockets[SOCKET_SWEATH];
+	XMStoreFloat4(&SweathDesc.vRotationDir, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	SweathDesc.fRotationDegree = 180.f;
 	XMStoreFloat4x4(&SweathDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 
-	CGameObject* pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Zenitsu_Sweath"), LAYER_TYPE::LAYER_CHARACTER, &SweathDesc);
+	CGameObject* pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sweath_Zenitsu"), LAYER_TYPE::LAYER_CHARACTER, &SweathDesc);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
@@ -135,7 +137,7 @@ HRESULT CZenitsu::Ready_Parts()
 	SwordDesc.pSocketBone = m_Sockets[SOCKET_SWORD];
 	XMStoreFloat4x4(&SwordDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 
-	pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Zenitsu_Sword"), LAYER_TYPE::LAYER_CHARACTER, &SwordDesc);
+	pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sword_Zenitsu"), LAYER_TYPE::LAYER_CHARACTER, &SwordDesc);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 

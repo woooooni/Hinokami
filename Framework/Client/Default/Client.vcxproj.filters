@@ -115,9 +115,6 @@
     <Filter Include="02.GameObjects\98. UI">
       <UniqueIdentifier>{906b0f1e-6358-4af4-a69c-333e75dfe3c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\98. UI\Logo">
-      <UniqueIdentifier>{15129fc4-724b-462f-bf8b-3bbe5060b78e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\08. Tree">
       <UniqueIdentifier>{927451e5-89b1-49c5-911b-6968ed211588}</UniqueIdentifier>
     </Filter>
@@ -142,29 +139,65 @@
     <Filter Include="02.GameObjects\03. Character\98.Parts\Sweath">
       <UniqueIdentifier>{c72bdae7-92fa-47ba-9f17-80093c43d6fa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\98. UI\Logo\BackGround">
-      <UniqueIdentifier>{576c95cf-4897-414e-aee1-74bf486b7843}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\98. UI\Logo\Title">
-      <UniqueIdentifier>{3b1875ff-3e42-4a88-87d2-7415603e9d11}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\98. UI\Loading">
-      <UniqueIdentifier>{f71f4672-e277-4fd6-af61-bf2ad0348021}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\98. UI\Loading\Loading_Tanjiro">
-      <UniqueIdentifier>{160b9423-3162-4acf-b494-8d802e26247a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\98. UI\Loading\BackGround">
-      <UniqueIdentifier>{f1f218ba-d3f9-44ad-817d-3486bba25b74}</UniqueIdentifier>
-    </Filter>
     <Filter Include="96. Manager\ImGui\Libs\tinyxml">
       <UniqueIdentifier>{084b0b4f-c18d-4efb-a33a-45b35f9b1a0c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\98. UI\Logo\Select_Menu">
-      <UniqueIdentifier>{ac00662f-cbc7-47fa-ad82-04773ac1efe0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\98. UI\Manager">
       <UniqueIdentifier>{1fb7ef61-258f-42e2-914a-b7fdabf11cb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\00. Tanjiro\State">
+      <UniqueIdentifier>{5097757d-7b4e-4f9a-9127-3a36faf202b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\01. Nezko\State">
+      <UniqueIdentifier>{ae63a40b-6026-466a-9a02-edd457af687a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\02. Zenitsu\State">
+      <UniqueIdentifier>{3a839662-c994-4617-bb01-d8fb92f03cac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\03. Kyojuro\State">
+      <UniqueIdentifier>{16a2df13-afd4-40ca-8702-7b1af0647c8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\04. Giyu\State">
+      <UniqueIdentifier>{ae1fad44-ee8b-43cd-8d81-fd5a88155b0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\05. Akaza">
+      <UniqueIdentifier>{206f58f4-1b02-40c5-8fb4-9ffd4e564fb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\06.">
+      <UniqueIdentifier>{b28f57f0-94be-42f2-ab85-fac5dcaae447}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\01. Loading">
+      <UniqueIdentifier>{f71f4672-e277-4fd6-af61-bf2ad0348021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\01. Loading\BackGround">
+      <UniqueIdentifier>{f1f218ba-d3f9-44ad-817d-3486bba25b74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\02. Logo">
+      <UniqueIdentifier>{15129fc4-724b-462f-bf8b-3bbe5060b78e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\02. Logo\BackGround">
+      <UniqueIdentifier>{576c95cf-4897-414e-aee1-74bf486b7843}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\02. Logo\Title">
+      <UniqueIdentifier>{3b1875ff-3e42-4a88-87d2-7415603e9d11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\02. Logo\Select_Menu">
+      <UniqueIdentifier>{ac00662f-cbc7-47fa-ad82-04773ac1efe0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\00. Common">
+      <UniqueIdentifier>{12be77f1-90e3-4579-840e-d392ec1ada24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\00. Common\NextFog">
+      <UniqueIdentifier>{2cb7fd65-80fb-401d-9554-bf76f02ee57b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\01. Loading\Loading_Animation">
+      <UniqueIdentifier>{160b9423-3162-4acf-b494-8d802e26247a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\01. Loading\Loading_Icon">
+      <UniqueIdentifier>{a069e8ad-7410-4c40-ac72-9351e4a4ade8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. State\Character\Tanjiro">
+      <UniqueIdentifier>{f409b020-3b6e-45f4-ba20-701e27ecafcb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -319,19 +352,31 @@
       <Filter>02.GameObjects\03. Character\98.Parts\Sweath</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_Logo_BackGround.h">
-      <Filter>02.GameObjects\98. UI\Logo\BackGround</Filter>
+      <Filter>02.GameObjects\98. UI\02. Logo\BackGround</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_Logo_Title.h">
-      <Filter>02.GameObjects\98. UI\Logo\Title</Filter>
+      <Filter>02.GameObjects\98. UI\02. Logo\Title</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\tinyxml2.h">
       <Filter>96. Manager\ImGui\Libs\tinyxml</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_Logo_SelectBase.h">
-      <Filter>02.GameObjects\98. UI\Logo\Select_Menu</Filter>
+      <Filter>02.GameObjects\98. UI\02. Logo\Select_Menu</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_NextFog.h">
-      <Filter>02.GameObjects\98. UI\Manager</Filter>
+      <Filter>02.GameObjects\98. UI\00. Common\NextFog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Loading_Background.h">
+      <Filter>02.GameObjects\98. UI\01. Loading\BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Loading_Icon.h">
+      <Filter>02.GameObjects\98. UI\01. Loading\Loading_Icon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Loading_Anim.h">
+      <Filter>02.GameObjects\98. UI\01. Loading\Loading_Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Tanjiro_Idle.h">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -468,22 +513,34 @@
       <Filter>02.GameObjects\03. Character\98.Parts\Sweath</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Logo_BackGround.cpp">
-      <Filter>02.GameObjects\98. UI\Logo\BackGround</Filter>
+      <Filter>02.GameObjects\98. UI\02. Logo\BackGround</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Logo_Title.cpp">
-      <Filter>02.GameObjects\98. UI\Logo\Title</Filter>
+      <Filter>02.GameObjects\98. UI\02. Logo\Title</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\tinyxml2.cpp">
       <Filter>96. Manager\ImGui\Libs\tinyxml</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Logo_SelectBase.cpp">
-      <Filter>02.GameObjects\98. UI\Logo\Select_Menu</Filter>
+      <Filter>02.GameObjects\98. UI\02. Logo\Select_Menu</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI.cpp">
       <Filter>02.GameObjects\98. UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_NextFog.cpp">
-      <Filter>02.GameObjects\98. UI\Manager</Filter>
+      <Filter>02.GameObjects\98. UI\00. Common\NextFog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Loading_BackGround.cpp">
+      <Filter>02.GameObjects\98. UI\01. Loading\BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Loading_Anim.cpp">
+      <Filter>02.GameObjects\98. UI\01. Loading\Loading_Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Loading_Icon.cpp">
+      <Filter>02.GameObjects\98. UI\01. Loading\Loading_Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Tanjiro_Idle.cpp">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

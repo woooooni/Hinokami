@@ -29,21 +29,18 @@ void CStateMachine::Tick_State(_float fTimeDelta)
 	m_pCurrState->Tick_State(fTimeDelta);
 }
 
-HRESULT CStateMachine::Add_State(const wstring& strStateTag, CState* pState)
+HRESULT CStateMachine::Add_State(_uint eStateTag, CState* pState)
 {
-	if (nullptr != Find_State(strStateTag))
+	if (nullptr != Find_State(eStateTag))
 		return E_FAIL;
 
 
-	pState->Set_StateMachine(this);
-	m_States.emplace(strStateTag, pState);
-
-	return S_OK;
+	m_States.emplace(eStateTag, pState);
 }
 
-HRESULT CStateMachine::Change_State(const wstring& strStateTag)
+HRESULT CStateMachine::Change_State(_uint eStateTag)
 {
-	CState* pState = Find_State(strStateTag);
+	CState* pState = Find_State(eStateTag);
 	if (nullptr == pState)
 		return E_FAIL;
 
@@ -56,9 +53,12 @@ HRESULT CStateMachine::Change_State(const wstring& strStateTag)
 	return S_OK;
 }
 
-CState* CStateMachine::Find_State(const wstring& strStateTag)
+
+
+
+CState* CStateMachine::Find_State(const _uint eState)
 {
-	auto iter = m_States.find(strStateTag);
+	auto iter = m_States.find(eState);
 
 	if (iter == m_States.end())
 		return nullptr;
@@ -96,7 +96,7 @@ CComponent* CStateMachine::Clone(void* pArg)
 void CStateMachine::Free()
 {
 	for (auto& State : m_States)
-		Safe_Delete(State.second);
+		Safe_Release(State.second);
 	m_States.clear();
 
 	__super::Free();

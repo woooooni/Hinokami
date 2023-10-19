@@ -19,6 +19,7 @@ CAnimation::CAnimation(const CAnimation& rhs)
 	, m_strName(rhs.m_strName)
 	, m_fSpeed(rhs.m_fSpeed)
 	, m_bRootAnimation(rhs.m_bRootAnimation)
+	, m_bLoop(rhs.m_bLoop)
 	/*, m_pSRV(rhs.m_pSRV)*/
 {
 	for (auto& pChannel : m_Channels)

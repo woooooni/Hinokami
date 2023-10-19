@@ -25,7 +25,7 @@ public:
 		return m_TransformMatrix[eTransformState];
 	}
 
-	_float4x4 Get_TransformFloat4x4_TP(TRANSFORMSTATE eTransformState) const {
+	_float4x4 Get_TransformFloat4x4_TransPose(TRANSFORMSTATE eTransformState) const {
 		_float4x4		Transform;
 		XMStoreFloat4x4(&Transform, XMMatrixTranspose(Get_TransformMatrix(eTransformState)));
 		return Transform;

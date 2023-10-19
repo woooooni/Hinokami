@@ -1,40 +1,33 @@
 #include "stdafx.h"
-#include "UI_NextFog.h"
+#include "UI_Loading_Icon.h"
 #include "GameInstance.h"
-#include "Level_Loading.h"
-CUI_NextFog::CUI_NextFog(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-	: CUI(pDevice, pContext, L"UI_Next_Fog")
+CUI_Loading_Icon::CUI_Loading_Icon(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+	: CUI(pDevice, pContext, L"UI_Loading_Icon")
 {
 
 }
 
-CUI_NextFog::CUI_NextFog(const CUI_NextFog & rhs)
+CUI_Loading_Icon::CUI_Loading_Icon(const CUI_Loading_Icon & rhs)
 	: CUI(rhs)
 {
 	
 }
 
-HRESULT CUI_NextFog::Initialize_Prototype(const UI_INFO& tInfo)
+HRESULT CUI_Loading_Icon::Initialize_Prototype(const UI_INFO& tInfo)
 {
 	m_tInfo = tInfo;
 
 	return S_OK;
 }
 
-HRESULT CUI_NextFog::Initialize(void* pArg)
+HRESULT CUI_Loading_Icon::Initialize(void* pArg)
 {
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-
-	if (nullptr != pArg)
-	{
-		LEVELID* eLevelID = (LEVELID*)pArg;
-		m_eNextLevel = *eLevelID;
-	}
 	
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&_float3(m_tInfo.fCX, m_tInfo.fCY, 1.f)));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION,
-		XMVectorSet(m_tInfo.fX - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.01f, 1.f));
+		XMVectorSet(m_tInfo.fX - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.9999f, 1.f));
 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.f));
@@ -45,7 +38,7 @@ HRESULT CUI_NextFog::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CUI_NextFog::Tick(_float fTimeDelta)
+void CUI_Loading_Icon::Tick(_float fTimeDelta)
 {
 	m_fAccTime += fTimeDelta;
 	if (m_fAccTime >= m_fNextTime)
@@ -55,30 +48,27 @@ void CUI_NextFog::Tick(_float fTimeDelta)
 		
 		if (m_iTextureIndex >= m_pTextureCom->Get_TextureCount())
 		{
-			// TODO Next.
-			if (LEVELID::LEVEL_END != m_eNextLevel)
-			{
-				if (FAILED(GI->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, m_eNextLevel))))
-					MSG_BOX("Open Level Failde. : CUI_NextFog");
-			}
-			// m_bDead = true;
 			m_iTextureIndex = 0;
 		}
 	}
 }
 
-void CUI_NextFog::LateTick(_float fTimeDelta)
+void CUI_Loading_Icon::LateTick(_float fTimeDelta)
 {
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDERGROUP::RENDER_UI, this);
 }
 
-HRESULT CUI_NextFog::Render()
+HRESULT CUI_Loading_Icon::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
 
-	m_pShaderCom->Begin(2);
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", m_iTextureIndex)))
+		return E_FAIL;
+
+
+	m_pShaderCom->Begin(0);
 
 	m_pVIBufferCom->Render();
 	
@@ -86,7 +76,21 @@ HRESULT CUI_NextFog::Render()
 	return S_OK;
 }
 
-HRESULT CUI_NextFog::Ready_Components()
+
+
+HRESULT CUI_Loading_Icon::Bind_ShaderResources()
+{
+	if (FAILED(m_pTransformCom->Bind_ShaderResources(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUI_Loading_Icon::Ready_Components()
 {
 	/* Com_Renderer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
@@ -105,7 +109,7 @@ HRESULT CUI_NextFog::Ready_Components()
 
 
 	/* Com_Texture*/
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_NextFog"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading_Icon"),
 		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
@@ -120,54 +124,34 @@ HRESULT CUI_NextFog::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CUI_NextFog::Bind_ShaderResources()
+CUI_Loading_Icon * CUI_Loading_Icon::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const UI_INFO& tInfo)
 {
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TransPose())))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return E_FAIL;
-
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_AlphaTexture", m_iTextureIndex)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-CUI_NextFog * CUI_NextFog::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const UI_INFO& tInfo)
-{
-	CUI_NextFog*	pInstance = new CUI_NextFog(pDevice, pContext);
+	CUI_Loading_Icon*	pInstance = new CUI_Loading_Icon(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype(tInfo)))
 	{
-		MSG_BOX("Failed to Created : CUI_NextFog");
+		MSG_BOX("Failed to Created : CUI_Loading_Icon");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CUI_NextFog::Clone(void* pArg)
+CGameObject * CUI_Loading_Icon::Clone(void* pArg)
 {
-	CUI_NextFog*	pInstance = new CUI_NextFog(*this);
+	CUI_Loading_Icon*	pInstance = new CUI_Loading_Icon(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CUI_NextFog");
+		MSG_BOX("Failed to Cloned : CUI_Loading_Icon");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_NextFog::Free()
+void CUI_Loading_Icon::Free()
 {
 	__super::Free();
-	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pTransformCom);
 
 }

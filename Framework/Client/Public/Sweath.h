@@ -20,6 +20,8 @@ public:
 	{		
 		CHierarchyNode*	pSocketBone = { nullptr };
 		_float4x4		SocketPivot;
+		_float4			vRotationDir;
+		_float			fRotationDegree;
 	} SWEATH_DESC;
 
 protected:

@@ -19,6 +19,9 @@ public:
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
 	void Tick(_float fTimeDelta);
 	void LateTick(_float fTimeDelta);
+
+public:
+	void Clear();
 	
 
 public:

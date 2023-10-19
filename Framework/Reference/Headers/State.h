@@ -5,37 +5,28 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CState abstract : CBase
+class ENGINE_DLL CState abstract : public CBase
 {
-public:
-	CState(const wstring& strStateName, const wstring& strAnimationKey);
-	CState(const CState& rhs, class CStateMachine* pMachine);
+protected:
+	CState(class CStateMachine* pStateMachine, class CModel* pModel, class CTransform* pTransform);
 	virtual ~CState() = default;
+
 
 public:
 	virtual void Enter_State() PURE;
 	virtual void Tick_State(_float fTimeDelta) PURE;
 	virtual void Exit_State() PURE;
 
-public:
-	void Set_StateMachine(class CStateMachine* pStateMachine) { m_pStateMachine = pStateMachine; }
-
-public:
-	const wstring& Get_StateName() { return m_strStateName; }
-	void Set_StateName(const wstring& strName) { m_strStateName = strName; }
-
-	const wstring& Get_AnimationKey() { return m_strAnimationKey; }
-	void Set_AnimationKey(const wstring& strAnimationKey) { m_strAnimationKey = strAnimationKey; }
 
 protected:
-	wstring m_strStateName = L"";
-	wstring m_strAnimationKey = L"";
-
-private:
-	class CStateMachine* m_pStateMachine = nullptr;
-
+	class CModel* m_pModelCom = nullptr;
+	class CStateMachine* m_pStateMachineCom = nullptr;
+	class CTransform* m_pTransformCom = nullptr;
+	_uint m_iCurrAnimIndex = 0;
+	vector<_uint> m_AnimationIndices;
+	
 public:
-	void Free() override;
+	virtual void Free() override;
 };
 
 END

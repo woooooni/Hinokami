@@ -396,6 +396,9 @@
     <ClInclude Include="..\Public\Network\SocketUtils.h">
       <Filter>02. Network\01. Network\SocketUtils</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RigidBody.h">
+      <Filter>01.Utiltiy\03.Component\08. RigidBody</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -580,6 +583,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\SocketUtils.cpp">
       <Filter>02. Network\01. Network\SocketUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Public\RigidBody.cpp">
+      <Filter>01.Utiltiy\03.Component\08. RigidBody</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

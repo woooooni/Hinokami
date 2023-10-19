@@ -37,6 +37,14 @@ public:
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
 
+public:
+
+
+public:
+	void Generate_Trail();
+	void Stop_Trail();
+	void Generate_Effect();
+
 private:
 	CHierarchyNode*			m_pSocketBone = { nullptr };
 	_float4x4				m_SocketPivotMatrix;

@@ -410,6 +410,23 @@ HRESULT CModel::Delete_Animation(_uint iIndex)
 	return S_OK;
 }
 
+_int CModel::Find_AnimationIndex(const wstring& strAnimationTag)
+{
+	_int iIndex = 0;
+
+	for (auto& pAnimation : m_Animations)
+	{
+		if (pAnimation->Get_AnimationName() == strAnimationTag)		
+			return iIndex;
+
+		++iIndex;
+	}
+
+	
+
+	return -1;
+}
+
 
 HRESULT CModel::Ready_MeshContainers(_fmatrix PivotMatrix)
 {

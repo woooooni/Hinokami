@@ -26,6 +26,11 @@ public:
 	virtual HRESULT Enter_Level() override;
 	virtual HRESULT Exit_Level() override;
 
+
+
+private:
+	HRESULT Ready_LoadingUI();
+
 private:
 	/* 로딩 다음레벨. */
 	LEVELID			m_eNextLevel = { LEVEL_END };

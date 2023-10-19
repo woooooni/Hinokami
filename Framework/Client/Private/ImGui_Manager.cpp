@@ -470,10 +470,7 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
             {
                 if (0 != strcmp(szAllObjectExportFolderName, "") && iSelectedExportModelType != -1)
                 {
-                    if (FAILED(GAME_INSTANCE->Export_Model_Data_FromPath(iSelectedExportModelType, CUtils::ToWString(szAllObjectExportFolderName))))
-                        MSG_BOX("Export Failed.");
-                    else
-                        MSG_BOX("Export Complete!");
+                    GI->Export_Model_Data_FromPath(iSelectedExportModelType, CUtils::ToWString(szAllObjectExportFolderName));
                 }
                 else
                 {
@@ -562,6 +559,13 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
         // Animation Slider
         CAnimation* pCurrAnimation = Animations[pModelCom->Get_CurrAnimationIndex()];
 
+        _float fPlayTime = pCurrAnimation->Get_PlayTime();
+        if (ImGui::SliderFloat("##Animation_PlayTime", &fPlayTime, 0.f, pCurrAnimation->Get_Duration()))
+        {
+            pCurrAnimation->Set_AnimationPlayTime(m_pDummy->Get_TransformCom(), fPlayTime, fTimeDelta);
+        }
+
+
         if (ImGui::ArrowButton("##Play_AnimationButton", ImGuiDir_Right))
             pCurrAnimation->Set_Pause(false);
 
@@ -594,6 +598,12 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
         IMGUI_SAME_LINE;
         ImGui::Checkbox("##IsRootAnimation", &bRootAnimation);
         pCurrAnimation->Set_RootAnimation(bRootAnimation);
+
+        _bool bLoop = pCurrAnimation->Is_Loop();
+        ImGui::Text("Loop");
+        IMGUI_SAME_LINE;
+        ImGui::Checkbox("##IsLoop", &bLoop);
+        pCurrAnimation->Set_Loop(bLoop);
     }
     ImGui::End();
     
@@ -1322,6 +1332,7 @@ void CImGui_Manager::PickingTerrainObj()
 
 }
 
+
 void CImGui_Manager::PickingGroundObj()
 {
     _float4 vHitPos;
@@ -1369,5 +1380,6 @@ void CImGui_Manager::Free()
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
+
 }
 

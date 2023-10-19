@@ -1,24 +1,25 @@
 #include "State.h"
 #include "StateMachine.h"
+#include "Animation.h"
 
-CState::CState(const wstring& strStateName, const wstring& strAnimationKey)
-	: m_strStateName(strStateName)
-	, m_strAnimationKey(strAnimationKey)
+
+CState::CState(CStateMachine* pStateMachine, CModel* pModel, CTransform* pTransform)
+	: m_pStateMachineCom(pStateMachine)
+	, m_pModelCom(pModel)
+	, m_pTransformCom(pTransform)
 {
 
+	Safe_AddRef(m_pModelCom);
+	Safe_AddRef(m_pStateMachineCom);
+	Safe_AddRef(m_pTransformCom);
 }
-
-CState::CState(const CState& rhs, CStateMachine* pMachine)
-	: m_strStateName(rhs.m_strStateName)
-	, m_strAnimationKey(rhs.m_strAnimationKey)
-	, m_pStateMachine(pMachine)
-
-{
-
-}	
 
 
 void CState::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pModelCom);
+	Safe_Release(m_pTransformCom);
+	Safe_Release(m_pStateMachineCom);
 }

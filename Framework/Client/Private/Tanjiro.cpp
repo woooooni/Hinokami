@@ -4,6 +4,7 @@
 #include "HierarchyNode.h"
 #include "Sword.h"
 #include "Sweath.h"
+#include "State_Tanjiro_Idle.h"
 
 USING(Client)
 
@@ -87,7 +88,7 @@ HRESULT CTanjiro::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Zenitsu"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Tanjiro"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_StateMachine"), TEXT("Com_StateMachine"), (CComponent**)&m_pStateCom)))
@@ -98,6 +99,14 @@ HRESULT CTanjiro::Ready_Components()
 
 HRESULT CTanjiro::Ready_States()
 {
+	list<wstring> strAnimationName;
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseNut01_1");
+	m_pStateCom->Add_State(TANJIRO_STATE::IDLE, CState_Tanjiro_Idle::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
+
+
+
+
+	m_pStateCom->Change_State(TANJIRO_STATE::IDLE);
 	return S_OK;
 }
 
@@ -108,9 +117,9 @@ HRESULT CTanjiro::Ready_Sockets()
 
 	m_Sockets.resize(SOCEKT_END);
 
-	m_Sockets[SOCKET_SWORD] = m_pModelCom->Get_HierarchyNode(L"R_Hand_1");
+	m_Sockets[SOCKET_SWORD] = m_pModelCom->Get_HierarchyNode(L"R_HandCommon_1_Lct");
 	m_Sockets[SOCKET_RIGHT_HAND] = m_pModelCom->Get_HierarchyNode(L"R_Hand_1");
-	m_Sockets[SOCKET_SWEATH] = m_pModelCom->Get_HierarchyNode(L"L_Weapon_1");
+	m_Sockets[SOCKET_SWEATH] = m_pModelCom->Get_HierarchyNode(L"L_Weapon_1_Lct");
 
 	return S_OK;
 }
@@ -120,9 +129,12 @@ HRESULT CTanjiro::Ready_Parts()
 	CSweath::SWEATH_DESC			SweathDesc;
 	SweathDesc.pParentTransform = m_pTransformCom;
 	SweathDesc.pSocketBone = m_Sockets[SOCKET_SWEATH];
+	XMStoreFloat4(&SweathDesc.vRotationDir, XMVectorSet(1.f, 0.f, 0.f, 0.f));
+	SweathDesc.fRotationDegree = -90.f;
+
 	XMStoreFloat4x4(&SweathDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 
-	CGameObject* pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sweath_Zenitsu"), LAYER_TYPE::LAYER_CHARACTER, &SweathDesc);
+	CGameObject* pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sweath_Tanjiro"), LAYER_TYPE::LAYER_CHARACTER, &SweathDesc);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
@@ -131,11 +143,11 @@ HRESULT CTanjiro::Ready_Parts()
 
 	CSword::SWORD_DESC			SwordDesc;
 
-	SweathDesc.pParentTransform = m_pTransformCom;
-	SweathDesc.pSocketBone = m_Sockets[SOCKET_SWORD];
-	XMStoreFloat4x4(&SweathDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
+	SwordDesc.pParentTransform = m_pTransformCom;
+	SwordDesc.pSocketBone = m_Sockets[SOCKET_SWORD];
+	XMStoreFloat4x4(&SwordDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 
-	pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sword_Zenitsu"), LAYER_TYPE::LAYER_CHARACTER);
+	pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sword_Tanjiro"), LAYER_TYPE::LAYER_CHARACTER, &SwordDesc);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 

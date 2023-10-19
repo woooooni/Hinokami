@@ -81,34 +81,32 @@ void CUI::Tick(_float fTimeDelta)
 void CUI::Debug_Input(_float fTimeDelta)
 {
 	if (KEY_TAP(KEY::LEFT_ARROW))
-		m_tInfo.fX -= 1.f;
+		m_tInfo.fX -= 10.f;
 
 	if(KEY_TAP(KEY::RIGHT_ARROW))
-		m_tInfo.fX += 1.f;
+		m_tInfo.fX += 10.f;
 
 	if (KEY_TAP(KEY::UP_ARROW))
-		m_tInfo.fY += 1.f;
+		m_tInfo.fY += 10.f;
 
 	if (KEY_TAP(KEY::DOWN_ARROW))
-		m_tInfo.fY -= 1.f;
+		m_tInfo.fY -= 10.f;
 
 	if (KEY_TAP(KEY::OPEN_SQUARE_BRACKET))
-		m_tInfo.fCX -= 1.f;
+		m_tInfo.fCX -= 10.f;
 
 	if (KEY_TAP(KEY::CLOSE_SQUARE_BRACKET))
-		m_tInfo.fCX += 1.f;
+		m_tInfo.fCX += 10.f;
 
 	if(KEY_TAP(KEY::O))
-		m_tInfo.fCY -= 1.f;
+		m_tInfo.fCY -= 10.f;
 
 	if (KEY_TAP(KEY::P))
-		m_tInfo.fCY += 1.f;
+		m_tInfo.fCY += 10.f;
 
-
-
-	m_pTransformCom->Set_Scale(XMLoadFloat3(&_float3(m_tInfo.fCX, m_tInfo.fCY, 1.f)));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION,
-		XMVectorSet(m_tInfo.fX - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
+		XMVectorSet(m_tInfo.fX - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 1.f, 1.f));
+	m_pTransformCom->Set_Scale(XMLoadFloat3(&_float3(m_tInfo.fCX, m_tInfo.fCY, 1.f)));
 }
 
 void CUI::Free()
@@ -119,6 +117,7 @@ void CUI::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
+
 }
 
 //  m_pTransformCom->Set_State(CTransform::STATE_POSITION,

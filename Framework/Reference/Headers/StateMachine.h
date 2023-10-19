@@ -19,16 +19,16 @@ public:
 	void Tick_State(_float fTimeDelta);
 
 public:
-	HRESULT Add_State(const wstring& strStateTag, class CState* pState);
-	HRESULT Change_State(const wstring& strStateTag);
+	HRESULT Add_State(_uint eStateTag, class CState* pState);
+	HRESULT Change_State(_uint eStateTag);
 		
 
 private:
 	class CState* m_pCurrState = nullptr;
-	map<wstring, class CState*> m_States;
+	map<_uint, class CState*> m_States;
 
 private:
-	class CState* Find_State(const wstring & strStateTag);
+	class CState* Find_State(const _uint eState);
 
 
 public:

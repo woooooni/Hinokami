@@ -6,6 +6,10 @@
 #include "Network_Manager.h"
 #include "SocketUtils.h"
 
+#include "UI_Loading_Anim.h"
+#include "UI_Loading_Background.h"
+#include "UI_Loading_Icon.h"
+
 
 CMainApp::CMainApp()	
 	: m_pGame_Instance(CGameInstance::GetInstance())
@@ -52,10 +56,6 @@ HRESULT CMainApp::Initialize()
 
 void CMainApp::Tick(_float fTimeDelta)
 {
-	
-
-	/* 게임내에 존재하는 여러 객체들의 갱신. */
-	/* 레벨의 갱신 */
 	m_pGame_Instance->Tick(fTimeDelta);
 	
 }
@@ -94,6 +94,36 @@ HRESULT CMainApp::Initialize_Client()
 	if(FAILED(GI->Add_Fonts(m_pDevice, m_pContext, L"Maple", L"../Bin/Resources/Font/Maplestory.spritefont")))
 		return E_FAIL;
 
+
+	CUI::UI_INFO tInfo = {};
+
+	tInfo.fX = g_iWinSizeX / 2.f;
+	tInfo.fY = g_iWinSizeY / 2.f;
+	tInfo.fCX = g_iWinSizeX;
+	tInfo.fCY = g_iWinSizeY;
+
+	///* For.Prototype_GameObject_UI_Loading_BackGround */
+	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Loading_BackGround"), CUI_Loading_BackGround::Create(m_pDevice, m_pContext, tInfo), LAYER_TYPE::LAYER_UI)))
+		return E_FAIL;
+
+	tInfo.fX = g_iWinSizeX - 300.f;
+	tInfo.fY = g_iWinSizeY - 150.f;
+	tInfo.fCX = 244.f;
+	tInfo.fCY = 256.f;
+
+	///* For.Prototype_GameObject_UI_Loading_Anim */
+	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Loading_Anim"), CUI_Loading_Anim::Create(m_pDevice, m_pContext, tInfo), LAYER_TYPE::LAYER_UI)))
+		return E_FAIL;
+
+	tInfo.fX = g_iWinSizeX - 400.f;
+	tInfo.fY = g_iWinSizeY - 50.f;
+	tInfo.fCX = 120.f;
+	tInfo.fCY = 120.f;
+
+	///* For.Prototype_GameObject_UI_Loading_Icon */
+	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Loading_Icon"), CUI_Loading_Icon::Create(m_pDevice, m_pContext, tInfo), LAYER_TYPE::LAYER_UI)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -128,6 +158,12 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_UI.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements))))
 		return E_FAIL;
 
+
+	/* For.Prototype_Component_Shader_VtxTex */
+	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTex.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Shader_VtxNorTex*/
 	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxNorTex"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements))))
@@ -156,32 +192,39 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 	// Texture
 	/* For.Prototype_Component_Texture_Effect*/
-	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect"),
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Effect"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Effect/Texture/"), 0, true))))
 		return E_FAIL;
 
-	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_NextFog"),
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_NextFog"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/NextFog/"), 0, true))))
 		return E_FAIL;
 
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading_BackGround"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Loading/Loading_Background/"), 0, true))))
+		return E_FAIL;
+
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading_Anim"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Loading/Loading_Anim/"), 0, true))))
+		return E_FAIL;
+
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading_Icon"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Loading/Loading_Icon/"), 0, true))))
+		return E_FAIL;
 
 
 
 	/* For.Prototype_Component_Transform */
-	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
 		CTransform::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_StateMachine */
-	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_StateMachine"),
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_StateMachine"),
 		CStateMachine::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
-	/* For.Prototype_Component_Shader_VtxTex */
-	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTex.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements))))
-		return E_FAIL;
 
 	return S_OK;
 }

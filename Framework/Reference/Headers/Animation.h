@@ -50,7 +50,8 @@ public:
 	void Set_RootAnimation(_bool bRootAnimation) { m_bRootAnimation = bRootAnimation; }
 	_bool Is_RootAnimation() { return m_bRootAnimation; }
 	
-
+	void Set_Loop(_bool bLoop) { m_bLoop = bLoop; }
+	_bool Is_Loop() { return m_bLoop; }
 
 
 private:
@@ -77,6 +78,7 @@ private: /* 복제된 애니메이션 마다 따로 가진다. */
 
 	_bool m_bPause = false;
 	_bool m_bRootAnimation = false;
+	_bool m_bLoop = false;
 	// ID3D11ShaderResourceView* m_pSRV = nullptr;
 
 public:

@@ -10,6 +10,7 @@
 #include "ImGui_Manager.h"
 #include "Network_Manager.h"
 
+
 CLevel_Loading::CLevel_Loading(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 {
@@ -23,9 +24,13 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevel)
 	if (m_eNextLevel == LEVEL_TOOL)
 	{
 		CImGui_Manager::GetInstance()->Reserve_Manager(g_hWnd, m_pDevice, m_pContext);
-
-
 	}
+
+	if(FAILED(Ready_LoadingUI()))
+		return E_FAIL;
+
+
+
 		
 	/* m_eNextLevel 에 대한 로딩작업을 수행한다. */
 	/* 로딩을 겁나 하고있다. */
@@ -49,27 +54,31 @@ HRESULT CLevel_Loading::LateTick(_float fTimeDelta)
 
 	if (true == m_pLoader->Get_Finished())
 	{
-		CLevel* pNewLevel = nullptr;
-
-		switch (m_eNextLevel)
+		if (KEY_TAP(KEY::SPACE))
 		{
-		case LEVEL_LOGO:
-			pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
-			break;
-		case LEVEL_GAMEPLAY:
-			pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
-			break;
+			CLevel* pNewLevel = nullptr;
 
-		case LEVEL_TOOL:
-			pNewLevel = CLevel_Tool::Create(m_pDevice, m_pContext);
-			break;
+			switch (m_eNextLevel)
+			{
+			case LEVEL_LOGO:
+				pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL_GAMEPLAY:
+				pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+				break;
+
+			case LEVEL_TOOL:
+				pNewLevel = CLevel_Tool::Create(m_pDevice, m_pContext);
+				break;
+			}
+
+			if (nullptr == pNewLevel)
+				return E_FAIL;
+
+			if (FAILED(GAME_INSTANCE->Open_Level(m_eNextLevel, pNewLevel)))
+				return E_FAIL;
 		}
 
-		if (nullptr == pNewLevel)
-			return E_FAIL;
-
-		if (FAILED(GAME_INSTANCE->Open_Level(m_eNextLevel, pNewLevel)))
-			return E_FAIL;
 	}
 
 
@@ -83,6 +92,21 @@ HRESULT CLevel_Loading::Enter_Level()
 
 HRESULT CLevel_Loading::Exit_Level()
 {
+	return S_OK;
+}
+
+HRESULT CLevel_Loading::Ready_LoadingUI()
+{
+	
+	if (FAILED(GI->Add_GameObject(LEVEL_LOADING, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Loading_BackGround")))
+		return E_FAIL;
+
+	if (FAILED(GI->Add_GameObject(LEVEL_LOADING, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Loading_Anim")))
+		return E_FAIL;
+
+	if (FAILED(GI->Add_GameObject(LEVEL_LOADING, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Loading_Icon")))
+		return E_FAIL;
+
 	return S_OK;
 }
 

@@ -318,12 +318,12 @@ _float4x4 CGameInstance::Get_TransformFloat4x4(CPipeLine::TRANSFORMSTATE eTransf
 
 }
 
-_float4x4 CGameInstance::Get_TransformFloat4x4_TP(CPipeLine::TRANSFORMSTATE eTransformState) const
+_float4x4 CGameInstance::Get_TransformFloat4x4_TransPose(CPipeLine::TRANSFORMSTATE eTransformState) const
 {
 	if (nullptr == m_pPipeLine)
 		return _float4x4();
 
-	return m_pPipeLine->Get_TransformFloat4x4_TP(eTransformState);
+	return m_pPipeLine->Get_TransformFloat4x4_TransPose(eTransformState);
 }
 
 _float4 CGameInstance::Get_CamPosition()

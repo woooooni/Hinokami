@@ -29,6 +29,10 @@
 #include "UI_Logo_BackGround.h"
 #include "UI_Logo_SelectBase.h"
 #include "UI_NextFog.h"
+#include "UI_Loading_Background.h"
+#include "UI_Loading_Anim.h"
+#include "UI_Loading_Icon.h"
+
 
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -152,6 +156,8 @@ HRESULT CLoader::Loading_For_Level_Logo()
 		return E_FAIL;
 
 
+
+
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
 
@@ -175,8 +181,44 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
 
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
+		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
+		return E_FAIL;
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
+		CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
+
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sword_Zenitsu"),
+		CSword::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sword"), TEXT("Prototype_Component_Model_Sword_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sweath_Zenitsu"),
+		CSweath::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sweath"), TEXT("Prototype_Component_Model_Sweath_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Tanjiro"),
+		CTanjiro::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
+
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sword_Tanjiro"),
+		CSword::Create(m_pDevice, m_pContext, TEXT("Tanjiro_Sword"), TEXT("Prototype_Component_Model_Sword_Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sweath_Tanjiro"),
+		CSweath::Create(m_pDevice, m_pContext, TEXT("Tanjiro_Sweath"), TEXT("Prototype_Component_Model_Sweath_Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
+
 
 	m_strLoading = TEXT("모델을 로딩 중 입니다.");
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Weapon/")))
+		return E_FAIL;
+
+
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Tanjiro/")))
+		return E_FAIL;
 
 
 
@@ -239,8 +281,6 @@ HRESULT CLoader::Loading_For_Level_Tool()
 
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 	Loading_Proto_AllObjects(L"../Bin/Export/Map/");
-	if(FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/")))
-		return E_FAIL;
 	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Zenitsu/")))
 	//	return E_FAIL;
 

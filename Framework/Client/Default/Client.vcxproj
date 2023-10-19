@@ -209,6 +209,7 @@
     <ClInclude Include="..\Public\Protocol.pb.h" />
     <ClInclude Include="..\Public\ServerSession.h" />
     <ClInclude Include="..\Public\Network_Manager.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Idle.h" />
     <ClInclude Include="..\Public\Struct.pb.h" />
     <ClInclude Include="..\Public\Sweath.h" />
     <ClInclude Include="..\Public\Tanjiro.h" />
@@ -216,6 +217,9 @@
     <ClInclude Include="..\Public\tinyxml2.h" />
     <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\UI.h" />
+    <ClInclude Include="..\Public\UI_Loading_Anim.h" />
+    <ClInclude Include="..\Public\UI_Loading_Background.h" />
+    <ClInclude Include="..\Public\UI_Loading_Icon.h" />
     <ClInclude Include="..\Public\UI_Logo_BackGround.h" />
     <ClInclude Include="..\Public\UI_Logo_SelectBase.h" />
     <ClInclude Include="..\Public\UI_Logo_Title.h" />
@@ -287,6 +291,7 @@
     <ClCompile Include="..\Private\ServerSession.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\State_Tanjiro_Idle.cpp" />
     <ClCompile Include="..\Private\Struct.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
@@ -302,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tree.cpp" />
     <ClCompile Include="..\Private\UI.cpp" />
+    <ClCompile Include="..\Private\UI_Loading_Anim.cpp" />
+    <ClCompile Include="..\Private\UI_Loading_BackGround.cpp" />
+    <ClCompile Include="..\Private\UI_Loading_Icon.cpp" />
     <ClCompile Include="..\Private\UI_Logo_BackGround.cpp" />
     <ClCompile Include="..\Private\UI_Logo_SelectBase.cpp" />
     <ClCompile Include="..\Private\UI_Logo_Title.cpp" />

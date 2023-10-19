@@ -25,10 +25,11 @@ HRESULT CSweath::Initialize_Prototype(const wstring& strPrototypeModelName)
 
 HRESULT CSweath::Initialize(void* pArg)
 {
+	SWEATH_DESC* pWeaponDesc = nullptr;
 	if (nullptr != pArg)
 	{
-		SWEATH_DESC*		pWeaponDesc = (SWEATH_DESC*)pArg;
-		
+		pWeaponDesc = (SWEATH_DESC*)pArg;
+
 		m_pSocketBone = pWeaponDesc->pSocketBone;
 		Safe_AddRef(m_pSocketBone);
 
@@ -41,8 +42,20 @@ HRESULT CSweath::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+
+	if (pWeaponDesc != nullptr)
+	{
+		m_pTransformCom->Rotation(XMLoadFloat4(&pWeaponDesc->vRotationDir), XMConvertToRadians(pWeaponDesc->fRotationDegree));
+	}
+	else
+	{
+		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(178.f));
+	}
+	
+
+
 	/* 부모 소켓행렬을 기준으로 자식의 상태를 제어한다.  */
-	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.0f));
+	
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.7f, 0.f, 0.f, 1.f));
 
 	return S_OK;
@@ -118,9 +131,9 @@ HRESULT CSweath::Bind_ShaderResources()
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_ViewMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_ViewMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TransPose(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_ProjMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TP(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_ProjMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TransPose(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
 		return E_FAIL;
 
 

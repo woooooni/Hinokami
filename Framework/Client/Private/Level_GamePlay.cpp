@@ -122,23 +122,20 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, _uint(eLayerType), TEXT("Prototype_GameObject_Camera_Free"), &CameraDesc)))
 		return E_FAIL;
 
-	;
-
 	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 {
-	
-
-
-	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, _uint(eLayerType), TEXT("Prototype_GameObject_Player"))))
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Tanjiro"))))
 		return E_FAIL;
 
-
-	;
-
 	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Character(const LAYER_TYPE eLayerType)
+{
+	return E_NOTIMPL;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const LAYER_TYPE eLayerType)

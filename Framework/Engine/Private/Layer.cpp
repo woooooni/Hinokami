@@ -39,6 +39,12 @@ void CLayer::LateTick(_float fTimeDelta)
 	}
 }
 
+void CLayer::Clear()
+{
+	for (auto& iter : m_GameObjects)
+		Safe_Release(iter);
+}
+
 CGameObject* CLayer::Find_GameObject(const wstring& strObjectTag)
 {
 	READ_LOCK
