@@ -11,6 +11,7 @@ class CRenderer;
 class CTransform;
 class CPipeLine;
 class CStateMachine;
+class CNavigation;
 class CHierarchyNode;
 END
 
@@ -18,6 +19,7 @@ END
 BEGIN(Client)
 class CCharacter abstract : public CGameObject
 {
+
 public:
 #pragma region CHARACTER_STATES
 	enum STATE { STATE_IDLE, STATE_WALK, STATE_RUN, STATE_DASH, STATE_JUMP, STATE_ATTACK, STATE_SKILL, STATE_DAMAGED, STATE_KNOCKDOWN, STATE_DIE, STATE_END };
@@ -68,6 +70,7 @@ protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CTransform* m_pTransformCom = nullptr;
 	CModel* m_pModelCom = nullptr;
 	CStateMachine* m_pStateCom = nullptr;
+	CNavigation* m_pNavigation = nullptr;
 
 protected:
 	vector<CGameObject*>				m_Parts;

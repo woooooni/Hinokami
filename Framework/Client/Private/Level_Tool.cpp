@@ -75,7 +75,7 @@ HRESULT CLevel_Tool::Initialize()
 	m_pImGuiManager->Set_Terrain(pTerrain);
 
 
-	CGameObject* pTempCamera = GAME_INSTANCE->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_CAMERA), L"Main_Camera");
+	CGameObject* pTempCamera = GAME_INSTANCE->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_CAMERA), L"Free_Camera");
 	if (nullptr == pTempCamera)
 		return E_FAIL;
 

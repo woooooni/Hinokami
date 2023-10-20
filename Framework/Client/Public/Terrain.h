@@ -9,6 +9,7 @@ class CShader;
 class CTexture;
 class CRenderer;
 class CTransform;
+class CNavigation;
 class CVIBuffer_Terrain;
 END
 
@@ -27,6 +28,7 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
+	virtual void Priority_Tick(_float fTimeDelta) override;
 	virtual void Tick(_float fTimeDelta);
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
@@ -35,6 +37,7 @@ public:
 	CShader* Get_ShaderCom() { return m_pShaderCom; }
 	CTransform* Get_TransformCom() { return m_pTransformCom; }
 	CVIBuffer_Terrain* Get_TerrainBufferCom() { return m_pVIBufferCom; }
+
 
 #ifdef _DEBUG
 public:
@@ -55,6 +58,7 @@ private: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CTransform*				m_pTransformCom = { nullptr };
 	CShader*				m_pShaderCom = { nullptr };
 	CTexture*				m_pTextureCom = { nullptr };		
+	CNavigation*			m_pNavigationCom = { nullptr };
 	CVIBuffer_Terrain*		m_pVIBufferCom = { nullptr };
 
 

@@ -33,6 +33,7 @@ public:
 	HRESULT Clear_Layer(_uint iLevelIndex, const _uint iLayerType);
 
 public:
+	void Priority_Tick(_float fTimeDelta);
 	void Tick(_float fTimeDelta);
 	void LateTick(_float fTimeDelta);
 	void Clear(_uint iLevelIndex);

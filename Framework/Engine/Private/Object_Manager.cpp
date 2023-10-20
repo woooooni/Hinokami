@@ -170,6 +170,18 @@ HRESULT CObject_Manager::Clear_Layer(_uint iLevelIndex, const _uint iLayerType)
 	return S_OK;
 }
 
+void CObject_Manager::Priority_Tick(_float fTimeDelta)
+{
+
+	for (size_t i = 0; i < m_iNumLevels; i++)
+	{
+		for (auto& pLayer : m_pLayers[i])
+		{
+			pLayer->Priority_Tick(fTimeDelta);
+		}
+	}
+}
+
 void CObject_Manager::Tick(_float fTimeDelta)
 {
 	for (size_t i = 0; i < m_iNumLevels; i++)

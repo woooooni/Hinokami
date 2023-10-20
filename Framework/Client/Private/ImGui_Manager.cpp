@@ -67,6 +67,19 @@ HRESULT CImGui_Manager::Reserve_Manager(HWND hWnd, ID3D11Device* pDevice, ID3D11
     ImGui_ImplWin32_Init(g_hWnd);
     ImGui_ImplDX11_Init(pDevice, pContext);
 
+    m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pContext);
+    m_pEffect = new BasicEffect(m_pDevice);
+
+    m_pEffect->SetVertexColorEnabled(true);
+
+    const void* pShaderByteCodes = nullptr;
+    size_t			iLength = 0;
+
+    m_pEffect->GetVertexShaderBytecode(&pShaderByteCodes, &iLength);
+
+    if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderByteCodes, iLength, &m_pInputLayout)))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -128,11 +141,23 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
     ImGui::Checkbox("Effect", &m_bShowEffectWindow);
     ImGui::Checkbox("Map", &m_bShowMapWindow);
     ImGui::Checkbox("Terrain", &m_bShowTerrainWindow);
-  
+    ImGui::Checkbox("Navigation", &m_bShowNavigationWindow);
 
     if (m_bShowDemo)
         ImGui::ShowDemoWindow(&m_bShowDemo);
 
+    if (m_bShowNavigationWindow)
+    {
+        m_bShowDemo = false;
+        m_bShowModelWindow = false;
+        m_bShowEffectWindow = false;
+        m_bShowMapWindow = false;
+        m_bShowTerrainWindow = false;
+        m_bShowNavigationWindow = true;
+    }
+
+    if (m_bShowNavigationWindow)
+        Tick_NaviMesh_Tool(fTimeDelta);
 
     if (m_bShowModelWindow)
     {
@@ -1078,6 +1103,34 @@ void CImGui_Manager::Tick_Terrain_Tool(_float fTimeDelta)
     ImGui::End();
 }
 
+void CImGui_Manager::Tick_NaviMesh_Tool(_float fTimeDeleta)
+{
+    list<CGameObject*>& GameObjects = GI->Find_GameObjects(LEVEL_TOOL, LAYER_TYPE::LAYER_GROUND);
+
+    for (auto& pGameObject : GameObjects)
+    {
+        CTransform* pTransform;
+        pTransform = pGameObject->Get_Component(L"Com_Transform") == nullptr ? nullptr : dynamic_cast<CTransform*>(pGameObject->Get_Component(L"Com_Transform"));
+        if (nullptr == pTransform)
+            continue;
+
+        CGround* pGround = dynamic_cast<CGround*>(pGameObject);
+        if (nullptr == pGround)
+            continue;
+
+        const vector<CMesh*>& Meshes = pGround->Get_ModelCom()->Get_Meshes();
+        for (auto& pMesh : Meshes)
+        {
+            _float4 vWorldPos, vLocalPos;
+            if (CPicking_Manager::GetInstance()->Is_NaviPicking(pTransform, pMesh, &vWorldPos, &vLocalPos))
+            {
+                Draw_NaviPicking_Point(nullptr, XMLoadFloat4(&vWorldPos));
+                return;
+            }
+        }
+    }
+}
+
 HRESULT CImGui_Manager::Load_Map_Data(const wstring& strMapFileName)
 {
     wstring strMapFilePath = L"../Bin/Data/Map/" + strMapFileName + L"/" + strMapFileName + L".map";
@@ -1366,6 +1419,32 @@ void CImGui_Manager::PickingGroundObj()
 }
 
 
+
+void CImGui_Manager::Draw_NaviPicking_Point(CTransform* pTransform, _fvector vWorldPosition)
+{
+    m_pEffect->SetWorld(XMMatrixIdentity());
+    m_pEffect->SetView(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+    m_pEffect->SetProjection(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+
+
+    m_pEffect->Apply(m_pContext);
+
+    m_pContext->IASetInputLayout(m_pInputLayout);
+
+
+    m_pBatch->Begin();
+    DirectX::BoundingSphere tSphere;
+    ZeroMemory(&tSphere, sizeof(DirectX::BoundingSphere));
+    XMStoreFloat3(&tSphere.Center, vWorldPosition);
+    tSphere.Radius = 10.f;
+
+    DX::Draw(m_pBatch, tSphere);
+
+
+    m_pBatch->End();
+}
+
+
 void CImGui_Manager::Free()
 {
     Safe_Release(m_pDevice);
@@ -1382,4 +1461,5 @@ void CImGui_Manager::Free()
     ImGui::DestroyContext();
 
 }
+
 

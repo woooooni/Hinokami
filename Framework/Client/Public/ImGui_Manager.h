@@ -83,6 +83,7 @@ private:
 	void Tick_Effect_Tool(_float fTimeDelta);
 	void Tick_Map_Tool(_float fTimeDelta);
 	void Tick_Terrain_Tool(_float fTimeDelta);
+	void Tick_NaviMesh_Tool(_float fTimeDeleta);
 	
 private:
 	HRESULT Load_Map_Data(const wstring& strMapFileName);
@@ -96,7 +97,7 @@ private:
 private:
 	void PickingGroundObj();
 	void PickingTerrainObj();
-
+	void Draw_NaviPicking_Point(class CTransform* pTransform, _fvector vWorldPosition);
 
 private:
 	ID3D11Device* m_pDevice = nullptr;
@@ -109,12 +110,20 @@ private:
 	_bool m_bShowEffectWindow = false;
 	_bool m_bShowMapWindow = true;
 	_bool m_bShowTerrainWindow = true;
+	_bool m_bShowNavigationWindow = false;
 
 	_float m_fWindowAlpha = 1.f;
 
 	wstring m_strFilePath = TEXT("../Bin/Export/Zenitsu/");
 	wstring m_strFileName = TEXT("Zenitsu");
 	wstring m_strExportPath = TEXT("../Bin/Resources/Export/");
+
+
+private:
+	class PrimitiveBatch<VertexPositionColor>* m_pBatch = nullptr;
+	class BasicEffect* m_pEffect = nullptr;
+	ID3D11InputLayout* m_pInputLayout = nullptr;
+	_float4	m_vColor = _float4(0.f, 1.f, 0.f, 1.f);
 
 
 private:

@@ -39,14 +39,14 @@ void CState_Tanjiro_Run::Tick_State(_float fTimeDelta)
 	{
 		m_iCurrAnimIndex = m_AnimationIndices[1];
 		m_pModelCom->Set_AnimIndex(m_AnimationIndices[1]);
-		m_pTransformCom->Set_TickPerSecond(m_pTransformCom->Get_TickPerSecond() * 1.5f);
+		m_pTransformCom->Set_TickPerSecond(m_pTransformCom->Get_TickPerSecond() + 10.f);
 	}
 
 	if (KEY_AWAY(KEY::SHIFT))
 	{
-		m_iCurrAnimIndex = m_AnimationIndices[1];
-		m_pModelCom->Set_AnimIndex(m_AnimationIndices[1]);
-		m_pTransformCom->Set_TickPerSecond(m_pTransformCom->Get_TickPerSecond() * 0.5f);
+		m_iCurrAnimIndex = m_AnimationIndices[0];
+		m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
+		m_pTransformCom->Set_TickPerSecond(m_pTransformCom->Get_TickPerSecond() - 10.f);
 	}
 	
 	if (KEY_HOLD(KEY::W))

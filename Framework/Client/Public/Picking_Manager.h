@@ -21,7 +21,8 @@ public:
 	void	Tick(_float fTimeDelta);
 
 public:
-	_bool Is_Picking(class CTransform* pTransform, class CVIBuffer* pBuffer, _bool bCutPos, __out _float4* vOut);
+	_bool Is_Picking(class CTransform* pTransform, class CVIBuffer* pBuffer, _bool bCutPos, __out _float4* vWorldOut);
+	_bool Is_NaviPicking(class CTransform* pTransform, class CVIBuffer* pBuffer, __out _float4* pWorldOut = nullptr, __out _float4* pLocalPos = nullptr);
 
 private:
 	ID3D11Device* m_pDevice;

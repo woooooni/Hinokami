@@ -82,6 +82,8 @@ public: /* For.PipeLine */
 public:
 	KEY_STATE GetKeyState(KEY _eKey);
 	const POINT& GetMousePos();
+	void Lock_Mouse();
+	void UnLock_Mouse();
 
 public:
 	/* For. Model_Manager */

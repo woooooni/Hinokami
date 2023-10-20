@@ -81,6 +81,7 @@ void CGameInstance::Tick(_float fTimeDelta)
 {
 	m_pInput_Device->Update();
 	m_pKey_Manager->Tick(fTimeDelta);
+	m_pObject_Manager->Priority_Tick(fTimeDelta);
 	m_pObject_Manager->Tick(fTimeDelta);
 	m_pLevel_Manager->Tick(fTimeDelta);
   	m_pPipeLine->Tick();
@@ -358,6 +359,18 @@ KEY_STATE CGameInstance::GetKeyState(KEY _eKey)
 const POINT& CGameInstance::GetMousePos()
 {
 	return m_pKey_Manager->GetMousePos();
+}
+
+void CGameInstance::Lock_Mouse()
+{
+	ShowCursor(false);
+	m_pKey_Manager->Lock_Mouse();
+}
+
+void CGameInstance::UnLock_Mouse()
+{
+	ShowCursor(true);
+	m_pKey_Manager->UnLock_Mouse();
 }
 
 

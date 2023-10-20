@@ -193,6 +193,18 @@
     <Filter Include="02. Network\01. Network\SocketUtils">
       <UniqueIdentifier>{7198fa5b-0b50-4b6d-b8b2-a54a3813466f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utiltiy\03.Component\09. Navigation">
+      <UniqueIdentifier>{63fa899c-a352-4c9e-ae44-cae563367671}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\09. Navigation\Cell">
+      <UniqueIdentifier>{07a0569f-1716-46bc-8e6d-6d6dd3dc81a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Cell">
+      <UniqueIdentifier>{fba7d853-b41b-4c06-b300-2d6c58e531a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\09. Navigation\Cell\Shader">
+      <UniqueIdentifier>{10d80c0e-a39b-4547-bc29-ebf8c262ed23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -399,6 +411,15 @@
     <ClInclude Include="..\Public\RigidBody.h">
       <Filter>01.Utiltiy\03.Component\08. RigidBody</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Navigation.h">
+      <Filter>01.Utiltiy\03.Component\09. Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Cell.h">
+      <Filter>01.Utiltiy\03.Component\09. Navigation\Cell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Cell.h">
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Cell</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -587,5 +608,19 @@
     <ClCompile Include="..\Public\RigidBody.cpp">
       <Filter>01.Utiltiy\03.Component\08. RigidBody</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Navigation.cpp">
+      <Filter>01.Utiltiy\03.Component\09. Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Cell.cpp">
+      <Filter>01.Utiltiy\03.Component\09. Navigation\Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Cell.cpp">
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Cell</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
+      <Filter>01.Utiltiy\03.Component\09. Navigation\Cell\Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

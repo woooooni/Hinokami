@@ -9,10 +9,7 @@
 
 
 #include "Tanjiro.h"
-#include "Nezko.h"
 #include "Zenitsu.h"
-#include "Kyojuro.h"
-#include "Giyu.h"
 #include "Sweath.h"
 #include "Sword.h"
 
@@ -185,12 +182,14 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
-		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
+		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Free_Camera")), LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
 
-	/*if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Main"),
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Main"),
 		CCamera_Main::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
-		return E_FAIL;*/
+		return E_FAIL;
+
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
 		CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
@@ -262,7 +261,11 @@ HRESULT CLoader::Loading_For_Level_Tool()
 
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
-		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
+		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Free_Camera")), LAYER_TYPE::LAYER_CAMERA)))
+		return E_FAIL;
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Main"),
+		CCamera_Main::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Dummy"),
@@ -303,7 +306,7 @@ HRESULT CLoader::Loading_For_Level_Tool()
 
 HRESULT CLoader::Load_Map_Data(const wstring& strMapFileName)
 {
-	wstring strMapFilePath = L"../Bin/Data/Map/" + strMapFileName + L"/" + strMapFileName + L".map";
+	wstring strMapFilePath = L"../Bin/DataFiles/Map/" + strMapFileName + L"/" + strMapFileName + L".map";
 
 	shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
 	File->Open(strMapFilePath, FileMode::Read);

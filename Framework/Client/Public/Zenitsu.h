@@ -4,6 +4,7 @@
 BEGIN(Client)
 class CZenitsu final : public CCharacter
 {
+
 private:
 	CZenitsu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
 	CZenitsu(const CZenitsu& rhs);

@@ -50,16 +50,12 @@ HRESULT CSword::Initialize(void* pArg)
 	if (pWeaponDesc != nullptr)
 	{
 		// m_pTransformCom->Rotation(XMLoadFloat4(&pWeaponDesc->vRotationDir), XMConvertToRadians(pWeaponDesc->fRotationDegree));
-		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(0.f));
-		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-90.f));
-		m_pTransformCom->Rotation_Acc(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(180.f));
-		
-		
+		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(pWeaponDesc->vRotationDegree.y));
+		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(pWeaponDesc->vRotationDegree.z));
+		m_pTransformCom->Rotation_Acc(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(pWeaponDesc->vRotationDegree.x));
 	}
 	else
-	{
-		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.0f));
-	}
+		return E_FAIL;
 
 	return S_OK;
 }

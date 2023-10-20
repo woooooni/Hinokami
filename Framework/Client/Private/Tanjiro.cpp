@@ -212,8 +212,7 @@ HRESULT CTanjiro::Ready_Parts()
 
 	SwordDesc.pParentTransform = m_pTransformCom;
 	SwordDesc.pSocketBone = m_Sockets[SOCKET_SWORD];
-	XMStoreFloat4(&SwordDesc.vRotationDir, XMVectorSet(0.f, 1.f, 0.f, 0.f));
-	SwordDesc.fRotationDegree = 180.f;
+	XMStoreFloat3(&SwordDesc.vRotationDegree, XMVectorSet(180.f, 0.f, -90.f, 0.f));
 
 	XMStoreFloat4x4(&SwordDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 

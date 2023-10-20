@@ -4,6 +4,7 @@
 #include "GameObject.h"
 
 
+
 BEGIN(Client)
 class CPlayer final : public CGameObject
 {

@@ -40,12 +40,6 @@
     <Filter Include="02.GameObjects\Logo">
       <UniqueIdentifier>{93a319e0-2584-42f0-a95b-75033f74c5ae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. State">
-      <UniqueIdentifier>{35062dd5-e235-43a2-a38d-3e4b2f7300b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. State\Character">
-      <UniqueIdentifier>{96b97e03-5b05-4aa0-885c-f7e365a5268d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="96. Manager\ImGui\Libs\Docking">
       <UniqueIdentifier>{9f636762-d842-4778-89d0-4c71d473c2af}</UniqueIdentifier>
     </Filter>
@@ -66,15 +60,6 @@
     </Filter>
     <Filter Include="02.GameObjects\03. Character\00. Tanjiro">
       <UniqueIdentifier>{507885f5-cfcd-484d-a4f5-ff0c17446477}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Character\01. Nezko">
-      <UniqueIdentifier>{c6df1f2e-e957-4679-a2b2-50efdbeddd66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Character\02. Zenitsu">
-      <UniqueIdentifier>{07bef7e3-df50-4b6a-a898-5325e137510e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Character\03. Kyojuro">
-      <UniqueIdentifier>{2589e047-34fe-4253-8753-f2d83685afd5}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\03. Character\99. Dummy">
       <UniqueIdentifier>{3b5162f8-31c0-4401-b6d0-d22ac970a862}</UniqueIdentifier>
@@ -127,9 +112,6 @@
     <Filter Include="02.GameObjects\10. Ground">
       <UniqueIdentifier>{ffba9ea1-f7fd-46c7-960e-8ca4fdb9d88d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03. Character\04. Giyu">
-      <UniqueIdentifier>{471c5856-a3a8-4243-9e9f-b94b15ad18d7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\03. Character\98.Parts">
       <UniqueIdentifier>{52f54d3c-6963-4c9f-9c46-c47469ad2a56}</UniqueIdentifier>
     </Filter>
@@ -147,24 +129,6 @@
     </Filter>
     <Filter Include="02.GameObjects\03. Character\00. Tanjiro\State">
       <UniqueIdentifier>{5097757d-7b4e-4f9a-9127-3a36faf202b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Character\01. Nezko\State">
-      <UniqueIdentifier>{ae63a40b-6026-466a-9a02-edd457af687a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Character\02. Zenitsu\State">
-      <UniqueIdentifier>{3a839662-c994-4617-bb01-d8fb92f03cac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Character\03. Kyojuro\State">
-      <UniqueIdentifier>{16a2df13-afd4-40ca-8702-7b1af0647c8b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Character\04. Giyu\State">
-      <UniqueIdentifier>{ae1fad44-ee8b-43cd-8d81-fd5a88155b0b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Character\05. Akaza">
-      <UniqueIdentifier>{206f58f4-1b02-40c5-8fb4-9ffd4e564fb7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Character\06.">
-      <UniqueIdentifier>{b28f57f0-94be-42f2-ab85-fac5dcaae447}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\98. UI\01. Loading">
       <UniqueIdentifier>{f71f4672-e277-4fd6-af61-bf2ad0348021}</UniqueIdentifier>
@@ -196,8 +160,11 @@
     <Filter Include="02.GameObjects\98. UI\01. Loading\Loading_Icon">
       <UniqueIdentifier>{a069e8ad-7410-4c40-ac72-9351e4a4ade8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. State\Character\Tanjiro">
-      <UniqueIdentifier>{f409b020-3b6e-45f4-ba20-701e27ecafcb}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\03. Character\01. Zenitsu">
+      <UniqueIdentifier>{07bef7e3-df50-4b6a-a898-5325e137510e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\01. Zenitsu\State">
+      <UniqueIdentifier>{3a839662-c994-4617-bb01-d8fb92f03cac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -255,17 +222,8 @@
     <ClInclude Include="..\Public\Tanjiro.h">
       <Filter>02.GameObjects\03. Character\00. Tanjiro</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Nezko.h">
-      <Filter>02.GameObjects\03. Character\01. Nezko</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Zenitsu.h">
-      <Filter>02.GameObjects\03. Character\02. Zenitsu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Kyojuro.h">
-      <Filter>02.GameObjects\03. Character\03. Kyojuro</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Giyu.h">
-      <Filter>02.GameObjects\03. Character\04. Giyu</Filter>
+      <Filter>02.GameObjects\03. Character\01. Zenitsu</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Dummy.h">
       <Filter>02.GameObjects\03. Character\99. Dummy</Filter>
@@ -393,6 +351,9 @@
     <ClInclude Include="..\Public\State_Tanjiro_Attack.h">
       <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_Tanjiro_Jump.h">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -437,17 +398,8 @@
     <ClCompile Include="..\Private\Tanjiro.cpp">
       <Filter>02.GameObjects\03. Character\00. Tanjiro</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Nezko.cpp">
-      <Filter>02.GameObjects\03. Character\01. Nezko</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Zenitsu.cpp">
-      <Filter>02.GameObjects\03. Character\02. Zenitsu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Kyojuro.cpp">
-      <Filter>02.GameObjects\03. Character\03. Kyojuro</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Giyu.cpp">
-      <Filter>02.GameObjects\03. Character\04. Giyu</Filter>
+      <Filter>02.GameObjects\03. Character\01. Zenitsu</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Dummy.cpp">
       <Filter>02.GameObjects\03. Character\99. Dummy</Filter>
@@ -570,6 +522,9 @@
       <Filter>02.GameObjects\02. Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Tanjiro_Attack.cpp">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Tanjiro_Jump.cpp">
       <Filter>02.GameObjects\03. Character\00. Tanjiro\State</Filter>
     </ClCompile>
   </ItemGroup>

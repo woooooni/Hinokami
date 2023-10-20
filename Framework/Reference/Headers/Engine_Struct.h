@@ -78,7 +78,19 @@ namespace Engine
 	{
 		static const unsigned int iNumElements = 2;
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
-	}VTXPOINT_DECLARATION;
+	} VTXPOINT_DECLARATION;
+
+
+	typedef struct tagVertexPoistion
+	{
+		XMFLOAT3			vPosition;
+	} VTXPOS;
+
+	typedef struct ENGINE_DLL tagVertex_Position_Declaration
+	{
+		static const unsigned int				iNumElements = 1;
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
+	} VTXPOS_DECLARATION;
 
 
 	typedef struct tagVertexTexture

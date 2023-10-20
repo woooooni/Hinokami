@@ -31,6 +31,10 @@ public:
 	KEY_STATE GetKeyState(KEY _eKey) { return m_vecKey[(int)_eKey].eState; }
 	const POINT& GetMousePos() { return m_tMousePos; }
 
+public:
+	void Lock_Mouse() { m_bLockMouse = true; }
+	void UnLock_Mouse() { m_bLockMouse = false; }
+	
 private:
 	vector<KEY_INFO> m_vecKey;
 
@@ -40,6 +44,7 @@ private:
 	ID3D11DeviceContext* m_pContext = nullptr;
 
 	POINT m_tMousePos;
+	_bool m_bLockMouse = false;
 public:
 	virtual void Free() override;
 };

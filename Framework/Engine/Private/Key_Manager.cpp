@@ -104,6 +104,12 @@ void CKey_Manager::Tick(_float fTimeDelta)
 
 	GetCursorPos(&m_tMousePos);
 	ScreenToClient(m_hWnd, &m_tMousePos);
+
+	if (m_bLockMouse)
+	{
+		m_tMousePos.x = 1600.f / 2.f;
+		m_tMousePos.y = 900.f / 2.f;
+	}
 }
 
 

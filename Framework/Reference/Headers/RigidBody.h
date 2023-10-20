@@ -1,7 +1,11 @@
 #pragma once
 #include "Component.h"
-class CRigidBody :
-    public CComponent
+
+
+
+BEGIN(Engine)
+
+class ENGINE_DLL CRigidBody : public CComponent
 {
 private:
     CRigidBody(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -14,6 +18,9 @@ public:
 
     _bool Is_Gravity() { return m_bIsGravity; }
 
+    _bool Is_Ground() { return m_bIsGround; }
+    void Set_Ground(_bool bGround) { m_bIsGround = bGround; }
+
 
 
 private:
@@ -21,6 +28,7 @@ private:
     _float3 m_vVelocity = { 0.f, 0.f, 0.f };
     _float3 m_vFriction = { 0.f, 0.f, 0.f };
 
+    _bool m_bIsGround = true;
     _bool m_bIsGravity = true;
 
 public:
@@ -29,4 +37,4 @@ public:
     virtual void Free() override;
 
 };
-
+END

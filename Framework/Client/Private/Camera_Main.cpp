@@ -38,33 +38,53 @@ HRESULT CCamera_Main::Initialize(void * pArg)
 void CCamera_Main::Tick(_float fTimeDelta)
 {
 	
-	_vector vCameraRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	_vector vCameraUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	_vector vCameraLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-	_vector vCameraPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
 	_long	MouseMove = 0;
 
 
+	if (MouseMove = GI->Get_DIMMoveState(DIMM_Y))
+	{
+		m_vAngle.x += MouseMove * fTimeDelta * 2.f;
+		if (360.f <= m_vAngle.x)
+			m_vAngle.x = 0.f;
+		else if (0.f >= m_vAngle.x)
+			m_vAngle.x = 360.f;
+	}
 
-	//MouseMove = 0;
-	//if (MouseMove = GI->Get_DIMMoveState(DIMM_Y))
-	//{
-	//	_float fMoveDir = clamp(_float(MouseMove), -1.f, 1.f);
-	//	m_pTransformCom->Rotation_Acc(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fMoveDir * fTimeDelta);
-	//}
-
-
-
-	
-
-	
-
+	if (MouseMove = GI->Get_DIMMoveState(DIMM_X))
+	{
+		m_vAngle.y += MouseMove * fTimeDelta * 2.f;
+		if (360.f <= m_vAngle.y)
+			m_vAngle.y = 0.f;
+		else if (0.f >= m_vAngle.y)
+			m_vAngle.y = 360.f;
+	}
 	__super::Tick(fTimeDelta);
 }
 
 void CCamera_Main::LateTick(_float fTimeDelta)
 {
+	// x, y 회전 행렬
+	_matrix mX = XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(m_vAngle.x));
+	_matrix mY = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_vAngle.y));
+
+	// 멀어질 방향
+	_vector vCamDir = XMVector3Normalize(XMVectorSet(0.f, 1.f, -1.f, 0.f));
+
+	// X, Y회전
+	vCamDir = XMVector3TransformNormal(vCamDir, mX);
+	vCamDir = XMVector3TransformNormal(vCamDir, mY);
+	_vector vCamPos = vCamDir * m_fOffsetDistance;
+
+	_vector vPlayerPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vDestPos = vPlayerPos + vCamPos;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), vDestPos, m_fCamSpeed * fTimeDelta));
+
+	_float4 vLookAt; 
+	XMStoreFloat4(&vLookAt, vPlayerPos);
+	vLookAt.y + 1.f;
+	m_pTransformCom->LookAt(XMLoadFloat4(&vLookAt));
+
 	__super::LateTick(fTimeDelta);
 }
 

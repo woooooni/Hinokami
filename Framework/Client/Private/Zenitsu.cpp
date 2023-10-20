@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "Zenitsu.h"
 #include "GameInstance.h"
 #include "HierarchyNode.h"
 #include "Sword.h"
 #include "Sweath.h"
+#include "Zenitsu.h"
 
 USING(Client)
 
@@ -51,6 +51,7 @@ HRESULT CZenitsu::Initialize(void* pArg)
 void CZenitsu::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+	m_pStateCom->Tick_State(fTimeDelta);
 }
 
 void CZenitsu::LateTick(_float fTimeDelta)
@@ -87,7 +88,7 @@ HRESULT CZenitsu::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Zenitsu"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Tanjiro"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_StateMachine"), TEXT("Com_StateMachine"), (CComponent**)&m_pStateCom)))
@@ -98,6 +99,76 @@ HRESULT CZenitsu::Ready_Components()
 
 HRESULT CZenitsu::Ready_States()
 {
+	//list<wstring> strAnimationName;
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseNut01_1");
+	//m_pStateCom->Add_State(CCharacter::STATE_IDLE, CState_Tanjiro_Idle::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
+
+
+
+
+	//strAnimationName.clear();
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseRun01_1");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseDashF01_1");
+	//m_pStateCom->Add_State(CCharacter::STATE_RUN,
+	//	CState_Tanjiro_Run::Create(m_pDevice,
+	//		m_pContext,
+	//		m_pTransformCom,
+	//		m_pStateCom,
+	//		m_pModelCom,
+	//		strAnimationName));
+
+
+	//strAnimationName.clear();
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Death");
+
+
+	//m_pStateCom->Add_State(CCharacter::STATE_DIE,
+	//	CState_Tanjiro_Dead::Create(m_pDevice,
+	//		m_pContext,
+	//		m_pTransformCom,
+	//		m_pStateCom,
+	//		m_pModelCom,
+	//		strAnimationName));
+
+	//strAnimationName.clear();
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_B");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_F");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_L");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_R");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_U");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_B");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_F");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_L");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_R");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_U");
+
+	//m_pStateCom->Add_State(CCharacter::STATE_DAMAGED,
+	//	CState_Tanjiro_Damaged::Create(m_pDevice,
+	//		m_pContext,
+	//		m_pTransformCom,
+	//		m_pStateCom,
+	//		m_pModelCom,
+	//		strAnimationName));
+
+	//strAnimationName.clear();
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW01");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW02");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW03");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW03D01");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW03U01");
+	//strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW04");
+
+	//m_pStateCom->Add_State(CCharacter::STATE_ATTACK,
+	//	CState_Tanjiro_Attack::Create(m_pDevice,
+	//		m_pContext,
+	//		m_pTransformCom,
+	//		m_pStateCom,
+	//		m_pModelCom,
+	//		strAnimationName));
+
+
+
+	// m_pStateCom->Change_State(CCharacter::STATE_IDLE);
 	return S_OK;
 }
 
@@ -120,11 +191,12 @@ HRESULT CZenitsu::Ready_Parts()
 	CSweath::SWEATH_DESC			SweathDesc;
 	SweathDesc.pParentTransform = m_pTransformCom;
 	SweathDesc.pSocketBone = m_Sockets[SOCKET_SWEATH];
-	XMStoreFloat4(&SweathDesc.vRotationDir, XMVectorSet(0.f, 1.f, 0.f, 0.f));
-	SweathDesc.fRotationDegree = 180.f;
+	XMStoreFloat4(&SweathDesc.vRotationDir, XMVectorSet(1.f, 0.f, 0.f, 0.f));
+	SweathDesc.fRotationDegree = -90.f;
+
 	XMStoreFloat4x4(&SweathDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 
-	CGameObject* pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sweath_Zenitsu"), LAYER_TYPE::LAYER_CHARACTER, &SweathDesc);
+	CGameObject* pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sweath_Tanjiro"), LAYER_TYPE::LAYER_CHARACTER, &SweathDesc);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
@@ -135,9 +207,12 @@ HRESULT CZenitsu::Ready_Parts()
 
 	SwordDesc.pParentTransform = m_pTransformCom;
 	SwordDesc.pSocketBone = m_Sockets[SOCKET_SWORD];
+	XMStoreFloat3(&SwordDesc.vRotationDegree, XMVectorSet(180.f, 0.f, -90.f, 0.f));
+
 	XMStoreFloat4x4(&SwordDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 
-	pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sword_Zenitsu"), LAYER_TYPE::LAYER_CHARACTER, &SwordDesc);
+
+	pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sword_Tanjiro"), LAYER_TYPE::LAYER_CHARACTER, &SwordDesc);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 

@@ -42,8 +42,16 @@ HRESULT CTerrain::Initialize(void* pArg)
 {
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
+
+	
 	// m_pTransformCom->Set_Scale(XMVectorSet(1.f, 30.f, 30.f, 1.f));
 	return S_OK;
+}
+
+void CTerrain::Priority_Tick(_float fTimeDelta)
+{
+	m_pNavigationCom->Update(m_pTransformCom->Get_WorldMatrix());
+
 }
 
 void CTerrain::Tick(_float fTimeDelta)
@@ -91,6 +99,9 @@ HRESULT CTerrain::Render()
 
 		m_pBatch->End();
 	}
+
+	if (FAILED(m_pNavigationCom->Render()))
+		return E_FAIL;
 	
 #endif
 
@@ -119,6 +130,13 @@ HRESULT CTerrain::Ready_Components()
 	//if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Terrain"),
 	//	TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 	//	return E_FAIL;
+
+
+
+	/* Com_Navigation */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), (CComponent**)&m_pNavigationCom)))
+		return E_FAIL;
 
 	/* Com_Transform */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),

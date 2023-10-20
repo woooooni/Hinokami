@@ -6,7 +6,7 @@
 #include "Texture.h"
 #include "Model.h"
 #include "Shader.h"
-#include "StateMachine.h"
+#include "Navigation.h"
 #include "StateMachine.h"
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Terrain.h"
