@@ -22,7 +22,7 @@ public:
 
 public:
 	_bool Is_Picking(class CTransform* pTransform, class CVIBuffer* pBuffer, _bool bCutPos, __out _float4* vWorldOut);
-	_bool Is_NaviPicking(class CTransform* pTransform, class CVIBuffer* pBuffer, __out _float4* pWorldOut = nullptr, __out _float4* pLocalPos = nullptr);
+	_bool Is_NaviPicking(class CTransform* pTransform, class CVIBuffer* pBuffer, __out _float3* pWorldOut = nullptr, __out _float3* pLocalPos = nullptr);
 
 private:
 	ID3D11Device* m_pDevice;

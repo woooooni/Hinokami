@@ -144,19 +144,16 @@ _float CNavigation::Compute_Height(_vector vPosition)
 	return (-fa * fx - fc * fz - fd) / fb;
 }
 
-HRESULT CNavigation::Create_Cell(const _float3* vWorldPoints, const _matrix InverseWorldMatrix)
+HRESULT CNavigation::Create_Cell(const _float3* vLocalPoints)
 {
-	vector<_float3> LocalPoints;
 	vector<_float3> LocalPointsCW;
 	for (_uint i = 0; i < CCell::POINTS::POINT_END; ++i)
 	{
-		_float3 vLocalPoint;
-		XMStoreFloat3(&vLocalPoint, XMVectorSetW(XMVector3TransformCoord(XMLoadFloat3(&vWorldPoints[i]), InverseWorldMatrix), 1.f));
-		LocalPoints.push_back(vLocalPoint);
+		LocalPointsCW.push_back(vLocalPoints[i]);
 	}
 
-	if (0 < Compute_CW(LocalPoints[0], LocalPoints[1], LocalPoints[2]))
-		swap(LocalPoints[1], LocalPoints[2]);
+	if (0 < Compute_CW(LocalPointsCW[0], LocalPointsCW[1], LocalPointsCW[2]))
+		swap(LocalPointsCW[1], LocalPointsCW[2]);
 
 
 	CCell* pNewCell = CCell::Create(m_pDevice, m_pContext, LocalPointsCW.data(), m_Cells.size());

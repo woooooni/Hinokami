@@ -105,7 +105,7 @@ _bool CPicking_Manager::Is_Picking(CTransform* pTransform, CVIBuffer* pBuffer, _
 	return fMinDistance < 999999.f;
 }
 
-_bool CPicking_Manager::Is_NaviPicking(CTransform* pTransform, CVIBuffer* pBuffer, _float4* pWorldOut, _float4* pLocalPos)
+_bool CPicking_Manager::Is_NaviPicking(CTransform* pTransform, CVIBuffer* pBuffer, _float3* pWorldOut, _float3* pLocalPos)
 {
 	if (nullptr == pTransform)
 		return false;
@@ -151,18 +151,19 @@ _bool CPicking_Manager::Is_NaviPicking(CTransform* pTransform, CVIBuffer* pBuffe
 
 	for (_uint i = 0; i < Indices.size(); ++i)
 	{
-		_vector v0, v1, v2;
-		v0 = XMVectorSet(Vertices[Indices[i]._0].x, Vertices[Indices[i]._0].y, Vertices[Indices[i]._0].z, 1.f);
-		v1 = XMVectorSet(Vertices[Indices[i]._1].x, Vertices[Indices[i]._1].y, Vertices[Indices[i]._1].z, 1.f);
-		v2 = XMVectorSet(Vertices[Indices[i]._2].x, Vertices[Indices[i]._2].y, Vertices[Indices[i]._2].z, 1.f);
+		_vector vA, vB, vC;
+		vA = XMVectorSet(Vertices[Indices[i]._0].x, Vertices[Indices[i]._0].y, Vertices[Indices[i]._0].z, 1.f);
+		vB = XMVectorSet(Vertices[Indices[i]._1].x, Vertices[Indices[i]._1].y, Vertices[Indices[i]._1].z, 1.f);
+		vC = XMVectorSet(Vertices[Indices[i]._2].x, Vertices[Indices[i]._2].y, Vertices[Indices[i]._2].z, 1.f);
 
-		if (true == TriangleTests::Intersects(vRayPosition, vRayDir, v0, v1, v2, fDistnace))
+		if (true == TriangleTests::Intersects(vRayPosition, vRayDir, vA, vB, vC, fDistnace))
 		{
 			if (fDistnace < fMinDistance)
 			{	
-				_float fAPointDist = XMVectorGetX(XMVector3Length(v0 - vRayPosition));
-				_float fBPointDist = XMVectorGetX(XMVector3Length(v1 - vRayPosition));
-				_float fCPointDist = XMVectorGetX(XMVector3Length(v2 - vRayPosition));
+				
+				_float fAPointDist = XMVectorGetX(XMVector3Length(vA - vRayPosition));
+				_float fBPointDist = XMVectorGetX(XMVector3Length(vB - vRayPosition));
+				_float fCPointDist = XMVectorGetX(XMVector3Length(vC - vRayPosition));
 				
 				if (pLocalPos != nullptr)
 				{
@@ -170,32 +171,28 @@ _bool CPicking_Manager::Is_NaviPicking(CTransform* pTransform, CVIBuffer* pBuffe
 					if (fAPointDist >= fBPointDist)
 					{
 						// A > B
-						vNearBufferPosition = v1;
+						vNearBufferPosition = vA;
 
 						// B > C
 						if (fCPointDist <= fBPointDist)
-							vNearBufferPosition = v2;
+							vNearBufferPosition = vB;
 					}
 					else
 					{
 						// A < B
-						vNearBufferPosition = v0;
+						vNearBufferPosition = vC;
 
 						// C < A
 						if (fCPointDist <= fAPointDist)
-							vNearBufferPosition = v2;
+							vNearBufferPosition = vB;
 					}
 
-					XMStoreFloat4(pLocalPos, vNearBufferPosition);
+					XMStoreFloat3(pLocalPos, vNearBufferPosition);
 
 					if (pWorldOut != nullptr)
-						XMStoreFloat4(pWorldOut, XMVector3TransformCoord(vNearBufferPosition, pTransform->Get_WorldMatrix()));
-
-					return true;
+						XMStoreFloat3(pWorldOut, XMVector3TransformCoord(vNearBufferPosition, pTransform->Get_WorldMatrix()));
 				}
-
-				
-				return true;
+				fMinDistance = fDistnace;
 			}
 		}
 	}

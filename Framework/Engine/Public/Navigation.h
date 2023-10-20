@@ -25,7 +25,7 @@ public:
 	_float Compute_Height(_vector vPosition);
 
 public:
-	HRESULT Create_Cell(const _float3* pPoints, const _matrix InverseWorldMatrix);
+	HRESULT Create_Cell(const _float3* pPoints);
 
 #ifdef _DEBUG
 public:

@@ -97,12 +97,13 @@ private:
 private:
 	void PickingGroundObj();
 	void PickingTerrainObj();
-	void Draw_NaviPicking_Point(class CTransform* pTransform, _fvector vWorldPosition);
+	void Draw_NaviPicking_Point();
 
 private:
 	ID3D11Device* m_pDevice = nullptr;
 	ID3D11DeviceContext* m_pContext = nullptr;
 	HWND m_hWnd = nullptr;
+
 
 private:
 	_bool m_bShowDemo = true;
@@ -120,10 +121,20 @@ private:
 
 
 private:
+	// For NavigationRender
 	class PrimitiveBatch<VertexPositionColor>* m_pBatch = nullptr;
 	class BasicEffect* m_pEffect = nullptr;
 	ID3D11InputLayout* m_pInputLayout = nullptr;
 	_float4	m_vColor = _float4(0.f, 1.f, 0.f, 1.f);
+	_float3 m_vNaviPickingWorldPos = _float3(0.f, 0.f, 0.f);
+
+
+private:
+	vector<_float3> m_vLocalPickedNaviPos;
+	vector<_float3> m_vWorldPickedNaviPos;
+
+
+
 
 
 private:
