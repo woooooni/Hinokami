@@ -1,4 +1,4 @@
-#include "stdafx.h"
+Ôªø#include "stdafx.h"
 #include "ImGui_Manager.h"
 #include "GameInstance.h"
 #include "Animation.h"
@@ -17,6 +17,7 @@
 #include "Effect.h"
 #include <filesystem>
 #include "tinyxml2.h"
+
 
 USING(Client)
 IMPLEMENT_SINGLETON(CImGui_Manager)
@@ -205,7 +206,7 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
             char szListBoxLable[MAX_PATH] = "##ListBox";
             strcat_s(szListBoxLable, STR_LAYER_NAME[i]);
 
-            if (ImGui::BeginListBox(szListBoxLable, ImVec2(300, 0)))
+            if (ImGui::BeginListBox(szListBoxLable, ImVec2(500, 0)))
             {
                 _uint iIdx = 0;
                 for (auto& Object : GameObjects)
@@ -223,8 +224,8 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
                         m_pTarget = Object;
                         if (ImGui::IsMouseDoubleClicked(0))
                         {
-                            CTransform* pCameraTransform = dynamic_cast<CTransform*>(m_pCamera->Get_Component(L"Com_Transform"));
-                            CTransform* pTargetTransform = dynamic_cast<CTransform*>(m_pTarget->Get_Component(L"Com_Transform"));
+                            CTransform* pCameraTransform = m_pCamera->Get_Component<CTransform>(L"Com_Transform");
+                            CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>(L"Com_Transform");
                             
                             _float4 vObjectPosition;
                             XMStoreFloat4(&vObjectPosition, pTargetTransform->Get_State(CTransform::STATE::STATE_POSITION));
@@ -239,9 +240,23 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
                             vObjectPosition.z += 10.f;
                             pCameraTransform->LookAt(XMLoadFloat4(&vObjectPosition));
                         }
-
-                       
                     }
+
+                    IMGUI_SAME_LINE;
+                    if (Object->Is_NaviObject())
+                    {
+                        if (ImGui::ColorButton("##Navi_ObjectDeselectbutton", ImVec4(0.f, 1.f, 0.f, 1.f)))
+                            Object->Set_NaviObject(false);
+                    }
+                    else
+                    {
+                        if (ImGui::ColorButton("##Navi_ObjectSelectbutton", ImVec4(1.f, 0.f, 0.f, 1.f)))
+                            Object->Set_NaviObject(true);
+                    }
+
+                    
+                    
+
                     iIdx++;
                 }
 
@@ -314,7 +329,7 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
         }
 
 
-        CTransform* pTransform = dynamic_cast<CTransform*>(m_pTarget->Get_Component(L"Com_Transform"));
+        CTransform* pTransform = m_pTarget->Get_Component<CTransform>(L"Com_Transform");
         if (nullptr == pTransform)
         {
             ImGui::End();
@@ -444,7 +459,7 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
                 if (iSelectedImportModelType != -1)
                     m_pDummy->Ready_ModelCom(iSelectedImportModelType, m_strFilePath, m_strFileName);
                 else
-                    MSG_BOX("∏µ® ≈∏¿‘¿ª º±≈√«ÿ¡÷ººø‰");
+                    MSG_BOX("Î™®Îç∏ ÌÉÄÏûÖÏùÑ ÏÑ†ÌÉùÌï¥Ï£ºÏÑ∏Ïöî");
                 
             }
         }
@@ -503,7 +518,7 @@ void CImGui_Manager::Tick_Model_Tool(_float fTimeDelta)
                 }
                 else
                 {
-                    MSG_BOX("∆˙¥ı ∞Ê∑Œ »§¿∫ ∏µ® ≈∏¿‘ ¡ˆ¡§¿ª »Æ¿Œ«œººø‰.");
+                    MSG_BOX("Ìè¥Îçî Í≤ΩÎ°ú ÌòπÏùÄ Î™®Îç∏ ÌÉÄÏûÖ ÏßÄÏ†ïÏùÑ ÌôïÏù∏ÌïòÏÑ∏Ïöî.");
                 }
             }
         }
@@ -685,7 +700,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
     {
         if (iSelecetedEffectType < 0)
         {
-            MSG_BOX("¿Ã∆Â∆Æ ≈∏¿‘¿ª º≥¡§«œººø‰.");
+            MSG_BOX("Ïù¥ÌéôÌä∏ ÌÉÄÏûÖÏùÑ ÏÑ§Ï†ïÌïòÏÑ∏Ïöî.");
             ImGui::End();
             return;
         }
@@ -693,7 +708,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         if (iSelecetedEffectType == CEffect::EFFECT_TYPE::EFFECT_MESH
             && 0 == strcmp(szEffectModelName, ""))
         {
-            MSG_BOX("∏µ® ¿Ã∆Â∆Æ¥¬ «¡∑Œ≈‰ ≈∏¿‘¿ª º±≈√ «ÿæﬂ«’¥œ¥Ÿ.");
+            MSG_BOX("Î™®Îç∏ Ïù¥ÌéôÌä∏Îäî ÌîÑÎ°úÌÜ† ÌÉÄÏûÖÏùÑ ÏÑ†ÌÉù Ìï¥ÏïºÌï©ÎãàÎã§.");
             ImGui::End();
             return;
         }
@@ -710,7 +725,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
         if (nullptr == m_pPrevEffect)
         {
-            MSG_BOX("¿Ã∆Â∆Æ ª˝º∫ Ω«∆–.");
+            MSG_BOX("Ïù¥ÌéôÌä∏ ÏÉùÏÑ± Ïã§Ìå®.");
             ImGui::End();
             return;
         }
@@ -718,7 +733,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         {
             if (FAILED(m_pPrevEffect->Initialize(nullptr)))
             {
-                MSG_BOX("¿Ã∆Â∆Æ √ ±‚»≠ Ω«∆–.");
+                MSG_BOX("Ïù¥ÌéôÌä∏ Ï¥àÍ∏∞Ìôî Ïã§Ìå®.");
                 Safe_Release(m_pPrevEffect);
                 ImGui::End();
                 return;
@@ -909,7 +924,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
             }
             else
             {
-                MSG_BOX("¿Ã∏ß¿ª ¿‘∑¬«ÿ¡÷ººø‰.");
+                MSG_BOX("Ïù¥Î¶ÑÏùÑ ÏûÖÎ†•Ìï¥Ï£ºÏÑ∏Ïöî.");
             }
         }
 
@@ -998,8 +1013,8 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
                 Safe_Release(m_pPrevObject);
                 m_pPrevObject = nullptr;
             }
-            CTransform* pPrevObjTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
-            CTransform* pObjectTransform = dynamic_cast<CTransform*>(pCloneObject->Get_Component(L"Com_Transform"));
+            CTransform* pPrevObjTransform = m_pPrevObject->Get_Component<CTransform>(L"Com_Transform");
+            CTransform* pObjectTransform = pCloneObject->Get_Component<CTransform>(L"Com_Transform");
             if (pObjectTransform == nullptr)
             {
                 MSG_BOX("Get_TransformCom Failed.");
@@ -1023,7 +1038,7 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
 
         if (KEY_TAP(KEY::OPEN_SQUARE_BRACKET))
         {
-            CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
+            CTransform* pTransform = m_pPrevObject->Get_Component<CTransform>(L"Com_Transform");
             _float3 vScale = pTransform->Get_Scale();
             vScale.x = clamp(vScale.x -= 1.f, 1.f, 999.f);
             vScale.y = clamp(vScale.y -= 1.f, 1.f, 999.f);
@@ -1033,7 +1048,7 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
 
         if (KEY_TAP(KEY::CLOSE_SQUARE_BRACKET))
         {
-            CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
+            CTransform* pTransform = m_pPrevObject->Get_Component<CTransform>(L"Com_Transform");
             _float3 vScale = pTransform->Get_Scale();
             vScale.x = clamp(vScale.x += 1.f, 1.f, 999.f);
             vScale.y = clamp(vScale.y += 1.f, 1.f, 999.f);
@@ -1043,7 +1058,7 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
 
         if (KEY_TAP(KEY::R))
         {
-            CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
+            CTransform* pTransform = m_pPrevObject->Get_Component<CTransform>(L"Com_Transform");
             pTransform->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f));
         }
 
@@ -1109,12 +1124,73 @@ void CImGui_Manager::Tick_Terrain_Tool(_float fTimeDelta)
 
 void CImGui_Manager::Tick_NaviMesh_Tool(_float fTimeDeleta)
 {
-    /*list<CGameObject*>& GameObjects = GI->Find_GameObjects(LEVEL_TOOL, LAYER_TYPE::LAYER_GROUND);
+    ImGui::Begin("Navigation_Tool");
+    static _bool bPickingMode = false;
+    ImGui::Checkbox("Make Navi Triangle", &bPickingMode);
+
+    if (bPickingMode == true)
+        NaviPicking();
+
+    static _float fGenCutDegree = 0.f;
+    ImGui::Text("CutDegree");
+    IMGUI_SAME_LINE;
+    ImGui::DragFloat("##GenNaviDegree", &fGenCutDegree, 1.f, 0.f, 360.f);
+    m_fGenerateRadian = XMConvertToRadians(fGenCutDegree);
+
+    static _float fGenScale = 0.f;  
+    ImGui::Text("CutScale");
+    IMGUI_SAME_LINE;
+    ImGui::DragFloat("##GenNaviScale", &fGenScale, 0.01f, 1.f, 100.f);
+    m_fGenerateScale = fGenScale;
+
+    if (ImGui::Button("Generate_Navigation"))
+    {
+        if (FAILED(NaviAutoGenerate()))        
+            MSG_BOX("Generate Failed.");
+    }
+
+    if (ImGui::Button("Bake"))
+    {
+        if(FAILED(m_pTerrain->Get_NavigationCom()->SetUp_Neighbors()))
+            MSG_BOX("Bake Failed.");
+    }
+
+
+    IMGUI_NEW_LINE;
+    static char szNaviSavePath[MAX_PATH] = "../Bin/DataFiles/Map/";
+    ImGui::InputText("##NaviSaveLoadPath", szNaviSavePath, MAX_PATH);
+
+
+    if (ImGui::Button("Save_Navi"))
+    {
+        if (FAILED(NaviSave(CUtils::ToWString(szNaviSavePath))))
+            MSG_BOX("Save Navi Failed.");
+    }
+
+    if (ImGui::Button("Load_Navi"))
+    {
+        if (FAILED(NaviLoad(CUtils::ToWString(szNaviSavePath))))
+            MSG_BOX("Load Navi Failed.");
+        
+    }
+    
+    
+
+
+
+
+
+    ImGui::End();
+}
+
+void CImGui_Manager::NaviPicking()
+{
+    list<CGameObject*>& GameObjects = GI->Find_GameObjects(LEVEL_TOOL, LAYER_TYPE::LAYER_GROUND);
 
     for (auto& pGameObject : GameObjects)
     {
         CTransform* pTransform;
-        pTransform = pGameObject->Get_Component(L"Com_Transform") == nullptr ? nullptr : dynamic_cast<CTransform*>(pGameObject->Get_Component(L"Com_Transform"));
+        pTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform") == nullptr ? nullptr : pGameObject->Get_Component<CTransform>(L"Com_Transform");
         if (nullptr == pTransform)
             continue;
 
@@ -1131,37 +1207,16 @@ void CImGui_Manager::Tick_NaviMesh_Tool(_float fTimeDeleta)
                 if (KEY_TAP(KEY::LBTN))
                 {
                     m_vWorldPickedNaviPos.push_back(m_vNaviPickingWorldPos);
-                    m_vLocalPickedNaviPos.push_back(vLocalPos);
 
-                    if (m_vLocalPickedNaviPos.size() == 3)
+                    if (m_vWorldPickedNaviPos.size() == 3)
                     {
-                        m_pTerrain->Get_NavigationCom()->Create_Cell(m_vLocalPickedNaviPos.data());
-                        m_vLocalPickedNaviPos.clear();
+                        m_pTerrain->Get_NavigationCom()->Create_Cell(m_vWorldPickedNaviPos.data());
                         m_vWorldPickedNaviPos.clear();
                     }
                 }
                 return;
             }
         }
-    }*/
-
-    
-    _float3 vLocalPostion;
-    if (CPicking_Manager::GetInstance()->Is_NaviPicking(m_pTerrain->Get_TransformCom(), m_pTerrain->Get_TerrainBufferCom(), &m_vNaviPickingWorldPos, &vLocalPostion))
-    {
-        if (KEY_TAP(KEY::LBTN))
-        {
-            m_vWorldPickedNaviPos.push_back(m_vNaviPickingWorldPos);
-            m_vLocalPickedNaviPos.push_back(vLocalPostion);
-
-            if (m_vLocalPickedNaviPos.size() == 3)
-            {
-                m_pTerrain->Get_NavigationCom()->Create_Cell(m_vLocalPickedNaviPos.data());
-                m_vLocalPickedNaviPos.clear();
-                m_vWorldPickedNaviPos.clear();
-            }
-        }
-        return;
     }
 }
 
@@ -1209,7 +1264,7 @@ HRESULT CImGui_Manager::Load_Map_Data(const wstring& strMapFileName)
             }
             pObj->Set_ObjectTag(strObjectTag);
 
-            CTransform* pTransform = dynamic_cast<CTransform*>(pObj->Get_Component(L"Com_Transform"));
+            CTransform* pTransform = pObj->Get_Component<CTransform>(L"Com_Transform");
             if(nullptr == pTransform)
             {
                 MSG_BOX("Get_Transform_Failed.");
@@ -1262,7 +1317,7 @@ HRESULT CImGui_Manager::Save_Map_Data(const wstring& strMapFileName)
 
         for (auto& Object : GameObjects)
         {
-            CTransform* pTransform = dynamic_cast<CTransform*>(Object->Get_Component(L"Com_Transform"));
+            CTransform* pTransform = Object->Get_Component<CTransform>(L"Com_Transform");
             if (nullptr == pTransform)
             {
                 MSG_BOX("Find_Transform_Failed.");
@@ -1410,7 +1465,7 @@ void CImGui_Manager::PickingTerrainObj()
     _float4 vHitPos;
     if (CPicking_Manager::GetInstance()->Is_Picking(m_pTerrain->Get_TransformCom(), m_pTerrain->Get_TerrainBufferCom(), true, &vHitPos))
     {
-        CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
+        CTransform* pTransform = m_pPrevObject->Get_Component<CTransform>(L"Com_Transform");
         if (nullptr != pTransform)
             pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat4(&vHitPos));
 
@@ -1440,7 +1495,7 @@ void CImGui_Manager::PickingGroundObj()
         {
             if (CPicking_Manager::GetInstance()->Is_Picking(pTransform, pMesh, false, &vHitPos))
             {
-                CTransform* pTransform = dynamic_cast<CTransform*>(m_pPrevObject->Get_Component(L"Com_Transform"));
+                CTransform* pTransform = m_pPrevObject->Get_Component<CTransform>(L"Com_Transform");
                 if (nullptr != pTransform)
                     pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat4(&vHitPos));
 
@@ -1470,7 +1525,7 @@ void CImGui_Manager::Draw_NaviPicking_Point()
     DirectX::BoundingSphere tSphere;
     ZeroMemory(&tSphere, sizeof(DirectX::BoundingSphere));
     XMStoreFloat3(&tSphere.Center, XMLoadFloat3(&m_vNaviPickingWorldPos));
-    tSphere.Radius = 1.f;
+    tSphere.Radius = 0.1f;
     DX::Draw(m_pBatch, tSphere, XMVectorSet(0.f, 1.f, 0.f, 1.f));
 
     for (size_t i = 0; i < m_vWorldPickedNaviPos.size(); ++i)
@@ -1503,4 +1558,95 @@ void CImGui_Manager::Free()
 
 }
 
+HRESULT CImGui_Manager::NaviBake()
+{
 
+    return S_OK;
+}
+
+HRESULT CImGui_Manager::NaviAutoGenerate()
+{
+    CNavigation* pNavigation = m_pTerrain->Get_NavigationCom();
+
+    if(nullptr == pNavigation || FAILED(pNavigation->Clear_Cells()))
+        return E_FAIL;
+
+    for (_uint i = 0; i < LAYER_TYPE::LAYER_END; ++i)
+    {
+        if (i == LAYER_TYPE::LAYER_CAMERA
+            || i == LAYER_TYPE::LAYER_TERRAIN
+            || i == LAYER_TYPE::LAYER_BACKGROUND
+            || i == LAYER_TYPE::LAYER_SKYBOX
+            || i == LAYER_TYPE::LAYER_UI)
+            continue;
+
+        list<CGameObject*> GameObjects = GI->Find_GameObjects(LEVEL_TOOL, i);
+        for (auto& Object : GameObjects)
+        {
+            if (Object->Is_NaviObject())
+            {
+                CModel* pModelCom = Object->Get_Component<CModel>(L"Com_Model");
+                CTransform* pTransformCom = Object->Get_Component<CTransform>(L"Com_Transform");
+                if (nullptr == pModelCom)
+                    continue;
+
+                const vector<CMesh*>& Meshes = pModelCom->Get_Meshes();
+                for (auto& pMesh : Meshes)
+                {
+                    const vector<_float3>& Vertices = pMesh->Get_VertexLocalPositions();
+                    const vector<FACEINDICES32>& Indices = pMesh->Get_FaceIndices();
+
+                    for (_uint i = 0; i < Indices.size(); ++i)
+                    {
+                        _vector v0, v1, v2;
+                        _float3 fv0, fv1, fv2;
+                        v0 = XMVectorSet(Vertices[Indices[i]._0].x, Vertices[Indices[i]._0].y, Vertices[Indices[i]._0].z, 1.f);
+                        v1 = XMVectorSet(Vertices[Indices[i]._1].x, Vertices[Indices[i]._1].y, Vertices[Indices[i]._1].z, 1.f);
+                        v2 = XMVectorSet(Vertices[Indices[i]._2].x, Vertices[Indices[i]._2].y, Vertices[Indices[i]._2].z, 1.f);
+
+                        XMStoreFloat3(&fv0, v0);
+                        XMStoreFloat3(&fv1, v1);
+                        XMStoreFloat3(&fv2, v2);
+
+                        _vector vNormal = XMVector3TransformNormal(XMVector3Normalize(XMVector3Cross(v1 - v0, v2 - v0)), pTransformCom->Get_WorldMatrix());
+                        _float fRadian = XMVectorGetX(XMVector3Dot(vNormal, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+                        _float fTriangleScale = fabs((fv0.x * fv1.z) + (fv1.x * fv2.z) + (fv2.x * fv0.z) - (fv1.x * fv0.z) - (fv2.x * fv1.z) - (fv0.x * fv2.z)) * 0.5f;
+
+                        if (fRadian >= m_fGenerateRadian && fTriangleScale <= m_fGenerateScale)
+                        {
+                            _float3  vPoints[3] = {};
+                            XMStoreFloat3(&vPoints[0], XMVector3TransformCoord(v0, pTransformCom->Get_WorldMatrix()));
+                            XMStoreFloat3(&vPoints[1], XMVector3TransformCoord(v1, pTransformCom->Get_WorldMatrix()));
+                            XMStoreFloat3(&vPoints[2], XMVector3TransformCoord(v2, pTransformCom->Get_WorldMatrix()));
+                            m_pTerrain->Get_NavigationCom()->Create_Cell(vPoints);
+                            // Safe_Delete_Array(vPoints);
+                        }
+
+                    }
+                }
+                
+            }
+        }
+    }
+    
+
+
+    return S_OK;
+}
+
+HRESULT CImGui_Manager::NaviSave(const wstring& strNaviPath)
+{
+    if (FAILED(m_pTerrain->Get_NavigationCom()->Save_NaviData(strNaviPath)))
+        return E_FAIL;
+    MSG_BOX("Save OK.");
+    return S_OK;
+}
+
+HRESULT CImGui_Manager::NaviLoad(const wstring& strNaviPath)
+{
+    if (FAILED(m_pTerrain->Get_NavigationCom()->Load_NaviData(strNaviPath)))
+        return E_FAIL;
+
+    MSG_BOX("Load OK.");
+    return S_OK;
+}

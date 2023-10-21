@@ -1,5 +1,5 @@
 #include "FileUtils.h"
-
+#include "Utils.h"
 
 CFileUtils::CFileUtils()
 {
@@ -14,7 +14,7 @@ CFileUtils::~CFileUtils()
 	}
 }
 
-void CFileUtils::Open(wstring filePath, FileMode mode)
+HRESULT CFileUtils::Open(wstring filePath, FileMode mode)
 {
 	if (mode == FileMode::Write)
 	{
@@ -42,7 +42,13 @@ void CFileUtils::Open(wstring filePath, FileMode mode)
 		);
 	}
 
-	assert(_handle != INVALID_HANDLE_VALUE);
+	if (_handle == INVALID_HANDLE_VALUE)
+	{
+		wstring msg = wstring(L"File Open Failed : ") + filePath;
+		MessageBox(nullptr, msg.c_str(), L"System Message", MB_OK);
+		return E_FAIL;
+	}
+		
 }
 
 void CFileUtils::Write(void* data, _uint dataSize)

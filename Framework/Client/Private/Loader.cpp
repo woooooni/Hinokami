@@ -346,7 +346,7 @@ HRESULT CLoader::Load_Map_Data(const wstring& strMapFileName)
 			}
 			pObj->Set_ObjectTag(strObjectTag);
 
-			CTransform* pTransform = dynamic_cast<CTransform*>(pObj->Get_Component(L"Com_Transform"));
+			CTransform* pTransform = pObj->Get_Component<CTransform>(L"Com_Transform");
 			if (nullptr == pTransform)
 			{
 				MSG_BOX("Get_Transform_Failed.");

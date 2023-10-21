@@ -65,14 +65,14 @@ public:
 	HRESULT Bind_ShaderResources(class CShader* pShader, const char* pConstantName);
 
 public:
-	void Go_Straight(_float fTimeDelta);
-	void Go_Backward(_float fTimeDelta);
-	void Go_Left(_float fTimeDelta);
-	void Go_Right(_float fTimeDelta);
-	void Go_Up(_float fTimeDelta);
-	void Go_Down(_float fTimeDelta);
-	void Go_Dir(_fvector vDir, _float fTimeDelta);
-	void Go_Dir(_fvector vDir, _float fSpeed, _float fTimeDelta);
+	void Go_Straight(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
+	void Go_Backward(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
+	void Go_Left(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
+	void Go_Right(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
+	void Go_Up(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
+	void Go_Down(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
+	void Go_Dir(_fvector vDir, _float fTimeDelta, class CNavigation* pNavigation = nullptr);
+	void Go_Dir(_fvector vDir, _float fSpeed, _float fTimeDelta, class CNavigation* pNavigation = nullptr);
 
 	void Add_Pos(_fvector vAddPos);
 	void Set_Scale(_fvector vScaleInfo);

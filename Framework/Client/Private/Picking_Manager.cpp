@@ -160,10 +160,13 @@ _bool CPicking_Manager::Is_NaviPicking(CTransform* pTransform, CVIBuffer* pBuffe
 		{
 			if (fDistnace < fMinDistance)
 			{	
+				_vector vPickingPos = 
+					XMVector3TransformCoord(vRayPosition, pTransform->Get_WorldMatrix())
+					+ XMVector3TransformNormal(vRayDir, pTransform->Get_WorldMatrix()) * fDistnace;
 				
-				_float fAPointDist = XMVectorGetX(XMVector3Length(vA - vRayPosition));
-				_float fBPointDist = XMVectorGetX(XMVector3Length(vB - vRayPosition));
-				_float fCPointDist = XMVectorGetX(XMVector3Length(vC - vRayPosition));
+				_float fAPointDist = XMVectorGetX(XMVector3Length(vA - vPickingPos));
+				_float fBPointDist = XMVectorGetX(XMVector3Length(vB - vPickingPos));
+				_float fCPointDist = XMVectorGetX(XMVector3Length(vC - vPickingPos));
 				
 				if (pLocalPos != nullptr)
 				{

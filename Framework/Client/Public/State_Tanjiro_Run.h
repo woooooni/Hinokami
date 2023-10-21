@@ -22,6 +22,9 @@ public:
 	virtual void Tick_State(_float fTimeDelta) override;
 	virtual void Exit_State() override;
 
+public:
+	_float m_fMoveSpeed = 0.f;
+
 
 public:
 	static CState_Tanjiro_Run* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CTransform* pTransform, class CStateMachine* pStateMachine, class CModel* pModel, const list<wstring>& AnimationList);

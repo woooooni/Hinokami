@@ -44,6 +44,7 @@ public:
 public:
 	void Set_DrawGrid(_bool bDraw) { m_bDraw = bDraw; }
 	_bool Is_DrawGrid() { return m_bDraw; }
+
 protected:
 	class PrimitiveBatch<VertexPositionColor>* m_pBatch = nullptr;
 	class BasicEffect* m_pEffect = nullptr;

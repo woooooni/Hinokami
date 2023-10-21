@@ -18,9 +18,18 @@ public:
 	virtual HRESULT Render() override;
 
 
+public:
+	class CSword* Get_Sword() { return m_pSword; }
+	class CSweath* Get_Sweath() { return m_pSweath; }
+
 protected:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Ready_States() override;
+
+
+private:
+	class CSword* m_pSword = nullptr;
+	class CSweath* m_pSweath = nullptr;
 
 private:
 	HRESULT Ready_Sockets();

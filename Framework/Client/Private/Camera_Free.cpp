@@ -88,10 +88,7 @@ void CCamera_Free::Tick(_float fTimeDelta)
 			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMove * fTimeDelta * 0.05f);
 		}
 	}
-	
-	
 
-	;
 
 	__super::Tick(fTimeDelta);
 }

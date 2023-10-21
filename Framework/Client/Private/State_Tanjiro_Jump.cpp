@@ -6,6 +6,8 @@
 #include "Animation.h"
 #include "RigidBody.h"
 
+
+USING(Client)
 CState_Tanjiro_Jump::CState_Tanjiro_Jump(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CTransform* pTransform, CStateMachine* pStateMachine, CModel* pModel)
 	: CState(pStateMachine, pModel, pTransform)
 {
@@ -29,23 +31,10 @@ HRESULT CState_Tanjiro_Jump::Initialize(const list<wstring>& AnimationList)
 void CState_Tanjiro_Jump::Enter_State(void* pArg)
 {
 	if (m_pRigidBody == nullptr)
-	{
-		CComponent* pComponent = m_pStateMachineCom->Get_Owner()->Get_Component(L"Com_RigidBody");
-		if (nullptr == pComponent)
-		{
-			MSG_BOX("GetRigidBody Failed : CState_Tanjiro_Jump");
-			return;
-		}
+		m_pRigidBody = m_pStateMachineCom->Get_Owner()->Get_Component<CRigidBody>(L"Com_RigidBody");
 
-
-		m_pRigidBody = dynamic_cast<CRigidBody*>(pComponent);
-		if (nullptr == m_pRigidBody)
-		{
-			MSG_BOX("GetRigidBody Failed : CState_Tanjiro_Jump");
-			return;
-		}
-	}
-
+	if (nullptr == m_pRigidBody);
+		return;
 
 	m_iCurrAnimIndex = 0;
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);

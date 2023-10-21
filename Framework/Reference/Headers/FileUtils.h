@@ -13,7 +13,7 @@ public:
 	CFileUtils();
 	~CFileUtils();
 
-	void Open(wstring filePath, FileMode mode);
+	HRESULT Open(wstring filePath, FileMode mode);
 
 	template<typename T>
 	void Write(const T& data)

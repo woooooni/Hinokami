@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine_Defines.h"
 #include "Base.h"
 
 /* 클라이엉ㄴ트에서 제작할 다양한 게임오브젝트들의 부모가된다. */
@@ -28,7 +29,16 @@ public:
 	virtual HRESULT Render();
 
 public:
-	class CComponent* Get_Component(const wstring & strComponentTag);
+	template<typename T>
+	T* Get_Component(const wstring& strComponentTag)
+	{
+		auto iter = m_Components.find(strComponentTag);
+
+		if (iter == m_Components.end())
+			return nullptr;
+
+		return dynamic_cast<T*>(iter->second);
+	}
 
 public:
 	virtual HRESULT SetUp_State(_fmatrix StateMatrix) { return S_OK; }
@@ -51,12 +61,14 @@ public:
 	void Reserve_Dead(_bool bReserve) { m_bReserveDead = bReserve; }
 	_bool Is_ReserveDead() { return m_bReserveDead; }
 
+	void Set_NaviObject(_bool bNaviGation) { m_bNaviObject = bNaviGation; }
+	_bool Is_NaviObject() { return m_bNaviObject; }
+
 protected:
 	virtual HRESULT Ready_Components() PURE;
 	HRESULT Add_Component(const wstring& pComponentTag, class CComponent* pComponent);
 	HRESULT Add_Component(_uint iLevelIndex, const wstring& pPrototypeTag, const wstring& pComponentTag, CComponent** ppOut, void* pArg = nullptr);
 	HRESULT Compute_CamZ(_fvector vWorldPos);
-
 
 protected:
 	ID3D11Device*			m_pDevice = { nullptr };
@@ -76,6 +88,11 @@ protected:
 
 	_bool				m_bReserveDead = false;
 	_bool				m_bDead = false;
+
+
+protected:
+	_bool m_bNaviObject = false;
+
 
 
 protected:

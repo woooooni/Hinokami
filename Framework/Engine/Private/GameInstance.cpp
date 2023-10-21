@@ -74,6 +74,8 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, _uint iNumLayerType,
 	if (FAILED(m_pModel_Manager->Reserve_Manager(*ppDevice, *ppContext)))
 		return E_FAIL;
 
+
+
 	return S_OK;
 }
 
@@ -228,14 +230,14 @@ const map<const wstring, class CGameObject*>& CGameInstance::Find_Prototype_Game
 	return m_pObject_Manager->Find_Prototype_GameObjects(iLayerType);
 }
 
-CGameObject* CGameInstance::Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring& strObjectTag)
+CGameObject* CGameInstance::Find_GameObject(_uint iLevelIndex, const _uint iLayerType, const wstring& strObjectTag)
 {
-	return m_pObject_Manager->Find_GameObejct(iLevelIndex, iLayerType, strObjectTag);
+	return m_pObject_Manager->Find_GameObject(iLevelIndex, iLayerType, strObjectTag);
 }
 
-CGameObject* CGameInstance::Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, _int iObjectID)
+CGameObject* CGameInstance::Find_GameObject(_uint iLevelIndex, const _uint iLayerType, _int iObjectID)
 {
-	return m_pObject_Manager->Find_GameObejct(iLevelIndex, iLayerType, iObjectID);
+	return m_pObject_Manager->Find_GameObject(iLevelIndex, iLayerType, iObjectID);
 }
 
 list<CGameObject*>& CGameInstance::Find_GameObjects(_uint iLevelIndex, const _uint iLayerType)

@@ -97,7 +97,15 @@ private:
 private:
 	void PickingGroundObj();
 	void PickingTerrainObj();
+
+private:
 	void Draw_NaviPicking_Point();
+	void NaviPicking();
+	HRESULT NaviAutoGenerate();
+	HRESULT NaviBake();
+	HRESULT NaviSave(const wstring& strNaviPath);
+	HRESULT NaviLoad(const wstring& strNaviPath);
+	
 
 private:
 	ID3D11Device* m_pDevice = nullptr;
@@ -121,23 +129,24 @@ private:
 
 
 private:
-	// For NavigationRender
+	// For.Navigation
 	class PrimitiveBatch<VertexPositionColor>* m_pBatch = nullptr;
 	class BasicEffect* m_pEffect = nullptr;
 	ID3D11InputLayout* m_pInputLayout = nullptr;
+
 	_float4	m_vColor = _float4(0.f, 1.f, 0.f, 1.f);
 	_float3 m_vNaviPickingWorldPos = _float3(0.f, 0.f, 0.f);
 
+	_float m_fGenerateRadian = 0.f;
+	_float m_fGenerateScale = 1.f;
 
-private:
-	vector<_float3> m_vLocalPickedNaviPos;
+	vector<wstring> m_strBakeableObject;
 	vector<_float3> m_vWorldPickedNaviPos;
 
 
 
-
-
 private:
+	// For.Effect Texture
 	vector<wstring> m_EffectsModelFiles;
 
 public:

@@ -5,6 +5,7 @@
 #include "Level_Loading.h"
 #include "Network_Manager.h"
 #include "SocketUtils.h"
+#include "ImGui_Manager.h"
 
 #include "UI_Loading_Anim.h"
 #include "UI_Loading_Background.h"

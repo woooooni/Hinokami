@@ -53,7 +53,7 @@ HRESULT CLevel_Tool::Initialize()
 		return E_FAIL;
 
 
-	CGameObject* pObject = GAME_INSTANCE->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_PLAYER), L"Dummy");
+	CGameObject* pObject = GAME_INSTANCE->Find_GameObject(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_PLAYER), L"Dummy");
 	if (nullptr == pObject)
 		return S_OK;
 
@@ -64,7 +64,7 @@ HRESULT CLevel_Tool::Initialize()
 	m_pImGuiManager->Set_Dummy(pDummy);
 
 
-	CGameObject* pTempObject = GAME_INSTANCE->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_TERRAIN), L"Terrain");
+	CGameObject* pTempObject = GAME_INSTANCE->Find_GameObject(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_TERRAIN), L"Terrain");
 	if (nullptr == pTempObject)
 		return E_FAIL;
 
@@ -75,7 +75,7 @@ HRESULT CLevel_Tool::Initialize()
 	m_pImGuiManager->Set_Terrain(pTerrain);
 
 
-	CGameObject* pTempCamera = GAME_INSTANCE->Find_GameObejct(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_CAMERA), L"Free_Camera");
+	CGameObject* pTempCamera = GAME_INSTANCE->Find_GameObject(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_CAMERA), L"Free_Camera");
 	if (nullptr == pTempCamera)
 		return E_FAIL;
 

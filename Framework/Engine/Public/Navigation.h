@@ -21,11 +21,16 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;	
 	void Update(_fmatrix WorldMatrix);
 
-	_bool isMove(_fvector vPoint);
+	_bool Is_Movable(_fvector vPoint);
 	_float Compute_Height(_vector vPosition);
 
 public:
 	HRESULT Create_Cell(const _float3* pPoints);
+	HRESULT Delete_Cell(const _fvector vMouseWorldDir, const _fvector vMouseWorldPosition);
+	HRESULT Clear_Cells();
+
+	HRESULT Save_NaviData(const wstring& strNaviDataPath);
+	HRESULT Load_NaviData(const wstring& strNaviDataPath);
 
 #ifdef _DEBUG
 public:
@@ -33,7 +38,7 @@ public:
 #endif
 
 private:
-	static _float4x4				m_WorldMatrix;
+	static _float4x4 m_WorldIdentity;
 	_int							m_iCurrentIndex = { -1 };
 	vector<class CCell*>			m_Cells;
 
@@ -45,13 +50,14 @@ private:
 	class CShader*					m_pShader = { nullptr };
 #endif
 
-private:
+public:
 	HRESULT SetUp_Neighbors();
 
 public:
 	static CNavigation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strNavigationDataFiles);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
+
 };
 
 END

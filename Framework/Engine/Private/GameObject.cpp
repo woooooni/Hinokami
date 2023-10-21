@@ -13,6 +13,7 @@ CGameObject::CGameObject(ID3D11Device * pDevice, ID3D11DeviceContext * pContext,
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
+
 }
 
 CGameObject::CGameObject(const CGameObject & rhs)
@@ -31,6 +32,7 @@ CGameObject::CGameObject(const CGameObject & rhs)
 
 HRESULT CGameObject::Initialize_Prototype()
 {
+
 	return S_OK;
 }
 
@@ -52,16 +54,6 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
-CComponent* CGameObject::Get_Component(const wstring& strComponentTag)
-{
-	auto iter = m_Components.find(strComponentTag);
-
-	if (iter == m_Components.end())
-		return nullptr;
-
-	return iter->second;
-
-}
 
 HRESULT CGameObject::Add_Component(const wstring& strComponentTag, CComponent* pComponent)
 {

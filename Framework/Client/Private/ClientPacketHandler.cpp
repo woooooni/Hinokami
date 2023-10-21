@@ -44,7 +44,7 @@ bool Handle_C_CREATE_OBJECT(PacketSessionRef& session, Protocol::C_CREATE_OBJECT
 	if (nullptr == pObj)
 		return false;
 
-	CTransform* pTranform = dynamic_cast<CTransform*>(pObj->Get_Component(L"Com_Transform"));
+	CTransform* pTranform = pObj->Get_Component<CTransform>(L"Com_Transform");
 	if (nullptr == pTranform)
 		return false;
 
@@ -54,17 +54,13 @@ bool Handle_C_CREATE_OBJECT(PacketSessionRef& session, Protocol::C_CREATE_OBJECT
 
 	if (pkt.imodeltype() == CModel::TYPE::TYPE_ANIM)
 	{
-		CModel* pModelCom = dynamic_cast<CModel*>(pObj->Get_Component(L"Com_Model"));
+		CModel* pModelCom = pObj->Get_Component<CModel>(L"Com_Model");
 		if (nullptr == pModelCom)
 			return false;
 
 		// pModelCom->Set_AnimationIndex_Force(pkt.ianimationindex());
 		// pModelCom->Get_Animations()[pModelCom->Get_CurrAnimationIndex()]->Set_AnimationPlayTime(pTranform, pkt.fanimationplaytime());
 	}
-
-	
-
-	
 }
 
 bool Handle_C_DELETE_OBJECT(PacketSessionRef& session, Protocol::C_DELETE_OBJECT& pkt)

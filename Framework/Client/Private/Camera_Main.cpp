@@ -52,7 +52,7 @@ void CCamera_Main::Tick(_float fTimeDelta)
 
 	if (MouseMove = GI->Get_DIMMoveState(DIMM_X))
 	{
-		m_vAngle.y += MouseMove * fTimeDelta * 2.f;
+		m_vAngle.y += MouseMove * fTimeDelta * 5.f;
 		if (360.f <= m_vAngle.y)
 			m_vAngle.y = 0.f;
 		else if (0.f >= m_vAngle.y)
@@ -77,13 +77,14 @@ void CCamera_Main::LateTick(_float fTimeDelta)
 
 	_vector vPlayerPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION);
 	_vector vDestPos = vPlayerPos + vCamPos;
-
+	
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), vDestPos, m_fCamSpeed * fTimeDelta));
 
 	_float4 vLookAt; 
 	XMStoreFloat4(&vLookAt, vPlayerPos);
 	vLookAt.y + 1.f;
 	m_pTransformCom->LookAt(XMLoadFloat4(&vLookAt));
+	
 
 	__super::LateTick(fTimeDelta);
 }

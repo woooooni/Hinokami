@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "State_Tanjiro_Run.h"
 #include "GameInstance.h"
-#include "Model.h"
 #include "Tanjiro.h"
+#include "PipeLine.h"
 
 
 CState_Tanjiro_Run::CState_Tanjiro_Run(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CTransform* pTransform, CStateMachine* pStateMachine, CModel* pModel)
@@ -29,6 +29,7 @@ void CState_Tanjiro_Run::Enter_State(void* pArg)
 {
 	m_iCurrAnimIndex = m_AnimationIndices[0];
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
+	m_fMoveSpeed = m_pTransformCom->Get_TickPerSecond();
 }
 
 void CState_Tanjiro_Run::Tick_State(_float fTimeDelta)
@@ -39,7 +40,7 @@ void CState_Tanjiro_Run::Tick_State(_float fTimeDelta)
 	{
 		m_iCurrAnimIndex = m_AnimationIndices[1];
 		m_pModelCom->Set_AnimIndex(m_AnimationIndices[1]);
-		m_pTransformCom->Set_TickPerSecond(m_pTransformCom->Get_TickPerSecond() + 10.f);
+		m_pTransformCom->Set_TickPerSecond(m_fMoveSpeed + 10.f);
 	}
 
 	if (KEY_AWAY(KEY::SHIFT))
@@ -52,6 +53,21 @@ void CState_Tanjiro_Run::Tick_State(_float fTimeDelta)
 	if (KEY_HOLD(KEY::W))
 	{
 		bKeyHolding = true;
+		
+
+
+		/*_matrix vCamWolrd = CPipeLine::GetInstance()->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
+
+		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		_vector vCamLook = vCamWolrd.r[CTransform::STATE_LOOK];
+
+		vLook = XMVector3Normalize(vLook);
+		vCamLook = XMVector3Normalize(vCamLook);
+
+		_float fRadian = XMVectorGetX(XMVector3Dot(vLook, vCamLook)) * fTimeDelta;
+
+
+		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fRadian);*/
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
 		
@@ -87,6 +103,8 @@ void CState_Tanjiro_Run::Tick_State(_float fTimeDelta)
 	{
 		if (KEY_NONE(KEY::W) && KEY_NONE(KEY::A) && KEY_NONE(KEY::S) && KEY_NONE(KEY::D))		
 			m_pStateMachineCom->Change_State(CTanjiro::STATE_IDLE);
+
+		
 	}
 	
 }
@@ -94,6 +112,7 @@ void CState_Tanjiro_Run::Tick_State(_float fTimeDelta)
 void CState_Tanjiro_Run::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
+	m_pTransformCom->Set_TickPerSecond(m_fMoveSpeed);
 }
 
 CState_Tanjiro_Run* CState_Tanjiro_Run::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CTransform* pTransform, CStateMachine* pStateMachine,

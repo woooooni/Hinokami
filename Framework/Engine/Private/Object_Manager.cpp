@@ -116,7 +116,7 @@ CGameObject* CObject_Manager::Find_Prototype_GameObject(_uint iLayerType, const 
 	return Find_Prototype(strPrototypeTag, iLayerType);
 }
 
-CGameObject* CObject_Manager::Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, _int iObjectID)
+CGameObject* CObject_Manager::Find_GameObject(_uint iLevelIndex, const _uint iLayerType, _int iObjectID)
 {
 	CLayer* pLayer = Find_Layer(iLevelIndex, iLayerType);
 	if (nullptr == pLayer)
@@ -130,7 +130,7 @@ CGameObject* CObject_Manager::Find_GameObejct(_uint iLevelIndex, const _uint iLa
 	return pObj;
 }
 
-CGameObject* CObject_Manager::Find_GameObejct(_uint iLevelIndex, const _uint iLayerType, const wstring& strObjectTag)
+CGameObject* CObject_Manager::Find_GameObject(_uint iLevelIndex, const _uint iLayerType, const wstring& strObjectTag)
 {
 	CLayer* pLayer = Find_Layer(iLevelIndex, iLayerType);
 	if (nullptr == pLayer)

@@ -2,8 +2,10 @@
 #include "Cell.h"
 #include "Shader.h"
 #include "PipeLine.h"
+#include "FileUtils.h"
+#include <filesystem>
 
-_float4x4 CNavigation::m_WorldMatrix = {};
+_float4x4 CNavigation::m_WorldIdentity = {};
 
 CNavigation::CNavigation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
@@ -62,6 +64,8 @@ HRESULT CNavigation::Initialize_Prototype(const wstring & strNavigationDataFiles
 		return E_FAIL;
 #endif
 
+	XMStoreFloat4x4(&m_WorldIdentity, XMMatrixIdentity());
+
 	return S_OK;
 }
 
@@ -80,8 +84,6 @@ HRESULT CNavigation::Initialize(void * pArg)
 
 void CNavigation::Update(_fmatrix WorldMatrix)
 {
-	XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix);
-
 	for (auto& pCell : m_Cells)
 	{
 		if (nullptr != pCell)
@@ -89,11 +91,11 @@ void CNavigation::Update(_fmatrix WorldMatrix)
 	}
 }
 
-_bool CNavigation::isMove(_fvector vPoint)
+_bool CNavigation::Is_Movable(_fvector vPoint)
 {
 	_int		iNeighborIndex = 0;
 
-	if (true == m_Cells[m_iCurrentIndex]->isOut(vPoint, XMLoadFloat4x4(&m_WorldMatrix), &iNeighborIndex))
+	if (true == m_Cells[m_iCurrentIndex]->isOut(vPoint, XMLoadFloat4x4(&m_WorldIdentity), &iNeighborIndex))
 	{
 		/* 나간 방향에 이웃셀이 있으면 움직여야해! */
 		if (-1 != iNeighborIndex)
@@ -103,7 +105,7 @@ _bool CNavigation::isMove(_fvector vPoint)
 				if (-1 == iNeighborIndex)
 					return false;
 
-				if (false == m_Cells[iNeighborIndex]->isOut(vPoint, XMLoadFloat4x4(&m_WorldMatrix), &iNeighborIndex))
+				if (false == m_Cells[iNeighborIndex]->isOut(vPoint, XMLoadFloat4x4(&m_WorldIdentity), &iNeighborIndex))
 				{
 					m_iCurrentIndex = iNeighborIndex;
 					break;
@@ -123,9 +125,9 @@ _float CNavigation::Compute_Height(_vector vPosition)
 {
 	CCell* pCell = m_Cells[m_iCurrentIndex];
 
-	_vector vA = XMVectorSetW(XMLoadFloat3(pCell->Get_Point(CCell::POINT_A)), 1.f);
-	_vector vB = XMVectorSetW(XMLoadFloat3(pCell->Get_Point(CCell::POINT_B)), 1.f);
-	_vector vC = XMVectorSetW(XMLoadFloat3(pCell->Get_Point(CCell::POINT_C)), 1.f);
+	_vector vA = XMVectorSetW(XMLoadFloat3(pCell->Get_PointWorld(CCell::POINT_A)), 1.f);
+	_vector vB = XMVectorSetW(XMLoadFloat3(pCell->Get_PointWorld(CCell::POINT_B)), 1.f);
+	_vector vC = XMVectorSetW(XMLoadFloat3(pCell->Get_PointWorld(CCell::POINT_C)), 1.f);
 
 	_vector vPlane = XMPlaneFromPoints(vA, vB, vC);
 
@@ -165,12 +167,109 @@ HRESULT CNavigation::Create_Cell(const _float3* vLocalPoints)
 	return S_OK;
 }
 
+HRESULT CNavigation::Delete_Cell(const _fvector vMouseWorldDir, const _fvector vMouseWorldPosition)
+{
+	auto iter = m_Cells.begin();
+	while (iter != m_Cells.end())
+	{
+		_float3 vPointA = *(*iter)->Get_PointWorld(CCell::POINT_A);
+		_float3 vPointB = *(*iter)->Get_PointWorld(CCell::POINT_B);
+		_float3 vPointC = *(*iter)->Get_PointWorld(CCell::POINT_C);
+		_float fDistance = 9999999.f;
+
+		if (TriangleTests::Intersects(vMouseWorldPosition, vMouseWorldDir,
+			XMLoadFloat3(&vPointA),
+			XMLoadFloat3(&vPointB),
+			XMLoadFloat3(&vPointC), fDistance))
+		{
+			iter = m_Cells.erase(iter);
+			return S_OK;
+		}
+
+		++iter;
+	}
+
+	return S_OK;
+}
+HRESULT CNavigation::Clear_Cells()
+{
+	for (auto& pCell : m_Cells)
+		Safe_Release(pCell);
+
+	m_Cells.clear();
+	return S_OK;
+}
+
+HRESULT CNavigation::Save_NaviData(const wstring& strNaviDataPath)
+{
+	auto path = filesystem::path(strNaviDataPath);
+	filesystem::create_directories(path.parent_path());
+
+
+	shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
+	File->Open(strNaviDataPath, FileMode::Write);
+
+
+	File->Write<_int>(m_Cells.size());
+	for (auto& pCell : m_Cells)
+	{
+		File->Write<_uint>(pCell->m_iIndex);
+		File->Write(pCell->m_bMovable);
+
+		for (_uint i = 0; i < CCell::POINT_END; ++i)		
+			File->Write<_float3>(pCell->m_vPoints_InWorld[i]);
+
+		for (_uint i = 0; i < CCell::LINE_END; ++i)
+			File->Write<_int>(pCell->m_iNeighborIndices[i]);
+
+		
+	}
+	return S_OK;
+}
+
+HRESULT CNavigation::Load_NaviData(const wstring& strNaviDataPath)
+{
+	Clear_Cells();
+
+	shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
+	File->Open(strNaviDataPath, FileMode::Read);
+
+	_int iNumCells = 0; 
+	File->Read<_int>(iNumCells);
+
+	vector<_float3> Points;
+	Points.reserve(3);
+	for (_int i = 0; i < iNumCells; ++i)
+	{
+		CCell::CELL_DESC tDesc;
+		ZeroMemory(&tDesc, sizeof(CCell::CELL_DESC));
+		tDesc.iIndex = File->Read<_uint>();
+		tDesc.bMovable = File->Read<_bool>();
+
+		for (_uint i = 0; i < CCell::POINT_END; ++i)
+			Points.push_back(File->Read<_float3>());
+
+		CCell* pCell = CCell::Create(m_pDevice, m_pContext, tDesc, Points);
+
+		if (nullptr == pCell)
+			return E_FAIL;
+
+		for (_uint i = 0; i < CCell::LINE_END; ++i)
+			File->Read<_int>(pCell->m_iNeighborIndices[i]);
+
+		Points.clear();
+		m_Cells.push_back(pCell);
+	}
+
+	return S_OK;
+}
+
 
 #ifdef _DEBUG
 
 HRESULT CNavigation::Render()
 {
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldIdentity)))
 		return E_FAIL;
 
 	CPipeLine*		pPipeLine = GET_INSTANCE(CPipeLine);
@@ -191,7 +290,7 @@ HRESULT CNavigation::Render()
 		if (FAILED(m_pShader->Bind_RawValue("g_vLineColor", &vLineColor, sizeof(_float4))))
 			return E_FAIL;
 
-		_float		fHeight = 0.f;
+		_float		fHeight = 0.1f;
 		if (FAILED(m_pShader->Bind_RawValue("g_fHeight", &fHeight, sizeof(_float))))
 			return E_FAIL;
 
@@ -240,22 +339,36 @@ HRESULT CNavigation::SetUp_Neighbors()
 			if (pSourCell == pDestCell)
 				continue;
 
-			if (true == pDestCell->Compare_Points(pSourCell->Get_Point(CCell::POINT_A), pSourCell->Get_Point(CCell::POINT_B)))
+			if (true == pDestCell->Compare_Points(pSourCell->Get_PointWorld(CCell::POINT_A), pSourCell->Get_PointWorld(CCell::POINT_B)))
 			{
 				pSourCell->SetUp_Neighbor(CCell::LINE_AB, pDestCell);
 			}
 
-			else if (true == pDestCell->Compare_Points(pSourCell->Get_Point(CCell::POINT_B), pSourCell->Get_Point(CCell::POINT_C)))
+			else if (true == pDestCell->Compare_Points(pSourCell->Get_PointWorld(CCell::POINT_B), pSourCell->Get_PointWorld(CCell::POINT_C)))
 			{
 				pSourCell->SetUp_Neighbor(CCell::LINE_BC, pDestCell);
 			}
 
-			else if (true == pDestCell->Compare_Points(pSourCell->Get_Point(CCell::POINT_C), pSourCell->Get_Point(CCell::POINT_A)))
+			else if (true == pDestCell->Compare_Points(pSourCell->Get_PointWorld(CCell::POINT_C), pSourCell->Get_PointWorld(CCell::POINT_A)))
 			{
 				pSourCell->SetUp_Neighbor(CCell::LINE_CA, pDestCell);
 			}
 		}
 	}
+
+	auto iter = m_Cells.begin();
+	while (iter != m_Cells.end())
+	{
+		if (!((*iter)->Is_HasNeighbor()))
+		{
+			iter = m_Cells.erase(iter);
+			continue;
+		}
+			
+		++iter;
+	}
+	
+
 	
 	return S_OK;
 }

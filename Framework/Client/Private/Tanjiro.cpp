@@ -55,8 +55,9 @@ HRESULT CTanjiro::Initialize(void* pArg)
 
 void CTanjiro::Tick(_float fTimeDelta)
 {
-	__super::Tick(fTimeDelta);
 	m_pStateCom->Tick_State(fTimeDelta);
+	__super::Tick(fTimeDelta);
+
 }
 
 void CTanjiro::LateTick(_float fTimeDelta)
@@ -71,6 +72,7 @@ HRESULT CTanjiro::Render()
 
 	return S_OK;
 }
+
 
 HRESULT CTanjiro::Ready_Components()
 {
@@ -107,9 +109,6 @@ HRESULT CTanjiro::Ready_States()
 	list<wstring> strAnimationName;
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseNut01_1");
 	m_pStateCom->Add_State(CCharacter::STATE_IDLE, CState_Tanjiro_Idle::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
-
-	
-
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseRun01_1");
@@ -204,7 +203,7 @@ HRESULT CTanjiro::Ready_Parts()
 	CGameObject* pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sweath_Tanjiro"), LAYER_TYPE::LAYER_CHARACTER, &SweathDesc);
 	if (nullptr == pGameObject)
 		return E_FAIL;
-
+	m_pSweath = dynamic_cast<CSweath*>(pGameObject);
 	m_Parts.push_back(pGameObject);
 
 
@@ -218,9 +217,11 @@ HRESULT CTanjiro::Ready_Parts()
 
 
 	pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sword_Tanjiro"), LAYER_TYPE::LAYER_CHARACTER, &SwordDesc);
+	
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
+	m_pSword = dynamic_cast<CSword*>(pGameObject);
 	m_Parts.push_back(pGameObject);
 
 
