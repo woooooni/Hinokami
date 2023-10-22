@@ -13,6 +13,8 @@ CState_Tanjiro_Attack::CState_Tanjiro_Attack(ID3D11Device* pDevice, ID3D11Device
 
 HRESULT CState_Tanjiro_Attack::Initialize(const list<wstring>& AnimationList)
 {
+	
+
 	for (auto strAnimName : AnimationList)
 	{
 		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
@@ -27,6 +29,14 @@ HRESULT CState_Tanjiro_Attack::Initialize(const list<wstring>& AnimationList)
 
 void CState_Tanjiro_Attack::Enter_State(void* pArg)
 {
+	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
+	if (nullptr != pOwner)
+	{
+		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
+		if (pCharacter != nullptr)
+			pCharacter->DrawSword();
+	}
+
 	m_iCurrAnimIndex = 0;
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
 	m_fInputDelay = 0.01f;
@@ -35,7 +45,7 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 {
 	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[m_iCurrAnimIndex]))
-		m_pStateMachineCom->Change_State(CCharacter::STATE_IDLE);
+		m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
 
 	m_fAccInput += fTimeDelta;
 	if (m_fAccInput >= m_fInputDelay)
@@ -90,4 +100,5 @@ CState_Tanjiro_Attack* CState_Tanjiro_Attack::Create(ID3D11Device* pDevice, ID3D
 
 void CState_Tanjiro_Attack::Free()
 {
+	__super::Free();
 }

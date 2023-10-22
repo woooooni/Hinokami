@@ -41,7 +41,9 @@ public:
 	_bool Is_HasNeighbor(){
 		return m_iNeighborIndices[LINE_AB] != -1 || m_iNeighborIndices[LINE_BC] != -1 || m_iNeighborIndices[LINE_CA] != -1;
 	}
+	_bool Is_InCell(_vector vWorldPosition);
 
+	_int Get_Index() { return m_iIndex; }
 
 
 #ifdef _DEBUG

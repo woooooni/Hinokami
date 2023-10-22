@@ -3,13 +3,6 @@
 #include "Client_Defines.h"
 #include "Part.h"
 
-BEGIN(Engine)
-class CHierarchyNode;
-class CModel;
-class CShader;
-class CRenderer;
-class CTransform;
-END
 
 BEGIN(Client)
 
@@ -18,10 +11,7 @@ class CSweath final : public CPart
 public:
 	typedef struct tagWeaponDesc : public CPart::PART_DESC
 	{		
-		CHierarchyNode*	pSocketBone = { nullptr };
-		_float4x4		SocketPivot;
-		_float4			vRotationDir;
-		_float			fRotationDegree;
+		_float3			vRotationDegree;
 	} SWEATH_DESC;
 
 protected:
@@ -39,10 +29,10 @@ public:
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
 
+
+
 private:
 	wstring					m_strModelPrototype;
-	CHierarchyNode*			m_pSocketBone = { nullptr };
-	_float4x4				m_SocketPivotMatrix;
 
 
 private:

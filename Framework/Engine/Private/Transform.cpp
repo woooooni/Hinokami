@@ -254,9 +254,24 @@ void CTransform::Set_Rotation(_fvector vRadianEulerAngle)
 
 	WRITE_LOCK
 
-	Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(XMVectorSet(1.f, 0.f, 0.f, 0.f) * Scale.x, RotationMatrix));
-	Set_State(CTransform::STATE_UP, XMVector3TransformNormal(XMVectorSet(0.f, 1.f, 0.f, 0.f) * Scale.y, RotationMatrix));
+	
 	Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(XMVectorSet(0.f, 0.f, 1.f, 0.f) * Scale.z, RotationMatrix));
+	Set_State(CTransform::STATE_UP, XMVector3TransformNormal(XMVectorSet(0.f, 1.f, 0.f, 0.f) * Scale.y, RotationMatrix));
+	Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(XMVectorSet(1.f, 0.f, 0.f, 0.f) * Scale.x, RotationMatrix));
+	
+	
+}
+
+void CTransform::Set_Position(_fvector vPosition, CNavigation* pNavigation)
+{
+	if (pNavigation == nullptr)
+		Set_State(CTransform::STATE_POSITION, vPosition);
+	else
+	{
+		if (true == pNavigation->Is_Movable(vPosition))
+			Set_State(CTransform::STATE_POSITION, vPosition);
+	}
+
 }
 
 void CTransform::Turn(_fvector vAxis, _float fTimeDelta)
@@ -416,6 +431,5 @@ void CTransform::Free()
 	__super::Free();
 }
 
-void Add_Pos(_fvector vAddPos)
-{
-}
+
+

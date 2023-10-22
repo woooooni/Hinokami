@@ -4,11 +4,19 @@
 #include "HierarchyNode.h"
 #include "Sword.h"
 #include "Sweath.h"
-#include "State_Tanjiro_Idle.h"
+
+
+#include "State_Tanjiro_Basic_Idle.h"
+#include "State_Tanjiro_Basic_Move.h"
+#include "State_Tanjiro_Basic_Jump.h"
+
+
+#include "State_Tanjiro_Battle_Idle.h"
+#include "State_Tanjiro_Battle_Move.h"
+#include "State_Tanjiro_Battle_Jump.h"
+#include "State_Tanjiro_Attack.h"
 #include "State_Tanjiro_Damaged.h"
 #include "State_Tanjiro_Dead.h"
-#include "State_Tanjiro_Run.h"
-#include "State_Tanjiro_Attack.h"
 
 USING(Client)
 
@@ -70,6 +78,8 @@ HRESULT CTanjiro::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
+	m_pNavigationCom->Render();
+
 	return S_OK;
 }
 
@@ -98,7 +108,19 @@ HRESULT CTanjiro::Ready_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Tanjiro"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
+	/* For.Com_StateMachine */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_StateMachine"), TEXT("Com_StateMachine"), (CComponent**)&m_pStateCom)))
+		return E_FAIL;
+
+
+	CNavigation::NAVIGATION_DESC NavigationDesc;
+	ZeroMemory(&NavigationDesc, sizeof NavigationDesc);
+
+	XMStoreFloat3(&NavigationDesc.vStartWorldPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	NavigationDesc.bInitialize_Index = true;
+
+	/* For.Com_Navigation */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_pNavigationCom, &NavigationDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -107,14 +129,35 @@ HRESULT CTanjiro::Ready_Components()
 HRESULT CTanjiro::Ready_States()
 {
 	list<wstring> strAnimationName;
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AdvNut01_1");
+	m_pStateCom->Add_State(CCharacter::BASIC_IDLE, CState_Tanjiro_Basic_Idle::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AdvJumpF01_0");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AdvJumpF01_1");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AdvJumpF01_2");
+	m_pStateCom->Add_State(CCharacter::BASIC_JUMP, CState_Tanjiro_Basic_Jump::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
+
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AdvWalk01_1");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AdvRun01_1");
+	m_pStateCom->Add_State(CCharacter::BASIC_MOVE, CState_Tanjiro_Basic_Move::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
+
+
+
+
+	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseNut01_1");
-	m_pStateCom->Add_State(CCharacter::STATE_IDLE, CState_Tanjiro_Idle::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
+	m_pStateCom->Add_State(CCharacter::BATTLE_IDLE, CState_Tanjiro_Battle_Idle::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseRun01_1");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseDashF01_1");
-	m_pStateCom->Add_State(CCharacter::STATE_RUN,
-		CState_Tanjiro_Run::Create(m_pDevice, 
+	m_pStateCom->Add_State(CCharacter::BATTLE_MOVE,
+		CState_Tanjiro_Battle_Move::Create(m_pDevice, 
 			m_pContext, 
 			m_pTransformCom, 
 			m_pStateCom, 
@@ -122,11 +165,13 @@ HRESULT CTanjiro::Ready_States()
 			strAnimationName));
 
 
+
+
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Death");
 
 
-	m_pStateCom->Add_State(CCharacter::STATE_DIE,
+	m_pStateCom->Add_State(CCharacter::DIE,
 		CState_Tanjiro_Dead::Create(m_pDevice,
 			m_pContext,
 			m_pTransformCom,
@@ -145,8 +190,12 @@ HRESULT CTanjiro::Ready_States()
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_L");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_R");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_U");
-
-	m_pStateCom->Add_State(CCharacter::STATE_DAMAGED,
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_0");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_1");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBound01_0");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBound02_2");
+	m_pStateCom->Add_State(CCharacter::DAMAGED,
 		CState_Tanjiro_Damaged::Create(m_pDevice,
 			m_pContext,
 			m_pTransformCom,
@@ -162,7 +211,7 @@ HRESULT CTanjiro::Ready_States()
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW03U01");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW04");
 
-	m_pStateCom->Add_State(CCharacter::STATE_ATTACK,
+	m_pStateCom->Add_State(CCharacter::ATTACK,
 		CState_Tanjiro_Attack::Create(m_pDevice,
 			m_pContext,
 			m_pTransformCom,
@@ -172,7 +221,7 @@ HRESULT CTanjiro::Ready_States()
 
 
 
-	m_pStateCom->Change_State(CCharacter::STATE_IDLE);
+	m_pStateCom->Change_State(CCharacter::BASIC_IDLE);
 	return S_OK;
 }
 
@@ -192,26 +241,37 @@ HRESULT CTanjiro::Ready_Sockets()
 
 HRESULT CTanjiro::Ready_Parts()
 {
+	m_Parts.resize(PARTTYPE::PART_END);
+
 	CSweath::SWEATH_DESC			SweathDesc;
+	SweathDesc.pOwner = this;
 	SweathDesc.pParentTransform = m_pTransformCom;
 	SweathDesc.pSocketBone = m_Sockets[SOCKET_SWEATH];
-	XMStoreFloat4(&SweathDesc.vRotationDir, XMVectorSet(1.f, 0.f, 0.f, 0.f));
-	SweathDesc.fRotationDegree = -90.f;
-
+	XMStoreFloat3(&SweathDesc.vRotationDegree, 
+		XMVectorSet(XMConvertToRadians(-90.f), 
+		XMConvertToRadians(180.f), 
+		XMConvertToRadians(0.f), 
+		XMConvertToRadians(0.f)));
 	XMStoreFloat4x4(&SweathDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 
 	CGameObject* pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sweath_Tanjiro"), LAYER_TYPE::LAYER_CHARACTER, &SweathDesc);
 	if (nullptr == pGameObject)
 		return E_FAIL;
-	m_pSweath = dynamic_cast<CSweath*>(pGameObject);
-	m_Parts.push_back(pGameObject);
+
+	Safe_AddRef(pGameObject);
+	m_Parts[PART_SWEATH] = (pGameObject);
 
 
 	CSword::SWORD_DESC			SwordDesc;
 
+	SwordDesc.pOwner = this;
 	SwordDesc.pParentTransform = m_pTransformCom;
-	SwordDesc.pSocketBone = m_Sockets[SOCKET_SWORD];
-	XMStoreFloat3(&SwordDesc.vRotationDegree, XMVectorSet(180.f, 0.f, -90.f, 0.f));
+	SwordDesc.pSocketBone = m_Sockets[SOCKET_SWEATH];
+	XMStoreFloat3(&SwordDesc.vRotationDegree,
+		XMVectorSet(XMConvertToRadians(-90.f),
+			XMConvertToRadians(180.f),
+			XMConvertToRadians(0.f),
+			XMConvertToRadians(0.f)));
 
 	XMStoreFloat4x4(&SwordDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 
@@ -221,8 +281,8 @@ HRESULT CTanjiro::Ready_Parts()
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	m_pSword = dynamic_cast<CSword*>(pGameObject);
-	m_Parts.push_back(pGameObject);
+	Safe_AddRef(pGameObject);
+	m_Parts[PART_SWORD] = pGameObject;
 
 
 	return S_OK;

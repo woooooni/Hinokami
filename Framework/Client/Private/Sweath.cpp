@@ -30,11 +30,6 @@ HRESULT CSweath::Initialize(void* pArg)
 	{
 		pWeaponDesc = (SWEATH_DESC*)pArg;
 
-		m_pSocketBone = pWeaponDesc->pSocketBone;
-		Safe_AddRef(m_pSocketBone);
-
-		m_SocketPivotMatrix = pWeaponDesc->SocketPivot;
-
 		if (FAILED(__super::Initialize(pArg)))
 			return E_FAIL;
 	}
@@ -45,18 +40,15 @@ HRESULT CSweath::Initialize(void* pArg)
 
 	if (pWeaponDesc != nullptr)
 	{
-		m_pTransformCom->Rotation(XMLoadFloat4(&pWeaponDesc->vRotationDir), XMConvertToRadians(pWeaponDesc->fRotationDegree));
+		m_pTransformCom->Set_Rotation(XMLoadFloat3(&pWeaponDesc->vRotationDegree));
+
+		m_vPrevRotation = pWeaponDesc->vRotationDegree;
 	}
 	else
-	{
-		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(178.f));
-	}
-	
+		return E_FAIL;
 
-
-	/* 부모 소켓행렬을 기준으로 자식의 상태를 제어한다.  */
+	return S_OK;
 	
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.7f, 0.f, 0.f, 1.f));
 
 	return S_OK;
 }
@@ -169,7 +161,4 @@ CGameObject * CSweath::Clone(void* pArg)
 void CSweath::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pSocketBone);
-
 }

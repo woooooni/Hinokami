@@ -2,6 +2,7 @@
 #include "State_Tanjiro_Damaged.h"
 #include "GameInstance.h"
 #include "Model.h"
+#include "Character.h"
 
 
 CState_Tanjiro_Damaged::CState_Tanjiro_Damaged(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CTransform* pTransform, CStateMachine* pStateMachine, CModel* pModel)
@@ -26,6 +27,14 @@ HRESULT CState_Tanjiro_Damaged::Initialize(const list<wstring>& AnimationList)
 
 void CState_Tanjiro_Damaged::Enter_State(void* pArg)
 {
+	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
+	if (nullptr != pOwner)
+	{
+		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
+		if (pCharacter != nullptr)
+			pCharacter->DrawSword();
+	}
+
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
 }
 
@@ -54,4 +63,5 @@ CState_Tanjiro_Damaged* CState_Tanjiro_Damaged::Create(ID3D11Device* pDevice, ID
 
 void CState_Tanjiro_Damaged::Free()
 {
+	__super::Free();
 }

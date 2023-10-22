@@ -154,6 +154,25 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 	if(FAILED(pCamera->Set_TargetTransform(pCharacter->Get_TransformCom())))
 		return E_FAIL;
 
+	//CGameObject* pZenitsu = nullptr;
+	//if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Zenitsu"), nullptr, &pZenitsu)))
+	//	return E_FAIL;
+
+	//CGameObject* pObject = GI->Find_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, L"Main_Camera");
+	//if (nullptr == pObject)
+	//	return E_FAIL;
+
+	//CCamera_Main* pCamera = dynamic_cast<CCamera_Main*>(pObject);
+	//if (nullptr == pCamera)
+	//	return E_FAIL;
+
+	//CCharacter* pCharacter = dynamic_cast<CCharacter*>(pZenitsu);
+	//if (nullptr == pCharacter)
+	//	return E_FAIL;
+
+	//if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_TransformCom())))
+	//	return E_FAIL;
+
 	return S_OK;
 }
 

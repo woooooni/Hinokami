@@ -26,7 +26,6 @@ HRESULT CCell::Initialize(const _float3 * pPoints, _uint iIndex)
 	for (size_t i = 0; i < LINE_END; i++)	
 	{
 		m_vNormals[i] = _float3(vLines[i].z * -1.f, 0.f, vLines[i].x);
-
 		XMStoreFloat3(&m_vNormals[i], XMVector3Normalize(XMLoadFloat3(&m_vNormals[i])));
 	}
 
@@ -129,6 +128,23 @@ _bool CCell::isOut(_fvector vWorldPosition, _fmatrix WorldMatrix, _int* pNeighbo
 }
 
 #ifdef _DEBUG
+
+_bool CCell::Is_InCell(_vector vWorldPosition)
+{
+
+	_float fDistance = 0.f;
+	XMVectorSetW(vWorldPosition, 1.f);
+	if (TriangleTests::Intersects(XMVectorSetY(vWorldPosition, 1.f), XMVectorSet(0.f, -1.f, 0.f, 0.f)
+		, XMVectorSetY(XMLoadFloat3(&m_vPoints_InWorld[POINTS::POINT_A]), 0.f)
+		, XMVectorSetY(XMLoadFloat3(&m_vPoints_InWorld[POINTS::POINT_B]), 0.f)
+		, XMVectorSetY(XMLoadFloat3(&m_vPoints_InWorld[POINTS::POINT_C]), 0.f)
+		, fDistance))
+		return true;
+
+
+
+	return false;
+}
 
 HRESULT CCell::Render()
 {

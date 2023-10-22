@@ -9,7 +9,8 @@ class ENGINE_DLL CNavigation final : public CComponent
 public:
 	typedef struct tagNavigationDesc
 	{
-		_int			iCurrentIndex = { -1 };
+		_float3	vStartWorldPosition = {};
+		_bool bInitialize_Index;
 	} NAVIGATION_DESC;
 private:
 	CNavigation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -41,6 +42,9 @@ private:
 	static _float4x4 m_WorldIdentity;
 	_int							m_iCurrentIndex = { -1 };
 	vector<class CCell*>			m_Cells;
+
+private:
+	HRESULT Initialize_Index(_vector vWorldPostion);
 
 private:
 	int Compute_CW(_float3 vPointA, _float3 vPointB, _float3 vPointC);

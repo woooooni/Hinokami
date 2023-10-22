@@ -3,13 +3,6 @@
 #include "Client_Defines.h"
 #include "Part.h"
 
-BEGIN(Engine)
-class CHierarchyNode;
-class CModel;
-class CShader;
-class CRenderer;
-class CTransform;
-END
 
 BEGIN(Client)
 
@@ -18,8 +11,6 @@ class CSword final : public CPart
 public:
 	typedef struct tagWeaponDesc : public CPart::PART_DESC
 	{		
-		CHierarchyNode*	pSocketBone = { nullptr };
-		_float4x4		SocketPivot;
 		_float3			vRotationDegree;
 	} SWORD_DESC;
 
@@ -38,8 +29,6 @@ public:
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
 
-public:
-
 
 public:
 	void Generate_Trail();
@@ -47,8 +36,6 @@ public:
 	void Generate_Effect();
 
 private:
-	CHierarchyNode*			m_pSocketBone = { nullptr };
-	_float4x4				m_SocketPivotMatrix;
 	wstring					m_strModelPrototype;
 
 private:

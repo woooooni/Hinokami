@@ -46,7 +46,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_GAMEPLAY)))
 		return E_FAIL;
 
 
@@ -144,7 +144,7 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	//	CVIBuffer_Particle::Create(m_pDevice, m_pContext))))
 	//	return E_FAIL;
 	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, L"../Bin/DataFiles/Navigation.dat"))))
+		CNavigation::Create(m_pDevice, m_pContext, L"../Bin/DataFiles/Map/Village/Village.nav"))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Rect */

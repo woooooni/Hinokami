@@ -2,15 +2,18 @@
 #include "..\Public\Part.h"
 
 #include "GameInstance.h"
+#include "HierarchyNode.h"
 
 CPart::CPart(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObejctTag, _uint iObjectType)
 	: CGameObject(pDevice, pContext, strObejctTag, iObjectType)
 {
+
 }
 
 CPart::CPart(const CPart& rhs)
 	: CGameObject(rhs)
 {
+
 }
 
 CHierarchyNode* CPart::Get_Socket(const wstring& strNodeName)
@@ -32,6 +35,13 @@ _float4x4 CPart::Get_SocketPivotMatrix()
 	return PivotMatrix;
 }
 
+void CPart::Set_SocketBone(CHierarchyNode* pNode)
+{
+	Safe_Release(m_pSocketBone);
+	m_pSocketBone = pNode;
+	Safe_AddRef(m_pSocketBone);
+}
+
 
 HRESULT CPart::Initialize_Prototype()
 {
@@ -44,6 +54,13 @@ HRESULT CPart::Initialize(void* pArg)
 	{
 		PART_DESC* pPartDesc = (PART_DESC*)pArg;
 		m_pParentTransform = pPartDesc->pParentTransform;
+		m_pOwner = pPartDesc->pOwner;
+
+		m_pSocketBone = pPartDesc->pSocketBone;
+		Safe_AddRef(m_pSocketBone);
+
+		m_SocketPivotMatrix = pPartDesc->SocketPivot;
+		Safe_AddRef(m_pOwner);
 		Safe_AddRef(m_pParentTransform);
 	}
 
@@ -58,11 +75,6 @@ HRESULT CPart::Compute_RenderMatrix(_fmatrix ChildMatrix)
 }
 
 
-CPart* CPart::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-{
-	return nullptr;
-}
-
 CGameObject* CPart::Clone(void* pArg)
 {
 	return nullptr;
@@ -74,6 +86,8 @@ void CPart::Free()
 
 	Safe_Release(m_pParentTransform);
 	Safe_Release(m_pTransformCom);
+	Safe_Release(m_pSocketBone);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_AddRef(m_pOwner);
 }

@@ -1222,7 +1222,7 @@ void CImGui_Manager::NaviPicking()
 
 HRESULT CImGui_Manager::Load_Map_Data(const wstring& strMapFileName)
 {
-    wstring strMapFilePath = L"../Bin/Data/Map/" + strMapFileName + L"/" + strMapFileName + L".map";
+    wstring strMapFilePath = L"../Bin/DataFiles/Map/" + strMapFileName + L"/" + strMapFileName + L".map";
 
     shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
     File->Open(strMapFilePath, FileMode::Read);

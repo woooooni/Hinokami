@@ -22,11 +22,25 @@ class CCharacter abstract : public CGameObject
 
 public:
 #pragma region CHARACTER_STATES
-	enum STATE { STATE_IDLE, STATE_WALK, STATE_RUN, STATE_DASH, STATE_JUMP, STATE_ATTACK, STATE_SKILL, STATE_DAMAGED, STATE_KNOCKDOWN, STATE_DIE, STATE_END };
+	enum STATE { 
+		BASIC_IDLE, 
+		BASIC_MOVE,  
+		BASIC_JUMP,
+		BATTLE_IDLE, 
+		BATTLE_MOVE, 
+		BATTLE_JUMP, 
+		BATTLE_DASH,
+		ATTACK,
+		SKILL,
+		DAMAGED, 
+		KNOCKDOWN, 
+		DIE,
+		STATE_END
+	};
 
 #pragma endregion
 
-	enum PARTTYPE { PART_SWORD, PART_SWEATH, PART_END };
+	enum PARTTYPE { PART_SWEATH, PART_SWORD, PART_END };
 	enum SOCKET_TYPE { SOCKET_SWORD, SOCKET_SWEATH, SOCKET_RIGHT_HAND, SOCKET_LEFT_FOOT, SOCKET_RIGHT_FOOT, SOCEKT_END };
 
 
@@ -53,11 +67,9 @@ public:
 	CHierarchyNode* Get_Socket(PARTTYPE eType);
 	CHierarchyNode* Get_Socket(const wstring& strSocketName);
 
-//public:
-//	void Set_Controlable(_bool _bControlable) { m_bControlable = _bControlable; }
-//	void Set_MainCharacter(_bool _bMain) { m_bMainPlayable = _bMain; }
-//	_bool Is_Controlable() { return m_bControlable; }
-//	_bool Is_MainPlayable() { return m_bMainPlayable; }
+public:
+	void DrawSword();
+	void SweathSword();
 
 protected:
 	virtual HRESULT Ready_Components() PURE;
@@ -70,7 +82,7 @@ protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CTransform* m_pTransformCom = nullptr;
 	CModel* m_pModelCom = nullptr;
 	CStateMachine* m_pStateCom = nullptr;
-	CNavigation* m_pNavigation = nullptr;
+	CNavigation* m_pNavigationCom = nullptr;
 
 protected:
 	vector<CGameObject*>				m_Parts;

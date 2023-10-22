@@ -88,10 +88,22 @@ HRESULT CZenitsu::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Tanjiro"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Zenitsu"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
+	/* For.Com_StateMachine */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_StateMachine"), TEXT("Com_StateMachine"), (CComponent**)&m_pStateCom)))
+		return E_FAIL;
+
+
+	CNavigation::NAVIGATION_DESC NavigationDesc;
+	ZeroMemory(&NavigationDesc, sizeof NavigationDesc);
+
+	XMStoreFloat3(&NavigationDesc.vStartWorldPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	NavigationDesc.bInitialize_Index = true;
+
+	/* For.Com_Navigation */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_pNavigationCom, &NavigationDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -188,35 +200,48 @@ HRESULT CZenitsu::Ready_Sockets()
 
 HRESULT CZenitsu::Ready_Parts()
 {
+	m_Parts.resize(PARTTYPE::PART_END);
+
 	CSweath::SWEATH_DESC			SweathDesc;
+	SweathDesc.pOwner = this;
 	SweathDesc.pParentTransform = m_pTransformCom;
 	SweathDesc.pSocketBone = m_Sockets[SOCKET_SWEATH];
-	XMStoreFloat4(&SweathDesc.vRotationDir, XMVectorSet(1.f, 0.f, 0.f, 0.f));
-	SweathDesc.fRotationDegree = -90.f;
-
+	XMStoreFloat3(&SweathDesc.vRotationDegree,
+		XMVectorSet(XMConvertToRadians(-180.f),
+			XMConvertToRadians(0.f),
+			XMConvertToRadians(90.f),
+			XMConvertToRadians(0.f)));
 	XMStoreFloat4x4(&SweathDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 
-	CGameObject* pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sweath_Tanjiro"), LAYER_TYPE::LAYER_CHARACTER, &SweathDesc);
+	CGameObject* pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sweath_Zenitsu"), LAYER_TYPE::LAYER_CHARACTER, &SweathDesc);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	m_Parts.push_back(pGameObject);
+	Safe_AddRef(pGameObject);
+	m_Parts[PART_SWEATH] = (pGameObject);
 
 
 	CSword::SWORD_DESC			SwordDesc;
 
+	SwordDesc.pOwner = this;
 	SwordDesc.pParentTransform = m_pTransformCom;
-	SwordDesc.pSocketBone = m_Sockets[SOCKET_SWORD];
-	XMStoreFloat3(&SwordDesc.vRotationDegree, XMVectorSet(180.f, 0.f, -90.f, 0.f));
+	SwordDesc.pSocketBone = m_Sockets[SOCKET_SWEATH];
+	XMStoreFloat3(&SwordDesc.vRotationDegree,
+		XMVectorSet(XMConvertToRadians(-180.f),
+			XMConvertToRadians(0.f),
+			XMConvertToRadians(90.f),
+			XMConvertToRadians(0.f)));
 
 	XMStoreFloat4x4(&SwordDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 
 
-	pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sword_Tanjiro"), LAYER_TYPE::LAYER_CHARACTER, &SwordDesc);
+	pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sword_Zenitsu"), LAYER_TYPE::LAYER_CHARACTER, &SwordDesc);
+
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	m_Parts.push_back(pGameObject);
+	Safe_AddRef(pGameObject);
+	m_Parts[PART_SWORD] = pGameObject;
 
 
 	return S_OK;

@@ -208,11 +208,14 @@
     <ClInclude Include="..\Public\ServerSession.h" />
     <ClInclude Include="..\Public\Network_Manager.h" />
     <ClInclude Include="..\Public\State_Tanjiro_Attack.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Basic_Idle.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Basic_Jump.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Basic_Move.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Battle_Jump.h" />
     <ClInclude Include="..\Public\State_Tanjiro_Damaged.h" />
     <ClInclude Include="..\Public\State_Tanjiro_Dead.h" />
-    <ClInclude Include="..\Public\State_Tanjiro_Idle.h" />
-    <ClInclude Include="..\Public\State_Tanjiro_Jump.h" />
-    <ClInclude Include="..\Public\State_Tanjiro_Run.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Battle_Idle.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Battle_Move.h" />
     <ClInclude Include="..\Public\Struct.pb.h" />
     <ClInclude Include="..\Public\Sweath.h" />
     <ClInclude Include="..\Public\Tanjiro.h" />
@@ -295,11 +298,14 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\State_Tanjiro_Attack.cpp" />
+    <ClCompile Include="..\Private\State_Tanjiro_Basic_Idle.cpp" />
+    <ClCompile Include="..\Private\State_Tanjiro_Basic_Jump.cpp" />
+    <ClCompile Include="..\Private\State_Tanjiro_Basic_Move.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Damaged.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Dead.cpp" />
-    <ClCompile Include="..\Private\State_Tanjiro_Idle.cpp" />
-    <ClCompile Include="..\Private\State_Tanjiro_Jump.cpp" />
-    <ClCompile Include="..\Private\State_Tanjiro_Run.cpp" />
+    <ClCompile Include="..\Private\State_Tanjiro_Battle_Idle.cpp" />
+    <ClCompile Include="..\Private\State_Tanjiro_Battle_Jump.cpp" />
+    <ClCompile Include="..\Private\State_Tanjiro_Battle_Move.cpp" />
     <ClCompile Include="..\Private\Struct.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>

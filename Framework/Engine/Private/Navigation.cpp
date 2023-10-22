@@ -32,31 +32,8 @@ CNavigation::CNavigation(const CNavigation & rhs)
 
 HRESULT CNavigation::Initialize_Prototype(const wstring & strNavigationDataFiles)
 {
-	_ulong		dwByte = 0;
-	HANDLE		hFile = CreateFile(strNavigationDataFiles.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	if (0 == hFile)
+	if (FAILED(Load_NaviData(strNavigationDataFiles)))
 		return E_FAIL;
-
-	while (true)
-	{
-		_float3		vPoints[CCell::POINT_END] = {};
-
-		ReadFile(hFile, vPoints, sizeof(_float3) * CCell::POINT_END, &dwByte, nullptr);
-
-		if (0 == dwByte)
-			break;
-
-		CCell*		pCell = CCell::Create(m_pDevice, m_pContext, vPoints, m_Cells.size());
-		if (nullptr == pCell)
-			return E_FAIL;
-
-		m_Cells.push_back(pCell);
-	}
-
-	CloseHandle(hFile);
-
-	if (FAILED(SetUp_Neighbors()))
-		return E_FAIL;	
 
 #ifdef _DEBUG
 	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Cell.hlsl"), VTXPOS_DECLARATION::Elements, VTXPOS_DECLARATION::iNumElements);
@@ -77,7 +54,15 @@ HRESULT CNavigation::Initialize(void * pArg)
 	NAVIGATION_DESC*		pNaviDesc = (NAVIGATION_DESC*)pArg;
 
 	/*  이 네비게이션을 이용하고자하는 객체가 어떤 셀에 있는지 저장한다. */
-	m_iCurrentIndex = pNaviDesc->iCurrentIndex;
+	if (pNaviDesc->bInitialize_Index)
+	{
+		if(FAILED(Initialize_Index(XMLoadFloat3(&pNaviDesc->vStartWorldPosition))))
+			return E_FAIL;
+	}
+		
+	else
+		m_iCurrentIndex = -1;
+	
 
 	return S_OK;
 }
@@ -150,11 +135,9 @@ HRESULT CNavigation::Create_Cell(const _float3* vLocalPoints)
 {
 	vector<_float3> LocalPointsCW;
 	for (_uint i = 0; i < CCell::POINTS::POINT_END; ++i)
-	{
 		LocalPointsCW.push_back(vLocalPoints[i]);
-	}
 
-	if (0 < Compute_CW(LocalPointsCW[0], LocalPointsCW[1], LocalPointsCW[2]))
+	if (0 > Compute_CW(LocalPointsCW[0], LocalPointsCW[1], LocalPointsCW[2]))
 		swap(LocalPointsCW[1], LocalPointsCW[2]);
 
 
@@ -326,7 +309,27 @@ HRESULT CNavigation::Render()
 
 int CNavigation::Compute_CW(_float3 vPointA, _float3 vPointB, _float3 vPointC)
 {
-	return (vPointB.x - vPointA.x) * (vPointC.z - vPointA.z) - (vPointB.z - vPointA.z) * (vPointC.x - vPointA.x);
+	_vector vLineAB = XMVector3Normalize(XMVectorSetY(XMLoadFloat3(&vPointB) - XMLoadFloat3(&vPointA), 0.f));
+	_vector vLineAC = XMVector3Normalize(XMVectorSetY(XMLoadFloat3(&vPointC) - XMLoadFloat3(&vPointA), 0.f));
+
+	
+	return XMVectorGetY(XMVector3Cross(vLineAB, vLineAC));
+}
+
+HRESULT CNavigation::Initialize_Index(_vector vWorldPostion)
+{
+	m_iCurrentIndex = -1;
+
+	for (auto& pCell : m_Cells)
+	{
+		if (true == pCell->Is_InCell(vWorldPostion))
+			m_iCurrentIndex = pCell->Get_Index();
+	}
+
+	if (m_iCurrentIndex == -1)
+		return E_FAIL;
+
+	return S_OK;
 }
 
 /* 네비게이션을 구성하는 각각의 셀들의 이웃을 설정한다. */

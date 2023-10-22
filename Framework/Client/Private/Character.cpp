@@ -4,6 +4,8 @@
 #include "HierarchyNode.h"
 #include "Key_Manager.h"
 #include "Part.h"
+#include "Sword.h"
+#include "Sweath.h"
 
 
 USING(Client)
@@ -115,6 +117,48 @@ CHierarchyNode* CCharacter::Get_Socket(const wstring& strSocketName)
 			return pSocket;
 	}
 	return nullptr;
+}
+
+void CCharacter::DrawSword()
+{
+	if (nullptr == m_Parts[PARTTYPE::PART_SWORD])
+		return;
+
+	CSword* pSword = dynamic_cast<CSword*>(m_Parts[PARTTYPE::PART_SWORD]);
+	if (nullptr == pSword)
+		return;
+	
+	if (pSword->Get_Current_SocketBone() == m_Sockets[SOCKET_SWORD])
+		return;
+
+	pSword->Get_Component<CTransform>(L"Com_Transform")
+		->Rotation_Acc(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(180.f));
+
+	pSword->Get_Component<CTransform>(L"Com_Transform")
+		->Rotation_Acc(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(270.f));
+
+	pSword->Get_Component<CTransform>(L"Com_Transform")
+		->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(270.f));
+
+
+	pSword->Set_SocketBone(m_Sockets[SOCKET_SWORD]);
+}
+
+void CCharacter::SweathSword()
+{
+	if (nullptr == m_Parts[PARTTYPE::PART_SWORD])
+		return;
+
+	CSword* pSword = dynamic_cast<CSword*>(m_Parts[PARTTYPE::PART_SWORD]);
+	if (nullptr == pSword)
+		return;
+
+	if (pSword->Get_Current_SocketBone() == m_Sockets[SOCKET_SWEATH])
+		return;
+
+	pSword->Get_Component<CTransform>(L"Com_Transform")
+		->Set_Rotation(XMLoadFloat3(&pSword->Get_PrevRotation()));
+	pSword->Set_SocketBone(m_Sockets[SOCKET_SWEATH]);
 }
 
 

@@ -36,6 +36,8 @@ HRESULT CStateMachine::Add_State(_uint eStateTag, CState* pState)
 
 
 	m_States.emplace(eStateTag, pState);
+
+	return S_OK;
 }
 
 HRESULT CStateMachine::Change_State(_uint eStateTag, void* pArg)
@@ -47,6 +49,7 @@ HRESULT CStateMachine::Change_State(_uint eStateTag, void* pArg)
 	if (nullptr != m_pCurrState)
 		m_pCurrState->Exit_State();
 
+	m_iCurrState = eStateTag;
 	m_pCurrState = pState;
 	m_pCurrState->Enter_State(pArg);
 

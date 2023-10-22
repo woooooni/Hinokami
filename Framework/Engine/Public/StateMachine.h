@@ -21,9 +21,12 @@ public:
 public:
 	HRESULT Add_State(_uint eStateTag, class CState* pState);
 	HRESULT Change_State(_uint eStateTag, void* pArg = nullptr);
+
+	_uint Get_CurrState() { return m_iCurrState;}
 		
 
 private:
+	_uint m_iCurrState = -1;
 	class CState* m_pCurrState = nullptr;
 	map<_uint, class CState*> m_States;
 

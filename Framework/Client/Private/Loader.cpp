@@ -205,7 +205,7 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Tanjiro"),
-		CTanjiro::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+		CTanjiro::Create(m_pDevice, m_pContext, TEXT("Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
 		return E_FAIL;
 
 
@@ -226,13 +226,20 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Tanjiro/")))
 		return E_FAIL;
 
+	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Weapon/")))
+	//	return E_FAIL;
 
 
-	if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
-		return E_FAIL;
+	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Zenitsu/")))
+	//	return E_FAIL;
 
-	if(FAILED(Load_Map_Data(L"Test")))
-		return E_FAIL;
+
+
+	//if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
+	//	return E_FAIL;
+
+	//if(FAILED(Load_Map_Data(L"Village")))
+	//	return E_FAIL;
 
 	
 

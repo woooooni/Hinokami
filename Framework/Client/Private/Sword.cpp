@@ -29,11 +29,6 @@ HRESULT CSword::Initialize(void* pArg)
 	if (nullptr != pArg)
 	{
 		pWeaponDesc = (SWORD_DESC*)pArg;
-		
-		m_pSocketBone = pWeaponDesc->pSocketBone;
-		Safe_AddRef(m_pSocketBone);
-
-		m_SocketPivotMatrix = pWeaponDesc->SocketPivot;
 
 		if (FAILED(__super::Initialize(pArg)))
 			return E_FAIL;
@@ -42,17 +37,11 @@ HRESULT CSword::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	/* 부모 소켓행렬을 기준으로 자식의 상태를 제어한다.  */
-	// m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.0f));
-	
-	// m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.7f, 0.f, 0.f, 1.f));
-
 	if (pWeaponDesc != nullptr)
 	{
-		// m_pTransformCom->Rotation(XMLoadFloat4(&pWeaponDesc->vRotationDir), XMConvertToRadians(pWeaponDesc->fRotationDegree));
-		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(pWeaponDesc->vRotationDegree.y));
-		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(pWeaponDesc->vRotationDegree.z));
-		m_pTransformCom->Rotation_Acc(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(pWeaponDesc->vRotationDegree.x));
+		m_pTransformCom->Set_Rotation(XMLoadFloat3(&pWeaponDesc->vRotationDegree));
+
+		m_vPrevRotation = pWeaponDesc->vRotationDegree;
 	}
 	else
 		return E_FAIL;
@@ -98,6 +87,7 @@ HRESULT CSword::Render()
 
 	return S_OK;
 }
+
 
 void CSword::Generate_Trail()
 {
@@ -179,8 +169,4 @@ CGameObject * CSword::Clone(void* pArg)
 void CSword::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pSocketBone);
-
-
 }
