@@ -172,6 +172,33 @@
     <Filter Include="02.GameObjects\03. Character\00. Tanjiro\State\Battle">
       <UniqueIdentifier>{00bd1f86-b35d-4c7b-a4fa-eeda785e4f19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Normal_Monster0">
+      <UniqueIdentifier>{6765949d-a3e9-43c9-86e4-fb04aec55a40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\State">
+      <UniqueIdentifier>{b8386616-1c9e-47da-8786-88995eefec71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\State\Idle">
+      <UniqueIdentifier>{10e485c5-0833-4f7b-96d9-dd8b7465138f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\State\Trace">
+      <UniqueIdentifier>{7f8342c5-4369-41c2-b56c-efcdda7dd845}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\State\Jump">
+      <UniqueIdentifier>{7f16f360-ec8a-4c6b-be0f-dde57c86b89a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\State\Damaged">
+      <UniqueIdentifier>{47103a82-df60-46c6-81cc-6b6516c23676}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\State\Attack">
+      <UniqueIdentifier>{a0589821-2884-4d1d-a44d-629da37cc91d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\State\Dead">
+      <UniqueIdentifier>{eb1d777f-6d63-49e0-9da8-4b2ec19a5824}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\State\Regen">
+      <UniqueIdentifier>{165c6d69-dcd3-4457-998d-d3fd8e0a8996}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -369,6 +396,33 @@
     <ClInclude Include="..\Public\State_Tanjiro_Battle_Move.h">
       <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Monster.h">
+      <Filter>02.GameObjects\05. Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Normal_0.h">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Monster_Idle.h">
+      <Filter>02.GameObjects\05. Monster\State\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Monster_Trace.h">
+      <Filter>02.GameObjects\05. Monster\State\Trace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Monster_Jump.h">
+      <Filter>02.GameObjects\05. Monster\State\Jump</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Monster_Damaged.h">
+      <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Monster_Attack.h">
+      <Filter>02.GameObjects\05. Monster\State\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Monter_Dead.h">
+      <Filter>02.GameObjects\05. Monster\State\Dead</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Monster_Regen.h">
+      <Filter>02.GameObjects\05. Monster\State\Regen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -550,6 +604,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Tanjiro_Battle_Move.cpp">
       <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster.cpp">
+      <Filter>02.GameObjects\05. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Normal_0.cpp">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Monster_Idle.cpp">
+      <Filter>02.GameObjects\05. Monster\State\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Monster_Trace.cpp">
+      <Filter>02.GameObjects\05. Monster\State\Trace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Monster_Jump.cpp">
+      <Filter>02.GameObjects\05. Monster\State\Jump</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Monster_Damaged.cpp">
+      <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Monster_Attack.cpp">
+      <Filter>02.GameObjects\05. Monster\State\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Monter_Dead.cpp">
+      <Filter>02.GameObjects\05. Monster\State\Dead</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Monster_Regen.cpp">
+      <Filter>02.GameObjects\05. Monster\State\Regen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

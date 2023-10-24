@@ -205,6 +205,18 @@
     <Filter Include="01.Utiltiy\03.Component\09. Navigation\Cell\Shader">
       <UniqueIdentifier>{10d80c0e-a39b-4547-bc29-ebf8c262ed23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utiltiy\03.Component\10. Collider">
+      <UniqueIdentifier>{b944c4e3-103e-465d-8a44-69f47ceb223e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\10. Collider\Manager">
+      <UniqueIdentifier>{a6e0babe-4c8b-4065-8c1c-15aa451309cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\10. Collider\AABB">
+      <UniqueIdentifier>{647f9c45-754a-4dd8-9136-bea7febe674b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\10. Collider\Sphere">
+      <UniqueIdentifier>{2ad07e1f-f966-4311-bc1d-3d6167b84f88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -420,6 +432,18 @@
     <ClInclude Include="..\Public\VIBuffer_Cell.h">
       <Filter>01.Utiltiy\03.Component\02. VIBuffer\Cell</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Collider.h">
+      <Filter>01.Utiltiy\03.Component\10. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Collision_Manager.h">
+      <Filter>01.Utiltiy\03.Component\10. Collider\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Collider_Sphere.h">
+      <Filter>01.Utiltiy\03.Component\10. Collider\Sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Collider_AABB.h">
+      <Filter>01.Utiltiy\03.Component\10. Collider\AABB</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -605,9 +629,6 @@
     <ClCompile Include="..\Private\SocketUtils.cpp">
       <Filter>02. Network\01. Network\SocketUtils</Filter>
     </ClCompile>
-    <ClCompile Include="..\Public\RigidBody.cpp">
-      <Filter>01.Utiltiy\03.Component\08. RigidBody</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Navigation.cpp">
       <Filter>01.Utiltiy\03.Component\09. Navigation</Filter>
     </ClCompile>
@@ -616,6 +637,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Cell.cpp">
       <Filter>01.Utiltiy\03.Component\02. VIBuffer\Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Collider.cpp">
+      <Filter>01.Utiltiy\03.Component\10. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RigidBody.cpp">
+      <Filter>01.Utiltiy\03.Component\08. RigidBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Collision_Manager.cpp">
+      <Filter>01.Utiltiy\03.Component\10. Collider\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Collider_Sphere.cpp">
+      <Filter>01.Utiltiy\03.Component\10. Collider\Sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Collider_AABB.cpp">
+      <Filter>01.Utiltiy\03.Component\10. Collider\AABB</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

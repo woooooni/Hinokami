@@ -8,14 +8,23 @@
 #include "StateMachine.h"
 
 USING(Client)
-CState_Tanjiro_Basic_Jump::CState_Tanjiro_Basic_Jump(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CTransform* pTransform, CStateMachine* pStateMachine, CModel* pModel)
-	: CState(pStateMachine, pModel, pTransform)
+CState_Tanjiro_Basic_Jump::CState_Tanjiro_Basic_Jump(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
+	: CState(pStateMachine)
 {
 
 }
 
 HRESULT CState_Tanjiro_Basic_Jump::Initialize(const list<wstring>& AnimationList)
 {
+	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
+	if (nullptr == m_pModelCom)
+		return E_FAIL;
+
+
+	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
+	if (nullptr == m_pTransformCom)
+
+		return E_FAIL;
 	for (auto strAnimName : AnimationList)
 	{
 		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
@@ -46,6 +55,13 @@ void CState_Tanjiro_Basic_Jump::Enter_State(void* pArg)
 
 	m_iCurrAnimIndex = 0;
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
+	
+	_vector vJumpDir = XMVectorSet(XMVectorGetX(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 1.f, XMVectorGetZ(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 0.f);
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.1f);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
+	m_pRigidBody->Add_Velocity(XMVector3Normalize(vJumpDir), 10.f);
 }
 
 void CState_Tanjiro_Basic_Jump::Tick_State(_float fTimeDelta)
@@ -57,7 +73,8 @@ void CState_Tanjiro_Basic_Jump::Tick_State(_float fTimeDelta)
 	}
 
 	// if(m_pRigidBody->)
-	// TODO :: 점프 구현. m_pRigidBody->Is_Ground()
+	if (m_pRigidBody->Is_Ground())
+		m_pStateMachineCom->Change_State(CCharacter::BASIC_IDLE);
 }
 
 void CState_Tanjiro_Basic_Jump::Exit_State()
@@ -65,10 +82,9 @@ void CState_Tanjiro_Basic_Jump::Exit_State()
 
 }
 
-CState_Tanjiro_Basic_Jump* CState_Tanjiro_Basic_Jump::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CTransform* pTransform, CStateMachine* pStateMachine,
-	CModel* pModel,const list<wstring>& AnimationList)
+CState_Tanjiro_Basic_Jump* CState_Tanjiro_Basic_Jump::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
 {
-	CState_Tanjiro_Basic_Jump* pInstance =  new CState_Tanjiro_Basic_Jump(pDevice, pContext, pTransform, pStateMachine, pModel);
+	CState_Tanjiro_Basic_Jump* pInstance =  new CState_Tanjiro_Basic_Jump(pDevice, pContext, pStateMachine);
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);

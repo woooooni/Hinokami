@@ -23,10 +23,12 @@ public:
 protected:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Ready_States() override;
+	virtual HRESULT Ready_Colliders() override;
 
 private:
 	HRESULT Ready_Sockets();
 	HRESULT Ready_Parts();
+	
 
 public:
 	static CTanjiro* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);

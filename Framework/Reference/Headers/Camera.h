@@ -23,11 +23,11 @@ public:
 private:
 	typedef struct tagCamShake
 	{
-		_float fDuration;
-		_float fForce;
+		_float fDuration = 0.f;
+		_float fForce = 0.f;
 		
 		_float fAccTime = 0.f;
-		_bool bEnd;
+		_bool bEnd = true;
 	}CAM_SHAKE;
 
 protected:
@@ -43,7 +43,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	void Cam_Shake(_float fDuration, _float fForce);
+	void Cam_Shake(const CAM_SHAKE& pCameraShakeDesc);
 
 public:
 	HRESULT Set_TargetTransform(class CTransform* pTargetTransform) 
@@ -63,7 +63,7 @@ protected:
 
 
 	CAMERADESC					m_CameraDesc;
-	CAM_SHAKE					m_ShakeDesc;
+	CAM_SHAKE					m_tShakeDesc;
 
 	
 protected:

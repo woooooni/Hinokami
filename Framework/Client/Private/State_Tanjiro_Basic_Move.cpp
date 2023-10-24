@@ -7,14 +7,26 @@
 #include "Navigation.h"
 
 USING(Client)
-CState_Tanjiro_Basic_Move::CState_Tanjiro_Basic_Move(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CTransform* pTransform, CStateMachine* pStateMachine, CModel* pModel)
-	: CState(pStateMachine, pModel, pTransform)
+CState_Tanjiro_Basic_Move::CState_Tanjiro_Basic_Move(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
+	: CState(pStateMachine)
 {
 
 }
 
 HRESULT CState_Tanjiro_Basic_Move::Initialize(const list<wstring>& AnimationList)
 {
+	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
+	if (nullptr == m_pModelCom)
+		return E_FAIL;
+
+
+	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
+	if (nullptr == m_pTransformCom)
+		return E_FAIL;
+
+
+	Safe_AddRef(m_pModelCom);
+	Safe_AddRef(m_pTransformCom);
 
 	for (auto strAnimName : AnimationList)
 	{
@@ -28,6 +40,7 @@ HRESULT CState_Tanjiro_Basic_Move::Initialize(const list<wstring>& AnimationList
 	m_pNavigation = m_pStateMachineCom->Get_Owner()->Get_Component<CNavigation>(L"Com_Navigation");
 	if (nullptr == m_pNavigation)
 		return E_FAIL;
+	Safe_AddRef(m_pNavigation);
 	
 	
 	return S_OK;
@@ -112,6 +125,14 @@ void CState_Tanjiro_Basic_Move::Tick_State(_float fTimeDelta)
 		bKeyHolding = true;
 		m_pStateMachineCom->Change_State(CCharacter::ATTACK);
 	}
+
+
+	if (KEY_TAP(KEY::SPACE))
+	{
+		bKeyHolding = true;
+		m_pStateMachineCom->Change_State(CCharacter::BASIC_JUMP);
+	}
+		
 		
 		
 	if (!bKeyHolding)
@@ -119,6 +140,7 @@ void CState_Tanjiro_Basic_Move::Tick_State(_float fTimeDelta)
 		if (KEY_NONE(KEY::W) && KEY_NONE(KEY::A) && KEY_NONE(KEY::S) && KEY_NONE(KEY::D))		
 			m_pStateMachineCom->Change_State(CTanjiro::BASIC_IDLE);
 	}
+
 	
 }
 
@@ -128,10 +150,9 @@ void CState_Tanjiro_Basic_Move::Exit_State()
 	m_pTransformCom->Set_TickPerSecond(m_fMoveSpeed);
 }
 
-CState_Tanjiro_Basic_Move* CState_Tanjiro_Basic_Move::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CTransform* pTransform, CStateMachine* pStateMachine,
-	CModel* pModel,const list<wstring>& AnimationList)
+CState_Tanjiro_Basic_Move* CState_Tanjiro_Basic_Move::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
 {
-	CState_Tanjiro_Basic_Move* pInstance =  new CState_Tanjiro_Basic_Move(pDevice, pContext, pTransform, pStateMachine, pModel);
+	CState_Tanjiro_Basic_Move* pInstance =  new CState_Tanjiro_Basic_Move(pDevice, pContext, pStateMachine);
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);
@@ -144,5 +165,6 @@ CState_Tanjiro_Basic_Move* CState_Tanjiro_Basic_Move::Create(ID3D11Device* pDevi
 
 void CState_Tanjiro_Basic_Move::Free()
 {
+	Safe_Release(m_pNavigation);
 	__super::Free();
 }

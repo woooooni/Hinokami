@@ -59,11 +59,15 @@ void CTree::Tick(_float fTimeDelta)
 
 void CTree::LateTick(_float fTimeDelta)
 {
+	__super::LateTick(fTimeDelta);
+
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 
 HRESULT CTree::Render()
 {
+	__super::Render();
+
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
 

@@ -43,6 +43,7 @@ HRESULT CSweath::Initialize(void* pArg)
 		m_pTransformCom->Set_Rotation(XMLoadFloat3(&pWeaponDesc->vRotationDegree));
 
 		m_vPrevRotation = pWeaponDesc->vRotationDegree;
+		m_OriginRotationTransform = m_pTransformCom->Get_WorldFloat4x4();
 	}
 	else
 		return E_FAIL;
@@ -61,17 +62,18 @@ void CSweath::Tick(_float fTimeDelta)
 	WorldMatrix.r[1] = XMVector3Normalize(WorldMatrix.r[1]);
 	WorldMatrix.r[2] = XMVector3Normalize(WorldMatrix.r[2]);
 	
-	Compute_RenderMatrix(m_pTransformCom->Get_WorldMatrix() * WorldMatrix);
+	Compute_RenderMatrix(WorldMatrix);
 }
 
 void CSweath::LateTick(_float fTimeDelta)
 {
-
-	
+	__super::LateTick(fTimeDelta);
 }
 
 HRESULT CSweath::Render()
 {
+	__super::Render();
+
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -121,7 +123,7 @@ HRESULT CSweath::Ready_Components()
 HRESULT CSweath::Bind_ShaderResources()
 {
 
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TransPose(), sizeof(_float4x4))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_ViewMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TransPose(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
 		return E_FAIL;

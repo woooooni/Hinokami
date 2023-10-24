@@ -13,6 +13,8 @@
 #include "Sweath.h"
 #include "Sword.h"
 
+#include "Monster_Normal_0.h"
+
 #include "Dummy.h"
 #include "Terrain.h"
 #include <filesystem>
@@ -190,6 +192,10 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CCamera_Main::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
 
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_NormalMonster"),
+		CMonster_Normal_0::Create(m_pDevice, m_pContext, TEXT("NormalMonster0")), LAYER_TYPE::LAYER_MONSTER)))
+		return E_FAIL;
+
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
 		CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
@@ -224,6 +230,9 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Tanjiro/")))
+		return E_FAIL;
+
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Enemy/Monster/")))
 		return E_FAIL;
 
 	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Weapon/")))

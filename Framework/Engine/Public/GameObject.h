@@ -10,8 +10,6 @@ BEGIN(Engine)
 class ENGINE_DLL CGameObject abstract : public CBase
 {
 
-
-
 protected:
 	/* 원형을 생성할 때 */
 	CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, _int iObjectType);
@@ -64,11 +62,24 @@ public:
 	void Set_NaviObject(_bool bNaviGation) { m_bNaviObject = bNaviGation; }
 	_bool Is_NaviObject() { return m_bNaviObject; }
 
+public:
+	const vector<class CCollider*>& Get_Collider(_uint eDetectionType) { return m_Colliders[eDetectionType]; }
+	HRESULT Add_Collider(_uint iLevelIndex, _uint eColliderType, _uint eDetectionType, void* pArg);
+	HRESULT Set_ActiveColliders(_uint eDetectionType, _bool bActive);
+
+protected:
+	void LateUpdate_Collider(_float fTimedelta);
+	void Render_Collider();
+	
+
 protected:
 	virtual HRESULT Ready_Components() PURE;
 	HRESULT Add_Component(const wstring& pComponentTag, class CComponent* pComponent);
 	HRESULT Add_Component(_uint iLevelIndex, const wstring& pPrototypeTag, const wstring& pComponentTag, CComponent** ppOut, void* pArg = nullptr);
 	HRESULT Compute_CamZ(_fvector vWorldPos);
+
+
+
 
 protected:
 	ID3D11Device*			m_pDevice = { nullptr };
@@ -76,6 +87,7 @@ protected:
 
 protected:
 	map<wstring, class CComponent*> m_Components;
+	map<_uint, vector<class CCollider*>> m_Colliders;
 
 protected:
 	_float				m_fCamDistance = 0.f;

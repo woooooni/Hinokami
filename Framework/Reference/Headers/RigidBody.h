@@ -37,6 +37,9 @@ public:
     void Add_Velocity(_fvector vVelocity);
     void Add_Velocity(_fvector vDir, _float fForce);
 
+    void Add_Velocity_Acc(_fvector vVelocity);
+    void Add_Velocity_Acc(_fvector vDir, _float fForce);
+
     void Set_RefHeight(_float fHeight) { m_fRefHeight = fHeight; }
     _float Get_RefHeight() { return m_fRefHeight; }
     
@@ -51,10 +54,10 @@ private:
     _float3 m_vMaxVelocity = { 100.f, 100.f, 100.f }; // 속도 최대치.
     _float3 m_vFriction = { 0.f, 0.f, 0.f };    // 현재 속도에 대응하는 마찰력.
 
-    _bool m_bIsGround = true;   // 현재 땅에 있는가?
+    _bool m_bIsGround = false;   // 현재 땅에 있는가?
     _bool m_bIsGravity = true;  // 중력의 영향을 받는가?
 
-    _float m_fFrictionScale = 1.f; // 마찰력 크기.
+    _float m_fFrictionScale = 10.f; // 마찰력 크기.
     _float m_fRefHeight = 0.f; // 기준 Y
 
 private:

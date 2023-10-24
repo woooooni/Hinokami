@@ -59,6 +59,7 @@ void CGround::Tick(_float fTimeDelta)
 
 void CGround::LateTick(_float fTimeDelta)
 {
+	__super::LateTick(fTimeDelta);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 

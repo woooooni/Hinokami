@@ -184,6 +184,11 @@ HRESULT CZenitsu::Ready_States()
 	return S_OK;
 }
 
+HRESULT CZenitsu::Ready_Colliders()
+{
+	return E_NOTIMPL;
+}
+
 HRESULT CZenitsu::Ready_Sockets()
 {
 	if (nullptr == m_pModelCom)

@@ -38,6 +38,12 @@ HRESULT CGameObject::Initialize_Prototype()
 
 HRESULT CGameObject::Initialize(void* pArg)
 {
+	vector<CCollider*> ColliderVector;
+	ColliderVector.reserve(10);
+	for (_uint i = 0; i < CCollider::DETECTION_TYPE::DETECTION_END; ++i)	
+		m_Colliders.emplace(i, ColliderVector);
+
+
 	return S_OK;
 }
 
@@ -47,10 +53,12 @@ void CGameObject::Tick(_float fTimeDelta)
 
 void CGameObject::LateTick(_float fTimeDelta)
 {
+	LateUpdate_Collider(fTimeDelta);
 }
 
 HRESULT CGameObject::Render()
 {
+	Render_Collider();
 	return S_OK;
 }
 
@@ -109,6 +117,67 @@ HRESULT CGameObject::Compute_CamZ(_fvector vWorldPos)
 
 	return S_OK;
 
+}
+
+HRESULT CGameObject::Add_Collider(_uint iLevelIndex, _uint eColliderType, _uint eDetectionType, void* pArg)
+{
+	CComponent* pComponent = nullptr;
+	if(eColliderType == CCollider::COLLIDER_TYPE::SPHERE)
+		 pComponent = GAME_INSTANCE->Clone_Component(iLevelIndex, L"Prototype_Component_Sphere_Collider", this, pArg);
+	else
+		pComponent = GAME_INSTANCE->Clone_Component(iLevelIndex, L"Prototype_Component_AABB_Collider", this, pArg);
+
+
+
+	if (nullptr == pComponent)
+		return E_FAIL;
+
+	auto iter = m_Colliders.find(eDetectionType);
+	if (iter == m_Colliders.end())
+	{
+		Safe_Release(pComponent);
+		return E_FAIL;
+	}
+		
+	CCollider* pCollider = dynamic_cast<CCollider*>(pComponent);
+	if (nullptr == pCollider)
+	{
+		Safe_Release(pComponent);
+		return E_FAIL;
+	}
+
+	iter->second.push_back(pCollider);
+	return S_OK;
+}
+
+HRESULT CGameObject::Set_ActiveColliders(_uint eDetectionType, _bool bActive)
+{
+	auto iter = m_Colliders.find(eDetectionType);
+	if (iter == m_Colliders.end())
+		return E_FAIL;
+
+	for (auto& pCollider : iter->second)	
+		pCollider->Set_Active(bActive);
+
+	return S_OK;
+}
+
+void CGameObject::LateUpdate_Collider(_float fTimedelta)
+{
+	for (auto& Collider : m_Colliders)
+	{
+		for (auto& pCollider : Collider.second)
+			pCollider->LateTick_Collider(fTimedelta);
+	}
+}
+
+void CGameObject::Render_Collider()
+{
+	for (auto& Collider : m_Colliders)
+	{
+		for (auto& pCollider : Collider.second)
+			pCollider->Render();
+	}
 }
 
 

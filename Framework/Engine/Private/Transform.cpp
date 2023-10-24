@@ -269,7 +269,16 @@ void CTransform::Set_Position(_fvector vPosition, CNavigation* pNavigation)
 	else
 	{
 		if (true == pNavigation->Is_Movable(vPosition))
+		{
 			Set_State(CTransform::STATE_POSITION, vPosition);
+		}
+		else
+		{
+			_vector vTransformPosition = Get_State(CTransform::STATE_POSITION);
+			vTransformPosition = XMVectorSetY(vTransformPosition, XMVectorGetY(vPosition));
+			Set_State(CTransform::STATE_POSITION, vTransformPosition);
+		}
+			
 	}
 
 }

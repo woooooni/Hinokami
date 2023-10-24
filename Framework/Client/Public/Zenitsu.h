@@ -21,6 +21,7 @@ public:
 protected:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Ready_States() override;
+	virtual HRESULT Ready_Colliders() override;
 
 private:
 	HRESULT Ready_Sockets();

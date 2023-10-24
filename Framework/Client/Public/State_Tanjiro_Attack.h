@@ -11,7 +11,7 @@ BEGIN(Client)
 class CState_Tanjiro_Attack final : public CState
 {
 private:
-	CState_Tanjiro_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CTransform* pTransform, class CStateMachine* pStateMachine, class CModel* pModel);
+	CState_Tanjiro_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
 	virtual ~CState_Tanjiro_Attack() = default;
 
 public:
@@ -22,12 +22,16 @@ public:
 	virtual void Tick_State(_float fTimeDelta) override;
 	virtual void Exit_State() override;
 
+
+private:
+	void Add_Force(_float fForce);
+
 private:
 	_float m_fInputDelay = 0.2f;
 	_float m_fAccInput = 0.f;
 
 public:
-	static CState_Tanjiro_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CTransform* pTransform, class CStateMachine* pStateMachine, class CModel* pModel, const list<wstring>& AnimationList);
+	static CState_Tanjiro_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;
 };
 

@@ -30,7 +30,7 @@ public:
 	{
 		wstring strModelPath;
 		_uint iModelType;
-	}MODEL_EXPORT_DESC;
+	} MODEL_EXPORT_DESC;
 
 
 private:
@@ -138,7 +138,8 @@ private:
 	_float3 m_vNaviPickingWorldPos = _float3(0.f, 0.f, 0.f);
 
 	_float m_fGenerateRadian = 0.f;
-	_float m_fGenerateScale = 1.f;
+	_float m_fGenerateMinScale = 1.f;
+	_float m_fGenerateMaxScale = 100.f;
 
 	vector<wstring> m_strBakeableObject;
 	vector<_float3> m_vWorldPickedNaviPos;

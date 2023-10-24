@@ -16,6 +16,7 @@
 #include "FileUtils.h"
 #include "Effect.h"
 #include <filesystem>
+#include <fstream>
 #include "tinyxml2.h"
 
 
@@ -323,12 +324,6 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
             m_pTarget->Set_ObjectTag(CUtils::ToWString(pTargetName));
         }
 
-        if (KEY_TAP(KEY::ENTER) && ImGui::IsWindowFocused())
-        {
-            m_pTarget->Set_ObjectTag(CUtils::ToWString(pTargetName));
-        }
-
-
         CTransform* pTransform = m_pTarget->Get_Component<CTransform>(L"Com_Transform");
         if (nullptr == pTransform)
         {
@@ -388,6 +383,144 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
 #pragma endregion
 
         ImGui::EndChild();
+
+        IMGUI_NEW_LINE;
+
+        ImGui::Text("Colliders");
+
+
+        const char* szColliderTypes[] = { "Sphere", "Box" };
+        static const char* szColliderType = NULL;
+        static _int iSelectedColliderType = -1;
+
+        if (ImGui::BeginCombo("##Collider_Type", szColliderType))
+        {
+            for (int n = 0; n < IM_ARRAYSIZE(szColliderTypes); n++)
+            {
+                bool is_selected = (szColliderType == szColliderTypes[n]); // You can store your selection however you want, outside or inside your objects
+                if (ImGui::Selectable(szColliderTypes[n], is_selected))
+                {
+                    szColliderType = szColliderTypes[n];
+                    iSelectedColliderType = n;
+                }
+
+            }
+
+            ImGui::EndCombo();
+        }
+
+
+
+        const char* szDetectionTypes[] = { "BOUNDARY", "HEAD", "BODY", "WEAPON", "EFFECT"};
+        static const char* szDetectionType = NULL;
+        static _int iSelectedDetectionType = -1;
+
+        if (ImGui::BeginCombo("##Detection_Type", szDetectionType))
+        {
+            for (int n = 0; n < IM_ARRAYSIZE(szDetectionTypes); n++)
+            {
+                bool is_selected = (szDetectionType == szDetectionTypes[n]); // You can store your selection however you want, outside or inside your objects
+                if (ImGui::Selectable(szDetectionTypes[n], is_selected))
+                {
+                    szDetectionType = szDetectionTypes[n];
+                    iSelectedDetectionType = n;
+                }
+
+            }
+
+            ImGui::EndCombo();
+        }
+
+        
+        if (ImGui::Button("Add_Collider"))
+        {
+            if(iSelectedColliderType == CCollider::COLLIDER_TYPE::AABB)
+            {
+                if (-1 != iSelectedDetectionType)
+                {
+                    CCollider_AABB::AABB_COLLIDER_DESC tBoxDesc;
+                    ZeroMemory(&tBoxDesc, sizeof tBoxDesc);
+
+                    BoundingBox tBox;
+                    ZeroMemory(&tBox, sizeof tBox);
+                    tBox.Extents = { 1.f, 1.f, 1.f };
+                    XMStoreFloat3(&tBox.Center, pTransform->Get_State(CTransform::STATE_POSITION));
+
+                    tBoxDesc.tBox = tBox;
+                    tBoxDesc.pOwnerTransform = pTransform;
+                    tBoxDesc.vOffsetPosition = {};
+                    tBoxDesc.pNode = nullptr;
+
+                    m_pTarget->Add_Collider(LEVEL_STATIC, iSelectedColliderType, iSelectedDetectionType, &tBoxDesc);
+                }
+                
+            }
+
+            else if (iSelectedColliderType == CCollider::COLLIDER_TYPE::SPHERE)
+            {
+                if (-1 != iSelectedDetectionType)
+                {
+                    CCollider_Sphere::SPHERE_COLLIDER_DESC tSphereDesc;
+                    ZeroMemory(&tSphereDesc, sizeof tSphereDesc);
+
+                    BoundingSphere tSphere;
+                    ZeroMemory(&tSphere, sizeof tSphere);
+                    tSphere.Radius = 0.f;
+                    XMStoreFloat3(&tSphere.Center, pTransform->Get_State(CTransform::STATE_POSITION));
+                    
+                    tSphereDesc.tSphere = tSphere;
+                    tSphereDesc.pOwnerTransform = pTransform;
+                    tSphereDesc.vOffsetPosition = {};
+                    tSphereDesc.pNode = nullptr;
+
+                    m_pTarget->Add_Collider(LEVEL_STATIC, iSelectedColliderType, iSelectedDetectionType, &tSphereDesc);
+                }
+            }
+            
+        }
+
+        for (_uint i = 0; i < CCollider::DETECTION_TYPE::DETECTION_END; ++i)
+        {
+            const vector<CCollider*> Colliders = m_pTarget->Get_Collider(i);
+            for (auto& pCollider : Colliders)
+            {
+                _float3 vOffset = pCollider->Get_Offset();
+                ImGui::Text("Collider_Offset");
+                ImGui::DragFloat3("##OffsetPosition", (_float*)&vOffset, 0.01f, -1000.f, 1000.f);
+                pCollider->Set_Offset(vOffset);
+
+                if (pCollider->Get_ColliderType() == CCollider::COLLIDER_TYPE::AABB)
+                {
+                    CCollider_AABB* pBoxCollider = dynamic_cast<CCollider_AABB*>(pCollider);
+                    if (nullptr != pBoxCollider)
+                    {
+                        BoundingBox tBox = pBoxCollider->Get_AABB_Box();
+                        ImGui::Text("Extents : ");
+                        IMGUI_SAME_LINE;
+                        ImGui::DragFloat("##BoxExtentsX", &tBox.Extents.x, 0.01f, 0.1f, 100.f);
+                        ImGui::DragFloat("##BoxExtentsY", &tBox.Extents.y, 0.01f, 0.1f, 100.f);
+                        ImGui::DragFloat("##BoxExtentsZ", &tBox.Extents.z, 0.01f, 0.1f, 100.f);
+                        pBoxCollider->Set_AABB_Box(tBox);
+                    }
+
+                }
+                else if(pCollider->Get_ColliderType() == CCollider::COLLIDER_TYPE::SPHERE)
+                {
+                    CCollider_Sphere* pShpereCollider = dynamic_cast<CCollider_Sphere*>(pCollider);
+                    if (nullptr != pShpereCollider)
+                    {
+                        BoundingSphere tSphere = pShpereCollider->Get_Sphere();
+                        ImGui::Text("Radius : ");
+                        IMGUI_SAME_LINE;
+                        ImGui::DragFloat("##Collider_Radius", &tSphere.Radius, 0.01f, 0.1f, 1000.f);
+                        pShpereCollider->Set_Sphere(tSphere);
+                    }
+                }
+            }
+        }
+        
+
+
     }
     ImGui::End();
 }
@@ -546,7 +679,26 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
             return;
         }
         
+        if(ImGui::Button("Export_Animation_Names"))
+        {
+            //쓰기 전용으로 파일을 오픈(파일이 없으면 생성)
+            ofstream fout;
+            fout.open("../Bin/Export/ModelAnimations.txt");
 
+            for (auto& iter : Animations)
+            {
+                wstring strAnimationName = iter->Get_AnimationName();
+                if (fout.is_open())
+                {
+                    fout.write(CUtils::ToString(strAnimationName).c_str(), strAnimationName.size());
+                    fout.write("\n", sizeof(1));
+                }
+                    
+            }
+            fout.close();
+            MSG_BOX("Export OK.");
+        }
+        
 
         // AnimationList
         if (ImGui::BeginListBox("##Animation_List"))
@@ -1137,11 +1289,20 @@ void CImGui_Manager::Tick_NaviMesh_Tool(_float fTimeDeleta)
     ImGui::DragFloat("##GenNaviDegree", &fGenCutDegree, 1.f, 0.f, 360.f);
     m_fGenerateRadian = XMConvertToRadians(fGenCutDegree);
 
-    static _float fGenScale = 0.f;  
-    ImGui::Text("CutScale");
+    static _float fMinGenScale = 0.f;
+    static _float fMaxGenScale = 1000.f;
+
+    ImGui::Text("TriangleScale_Min");
     IMGUI_SAME_LINE;
-    ImGui::DragFloat("##GenNaviScale", &fGenScale, 0.01f, 1.f, 100.f);
-    m_fGenerateScale = fGenScale;
+    ImGui::DragFloat("##GenNaviScaleMin", &fMinGenScale, 0.01f, 1.f, 100.f);
+
+    ImGui::Text("TriangleScale_Min");
+    IMGUI_SAME_LINE;
+    ImGui::DragFloat("##GenNaviScaleMax", &fMaxGenScale, 0.01f, 1.f, 100.f);
+
+
+    m_fGenerateMinScale = fMinGenScale;
+    m_fGenerateMaxScale = fMaxGenScale;
 
     if (ImGui::Button("Generate_Navigation"))
     {
@@ -1283,6 +1444,45 @@ HRESULT CImGui_Manager::Load_Map_Data(const wstring& strMapFileName)
             pTransform->Set_State(CTransform::STATE_UP, XMLoadFloat4(&vUp));
             pTransform->Set_State(CTransform::STATE_LOOK, XMLoadFloat4(&vLook));
             pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vPos));
+
+
+            for (_uint iCollider = 0; iCollider < CCollider::DETECTION_TYPE::DETECTION_END; iCollider++)
+            {
+                _uint iColliderCount = File->Read<_uint>();
+                for (_uint iObejctColliderCount = 0; iObejctColliderCount < iColliderCount; ++iObejctColliderCount)
+                {
+                    _uint iColliderType = File->Read<_uint>();
+                    _float3 vColliderOffset = File->Read<_float3>();
+
+                    if (iColliderType == CCollider::AABB)
+                    {
+                        BoundingBox tBox = File->Read<BoundingBox>();
+
+                        CCollider_AABB::AABB_COLLIDER_DESC tDesc;
+                        ZeroMemory(&tDesc, sizeof tDesc);
+                        tDesc.vOffsetPosition = vColliderOffset;
+                        tDesc.pOwnerTransform = pTransform;
+                        tDesc.pNode = nullptr;
+                        tDesc.tBox = tBox;
+                        
+                        pObj->Add_Collider(LEVEL_STATIC, iColliderType, iCollider, &tDesc);
+                    }
+                    else if (iColliderType == CCollider::SPHERE)
+                    {
+                        BoundingSphere tSphere = File->Read<BoundingSphere>();
+
+                        CCollider_Sphere::SPHERE_COLLIDER_DESC tDesc;
+                        ZeroMemory(&tDesc, sizeof tDesc);
+                        tDesc.vOffsetPosition = vColliderOffset;
+                        tDesc.pOwnerTransform = pTransform;
+                        tDesc.pNode = nullptr;
+                        tDesc.tSphere = tSphere;
+
+                        
+                        pObj->Add_Collider(LEVEL_STATIC, iColliderType, iCollider, &tDesc);
+                    }
+                }
+            }
         }
     }
     MSG_BOX("Map_Loaded.");
@@ -1291,7 +1491,7 @@ HRESULT CImGui_Manager::Load_Map_Data(const wstring& strMapFileName)
 
 HRESULT CImGui_Manager::Save_Map_Data(const wstring& strMapFileName)
 {
-    wstring strMapFilePath = L"../Bin/Data/Map/" + strMapFileName + L"/" + strMapFileName + L".map";
+    wstring strMapFilePath = L"../Bin/DataFiles/Map/" + strMapFileName + L"/" + strMapFileName + L".map";
 
     auto path = filesystem::path(strMapFilePath);
     filesystem::create_directories(path.parent_path());
@@ -1342,6 +1542,31 @@ HRESULT CImGui_Manager::Save_Map_Data(const wstring& strMapFileName)
             File->Write<_float4>(vUp);
             File->Write<_float4>(vLook);
             File->Write<_float4>(vPos);
+
+
+            for (_uint iCollider = 0; iCollider < CCollider::DETECTION_TYPE::DETECTION_END; iCollider++)
+            {
+                const vector<CCollider*>& ObjectCollider = Object->Get_Collider(iCollider);
+
+                File->Write<_uint>(ObjectCollider.size());
+                for (auto& pCollider : ObjectCollider)
+                {
+                    File->Write<_uint>(pCollider->Get_ColliderType());
+                    File->Write<_float3>(pCollider->Get_Offset());
+                    if (pCollider->Get_ColliderType() == CCollider::AABB)
+                    {
+                        File->Write<BoundingBox>(dynamic_cast<CCollider_AABB*>(pCollider)->Get_AABB_Box());
+                    }
+                    else if (pCollider->Get_ColliderType() == CCollider::SPHERE)
+                    {
+                        File->Write<BoundingSphere>(dynamic_cast<CCollider_Sphere*>(pCollider)->Get_Sphere());
+                    }
+                    else
+                    {
+                        return E_FAIL;
+                    }
+                }
+            }
         }
 
     }
@@ -1612,7 +1837,7 @@ HRESULT CImGui_Manager::NaviAutoGenerate()
                         _float fRadian = XMVectorGetX(XMVector3Dot(vNormal, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
                         _float fTriangleScale = fabs((fv0.x * fv1.z) + (fv1.x * fv2.z) + (fv2.x * fv0.z) - (fv1.x * fv0.z) - (fv2.x * fv1.z) - (fv0.x * fv2.z)) * 0.5f;
 
-                        if (fRadian >= m_fGenerateRadian && fTriangleScale <= m_fGenerateScale)
+                        if (fRadian >= m_fGenerateRadian && fTriangleScale >= m_fGenerateMinScale && fTriangleScale <= m_fGenerateMaxScale)
                         {
                             _float3  vPoints[3] = {};
                             XMStoreFloat3(&vPoints[0], XMVector3TransformCoord(v0, pTransformCom->Get_WorldMatrix()));

@@ -184,6 +184,7 @@
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Building.h" />
     <ClInclude Include="..\Public\Camera_Main.h" />
+    <ClInclude Include="..\Public\Monster_Normal_0.h" />
     <ClInclude Include="..\Public\Grass.h" />
     <ClInclude Include="..\Public\Camera_Free.h" />
     <ClInclude Include="..\Public\Character.h" />
@@ -200,6 +201,7 @@
     <ClInclude Include="..\Public\Level_Tool.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\Public\Monster.h" />
     <ClInclude Include="..\Public\Part.h" />
     <ClInclude Include="..\Public\Picking_Manager.h" />
     <ClInclude Include="..\Public\Player.h" />
@@ -207,6 +209,13 @@
     <ClInclude Include="..\Public\Protocol.pb.h" />
     <ClInclude Include="..\Public\ServerSession.h" />
     <ClInclude Include="..\Public\Network_Manager.h" />
+    <ClInclude Include="..\Public\State_Monster_Attack.h" />
+    <ClInclude Include="..\Public\State_Monster_Damaged.h" />
+    <ClInclude Include="..\Public\State_Monster_Idle.h" />
+    <ClInclude Include="..\Public\State_Monster_Jump.h" />
+    <ClInclude Include="..\Public\State_Monster_Trace.h" />
+    <ClInclude Include="..\Public\State_Monter_Dead.h" />
+    <ClInclude Include="..\Public\State_Monster_Regen.h" />
     <ClInclude Include="..\Public\State_Tanjiro_Attack.h" />
     <ClInclude Include="..\Public\State_Tanjiro_Basic_Idle.h" />
     <ClInclude Include="..\Public\State_Tanjiro_Basic_Jump.h" />
@@ -263,6 +272,7 @@
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Building.cpp" />
     <ClCompile Include="..\Private\Camera_Main.cpp" />
+    <ClCompile Include="..\Private\Monster_Normal_0.cpp" />
     <ClCompile Include="..\Private\Grass.cpp" />
     <ClCompile Include="..\Private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
@@ -285,6 +295,7 @@
     <ClCompile Include="..\private\MainApp.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\Monster.cpp" />
     <ClCompile Include="..\Private\Network_Manager.cpp" />
     <ClCompile Include="..\Private\Part.cpp" />
     <ClCompile Include="..\Private\Picking_Manager.cpp" />
@@ -297,11 +308,18 @@
     <ClCompile Include="..\Private\ServerSession.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\State_Monster_Attack.cpp" />
+    <ClCompile Include="..\Private\State_Monster_Regen.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Attack.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Basic_Idle.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Basic_Jump.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Basic_Move.cpp" />
+    <ClCompile Include="..\Private\State_Monster_Idle.cpp" />
+    <ClCompile Include="..\Private\State_Monster_Jump.cpp" />
+    <ClCompile Include="..\Private\State_Monster_Trace.cpp" />
+    <ClCompile Include="..\Private\State_Monster_Damaged.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Damaged.cpp" />
+    <ClCompile Include="..\Private\State_Monter_Dead.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Dead.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Battle_Idle.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Battle_Jump.cpp" />

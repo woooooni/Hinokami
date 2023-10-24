@@ -7,14 +7,27 @@
 #include "Navigation.h"
 
 USING(Client)
-CState_Tanjiro_Battle_Move::CState_Tanjiro_Battle_Move(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CTransform* pTransform, CStateMachine* pStateMachine, CModel* pModel)
-	: CState(pStateMachine, pModel, pTransform)
+CState_Tanjiro_Battle_Move::CState_Tanjiro_Battle_Move(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
+	: CState(pStateMachine)
 {
 
 }
 
 HRESULT CState_Tanjiro_Battle_Move::Initialize(const list<wstring>& AnimationList)
 {
+	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
+	if (nullptr == m_pModelCom)
+		return E_FAIL;
+
+
+	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
+	if (nullptr == m_pTransformCom)
+		return E_FAIL;
+
+
+	Safe_AddRef(m_pModelCom);
+	Safe_AddRef(m_pTransformCom);
+
 	for (auto strAnimName : AnimationList)
 	{
 		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
@@ -69,11 +82,11 @@ void CState_Tanjiro_Battle_Move::Tick_State(_float fTimeDelta)
 	if (KEY_HOLD(KEY::W))
 	{
 		bKeyHolding = true;
-		
+
 
 		_matrix vCamWolrd = GI->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
 
-		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 		_vector vCamLook = vCamWolrd.r[CTransform::STATE_LOOK];
 
 		vLook = XMVector3Normalize(vLook);
@@ -112,6 +125,14 @@ void CState_Tanjiro_Battle_Move::Tick_State(_float fTimeDelta)
 		bKeyHolding = true;
 		m_pStateMachineCom->Change_State(CCharacter::ATTACK);
 	}
+
+
+	if (KEY_TAP(KEY::SPACE))
+	{
+		bKeyHolding = true;
+		m_pStateMachineCom->Change_State(CCharacter::BATTLE_JUMP);
+	}
+		
 		
 		
 	if (!bKeyHolding)
@@ -128,10 +149,9 @@ void CState_Tanjiro_Battle_Move::Exit_State()
 	m_pTransformCom->Set_TickPerSecond(m_fMoveSpeed);
 }
 
-CState_Tanjiro_Battle_Move* CState_Tanjiro_Battle_Move::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CTransform* pTransform, CStateMachine* pStateMachine,
-	CModel* pModel,const list<wstring>& AnimationList)
+CState_Tanjiro_Battle_Move* CState_Tanjiro_Battle_Move::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
 {
-	CState_Tanjiro_Battle_Move* pInstance =  new CState_Tanjiro_Battle_Move(pDevice, pContext, pTransform, pStateMachine, pModel);
+	CState_Tanjiro_Battle_Move* pInstance =  new CState_Tanjiro_Battle_Move(pDevice, pContext, pStateMachine);
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);

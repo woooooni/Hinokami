@@ -172,6 +172,10 @@
   <ItemGroup>
     <ClInclude Include="..\Public\Animation.h" />
     <ClInclude Include="..\Public\Cell.h" />
+    <ClInclude Include="..\Public\Collider.h" />
+    <ClInclude Include="..\Public\Collider_AABB.h" />
+    <ClInclude Include="..\Public\Collider_Sphere.h" />
+    <ClInclude Include="..\Public\Collision_Manager.h" />
     <ClInclude Include="..\Public\FileUtils.h" />
     <ClInclude Include="..\public\Base.h" />
     <ClInclude Include="..\Public\Camera.h" />
@@ -248,6 +252,10 @@
     <ClCompile Include="..\Private\BufferReader.cpp" />
     <ClCompile Include="..\Private\BufferWriter.cpp" />
     <ClCompile Include="..\Private\Cell.cpp" />
+    <ClCompile Include="..\Private\Collider.cpp" />
+    <ClCompile Include="..\Private\Collider_AABB.cpp" />
+    <ClCompile Include="..\Private\Collider_Sphere.cpp" />
+    <ClCompile Include="..\Private\Collision_Manager.cpp" />
     <ClCompile Include="..\Private\CoreTLS.cpp" />
     <ClCompile Include="..\Private\DeadLockProfiler.cpp" />
     <ClCompile Include="..\Private\FileUtils.cpp" />
@@ -288,6 +296,7 @@
     <ClCompile Include="..\Private\RecvBuffer.cpp" />
     <ClCompile Include="..\private\Renderer.cpp" />
     <ClCompile Include="..\Private\RenderTarget.cpp" />
+    <ClCompile Include="..\Private\RigidBody.cpp" />
     <ClCompile Include="..\Private\SendBuffer.cpp" />
     <ClCompile Include="..\Private\ServerMemory.cpp" />
     <ClCompile Include="..\Private\Service.cpp" />
@@ -311,9 +320,6 @@
     <ClCompile Include="..\Private\VIBuffer_Particle.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Rect.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp" />
-    <ClCompile Include="..\Public\RigidBody.cpp">
-      <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IncludeInUnityFile>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />

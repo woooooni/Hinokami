@@ -15,7 +15,7 @@ BEGIN(Client)
 class CState_Tanjiro_Battle_Jump final : public CState
 {
 private:
-	CState_Tanjiro_Battle_Jump(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CTransform* pTransform, class CStateMachine* pStateMachine, class CModel* pModel);
+	CState_Tanjiro_Battle_Jump(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
 	virtual ~CState_Tanjiro_Battle_Jump() = default;
 
 public:
@@ -30,7 +30,7 @@ private:
 	class CRigidBody* m_pRigidBody = nullptr;
 
 public:
-	static CState_Tanjiro_Battle_Jump* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CTransform* pTransform, class CStateMachine* pStateMachine, class CModel* pModel, const list<wstring>& AnimationList);
+	static CState_Tanjiro_Battle_Jump* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;
 };
 

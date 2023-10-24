@@ -39,17 +39,19 @@ public:
 	_float3 Get_PrevRotation() { return m_vPrevRotation; }
 	CHierarchyNode* Get_Current_SocketBone() { return m_pSocketBone; }
 
+	void Set_OriginRotation_Transform(_fmatrix RotationMatrix) { XMStoreFloat4x4(&m_OriginRotationTransform, RotationMatrix); }
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Tick(_float fTimeDelta) PURE;
-	virtual void LateTick(_float fTimeDelta) PURE;
-	virtual HRESULT Render() PURE;
+	virtual void LateTick(_float fTimeDelta);
+	virtual HRESULT Render();
+
 
 protected:
 	CTransform*				m_pParentTransform = { nullptr };
-	_float4x4				m_WorldMatrix;
 	CHierarchyNode*			m_pSocketBone = { nullptr };
+	_float4x4				m_OriginRotationTransform;
 	_float4x4				m_SocketPivotMatrix;
 	_float3					m_vPrevRotation = {};
 

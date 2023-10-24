@@ -178,29 +178,21 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Character(const LAYER_TYPE eLayerType)
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const LAYER_TYPE eLayerType)
 {
-	
-
-
-	/*if (FAILED(GAME_INSTANCE->Add_GameObject(TEXT("Prototype_GameObject_Terrain"), LEVEL_GAMEPLAY, _uint(eLayerType))))
-		return E_FAIL;*/
-
-	;
 
 	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 {
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster"), nullptr, nullptr)))
+		return E_FAIL;
 	
 
-	
-
-	;
 	return S_OK;
 }
 

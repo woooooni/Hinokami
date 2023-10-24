@@ -54,11 +54,15 @@ void CEffect::Tick(_float fTimeDelta)
 
 void CEffect::LateTick(_float fTimeDelta)
 {
+	__super::LateTick(fTimeDelta);
+
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
 }
 
 HRESULT CEffect::Render()
 {
+	__super::Render();
+
 	if (FAILED(Bind_ShaderResource()))
 		return E_FAIL;
 

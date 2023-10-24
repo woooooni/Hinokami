@@ -67,10 +67,20 @@ HRESULT CPart::Initialize(void* pArg)
 	return S_OK;
 }
 
+void CPart::LateTick(_float fTimeDelta)
+{
+	__super::LateTick(fTimeDelta);
+}
+
+HRESULT CPart::Render()
+{
+	return __super::Render();
+}
+
 
 HRESULT CPart::Compute_RenderMatrix(_fmatrix ChildMatrix)
 {
-	XMStoreFloat4x4(&m_WorldMatrix, ChildMatrix * m_pParentTransform->Get_WorldMatrix());
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_OriginRotationTransform) * ChildMatrix * m_pParentTransform->Get_WorldMatrix());
 	return S_OK;
 }
 

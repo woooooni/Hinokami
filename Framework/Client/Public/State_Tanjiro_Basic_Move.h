@@ -12,7 +12,7 @@ BEGIN(Client)
 class CState_Tanjiro_Basic_Move final : public CState
 {
 private:
-	CState_Tanjiro_Basic_Move(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CTransform* pTransform, class CStateMachine* pStateMachine, class CModel* pModel);
+	CState_Tanjiro_Basic_Move(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
 	virtual ~CState_Tanjiro_Basic_Move() = default;
 
 public:
@@ -29,7 +29,7 @@ public:
 
 
 public:
-	static CState_Tanjiro_Basic_Move* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CTransform* pTransform, class CStateMachine* pStateMachine, class CModel* pModel, const list<wstring>& AnimationList);
+	static CState_Tanjiro_Basic_Move* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;
 };
 

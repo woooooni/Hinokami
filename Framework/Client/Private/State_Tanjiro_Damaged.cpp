@@ -5,14 +5,27 @@
 #include "Character.h"
 
 
-CState_Tanjiro_Damaged::CState_Tanjiro_Damaged(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CTransform* pTransform, CStateMachine* pStateMachine, CModel* pModel)
-	: CState(pStateMachine, pModel, pTransform)
+CState_Tanjiro_Damaged::CState_Tanjiro_Damaged(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
+	: CState(pStateMachine)
 {
 
 }
 
 HRESULT CState_Tanjiro_Damaged::Initialize(const list<wstring>& AnimationList)
 {
+	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
+	if (nullptr == m_pModelCom)
+		return E_FAIL;
+
+
+	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
+	if (nullptr == m_pTransformCom)
+		return E_FAIL;
+
+
+	Safe_AddRef(m_pModelCom);
+	Safe_AddRef(m_pTransformCom);
+
 	for (auto strAnimName : AnimationList)
 	{
 		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
@@ -47,10 +60,9 @@ void CState_Tanjiro_Damaged::Exit_State()
 {
 }
 
-CState_Tanjiro_Damaged* CState_Tanjiro_Damaged::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CTransform* pTransform, CStateMachine* pStateMachine,
-	CModel* pModel,const list<wstring>& AnimationList)
+CState_Tanjiro_Damaged* CState_Tanjiro_Damaged::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
 {
-	CState_Tanjiro_Damaged* pInstance =  new CState_Tanjiro_Damaged(pDevice, pContext, pTransform, pStateMachine, pModel);
+	CState_Tanjiro_Damaged* pInstance =  new CState_Tanjiro_Damaged(pDevice, pContext, pStateMachine);
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);

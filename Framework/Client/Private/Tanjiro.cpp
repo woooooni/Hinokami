@@ -5,11 +5,9 @@
 #include "Sword.h"
 #include "Sweath.h"
 
-
 #include "State_Tanjiro_Basic_Idle.h"
 #include "State_Tanjiro_Basic_Move.h"
 #include "State_Tanjiro_Basic_Jump.h"
-
 
 #include "State_Tanjiro_Battle_Idle.h"
 #include "State_Tanjiro_Battle_Move.h"
@@ -58,12 +56,16 @@ HRESULT CTanjiro::Initialize(void* pArg)
 	if (FAILED(Ready_States()))
 		return E_FAIL;
 
+ 	if (FAILED(Ready_Colliders()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void CTanjiro::Tick(_float fTimeDelta)
 {
 	m_pStateCom->Tick_State(fTimeDelta);
+	m_pRigidBodyCom->Tick_RigidBody(fTimeDelta);
 	__super::Tick(fTimeDelta);
 
 }
@@ -123,6 +125,18 @@ HRESULT CTanjiro::Ready_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_pNavigationCom, &NavigationDesc)))
 		return E_FAIL;
 
+	CRigidBody::RIGID_BODY_DESC RigidDesc;
+	ZeroMemory(&RigidDesc, sizeof RigidDesc);
+
+
+	RigidDesc.pNavigation = m_pNavigationCom;
+	RigidDesc.pTransform = m_pTransformCom;
+
+	/* For.Com_RigidBody */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_RigidBody"), TEXT("Com_RigidBody"), (CComponent**)&m_pRigidBodyCom, &RigidDesc)))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -132,26 +146,26 @@ HRESULT CTanjiro::Ready_States()
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AdvNut01_1");
-	m_pStateCom->Add_State(CCharacter::BASIC_IDLE, CState_Tanjiro_Basic_Idle::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
+	m_pStateCom->Add_State(CCharacter::BASIC_IDLE, CState_Tanjiro_Basic_Idle::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AdvJumpF01_0");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AdvJumpF01_1");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AdvJumpF01_2");
-	m_pStateCom->Add_State(CCharacter::BASIC_JUMP, CState_Tanjiro_Basic_Jump::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
+	m_pStateCom->Add_State(CCharacter::BASIC_JUMP, CState_Tanjiro_Basic_Jump::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AdvWalk01_1");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AdvRun01_1");
-	m_pStateCom->Add_State(CCharacter::BASIC_MOVE, CState_Tanjiro_Basic_Move::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
+	m_pStateCom->Add_State(CCharacter::BASIC_MOVE, CState_Tanjiro_Basic_Move::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 
 
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseNut01_1");
-	m_pStateCom->Add_State(CCharacter::BATTLE_IDLE, CState_Tanjiro_Battle_Idle::Create(m_pDevice, m_pContext, m_pTransformCom, m_pStateCom, m_pModelCom, strAnimationName));
+	m_pStateCom->Add_State(CCharacter::BATTLE_IDLE, CState_Tanjiro_Battle_Idle::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseRun01_1");
@@ -159,9 +173,18 @@ HRESULT CTanjiro::Ready_States()
 	m_pStateCom->Add_State(CCharacter::BATTLE_MOVE,
 		CState_Tanjiro_Battle_Move::Create(m_pDevice, 
 			m_pContext, 
-			m_pTransformCom, 
 			m_pStateCom, 
-			m_pModelCom, 
+			strAnimationName));
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseJump01_0");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseJump01_1");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseJump01_2");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseJump01_3");
+	m_pStateCom->Add_State(CCharacter::BATTLE_JUMP,
+		CState_Tanjiro_Battle_Jump::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
 			strAnimationName));
 
 
@@ -174,9 +197,7 @@ HRESULT CTanjiro::Ready_States()
 	m_pStateCom->Add_State(CCharacter::DIE,
 		CState_Tanjiro_Dead::Create(m_pDevice,
 			m_pContext,
-			m_pTransformCom,
 			m_pStateCom,
-			m_pModelCom,
 			strAnimationName));
 
 	strAnimationName.clear();
@@ -198,9 +219,7 @@ HRESULT CTanjiro::Ready_States()
 	m_pStateCom->Add_State(CCharacter::DAMAGED,
 		CState_Tanjiro_Damaged::Create(m_pDevice,
 			m_pContext,
-			m_pTransformCom,
 			m_pStateCom,
-			m_pModelCom,
 			strAnimationName));
 
 	strAnimationName.clear();
@@ -213,15 +232,83 @@ HRESULT CTanjiro::Ready_States()
 
 	m_pStateCom->Add_State(CCharacter::ATTACK,
 		CState_Tanjiro_Attack::Create(m_pDevice,
-			m_pContext,
-			m_pTransformCom,
+			m_pContext,			
 			m_pStateCom,
-			m_pModelCom,
 			strAnimationName));
 
-
-
 	m_pStateCom->Change_State(CCharacter::BASIC_IDLE);
+	return S_OK;
+}
+
+HRESULT CTanjiro::Ready_Colliders()
+{
+
+	CCollider_Sphere::SPHERE_COLLIDER_DESC ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+	BoundingSphere tSphere;
+	ZeroMemory(&tSphere, sizeof(BoundingSphere));
+	tSphere.Radius = 1.f;
+	XMStoreFloat4x4(&ColliderDesc.ModePivotMatrix, m_pModelCom->Get_PivotMatrix());
+	ColliderDesc.pOwnerTransform = m_pTransformCom;
+
+	ColliderDesc.tSphere = tSphere;
+	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"Root");
+	ColliderDesc.vOffsetPosition = _float3(0.f, 1.f, 0.f);
+	
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::BOUNDARY, &ColliderDesc)))
+		return E_FAIL;
+
+
+	ColliderDesc.tSphere.Radius = .2f;
+	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"C_TongueA_2");
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
+
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::HEAD, &ColliderDesc)))
+		return E_FAIL;
+
+	ColliderDesc.tSphere.Radius = .6f;
+	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"C_Spine_1");
+	ColliderDesc.vOffsetPosition = _float3(0.f, -0.25f, 0.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::BODY, &ColliderDesc)))
+		return E_FAIL;
+
+
+
+	// Weapon
+
+	CSword* pSword = dynamic_cast<CSword*>(m_Parts[PARTTYPE::PART_SWORD]);
+	if (nullptr == pSword)
+		return E_FAIL;
+
+
+	ColliderDesc.tSphere.Radius = .1f;
+	ColliderDesc.pNode = dynamic_cast<CSword*>(m_Parts[PARTTYPE::PART_SWORD])->Get_Socket(L"RootNode");
+	ColliderDesc.pOwnerTransform = m_Parts[PARTTYPE::PART_SWORD]->Get_Component<CTransform>(L"Com_Transform");
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
+	XMStoreFloat4x4(&ColliderDesc.ModePivotMatrix, pSword->Get_Component<CModel>(L"Com_Model")->Get_PivotMatrix());
+
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::WEAPON, &ColliderDesc)))
+		return E_FAIL;
+
+
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 90.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::WEAPON, &ColliderDesc)))
+		return E_FAIL;
+
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 70.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::WEAPON, &ColliderDesc)))
+		return E_FAIL;
+
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 50.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::WEAPON, &ColliderDesc)))
+		return E_FAIL;
+
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 30.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::WEAPON, &ColliderDesc)))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 

@@ -32,8 +32,7 @@ CNavigation::CNavigation(const CNavigation & rhs)
 
 HRESULT CNavigation::Initialize_Prototype(const wstring & strNavigationDataFiles)
 {
-	if (FAILED(Load_NaviData(strNavigationDataFiles)))
-		return E_FAIL;
+	
 
 #ifdef _DEBUG
 	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Cell.hlsl"), VTXPOS_DECLARATION::Elements, VTXPOS_DECLARATION::iNumElements);
@@ -42,6 +41,9 @@ HRESULT CNavigation::Initialize_Prototype(const wstring & strNavigationDataFiles
 #endif
 
 	XMStoreFloat4x4(&m_WorldIdentity, XMMatrixIdentity());
+
+	if (FAILED(Load_NaviData(strNavigationDataFiles)))
+		return S_OK;
 
 	return S_OK;
 }
@@ -213,6 +215,9 @@ HRESULT CNavigation::Save_NaviData(const wstring& strNaviDataPath)
 HRESULT CNavigation::Load_NaviData(const wstring& strNaviDataPath)
 {
 	Clear_Cells();
+
+	if (!filesystem::exists(strNaviDataPath))
+		return E_FAIL;
 
 	shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
 	File->Open(strNaviDataPath, FileMode::Read);

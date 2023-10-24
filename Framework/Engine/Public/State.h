@@ -8,7 +8,7 @@ BEGIN(Engine)
 class ENGINE_DLL CState abstract : public CBase
 {
 protected:
-	CState(class CStateMachine* pStateMachine, class CModel* pModel, class CTransform* pTransform);
+	CState(class CStateMachine* pStateMachine);
 	virtual ~CState() = default;
 
 
@@ -19,11 +19,13 @@ public:
 
 
 protected:
-	class CModel* m_pModelCom = nullptr;
-	class CStateMachine* m_pStateMachineCom = nullptr;
-	class CTransform* m_pTransformCom = nullptr;
 	_uint m_iCurrAnimIndex = 0;
 	vector<_uint> m_AnimationIndices;
+
+protected:
+	class CStateMachine* m_pStateMachineCom = nullptr;
+	class CModel* m_pModelCom = nullptr;
+	class CTransform* m_pTransformCom = nullptr;
 	
 public:
 	virtual void Free() override;

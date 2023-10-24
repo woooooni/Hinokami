@@ -35,7 +35,7 @@ private:
 	_float3 m_vOffsetPosition = { 0.f, 2.f, -5.f };
 	_float3 m_vAngle = {};
 	_float4 m_vDestPos = {};
-	_float m_fCamSpeed = 5.f;
+	_float m_fCamSpeed = 7.f;
 
 public:
 	static CCamera_Main* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjTag);

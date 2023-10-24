@@ -68,11 +68,14 @@ void CCharacter::LateTick(_float fTimeDelta)
 	for (auto& pPart : m_Parts)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, pPart);
 
+	__super::LateTick(fTimeDelta);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 
 HRESULT CCharacter::Render()
 {
+	__super::Render();
+
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
 
@@ -131,15 +134,8 @@ void CCharacter::DrawSword()
 	if (pSword->Get_Current_SocketBone() == m_Sockets[SOCKET_SWORD])
 		return;
 
-	pSword->Get_Component<CTransform>(L"Com_Transform")
-		->Rotation_Acc(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(180.f));
-
-	pSword->Get_Component<CTransform>(L"Com_Transform")
-		->Rotation_Acc(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(270.f));
-
-	pSword->Get_Component<CTransform>(L"Com_Transform")
-		->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(270.f));
-
+	pSword->Set_OriginRotation_Transform(XMMatrixRotationQuaternion(
+		XMQuaternionRotationRollPitchYaw(XMConvertToRadians(180.f), XMConvertToRadians(0.f), XMConvertToRadians(-90.f))));
 
 	pSword->Set_SocketBone(m_Sockets[SOCKET_SWORD]);
 }
@@ -156,8 +152,7 @@ void CCharacter::SweathSword()
 	if (pSword->Get_Current_SocketBone() == m_Sockets[SOCKET_SWEATH])
 		return;
 
-	pSword->Get_Component<CTransform>(L"Com_Transform")
-		->Set_Rotation(XMLoadFloat3(&pSword->Get_PrevRotation()));
+	pSword->Set_OriginRotation_Transform(XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(pSword->Get_PrevRotation().x, pSword->Get_PrevRotation().y, pSword->Get_PrevRotation().z)));
 	pSword->Set_SocketBone(m_Sockets[SOCKET_SWEATH]);
 }
 
