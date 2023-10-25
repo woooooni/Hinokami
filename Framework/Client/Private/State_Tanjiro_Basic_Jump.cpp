@@ -6,6 +6,7 @@
 #include "Animation.h"
 #include "RigidBody.h"
 #include "StateMachine.h"
+#include "Sword.h"
 
 USING(Client)
 CState_Tanjiro_Basic_Jump::CState_Tanjiro_Basic_Jump(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
@@ -45,7 +46,11 @@ void CState_Tanjiro_Basic_Jump::Enter_State(void* pArg)
 		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
 		if (pCharacter != nullptr)
 			pCharacter->SweathSword();
+
+		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	}
+
+	
 
 	if (m_pRigidBody == nullptr)
 		m_pRigidBody = m_pStateMachineCom->Get_Owner()->Get_Component<Engine::CRigidBody>(L"Com_RigidBody");

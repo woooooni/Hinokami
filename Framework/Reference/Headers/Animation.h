@@ -31,6 +31,8 @@ public:
 	_float Get_Ratio() { return m_fRatio; }
 	_float Get_Duration() { return m_fDuration; }
 
+	_float Get_AnimationProgress() { return min(m_fPlayTime / m_fDuration, 1.f); }
+
 	void Set_AnimationPlayTime(class CTransform* pTransform, _float fPlayTime, _float fTimeDelta);
 	_float Get_PlayTime() { return m_fPlayTime; }
 

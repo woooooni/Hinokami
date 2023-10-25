@@ -17,10 +17,17 @@ public:
 	virtual void LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;
+	virtual void Collision_Continue(const COLLISION_INFO& tInfo) override;
+	virtual void Collision_Exit(const COLLISION_INFO& tInfo) override;
+	virtual void On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageType, _float fPushPower) override;
+
 protected:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Ready_States() override;
 	virtual HRESULT Ready_Colliders() override;
+	
 
 private:
 	HRESULT Ready_Sockets();

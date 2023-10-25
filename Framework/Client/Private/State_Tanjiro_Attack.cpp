@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Character.h"
 #include "Animation.h"
+#include "Sword.h"
 
 CState_Tanjiro_Attack::CState_Tanjiro_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
@@ -22,7 +23,20 @@ HRESULT CState_Tanjiro_Attack::Initialize(const list<wstring>& AnimationList)
 	if (nullptr == m_pTransformCom)
 		return E_FAIL;
 
+	m_pRigidBodyCom = m_pStateMachineCom->Get_Owner()->Get_Component<CRigidBody>(L"Com_RigidBody");
+	if (nullptr == m_pRigidBodyCom)
+		return E_FAIL;
 
+	m_pCharacter = dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner());
+	if (nullptr == m_pCharacter)
+		return E_FAIL;
+
+	m_pSword = m_pCharacter->Get_Part<CSword>(CCharacter::PART_SWORD);
+	if (nullptr == m_pSword)
+		return E_FAIL;
+
+	Safe_AddRef(m_pRigidBodyCom);
+	Safe_AddRef(m_pCharacter);
 	Safe_AddRef(m_pModelCom);
 	Safe_AddRef(m_pTransformCom);
 
@@ -41,93 +55,93 @@ HRESULT CState_Tanjiro_Attack::Initialize(const list<wstring>& AnimationList)
 
 void CState_Tanjiro_Attack::Enter_State(void* pArg)
 {
-	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
-	if (nullptr != pOwner)
-	{
-		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
-		if (pCharacter != nullptr)
-			pCharacter->DrawSword();
-	}
-
 	m_iCurrAnimIndex = 0;
+
+	m_pCharacter->DrawSword();
+	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
-	m_fInputDelay = 0.01f;
 }
 
 void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 {
+	
+	Input(fTimeDelta);
+
 	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[m_iCurrAnimIndex]))
-		m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
-
-	m_fAccInput += fTimeDelta;
-
-	_float fAttackLookForce = 3.f;
-	if (m_fAccInput >= m_fInputDelay)
 	{
-		if (KEY_TAP(KEY::LBTN))
-		{
-			if (m_iCurrAnimIndex == m_AnimationIndices.size() - 1)
-			{
-				if (KEY_HOLD(KEY::W) || KEY_HOLD(KEY::A) || KEY_HOLD(KEY::S) || KEY_HOLD(KEY::D))
-				{
-					m_pStateMachineCom->Change_State(CCharacter::STATE::BATTLE_MOVE);
-					return;
-				}
-			}
+		m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
+	}
+		
 
-			m_iCurrAnimIndex = clamp(m_iCurrAnimIndex + 1, _uint(0), _uint(m_AnimationIndices.size() - 1));
-			if (m_iCurrAnimIndex == 2)
-			{
-				fAttackLookForce = 8.f;
-			}
-			else if (m_iCurrAnimIndex == 3)
-			{
-				fAttackLookForce = 10.f;
-			}
-			else if (m_iCurrAnimIndex == 4)
-			{
-				m_iCurrAnimIndex = 5;
-			}
-			else if (m_iCurrAnimIndex == m_AnimationIndices.size() - 1)
-			{
-				fAttackLookForce = 8.f;
-			}
-
-			Add_Force(fAttackLookForce);
-			m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
-			m_fInputDelay = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_Duration() / 50.f;
-			m_fAccInput = 0.f;
-		}
-
-		if (KEY_TAP(KEY::RBTN))
-		{
-			if (m_iCurrAnimIndex == 2)
-			{
-				m_iCurrAnimIndex = 4;
-				m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
-				m_fInputDelay = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_Duration() / 50.f;
-				m_fAccInput = 0.f;
-
-				
-			}
-		}
+	if (m_iCurrAnimIndex == 4)
+	{
+		_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
+		if (fAnimationProgress >= 0.1f && fAnimationProgress <= 0.5f)
+			m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+		else
+			m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
 	}
 }
 
 void CState_Tanjiro_Attack::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
-	m_fAccInput = 0.f;
+	
+	m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
+	m_pSword->Set_PushPower(0.f);
+
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 }
 
-void CState_Tanjiro_Attack::Add_Force(_float fForce)
-{
-	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-	vLook = XMVectorSetY(vLook, 0.f);
 
-	CRigidBody* pRigid = m_pStateMachineCom->Get_Owner()->Get_Component<CRigidBody>(L"Com_RigidBody");
-	if (nullptr != pRigid)
-		pRigid->Add_Velocity_Acc(vLook, fForce);
+void CState_Tanjiro_Attack::Input(_float fTimeDelta)
+{
+	_float fLookVelocity = 3.f;
+	_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
+	if (fAnimationProgress >= 0.5f)
+	{
+		if (KEY_TAP(KEY::LBTN))
+		{
+			m_iCurrAnimIndex = min(m_iCurrAnimIndex + 1, m_AnimationIndices.size());
+			if (m_iCurrAnimIndex != m_AnimationIndices.size())
+				m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
+
+			switch (m_iCurrAnimIndex)
+			{
+			case 1:
+				m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
+				m_pSword->Set_PushPower(fLookVelocity);
+				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
+				break;
+
+			case 2:
+				m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
+				m_pSword->Set_PushPower(fLookVelocity);
+				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
+				break;
+
+			case 3:
+				m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
+				m_pSword->Set_PushPower(fLookVelocity);
+				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
+				break;
+
+			case 4:
+				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BLOW);
+				m_pSword->Set_PushPower(10.f);
+				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
+				break;
+
+			default:
+				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
+				m_iCurrAnimIndex = min(m_iCurrAnimIndex + 1, m_AnimationIndices.size() - 1);
+				break;
+			}
+		}
+	}
 }
 
 CState_Tanjiro_Attack* CState_Tanjiro_Attack::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
@@ -146,4 +160,6 @@ CState_Tanjiro_Attack* CState_Tanjiro_Attack::Create(ID3D11Device* pDevice, ID3D
 void CState_Tanjiro_Attack::Free()
 {
 	__super::Free();
+	Safe_Release(m_pRigidBodyCom);
+	Safe_Release(m_pCharacter);
 }

@@ -103,6 +103,7 @@ HRESULT CCharacter::Render()
 	return S_OK;
 }
 
+
 CHierarchyNode* CCharacter::Get_Socket(PARTTYPE eType)
 {
 	if (eType >= PARTTYPE::PART_END)
@@ -154,6 +155,16 @@ void CCharacter::SweathSword()
 
 	pSword->Set_OriginRotation_Transform(XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(pSword->Get_PrevRotation().x, pSword->Get_PrevRotation().y, pSword->Get_PrevRotation().z)));
 	pSword->Set_SocketBone(m_Sockets[SOCKET_SWEATH]);
+}
+
+HRESULT CCharacter::Set_ActiveColliders(_uint eDetectionType, _bool bActive)
+{
+	__super::Set_ActiveColliders(eDetectionType, bActive);
+
+	if (nullptr != m_Parts[PARTTYPE::PART_SWORD])
+		m_Parts[PARTTYPE::PART_SWORD]->Set_ActiveColliders(eDetectionType, bActive);
+
+	return S_OK;
 }
 
 

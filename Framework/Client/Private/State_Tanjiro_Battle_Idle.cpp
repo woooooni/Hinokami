@@ -51,6 +51,8 @@ void CState_Tanjiro_Battle_Idle::Enter_State(void* pArg)
 		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
 		if (pCharacter != nullptr)
 			pCharacter->DrawSword();
+
+		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	}
 
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);

@@ -43,8 +43,6 @@ void CRigidBody::Tick_RigidBody(_float fTimeDelta)
 
 	Update_Gravity(fTimeDelta);
 	Update_Velocity(fTimeDelta);
-
-
 }
 
 void CRigidBody::Add_Velocity(_fvector vVelocity)
@@ -82,6 +80,7 @@ void CRigidBody::Update_Gravity(_float fTimeDelta)
 	}
 	else
 	{
+		m_bIsGround = false;
 		m_vVelocity.y -= m_fGravity * fTimeDelta;
 	}
 }

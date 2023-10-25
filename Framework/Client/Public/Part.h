@@ -40,12 +40,20 @@ public:
 	CHierarchyNode* Get_Current_SocketBone() { return m_pSocketBone; }
 
 	void Set_OriginRotation_Transform(_fmatrix RotationMatrix) { XMStoreFloat4x4(&m_OriginRotationTransform, RotationMatrix); }
+
+	class CGameObject* Get_Owner() { return m_pOwner; }
+
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Tick(_float fTimeDelta) PURE;
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
+
+public:
+	virtual void Collision_Enter(const COLLISION_INFO& tInfo) {};
+	virtual void Collision_Continue(const COLLISION_INFO& tInfo) {};
+	virtual void Collision_Exit(const COLLISION_INFO& tInfo) {};
 
 
 protected:

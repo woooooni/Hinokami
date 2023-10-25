@@ -3,6 +3,8 @@
 
 #include "GameInstance.h"
 #include "HierarchyNode.h"
+#include "Collision_Manager.h"
+#include "Monster.h"
 
 CSword::CSword(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strObjectTag)
 	: CPart(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_WEAPON)
@@ -66,6 +68,7 @@ void CSword::Tick(_float fTimeDelta)
 void CSword::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
+	GI->Add_CollisionGroup(COLLISION_GROUP::CHARACTER, this);
 }
 
 HRESULT CSword::Render()
@@ -90,6 +93,46 @@ HRESULT CSword::Render()
 	}
 
 	return S_OK;
+}
+
+void CSword::Collision_Enter(const COLLISION_INFO& tInfo)
+{
+	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER) 
+	{
+		CMonster* pMonster = dynamic_cast<CMonster*>(tInfo.pOther);
+
+		if (tInfo.pMyCollider->Get_DetectionType() == CCollider::ATTACK
+			&& tInfo.pOtherCollider->Get_DetectionType() != CCollider::ATTACK
+			&& tInfo.pOtherCollider->Get_DetectionType() != CCollider::BOUNDARY)
+		{
+			switch (m_eSwordMode)
+			{
+			case SWORD_MODE::BASIC:
+				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::BASIC, m_fPushPower);
+				break;
+			case SWORD_MODE::AIR_BONE:
+				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::AIRBONE, m_fPushPower);
+				break;
+
+			case SWORD_MODE::BLOW:
+				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::BLOW, m_fPushPower);
+				break;
+			}
+			CTransform* pTransform = m_pOwner->Get_Component<CTransform>(L"Com_Transform");
+			pTransform->LookAt_ForLandObject(pMonster->Get_Component<CTransform>(L"Com_Transform")->Get_State(CTransform::STATE_POSITION));
+
+			Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+		}
+	}
+	
+}
+
+void CSword::Collision_Continue(const COLLISION_INFO& tInfo)
+{
+}
+
+void CSword::Collision_Exit(const COLLISION_INFO& tInfo)
+{
 }
 
 
@@ -132,6 +175,48 @@ HRESULT CSword::Ready_Components()
 
 HRESULT CSword::Ready_Colliders()
 {
+
+	CCollider_Sphere::SPHERE_COLLIDER_DESC ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+	BoundingSphere tSphere;
+	ZeroMemory(&tSphere, sizeof(BoundingSphere));
+	tSphere.Radius = 1.f;
+
+	XMStoreFloat4x4(&ColliderDesc.ModePivotMatrix, m_pModelCom->Get_PivotMatrix());
+
+	ColliderDesc.tSphere = tSphere;
+
+	ColliderDesc.tSphere.Radius = 0.8f;
+	ColliderDesc.pOwnerTransform = m_pTransformCom;
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 50.f);
+	XMStoreFloat4x4(&ColliderDesc.ModePivotMatrix, m_pModelCom->Get_PivotMatrix());
+
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::BOUNDARY, &ColliderDesc)))
+		return E_FAIL;
+
+
+	ColliderDesc.tSphere.Radius = 0.1f;
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 110.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+		return E_FAIL;
+
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 90.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+		return E_FAIL;
+
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 70.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+		return E_FAIL;
+
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 50.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+		return E_FAIL;
+
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 30.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

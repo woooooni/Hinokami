@@ -1,6 +1,7 @@
 #include "RigidBody.h"
 #include "GameInstance.h"
 #include "HierarchyNode.h"
+#include "GameObject.h"
 
 _uint CCollider::g_iNextID = 0;
 
@@ -15,8 +16,8 @@ CCollider::CCollider(CCollider& rhs)
 	: CComponent(rhs)
 	, m_pEffect(rhs.m_pEffect)
 	, m_pBatch(rhs.m_pBatch)
-	, m_iColliderID(g_iNextID++)
 	, m_eColliderType(rhs.m_eColliderType)
+	, m_iColliderID(g_iNextID++)
 {
 
 }
@@ -68,7 +69,6 @@ void CCollider::LateTick_Collider(_float fTimeDelta)
 	else
 	{
 		FinalMatrix = OffsetMatrix * m_pNode->Get_CombinedTransformation() * XMLoadFloat4x4(&m_ModelPivotMatrix) * m_pOwnerTransformCom->Get_WorldMatrix();
-		
 	}
 		
 
@@ -80,16 +80,42 @@ void CCollider::LateTick_Collider(_float fTimeDelta)
 void CCollider::Collision_Enter(CCollider* pCollider)
 {
 	m_vColor = _float4(1.f, 0.f, 0.f, 1.f);
+
+	COLLISION_INFO tCollisionInfo;
+	ZeroMemory(&tCollisionInfo, sizeof(COLLISION_INFO));
+
+	tCollisionInfo.pMyCollider = this;
+	tCollisionInfo.pOther = pCollider->Get_Owner();
+	tCollisionInfo.pOtherCollider = pCollider;
+
+	m_pOwner->Collision_Enter(tCollisionInfo);
 }
 
 void CCollider::Collision_Continue(CCollider* pCollider)
 {
+	COLLISION_INFO tCollisionInfo;
+	ZeroMemory(&tCollisionInfo, sizeof(COLLISION_INFO));
 
+	tCollisionInfo.pMyCollider = this;
+	tCollisionInfo.pOther = pCollider->Get_Owner();
+	tCollisionInfo.pOtherCollider = pCollider;
+	
+
+	m_pOwner->Collision_Continue(tCollisionInfo);
 }
 
 void CCollider::Collision_Exit(CCollider* pCollider)
 {
+	COLLISION_INFO tCollisionInfo;
+	ZeroMemory(&tCollisionInfo, sizeof(COLLISION_INFO));
+
+	tCollisionInfo.pMyCollider = this;
+	tCollisionInfo.pOther = pCollider->Get_Owner();
+	tCollisionInfo.pOtherCollider = pCollider;
+
 	m_vColor = _float4(0.f, 1.f, 0.f, 1.f);
+	m_pOwner->Collision_Exit(tCollisionInfo);
+	
 }
 
 CComponent* CCollider::Clone(void* pArg)

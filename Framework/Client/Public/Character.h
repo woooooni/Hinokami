@@ -57,6 +57,14 @@ public:
 	virtual HRESULT Render();
 
 public:
+	virtual void Collision_Enter(const COLLISION_INFO& tInfo) PURE;
+	virtual void Collision_Continue(const COLLISION_INFO& tInfo) PURE;
+	virtual void Collision_Exit(const COLLISION_INFO& tInfo) PURE;
+
+
+	
+
+public:
 	CShader* Get_ShaderCom() { return m_pShaderCom; }
 	CTransform* Get_TransformCom() { return m_pTransformCom; }
 	CModel* Get_ModelCom() { return m_pModelCom; }
@@ -67,14 +75,29 @@ public:
 	CHierarchyNode* Get_Socket(PARTTYPE eType);
 	CHierarchyNode* Get_Socket(const wstring& strSocketName);
 
+	template<class T>
+	T* Get_Part(PARTTYPE eType) 
+	{ 
+		if (m_Parts[eType] == nullptr)
+			return nullptr;
+
+		return dynamic_cast<T*>(m_Parts[eType]);
+	};
+
 public:
 	void DrawSword();
 	void SweathSword();
+
+public:
+	virtual HRESULT Set_ActiveColliders(_uint eDetectionType, _bool bActive);
 
 protected:
 	virtual HRESULT Ready_Components() PURE;
 	virtual HRESULT Ready_States() PURE;
 	virtual HRESULT Ready_Colliders() PURE;
+
+
+	virtual void On_Damaged(CGameObject* pAttacker) {};
 
 protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CShader* m_pShaderCom = nullptr;

@@ -411,7 +411,7 @@
     <ClInclude Include="..\Public\State_Monster_Jump.h">
       <Filter>02.GameObjects\05. Monster\State\Jump</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_Monster_Damaged.h">
+    <ClInclude Include="..\Public\State_Monster_Damaged_Basic.h">
       <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_Monster_Attack.h">
@@ -422,6 +422,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\State_Monster_Regen.h">
       <Filter>02.GameObjects\05. Monster\State\Regen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Monster_Damaged_AirBorn.h">
+      <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Monster_Damaged_Blow.h">
+      <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -620,7 +626,7 @@
     <ClCompile Include="..\Private\State_Monster_Jump.cpp">
       <Filter>02.GameObjects\05. Monster\State\Jump</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\State_Monster_Damaged.cpp">
+    <ClCompile Include="..\Private\State_Monster_Damaged_Basic.cpp">
       <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Monster_Attack.cpp">
@@ -631,6 +637,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Monster_Regen.cpp">
       <Filter>02.GameObjects\05. Monster\State\Regen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Monster_Damaged_AirBorn.cpp">
+      <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Monster_Damaged_Blow.cpp">
+      <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -9,11 +9,12 @@ class ENGINE_DLL CCollider abstract : public CComponent
 {
 public:
     enum COLLIDER_TYPE { SPHERE, AABB, TYPE_END };
-    enum DETECTION_TYPE { BOUNDARY, HEAD, BODY, WEAPON, EFFECT, DETECTION_END };
-
+    enum DETECTION_TYPE { BOUNDARY, ATTACK, BODY, HEAD, DETECTION_END };
+    
 protected:
     typedef struct tagColliderDesc
     {
+
         class CHierarchyNode* pNode;
         class CTransform* pOwnerTransform;
         _float4x4 ModePivotMatrix;
@@ -40,6 +41,11 @@ public:
 
     COLLIDER_TYPE Get_ColliderType() { return m_eColliderType; }
     _uint Get_ColliderID() { return m_iColliderID; }
+
+    DETECTION_TYPE Get_DetectionType() { return m_eDetectionType; }
+    void Set_DetectionType(DETECTION_TYPE eType) { m_eDetectionType = eType; }
+
+    virtual _vector Get_Position() { return XMVectorSet(0.f, 0.f, 0.f, 0.f); }
 
 public:
     virtual _bool Is_Collision(CCollider* pCollider) PURE;

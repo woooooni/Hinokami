@@ -4,6 +4,7 @@
 #include "HierarchyNode.h"
 #include "Sword.h"
 #include "Sweath.h"
+#include "Collision_Manager.h"
 
 #include "State_Tanjiro_Basic_Idle.h"
 #include "State_Tanjiro_Basic_Move.h"
@@ -15,6 +16,8 @@
 #include "State_Tanjiro_Attack.h"
 #include "State_Tanjiro_Damaged.h"
 #include "State_Tanjiro_Dead.h"
+
+#include "Monster.h"
 
 USING(Client)
 
@@ -73,6 +76,7 @@ void CTanjiro::Tick(_float fTimeDelta)
 void CTanjiro::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
+	GI->Add_CollisionGroup(COLLISION_GROUP::CHARACTER, this);
 }
 
 HRESULT CTanjiro::Render()
@@ -84,6 +88,26 @@ HRESULT CTanjiro::Render()
 
 	return S_OK;
 }
+
+void CTanjiro::Collision_Enter(const COLLISION_INFO& tInfo)
+{
+	if (tInfo.pMyCollider->Get_DetectionType() == CCollider::ATTACK)
+	{
+		if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER)
+		{
+
+		}
+	}
+}
+
+void CTanjiro::Collision_Continue(const COLLISION_INFO& tInfo)
+{
+}
+
+void CTanjiro::Collision_Exit(const COLLISION_INFO& tInfo)
+{
+}
+
 
 
 HRESULT CTanjiro::Ready_Components()
@@ -226,8 +250,7 @@ HRESULT CTanjiro::Ready_States()
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW01");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW02");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW03");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW03D01");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW03U01");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW02");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW04");
 
 	m_pStateCom->Add_State(CCharacter::ATTACK,
@@ -249,6 +272,7 @@ HRESULT CTanjiro::Ready_Colliders()
 	BoundingSphere tSphere;
 	ZeroMemory(&tSphere, sizeof(BoundingSphere));
 	tSphere.Radius = 1.f;
+
 	XMStoreFloat4x4(&ColliderDesc.ModePivotMatrix, m_pModelCom->Get_PivotMatrix());
 	ColliderDesc.pOwnerTransform = m_pTransformCom;
 
@@ -275,38 +299,19 @@ HRESULT CTanjiro::Ready_Colliders()
 
 
 
-	// Weapon
-
-	CSword* pSword = dynamic_cast<CSword*>(m_Parts[PARTTYPE::PART_SWORD]);
-	if (nullptr == pSword)
+	ColliderDesc.tSphere.Radius = .1f;
+	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"L_Foot_End");
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
 		return E_FAIL;
 
 
 	ColliderDesc.tSphere.Radius = .1f;
-	ColliderDesc.pNode = dynamic_cast<CSword*>(m_Parts[PARTTYPE::PART_SWORD])->Get_Socket(L"RootNode");
-	ColliderDesc.pOwnerTransform = m_Parts[PARTTYPE::PART_SWORD]->Get_Component<CTransform>(L"Com_Transform");
+	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"R_Foot_End");
 	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
-	XMStoreFloat4x4(&ColliderDesc.ModePivotMatrix, pSword->Get_Component<CModel>(L"Com_Model")->Get_PivotMatrix());
-
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::WEAPON, &ColliderDesc)))
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
 		return E_FAIL;
 
-
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 90.f);
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::WEAPON, &ColliderDesc)))
-		return E_FAIL;
-
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 70.f);
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::WEAPON, &ColliderDesc)))
-		return E_FAIL;
-
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 50.f);
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::WEAPON, &ColliderDesc)))
-		return E_FAIL;
-
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 30.f);
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::WEAPON, &ColliderDesc)))
-		return E_FAIL;
 
 
 	return S_OK;

@@ -2,6 +2,7 @@
 #include "Collider_Sphere.h"
 #include "HierarchyNode.h"
 #include "Collider_AABB.h"
+#include "GameObject.h"
 
 CCollider_Sphere::CCollider_Sphere(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCollider(pDevice, pContext, CCollider::SPHERE)
@@ -60,7 +61,7 @@ void CCollider_Sphere::LateTick_Collider(_float fTimeDelta)
 
 HRESULT CCollider_Sphere::Render()
 {
-	if (m_bActive)
+	if (m_bActive && m_eDetectionType != CCollider::BOUNDARY)
 	{
 		m_pEffect->SetWorld(XMMatrixIdentity());
 		m_pEffect->SetView(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));

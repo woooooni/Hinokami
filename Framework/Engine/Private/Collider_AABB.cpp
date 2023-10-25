@@ -62,12 +62,11 @@ void CCollider_AABB::LateTick_Collider(_float fTimeDelta)
 
 HRESULT CCollider_AABB::Render()
 {
-	if (m_bActive)
+	if (m_bActive && m_eDetectionType != CCollider::BOUNDARY)
 	{
 		m_pEffect->SetWorld(XMMatrixIdentity());
 		m_pEffect->SetView(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
 		m_pEffect->SetProjection(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
-
 
 		m_pEffect->Apply(m_pContext);
 

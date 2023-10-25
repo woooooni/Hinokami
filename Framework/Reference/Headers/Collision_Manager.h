@@ -21,7 +21,6 @@ class CCollision_Manager final : public CBase
 	DECLARE_SINGLETON(CCollision_Manager)
 
 public:
-	enum COLLISION_GROUP { CHATACTER, MONSTER, PROP, GROUP_END };
 	typedef struct tagCollisionObject
 	{
 		class CGameObject* pLeft;
@@ -35,8 +34,7 @@ public:
 
 public:
 	HRESULT Reserve_Manager();
-	HRESULT Reserve_CheckGroup(COLLISION_GROUP eLeft, COLLISION_GROUP eRight);
-	void Late_Tick(_float fTimeDelta);
+	void LateTick(_float fTimeDelta);
 
 
 public:
@@ -49,6 +47,8 @@ private:
 	vector<class CGameObject*>	m_CollisionObjects[(_uint)COLLISION_GROUP::GROUP_END];
 
 private:
+	HRESULT Reserve_CheckGroup(COLLISION_GROUP eLeft, COLLISION_GROUP eRight);
+
 	void Collision_Update(COLLISION_GROUP eLeft, COLLISION_GROUP eRight);
 	_bool Is_Collision(CCollider* pLeft, CCollider* pRight);
 

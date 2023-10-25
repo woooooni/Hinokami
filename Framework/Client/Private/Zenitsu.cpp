@@ -67,6 +67,19 @@ HRESULT CZenitsu::Render()
 	return S_OK;
 }
 
+void CZenitsu::Collision_Enter(const COLLISION_INFO& tInfo)
+{
+}
+
+void CZenitsu::Collision_Continue(const COLLISION_INFO& tInfo)
+{
+}
+
+void CZenitsu::Collision_Exit(const COLLISION_INFO& tInfo)
+{
+}
+
+
 HRESULT CZenitsu::Ready_Components()
 {
 	/* For.Com_Transform */

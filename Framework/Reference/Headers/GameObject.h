@@ -9,7 +9,7 @@ BEGIN(Engine)
 
 class ENGINE_DLL CGameObject abstract : public CBase
 {
-
+	
 protected:
 	/* 원형을 생성할 때 */
 	CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, _int iObjectType);
@@ -25,6 +25,11 @@ public:
 	virtual void Tick(_float fTimeDelta);
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
+
+public:
+	virtual void Collision_Enter(const COLLISION_INFO& tInfo) {};
+	virtual void Collision_Continue(const COLLISION_INFO& tInfo) {};
+	virtual void Collision_Exit(const COLLISION_INFO& tInfo) {};
 
 public:
 	template<typename T>
@@ -65,7 +70,7 @@ public:
 public:
 	const vector<class CCollider*>& Get_Collider(_uint eDetectionType) { return m_Colliders[eDetectionType]; }
 	HRESULT Add_Collider(_uint iLevelIndex, _uint eColliderType, _uint eDetectionType, void* pArg);
-	HRESULT Set_ActiveColliders(_uint eDetectionType, _bool bActive);
+	virtual HRESULT Set_ActiveColliders(_uint eDetectionType, _bool bActive);
 
 protected:
 	void LateUpdate_Collider(_float fTimedelta);

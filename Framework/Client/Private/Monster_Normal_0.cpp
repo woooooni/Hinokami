@@ -7,7 +7,9 @@
 
 
 #include "State_Monster_Attack.h"
-#include "State_Monster_Damaged.h"
+#include "State_Monster_Damaged_Basic.h"
+#include "State_Monster_Damaged_AirBorn.h"
+#include "State_Monster_Damaged_Blow.h"
 #include "State_Monster_Idle.h"
 #include "State_Monster_Jump.h"
 #include "State_Monster_Trace.h"
@@ -68,6 +70,7 @@ void CMonster_Normal_0::Tick(_float fTimeDelta)
 void CMonster_Normal_0::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
+	GI->Add_CollisionGroup(COLLISION_GROUP::MONSTER, this);
 }
 
 HRESULT CMonster_Normal_0::Render()
@@ -78,6 +81,45 @@ HRESULT CMonster_Normal_0::Render()
 	m_pNavigationCom->Render();
 
 	return S_OK;
+}
+
+void CMonster_Normal_0::Collision_Enter(const COLLISION_INFO& tInfo)
+{
+	
+}
+
+void CMonster_Normal_0::Collision_Continue(const COLLISION_INFO& tInfo)
+{
+}
+
+void CMonster_Normal_0::Collision_Exit(const COLLISION_INFO& tInfo)
+{
+}
+
+void CMonster_Normal_0::On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageType, _float fPushPower)
+{
+	__super::On_Damaged(pAttacker, eDamageType, fPushPower);
+	CTransform* pAttackerTransform = pAttacker->Get_Component<CTransform>(L"Com_Transform");
+
+	m_pTransformCom->LookAt_ForLandObject(pAttackerTransform->Get_State(CTransform::STATE_POSITION));
+	switch (eDamageType)
+	{
+		case DAMAGE_TYPE::BASIC:
+			m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BASIC);
+			m_pRigidBodyCom->Add_Velocity(XMVectorSetY(XMVector3Normalize(-1.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 0.f), fPushPower);
+			break;
+
+		case DAMAGE_TYPE::AIRBONE:
+			m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_AIRBORN);
+			m_pRigidBodyCom->Add_Velocity(XMVectorSetY(XMVector3Normalize(-1.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 0.f), fPushPower);
+			AirBorne(5.f);
+			break;
+
+		case DAMAGE_TYPE::BLOW:
+			m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BLOW);
+			m_pRigidBodyCom->Add_Velocity(XMVectorSetY(XMVector3Normalize(-1.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 0.f), fPushPower);
+			break;
+	}
 }
 
 
@@ -157,15 +199,41 @@ HRESULT CMonster_Normal_0::Ready_States()
 	m_pStateCom->Add_State(CMonster::MONSTER_STATE::JUMP, CState_Monster_Jump::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_E0001_V00_C00_Encounter01_Cut");
+	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_E0001_V00_C00_AtkBurst01");
 	m_pStateCom->Add_State(CMonster::MONSTER_STATE::REGEN, CState_Monster_Regen::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_E0001_V00_C00_AtkCmbS01_0");
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_E0001_V00_C00_AtkCmbS01_1");
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_E0001_V00_C00_AtkCmbS01_2");
-
 	m_pStateCom->Add_State(CMonster::ATTACK, CState_Monster_Attack::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
+
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_F");
+	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_L");
+	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_R");
+
+	m_pStateCom->Add_State(CMonster::DAMAGED_BASIC, CState_Monster_Damaged_Basic::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_0");
+	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_1");
+	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
+	m_pStateCom->Add_State(CMonster::DAMAGED_AIRBORN, CState_Monster_Damaged_AirBorn::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
+
+	
+
+
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgStrikeF01_0");
+	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgStrikeF01_1");
+	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgDown01_1");
+	m_pStateCom->Add_State(CMonster::DAMAGED_BLOW, CState_Monster_Damaged_Blow::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
+	
+
+
 
 	m_pStateCom->Change_State(CMonster::MONSTER_STATE::REGEN);
 
@@ -203,6 +271,32 @@ HRESULT CMonster_Normal_0::Ready_Colliders()
 	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"C_Spine_1");
 	ColliderDesc.vOffsetPosition = _float3(0.f, -0.25f, 0.f);
 	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::BODY, &ColliderDesc)))
+		return E_FAIL;
+
+
+
+
+	ColliderDesc.tSphere.Radius = 0.3f;
+	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"L_Hand_1_E0001_V00_C00_Lct");
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+		return E_FAIL;
+
+
+	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"R_Hand_1_E0001_V00_C00_Lct");
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+		return E_FAIL;
+
+
+	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"L_Foot_End");
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+		return E_FAIL;
+
+	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"R_Foot_End");
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
 		return E_FAIL;
 
 

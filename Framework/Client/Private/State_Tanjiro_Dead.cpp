@@ -46,6 +46,11 @@ void CState_Tanjiro_Dead::Enter_State(void* pArg)
 		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
 		if (pCharacter != nullptr)
 			pCharacter->DrawSword();
+
+		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, false);
+		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, false);
+		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, false);
+		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	}
 
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
@@ -58,6 +63,11 @@ void CState_Tanjiro_Dead::Tick_State(_float fTimeDelta)
 
 void CState_Tanjiro_Dead::Exit_State()
 {
+	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
+	pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, true);
+	pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, true);
+	pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, true);
+	pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 }
 
 CState_Tanjiro_Dead* CState_Tanjiro_Dead::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)

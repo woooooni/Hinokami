@@ -30,6 +30,8 @@ public:
     virtual void Collision_Continue(CCollider* pCollider) override;
     virtual void Collision_Exit(CCollider* pCollider) override;
 
+    virtual _vector Get_Position() override { return XMLoadFloat3(&m_tBoundingSphere.Center); }
+
 
 public:
     void LateTick_Collider(_float fTimeDelta) override;

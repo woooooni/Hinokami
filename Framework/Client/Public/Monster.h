@@ -30,14 +30,16 @@ public:
 		JUMP,		
 		ATTACK,
 		SKILL,
-		DAMAGED, 
+		DAMAGED_BASIC, 
+		DAMAGED_BLOW,
+		DAMAGED_AIRBORN,
 		KNOCKDOWN,
 		DIE,
 		STATE_END
 	};
 
 #pragma endregion
-
+	enum DAMAGE_TYPE { BASIC, BLOW, AIRBONE, TYPE_END};
 	enum SOCKET_TYPE { SOCKET_LEFT_FIST, SOCKET_RIGHT_FIST, SOCKET_LEFT_FOOT, SOCKET_RIGTH_FOOT, SOCKET_END };
 
 protected:
@@ -53,6 +55,11 @@ public:
 	virtual HRESULT Render();
 
 public:
+	virtual void Collision_Enter(const COLLISION_INFO& tInfo) PURE;
+	virtual void Collision_Continue(const COLLISION_INFO& tInfo) PURE;
+	virtual void Collision_Exit(const COLLISION_INFO& tInfo) PURE;
+
+public:
 	CShader* Get_ShaderCom() { return m_pShaderCom; }
 	CTransform* Get_TransformCom() { return m_pTransformCom; }
 	CModel* Get_ModelCom() { return m_pModelCom; }
@@ -66,6 +73,14 @@ protected:
 	virtual HRESULT Ready_Components() PURE;
 	virtual HRESULT Ready_States() PURE;
 	virtual HRESULT Ready_Colliders() PURE;
+
+
+public:
+	virtual void On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageType, _float fPushPower) {};
+
+
+protected:
+	virtual void AirBorne(_float fForce);
 
 protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CShader* m_pShaderCom = nullptr;

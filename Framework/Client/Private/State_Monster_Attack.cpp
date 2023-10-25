@@ -48,7 +48,16 @@ void CState_Monster_Attack::Enter_State(void* pArg)
 void CState_Monster_Attack::Tick_State(_float fTimeDelta)
 {
 	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[m_iCurrAnimIndex]))
-		m_pStateMachineCom->Change_State(CMonster::IDLE);
+	{
+		m_iCurrAnimIndex = min(m_iCurrAnimIndex + 1, m_AnimationIndices.size() - 1);
+		if (m_iCurrAnimIndex == m_AnimationIndices.size() - 1)
+		{
+			m_pStateMachineCom->Change_State(CMonster::MONSTER_STATE::IDLE);
+			return;
+		}
+		m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
+	}
+		
 }
 
 void CState_Monster_Attack::Exit_State()

@@ -3,7 +3,7 @@
 #include "Client_Defines.h"
 #include "State.h"
 BEGIN(Engine)
-class CModel;
+class CRigidBody;
 END
 
 BEGIN(Client)
@@ -24,11 +24,12 @@ public:
 
 
 private:
-	void Add_Force(_float fForce);
+	class CCharacter* m_pCharacter = nullptr;
+	class CRigidBody* m_pRigidBodyCom = nullptr;
+	class CSword* m_pSword = nullptr;
 
 private:
-	_float m_fInputDelay = 0.2f;
-	_float m_fAccInput = 0.f;
+	void Input(_float fTimeDelta);
 
 public:
 	static CState_Tanjiro_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

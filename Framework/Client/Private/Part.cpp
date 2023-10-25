@@ -50,6 +50,7 @@ HRESULT CPart::Initialize_Prototype()
 
 HRESULT CPart::Initialize(void* pArg)
 {
+	__super::Initialize(nullptr);
 	if (nullptr != pArg)
 	{
 		PART_DESC* pPartDesc = (PART_DESC*)pArg;

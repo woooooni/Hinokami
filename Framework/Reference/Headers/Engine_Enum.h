@@ -2,6 +2,7 @@
 
 
 
+enum COLLISION_GROUP { CHARACTER, MONSTER, PROP, GROUP_END };
 
 enum class KEY_STATE
 {

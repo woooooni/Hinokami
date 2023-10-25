@@ -10,6 +10,7 @@
 #include "Font_Manager.h"
 #include "Model_Manager.h"
 #include "Key_Manager.h"
+#include "Collision_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -26,6 +27,7 @@ CGameInstance::CGameInstance()
 	, m_pKey_Manager(CKey_Manager::GetInstance())
 	, m_pFont_Manager(CFont_Manager::GetInstance())
 	, m_pModel_Manager(CModel_Manager::GetInstance())
+	, m_pCollision_Manager(CCollision_Manager::GetInstance())
 	// , m_pNetwork_Manager(CNetwork_Manager::GetInstance())
 	
 {
@@ -40,6 +42,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pKey_Manager);
 	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pModel_Manager);
+	Safe_AddRef(m_pCollision_Manager);
 	// Safe_AddRef(m_pNetwork_Manager);
 }
 
@@ -74,7 +77,10 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, _uint iNumLayerType,
 	if (FAILED(m_pModel_Manager->Reserve_Manager(*ppDevice, *ppContext)))
 		return E_FAIL;
 
+	if (FAILED(m_pCollision_Manager->Reserve_Manager()))
+		return E_FAIL;
 
+	
 
 	return S_OK;
 }
@@ -90,6 +96,7 @@ void CGameInstance::Tick(_float fTimeDelta)
 	
 
 	m_pObject_Manager->LateTick(fTimeDelta);
+	m_pCollision_Manager->LateTick(fTimeDelta);
 	m_pLevel_Manager->LateTick(fTimeDelta);
 }
 
@@ -406,6 +413,17 @@ HRESULT CGameInstance::Render_Fonts(const wstring& strFontTag, const _tchar* str
 	return m_pFont_Manager->Render_Fonts(strFontTag, strText, vPosition, vColor, fAngle, vOrigin, vScale);
 }
 
+
+HRESULT CGameInstance::Add_CollisionGroup(COLLISION_GROUP eCollisionGroup, CGameObject* pGameObject)
+{
+	return m_pCollision_Manager->Add_CollisionGroup(eCollisionGroup, pGameObject);
+}
+
+void CGameInstance::Reset()
+{
+	m_pCollision_Manager->Reset();
+}
+
 //void CGameInstance::Set_ServerSession(ServerSessionRef session)
 //{
 //	m_pNetwork_Manager->Set_ServerSession(session);
@@ -473,6 +491,7 @@ void CGameInstance::Release_Engine()
 	CKey_Manager::GetInstance()->DestroyInstance();
 	CFont_Manager::GetInstance()->DestroyInstance();
 	CModel_Manager::GetInstance()->DestroyInstance();
+	CCollision_Manager::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
 	CGameInstance::GetInstance()->DestroyInstance();
 }
@@ -490,5 +509,6 @@ void CGameInstance::Free()
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pKey_Manager);
 	Safe_Release(m_pModel_Manager);
+	Safe_Release(m_pCollision_Manager);
 	// Safe_Release(m_pNetwork_Manager);
 }

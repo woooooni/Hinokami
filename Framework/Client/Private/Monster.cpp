@@ -109,6 +109,17 @@ CHierarchyNode* CMonster::Get_Socket(const wstring& strSocketName)
 	return nullptr;
 }
 
+void CMonster::AirBorne(_float fForce)
+{
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.1f);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
+	m_pRigidBodyCom->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), fForce);
+	m_pRigidBodyCom->Set_Ground(false);
+	m_pRigidBodyCom->Set_Gravity(true);
+}
+
 
 
 void CMonster::Free()

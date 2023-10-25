@@ -104,6 +104,10 @@ public:
 	HRESULT Render_Fonts(const wstring & strFontTag, const _tchar * strText, _float2 vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f),
 		_float fAngle = 0.f, _float2 vOrigin = _float2(0.f, 0.f), _float2 vScale = _float2(1.f, 1.f));
 
+	/* For. Collision_Manager */
+public:
+	HRESULT Add_CollisionGroup(COLLISION_GROUP eCollisionGroup, class CGameObject* pGameObject);
+	void Reset();
 
 /* For. Network_Manager */
 //public:
@@ -126,6 +130,7 @@ private:
 	class CKey_Manager*				m_pKey_Manager = { nullptr };
 	class CModel_Manager*			m_pModel_Manager = { nullptr };
 	class CFont_Manager*			m_pFont_Manager = { nullptr };
+	class CCollision_Manager*		m_pCollision_Manager = { nullptr };
 	// class CNetwork_Manager*			m_pNetwork_Manager = { nullptr };
 public:
 	static void Release_Engine();

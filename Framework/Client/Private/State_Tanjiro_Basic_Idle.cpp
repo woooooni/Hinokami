@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Model.h"
 #include "Character.h"
+#include "Sword.h"
 
 CState_Tanjiro_Basic_Idle::CState_Tanjiro_Basic_Idle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
@@ -39,11 +40,7 @@ HRESULT CState_Tanjiro_Basic_Idle::Initialize(const list<wstring>& AnimationList
 
 void CState_Tanjiro_Basic_Idle::Enter_State(void* pArg)
 {
-	if (KEY_HOLD(KEY::W) || KEY_HOLD(KEY::S) || KEY_HOLD(KEY::A) || KEY_HOLD(KEY::D))
-	{
-		m_pStateMachineCom->Change_State(CCharacter::BASIC_MOVE);
-		return;
-	}
+
 
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
 
@@ -53,6 +50,14 @@ void CState_Tanjiro_Basic_Idle::Enter_State(void* pArg)
 		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
 		if (pCharacter != nullptr)		
 			pCharacter->SweathSword();
+
+		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+	}
+
+	if (KEY_HOLD(KEY::W) || KEY_HOLD(KEY::S) || KEY_HOLD(KEY::A) || KEY_HOLD(KEY::D))
+	{
+		m_pStateMachineCom->Change_State(CCharacter::BASIC_MOVE);
+		return;
 	}
 }
 

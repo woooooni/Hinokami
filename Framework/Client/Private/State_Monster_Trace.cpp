@@ -63,10 +63,13 @@ void CState_Monster_Trace::Enter_State(void* pArg)
 			if (m_fDistance >= XMVectorGetX(XMVector3Length(vDir)))
 			{
 				m_pTarget = pGameObject;
+				break;
 			}
 				
 		}
 	}
+
+
 
 	m_iCurrAnimIndex = m_AnimationIndices[0];
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
@@ -93,6 +96,12 @@ void CState_Monster_Trace::Tick_State(_float fTimeDelta)
 		return;
 	}
 
+	if (XMVectorGetX(XMVector3Length(vDir)) < 2.f)
+	{
+		m_pStateMachineCom->Change_State(CMonster::ATTACK);
+		return;
+	}
+	m_pTransformCom->LookAt_ForLandObject(vTargetPosition);
 	m_pTransformCom->Go_Dir(vDir, fTimeDelta, m_pStateMachineCom->Get_Owner()->Get_Component<CNavigation>(L"Com_Navigation"));
 }
 

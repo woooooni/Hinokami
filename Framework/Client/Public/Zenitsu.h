@@ -18,6 +18,12 @@ public:
 	virtual HRESULT Render() override;
 
 
+public:
+	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;
+	virtual void Collision_Continue(const COLLISION_INFO& tInfo) override;
+	virtual void Collision_Exit(const COLLISION_INFO& tInfo) override;
+
+
 protected:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Ready_States() override;

@@ -5,6 +5,7 @@
 #include "PipeLine.h"
 #include "StateMachine.h"
 #include "Navigation.h"
+#include "Sword.h"
 
 USING(Client)
 CState_Tanjiro_Basic_Move::CState_Tanjiro_Basic_Move(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
@@ -54,6 +55,8 @@ void CState_Tanjiro_Basic_Move::Enter_State(void* pArg)
 		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
 		if (pCharacter != nullptr)
 			pCharacter->SweathSword();
+
+		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	}
 
 	m_iCurrAnimIndex = m_AnimationIndices[0];

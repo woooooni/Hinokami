@@ -3,6 +3,15 @@
 
 namespace Engine
 {
+	typedef struct tagCollisionInfoDesc
+	{
+		class CCollider* pMyCollider;
+
+		class CGameObject* pOther;
+		class CCollider* pOtherCollider;
+	} COLLISION_INFO;
+
+
 	typedef struct tagKeyFrame
 	{
 		float		fTime;

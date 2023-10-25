@@ -50,6 +50,8 @@ void CState_Tanjiro_Battle_Jump::Enter_State(void* pArg)
 		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
 		if (pCharacter != nullptr)
 			pCharacter->DrawSword();
+
+		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	}
 
 	if (m_pRigidBody == nullptr)

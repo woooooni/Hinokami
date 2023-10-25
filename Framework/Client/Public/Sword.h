@@ -9,6 +9,9 @@ BEGIN(Client)
 class CSword final : public CPart
 {
 public:
+	enum SWORD_MODE { BASIC, BLOW, AIR_BONE, SPL_STRIKE, MODE_END };
+
+public:
 	typedef struct tagWeaponDesc : public CPart::PART_DESC
 	{		
 		_float3			vRotationDegree;
@@ -31,13 +34,25 @@ public:
 
 
 public:
+	void Set_SwordMode(SWORD_MODE eMode) { m_eSwordMode = eMode; }
+	void Set_PushPower(_float fPower) { m_fPushPower = fPower; }
+	SWORD_MODE Get_SwordMode() { return m_eSwordMode; }
+
+public:
+	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;
+	virtual void Collision_Continue(const COLLISION_INFO& tInfo) override;
+	virtual void Collision_Exit(const COLLISION_INFO& tInfo) override;
+
+
+public:
 	void Generate_Trail();
 	void Stop_Trail();
 	void Generate_Effect();
 
 private:
 	wstring					m_strModelPrototype;
-
+	SWORD_MODE				m_eSwordMode;
+	_float					m_fPushPower = 0.f;
 private:
 	HRESULT Ready_Components();
 	HRESULT Ready_Colliders();

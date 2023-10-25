@@ -42,6 +42,8 @@ public:
 
     void Set_RefHeight(_float fHeight) { m_fRefHeight = fHeight; }
     _float Get_RefHeight() { return m_fRefHeight; }
+
+    _float3 Get_Velocity() { return m_vVelocity; }
     
 
 private:
