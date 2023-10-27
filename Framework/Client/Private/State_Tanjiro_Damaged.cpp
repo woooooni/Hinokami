@@ -22,9 +22,13 @@ HRESULT CState_Tanjiro_Damaged::Initialize(const list<wstring>& AnimationList)
 	if (nullptr == m_pTransformCom)
 		return E_FAIL;
 
+	m_pCharacter = dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner());
+	if (nullptr == m_pCharacter)
+		return E_FAIL;
 
 	Safe_AddRef(m_pModelCom);
 	Safe_AddRef(m_pTransformCom);
+	Safe_AddRef(m_pCharacter);
 
 	for (auto strAnimName : AnimationList)
 	{
@@ -40,26 +44,25 @@ HRESULT CState_Tanjiro_Damaged::Initialize(const list<wstring>& AnimationList)
 
 void CState_Tanjiro_Damaged::Enter_State(void* pArg)
 {
-	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
-	if (nullptr != pOwner)
-	{
-		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
-		if (pCharacter != nullptr)
-			pCharacter->DrawSword();
+	m_pCharacter->Set_Infinite(5.f, true);
+	m_pCharacter->DrawSword();
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+	
 
-		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-	}
+	m_iRandomIndex = rand() % m_AnimationIndices.size();
+	m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iRandomIndex]);
 
-	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
 }
 
 void CState_Tanjiro_Damaged::Tick_State(_float fTimeDelta)
 {
-	
+	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[m_iRandomIndex]))
+		m_pStateMachineCom->Change_State(CCharacter::STATE::BATTLE_IDLE);
 }
 
 void CState_Tanjiro_Damaged::Exit_State()
 {
+	m_pCharacter->Set_Infinite(5.f, true);
 }
 
 CState_Tanjiro_Damaged* CState_Tanjiro_Damaged::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
@@ -78,4 +81,5 @@ CState_Tanjiro_Damaged* CState_Tanjiro_Damaged::Create(ID3D11Device* pDevice, ID
 void CState_Tanjiro_Damaged::Free()
 {
 	__super::Free();
+	Safe_Release(m_pCharacter);
 }

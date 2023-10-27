@@ -11,7 +11,7 @@ CCollision_Manager::CCollision_Manager()
 
 HRESULT CCollision_Manager::Reserve_Manager()
 {
-
+	Reserve_CheckGroup(COLLISION_GROUP::MONSTER, COLLISION_GROUP::MONSTER);
 	Reserve_CheckGroup(COLLISION_GROUP::CHARACTER, COLLISION_GROUP::MONSTER);
 	Reserve_CheckGroup(COLLISION_GROUP::CHARACTER, COLLISION_GROUP::PROP);
 	Reserve_CheckGroup(COLLISION_GROUP::PROP, COLLISION_GROUP::MONSTER);
@@ -59,11 +59,13 @@ void CCollision_Manager::LateTick(_float fTimeDelta)
 			}
 		}
 	}
+
+	for (_uint i = 0; i < (_uint)COLLISION_GROUP::GROUP_END; ++i)
+		m_CollisionObjects[i].clear();
 }
 
 HRESULT CCollision_Manager::Add_CollisionGroup(COLLISION_GROUP eGroup, CGameObject* pGameObject)
 {
-	
 	m_CollisionObjects[eGroup].push_back(pGameObject);
 
 	return S_OK;
@@ -84,9 +86,13 @@ void CCollision_Manager::Collision_Update(COLLISION_GROUP eLeft, COLLISION_GROUP
 		if (pLeft->Is_Dead() || pLeft->Is_ReserveDead() || pLeft->Get_Collider(CCollider::DETECTION_TYPE::BOUNDARY).size() <= 0)
 			continue;
 
+		
 		for (auto& pRight : pRightObject)
 		{
 			if (pRight->Is_ReserveDead() || pRight->Is_Dead() || pRight->Get_Collider(CCollider::DETECTION_TYPE::BOUNDARY).size() <= 0)			
+				continue;
+
+			if (pLeft == pRight)
 				continue;
 
 			CCollider* pLeftBounderyCollider = pLeft->Get_Collider(CCollider::DETECTION_TYPE::BOUNDARY)[0];
@@ -98,6 +104,7 @@ void CCollision_Manager::Collision_Update(COLLISION_GROUP eLeft, COLLISION_GROUP
 				|| !pRightBounderyCollider->Is_Active())
 				continue;
 
+
 			if (Is_Collision(pLeftBounderyCollider, pRightBounderyCollider))
 			{
 				for (_uint i = 1; i < CCollider::DETECTION_TYPE::DETECTION_END; ++i)
@@ -108,13 +115,8 @@ void CCollision_Manager::Collision_Update(COLLISION_GROUP eLeft, COLLISION_GROUP
 						const vector<CCollider*> RightColliders = pRight->Get_Collider(j);
 						for (auto& pLeftCollider : LeftColliders)
 						{
-							if (!pLeftCollider->Is_Active())
-								continue;
-
 							for (auto& pRightCollider : RightColliders)
 							{
-								if (!pLeftCollider->Is_Active())
-									continue;
 
 								COLLIDER_ID ID;
 								ID.iLeft_id = min(pLeftCollider->Get_ColliderID(), pRightCollider->Get_ColliderID());
@@ -127,11 +129,17 @@ void CCollision_Manager::Collision_Update(COLLISION_GROUP eLeft, COLLISION_GROUP
 									iter = m_mapColInfo.find(ID.ID);
 								}
 
+
 								if (pLeftCollider->Is_Collision(pRightCollider))
 								{
 									if (iter->second)
 									{
-										if (pLeft->Is_Dead() || pRight->Is_Dead() || pLeft->Is_ReserveDead() || pRight->Is_ReserveDead())
+										if (!pLeftCollider->Is_Active() 
+											|| !pRightCollider->Is_Active() 
+											||pLeft->Is_Dead() 
+											|| pRight->Is_Dead() 
+											|| pLeft->Is_ReserveDead() 
+											|| pRight->Is_ReserveDead())
 										{
 											pLeftCollider->Collision_Exit(pRightCollider);
 											pRightCollider->Collision_Exit(pLeftCollider);
@@ -145,12 +153,18 @@ void CCollision_Manager::Collision_Update(COLLISION_GROUP eLeft, COLLISION_GROUP
 									}
 									else
 									{
-										if (!pLeft->Is_Dead() && !pRight->Is_Dead() && !pLeft->Is_ReserveDead() && !pRight->Is_ReserveDead())
+										if (pLeftCollider->Is_Active()
+											&& pRightCollider->Is_Active()
+											&& !pLeft->Is_Dead()
+											&& !pRight->Is_Dead()
+											&& !pLeft->Is_ReserveDead()
+											&& !pRight->Is_ReserveDead())
 										{
 											pLeftCollider->Collision_Enter(pRightCollider);
 											pRightCollider->Collision_Enter(pLeftCollider);
 											iter->second = true;
 										}
+										
 									}
 								}
 								else
@@ -203,8 +217,7 @@ void CCollision_Manager::Collision_Update(COLLISION_GROUP eLeft, COLLISION_GROUP
 		}
 	}
 
-	for (_uint i = 0; i < (_uint)COLLISION_GROUP::GROUP_END; ++i)
-		m_CollisionObjects[i].clear();
+
 	
 }
 

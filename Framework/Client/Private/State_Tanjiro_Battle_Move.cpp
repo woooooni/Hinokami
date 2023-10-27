@@ -81,6 +81,7 @@ void CState_Tanjiro_Battle_Move::Tick_State(_float fTimeDelta)
 		m_pTransformCom->Set_TickPerSecond(m_pTransformCom->Get_TickPerSecond() - 10.f);
 	}
 	
+
 	if (KEY_HOLD(KEY::W))
 	{
 		bKeyHolding = true;
@@ -88,38 +89,54 @@ void CState_Tanjiro_Battle_Move::Tick_State(_float fTimeDelta)
 
 		_matrix vCamWolrd = GI->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
 
-		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 		_vector vCamLook = vCamWolrd.r[CTransform::STATE_LOOK];
 
-		vLook = XMVector3Normalize(vLook);
+		vRight = XMVector3Normalize(vRight);
 		vCamLook = XMVector3Normalize(vCamLook);
 
-		_float fRadian = XMVectorGetX(XMVector3Dot(vLook, vCamLook)) * fTimeDelta;
+		_float fRadian = XMVectorGetX(XMVector3Dot(vRight, vCamLook)) * 10.f * fTimeDelta;
 
 
 		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fRadian);
 		m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
 	}
-		
+
 
 	if (KEY_HOLD(KEY::S))
 	{
 		bKeyHolding = true;
-		m_pTransformCom->Go_Backward(fTimeDelta, m_pNavigation);
+
+
+		_matrix vCamWolrd = GI->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
+
+		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+		_vector vCamLook = vCamWolrd.r[CTransform::STATE_LOOK];
+
+		vRight = XMVector3Normalize(vRight);
+		vCamLook = -1.f * XMVector3Normalize(vCamLook);
+
+		_float fRadian = XMVectorGetX(XMVector3Dot(vRight, vCamLook)) * 10.f * fTimeDelta;
+
+
+		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fRadian);
+		m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
 	}
-		
+
 
 	if (KEY_HOLD(KEY::A))
 	{
 		bKeyHolding = true;
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), -1.f * fTimeDelta);
+
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 10.f, -1.f * fTimeDelta);
+		// m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
 	}
-		
+
 
 	if (KEY_HOLD(KEY::D))
 	{
-		bKeyHolding = true;
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 10.f, fTimeDelta);
+		// m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
 	}
 
 	if (KEY_TAP(KEY::LBTN))

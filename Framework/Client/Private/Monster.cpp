@@ -14,17 +14,9 @@ CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const w
 
 CMonster::CMonster(const CMonster& rhs)
 	: CGameObject(rhs)
-	, m_pShaderCom(rhs.m_pShaderCom)
-	, m_pRendererCom(rhs.m_pRendererCom)
-	, m_pTransformCom(rhs.m_pTransformCom)
-	, m_pModelCom(rhs.m_pModelCom)
-	, m_pStateCom(rhs.m_pStateCom)	
+
 {	
-	Safe_AddRef(m_pShaderCom);
-	Safe_AddRef(m_pRendererCom);
-	Safe_AddRef(m_pTransformCom);
-	Safe_AddRef(m_pModelCom);
-	Safe_AddRef(m_pStateCom);
+	
 }
 
 HRESULT CMonster::Initialize_Prototype()
@@ -47,6 +39,20 @@ void CMonster::Tick(_float fTimeDelta)
 {
 	for (auto& pPart : m_Parts)
 		pPart->Tick(fTimeDelta);
+
+	if (m_bInfinite)
+	{
+		m_fAccInfinite += fTimeDelta;
+		if (m_fAccInfinite >= m_fInfiniteTime)
+		{
+			m_bInfinite = false;
+			m_fAccInfinite = 0.f;
+
+			Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, true);
+			Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, true);
+		}
+
+	}
 }
 
 void CMonster::LateTick(_float fTimeDelta)
@@ -54,7 +60,7 @@ void CMonster::LateTick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return;
 
-	m_pModelCom->Play_Animation(m_pTransformCom, fTimeDelta);
+	std::async(&CModel::Play_Animation, m_pModelCom, m_pTransformCom, fTimeDelta);
 
 	for (auto& pPart : m_Parts)
 		pPart->LateTick(fTimeDelta);
@@ -115,7 +121,7 @@ void CMonster::AirBorne(_float fForce)
 	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.1f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
-	m_pRigidBodyCom->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), fForce);
+	m_pRigidBodyCom->Add_Velocity_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fForce);
 	m_pRigidBodyCom->Set_Ground(false);
 	m_pRigidBodyCom->Set_Gravity(true);
 }
@@ -130,10 +136,5 @@ void CMonster::Free()
 		Safe_Release(pPart);
 
 	m_Parts.clear();
-
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pTransformCom);
 
 }

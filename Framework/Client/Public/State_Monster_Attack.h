@@ -22,9 +22,8 @@ public:
 	virtual void Tick_State(_float fTimeDelta) override;
 	virtual void Exit_State() override;
 
-
 private:
-	void Add_Force(_float fForce);
+	_uint m_iRandomIndex = 0;
 
 public:
 	static CState_Monster_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

@@ -22,6 +22,9 @@ public:
 	virtual void Tick_State(_float fTimeDelta) override;
 	virtual void Exit_State() override;
 
+private:
+	class CCharacter* m_pCharacter = nullptr;
+	_uint m_iRandomIndex = 0;
 
 public:
 	static CState_Tanjiro_Damaged* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

@@ -40,6 +40,9 @@ HRESULT CCollider_AABB::Initialize(void* pArg)
 
 _bool CCollider_AABB::Is_Collision(CCollider* pCollider)
 {
+	if (false == m_bActive)
+		return false;
+
 	if (pCollider->Get_ColliderType() == CCollider::AABB)
 	{
 		CCollider_AABB* pOtherCollider = static_cast<CCollider_AABB*>(pCollider);

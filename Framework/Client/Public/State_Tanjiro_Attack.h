@@ -30,6 +30,7 @@ private:
 
 private:
 	void Input(_float fTimeDelta);
+	void Find_Near_Target();
 
 public:
 	static CState_Tanjiro_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

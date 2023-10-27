@@ -97,6 +97,7 @@ void CGameInstance::Tick(_float fTimeDelta)
 
 	m_pObject_Manager->LateTick(fTimeDelta);
 	m_pCollision_Manager->LateTick(fTimeDelta);
+
 	m_pLevel_Manager->LateTick(fTimeDelta);
 }
 

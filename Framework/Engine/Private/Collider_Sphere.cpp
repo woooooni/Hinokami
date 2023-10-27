@@ -40,6 +40,9 @@ HRESULT CCollider_Sphere::Initialize(void* pArg)
 
 _bool CCollider_Sphere::Is_Collision(CCollider* pCollider)
 {
+	if (false == m_bActive)
+		return false;
+
 	if (pCollider->Get_ColliderType() == CCollider::AABB)
 	{
 		CCollider_AABB* pOtherCollider = static_cast<CCollider_AABB*>(pCollider);
@@ -50,7 +53,6 @@ _bool CCollider_Sphere::Is_Collision(CCollider* pCollider)
 		CCollider_Sphere* pOtherCollider = static_cast<CCollider_Sphere*>(pCollider);
 		return m_tBoundingSphere.Intersects(pOtherCollider->Get_Sphere());
 	}
-	return _bool();
 }
 
 void CCollider_Sphere::LateTick_Collider(_float fTimeDelta)

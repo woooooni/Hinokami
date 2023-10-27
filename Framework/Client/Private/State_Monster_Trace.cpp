@@ -49,6 +49,7 @@ HRESULT CState_Monster_Trace::Initialize(const list<wstring>& AnimationList)
 
 void CState_Monster_Trace::Enter_State(void* pArg)
 {
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	list<CGameObject*> Objects = GI->Find_GameObjects(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_CHARACTER);
 	for (auto& pGameObject : Objects)
 	{
@@ -90,13 +91,14 @@ void CState_Monster_Trace::Tick_State(_float fTimeDelta)
 
 	_vector vDir = vTargetPosition - vPosition;
 
+	m_fDistance = 20.f;
 	if (m_fDistance < XMVectorGetX(XMVector3Length(vDir)))
 	{
 		m_pStateMachineCom->Change_State(CMonster::IDLE);
 		return;
 	}
 
-	if (XMVectorGetX(XMVector3Length(vDir)) < 2.f)
+	if (XMVectorGetX(XMVector3Length(vDir)) < 1.f)
 	{
 		m_pStateMachineCom->Change_State(CMonster::ATTACK);
 		return;
@@ -107,6 +109,7 @@ void CState_Monster_Trace::Tick_State(_float fTimeDelta)
 
 void CState_Monster_Trace::Exit_State()
 {
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	m_pTarget = nullptr;
 	m_iCurrAnimIndex = 0;
 }

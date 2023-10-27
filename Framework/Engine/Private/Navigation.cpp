@@ -78,11 +78,11 @@ void CNavigation::Update(_fmatrix WorldMatrix)
 	}
 }
 
-_bool CNavigation::Is_Movable(_fvector vPoint)
+_bool CNavigation::Is_Movable(_fvector vPoint, __out _vector* vOutSlidingDir)
 {
 	_int		iNeighborIndex = 0;
-
-	if (true == m_Cells[m_iCurrentIndex]->isOut(vPoint, XMLoadFloat4x4(&m_WorldIdentity), &iNeighborIndex))
+	_vector vOutLine;
+	if (true == m_Cells[m_iCurrentIndex]->isOut(vPoint, XMLoadFloat4x4(&m_WorldIdentity), &iNeighborIndex, &vOutLine))
 	{
 		/* 나간 방향에 이웃셀이 있으면 움직여야해! */
 		if (-1 != iNeighborIndex)
@@ -101,7 +101,14 @@ _bool CNavigation::Is_Movable(_fvector vPoint)
 			return true;
 		}
 		else
+		{
+			 
+			if (vOutSlidingDir != nullptr)
+			{
+				*vOutSlidingDir = vOutLine;
+			}
 			return false;
+		}
 
 	}
 	else
@@ -162,7 +169,7 @@ HRESULT CNavigation::Delete_Cell(const _fvector vMouseWorldDir, const _fvector v
 		_float3 vPointC = *(*iter)->Get_PointWorld(CCell::POINT_C);
 		_float fDistance = 9999999.f;
 
-		if (TriangleTests::Intersects(vMouseWorldPosition, vMouseWorldDir,
+		if (TriangleTests::Intersects(vMouseWorldPosition, XMVector3Normalize(vMouseWorldDir),
 			XMLoadFloat3(&vPointA),
 			XMLoadFloat3(&vPointB),
 			XMLoadFloat3(&vPointC), fDistance))

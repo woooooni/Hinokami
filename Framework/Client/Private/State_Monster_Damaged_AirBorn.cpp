@@ -47,6 +47,7 @@ void CState_Monster_Damaged_AirBorn::Enter_State(void* pArg)
 	m_iCurrAnimIndex = 0;
 	m_fAccRecovery = 0.f;
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
 void CState_Monster_Damaged_AirBorn::Tick_State(_float fTimeDelta)
@@ -77,6 +78,8 @@ void CState_Monster_Damaged_AirBorn::Exit_State()
 	m_iCurrAnimIndex = 0;
 	m_fAccRecovery = 0.f;
 	m_bFirstGround = false;
+
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
 CState_Monster_Damaged_AirBorn* CState_Monster_Damaged_AirBorn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)

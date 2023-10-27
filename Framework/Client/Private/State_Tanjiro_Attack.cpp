@@ -57,6 +57,7 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 {
 	m_iCurrAnimIndex = 0;
 
+	Find_Near_Target();
 	m_pCharacter->DrawSword();
 	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
@@ -73,20 +74,40 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 	}
 		
 
-	if (m_iCurrAnimIndex == 4)
-	{
-		_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
-		if (fAnimationProgress >= 0.1f && fAnimationProgress <= 0.5f)
-			m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
-		else
-			m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
-	}
+	//if (m_iCurrAnimIndex == 3)
+	//{
+	//	_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
+
+	//	if ((fAnimationProgress >= 0.3f && fAnimationProgress <= 0.6f))
+	//	{
+	//		m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+	//		m_pSword->Set_SwordMode(CSword::SWORD_MODE::AIR_BONE);
+	//	}
+	//	else if ((fAnimationProgress >= 0.7f && fAnimationProgress <= 0.9f))
+	//	{
+	//		m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+	//		m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
+	//	}
+	//		
+	//	else
+	//		m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
+	//}
+
+	//if (m_iCurrAnimIndex == 4)
+	//{
+	//	_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
+	//	if (fAnimationProgress >= 0.1f && fAnimationProgress <= 0.5f)
+	//		m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+	//	else
+	//		m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
+	//}
 }
 
 void CState_Tanjiro_Attack::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
 	
+	Find_Near_Target();
 	m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
 	m_pSword->Set_PushPower(0.f);
 
@@ -98,7 +119,7 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 {
 	_float fLookVelocity = 3.f;
 	_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
-	if (fAnimationProgress >= 0.5f)
+	if (fAnimationProgress >= 0.4f)
 	{
 		if (KEY_TAP(KEY::LBTN))
 		{
@@ -109,28 +130,30 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 			switch (m_iCurrAnimIndex)
 			{
 			case 1:
-				m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+				Find_Near_Target();
 				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
-				m_pSword->Set_PushPower(fLookVelocity);
+				m_pSword->Set_PushPower(0.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
 				break;
 
 			case 2:
-				m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+				Find_Near_Target();
 				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
-				m_pSword->Set_PushPower(fLookVelocity);
+				m_pSword->Set_PushPower(0.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
 				break;
 
 			case 3:
-				m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
-				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
-				m_pSword->Set_PushPower(fLookVelocity);
+				Find_Near_Target();
+				m_pSword->Set_SwordMode(CSword::SWORD_MODE::AIR_BONE);
+				m_pSword->Set_PushPower(0.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
 				break;
 
 			case 4:
+				Find_Near_Target();
 				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BLOW);
+				fLookVelocity = 3.f;
 				m_pSword->Set_PushPower(10.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
 				break;
@@ -141,6 +164,42 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 				break;
 			}
 		}
+	}
+}
+
+void CState_Tanjiro_Attack::Find_Near_Target()
+{
+	list<CGameObject*> Monsters = GI->Find_GameObjects(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER);
+	_float fDistance = 99999999999.f;
+
+	CGameObject* pTarget = nullptr;
+	_vector vNearTargetPosition;
+	for (auto& pMonster : Monsters)
+	{
+		if (nullptr == pMonster || pMonster->Is_ReserveDead() || pMonster->Is_Dead())
+			continue;
+
+		CTransform* pTransform = pMonster->Get_Component<CTransform>(L"Com_Transform");
+		if (pTransform == nullptr)
+			continue;
+
+		_vector vTargetPosition = pTransform->Get_State(CTransform::STATE_POSITION);
+		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		_vector vDir = vTargetPosition - vPosition;
+
+		_float fLen = XMVectorGetX(XMVector3Length(vDir));
+		if (fLen < fDistance)
+		{
+			fDistance = fLen;
+			pTarget = pMonster;
+			vNearTargetPosition = vTargetPosition;
+		}
+	}
+
+	if (pTarget != nullptr && fDistance <= 10.f)
+	{
+		m_pTransformCom->LookAt_ForLandObject(vNearTargetPosition);
 	}
 }
 

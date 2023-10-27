@@ -60,11 +60,26 @@ public:
 	virtual void Collision_Exit(const COLLISION_INFO& tInfo) PURE;
 
 public:
+	virtual void Set_Infinite(_float fInfiniteTime, _bool bInfinite)
+	{
+		m_bInfinite = bInfinite;
+		m_fInfiniteTime = fInfiniteTime;
+		m_fAccInfinite = 0.f;
+
+		Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, !bInfinite);
+		Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, !bInfinite);
+	}
+	_bool Is_Infinite() { return m_bInfinite; }
+
+public:
 	CShader* Get_ShaderCom() { return m_pShaderCom; }
 	CTransform* Get_TransformCom() { return m_pTransformCom; }
 	CModel* Get_ModelCom() { return m_pModelCom; }
 	CStateMachine* Get_StateCom() { return m_pStateCom; }
 	CRigidBody* Get_RigidBodyCom() { return m_pRigidBodyCom; }
+
+	
+
 
 public:
 	CHierarchyNode* Get_Socket(const wstring& strSocketName);
@@ -76,11 +91,13 @@ protected:
 
 
 public:
-	virtual void On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageType, _float fPushPower) {};
+	virtual void On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageType, _float fPushPower, _float fAirBornPower = 0.f) {};
 
 
 protected:
 	virtual void AirBorne(_float fForce);
+	
+
 
 protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CShader* m_pShaderCom = nullptr;
@@ -100,6 +117,9 @@ protected:
 	vector<class CHierarchyNode*>		m_Sockets;
 	typedef vector<CGameObject*>		Sockets;
 	
+	_float m_fAccInfinite = 0.f;
+	_float m_fInfiniteTime = 0.2f;
+	_bool m_bInfinite = false;
 
 public:
 	virtual void Free() override;

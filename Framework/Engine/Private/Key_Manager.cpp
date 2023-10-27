@@ -1,5 +1,5 @@
 #include "Key_Manager.h"
-
+#include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CKey_Manager)
 
@@ -60,6 +60,7 @@ void CKey_Manager::Tick(_float fTimeDelta)
 {
 	HWND hWnd = GetFocus();
 
+
 	if (hWnd != nullptr)
 	{
 		for (int i = 0; i < (int)KEY::TYPE_END; ++i)
@@ -113,6 +114,11 @@ void CKey_Manager::Tick(_float fTimeDelta)
 
 	GetCursorPos(&m_tMousePos);
 	ScreenToClient(m_hWnd, &m_tMousePos);
+
+	if (KEY_TAP(KEY::F1))
+	{
+		m_bLockMouse = !m_bLockMouse;
+	}
 
 }
 

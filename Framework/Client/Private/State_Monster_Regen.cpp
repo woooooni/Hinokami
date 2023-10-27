@@ -40,6 +40,7 @@ HRESULT CState_Monster_Regen::Initialize(const list<wstring>& AnimationList)
 
 void CState_Monster_Regen::Enter_State(void* pArg)
 {
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
 }
 
@@ -51,7 +52,7 @@ void CState_Monster_Regen::Tick_State(_float fTimeDelta)
 
 void CState_Monster_Regen::Exit_State()
 {
-
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
 CState_Monster_Regen* CState_Monster_Regen::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)

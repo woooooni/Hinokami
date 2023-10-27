@@ -1286,8 +1286,7 @@ void CImGui_Manager::Tick_NaviMesh_Tool(_float fTimeDeleta)
     static _float fGenCutDegree = 0.f;
     ImGui::Text("CutDegree");
     IMGUI_SAME_LINE;
-    ImGui::DragFloat("##GenNaviDegree", &fGenCutDegree, 1.f, 0.f, 360.f);
-    m_fGenerateRadian = XMConvertToRadians(fGenCutDegree);
+    ImGui::DragFloat("##GenNaviDegree", &m_fGenerateRadian, 0.01f, 0.f, 3.141592f);
 
     static _float fMinGenScale = 0.f;
     static _float fMaxGenScale = 1000.f;
@@ -1296,7 +1295,7 @@ void CImGui_Manager::Tick_NaviMesh_Tool(_float fTimeDeleta)
     IMGUI_SAME_LINE;
     ImGui::DragFloat("##GenNaviScaleMin", &fMinGenScale, 0.01f, 1.f, 100.f);
 
-    ImGui::Text("TriangleScale_Min");
+    ImGui::Text("TriangleScale_Max");
     IMGUI_SAME_LINE;
     ImGui::DragFloat("##GenNaviScaleMax", &fMaxGenScale, 0.01f, 1.f, 100.f);
 
@@ -1346,39 +1345,79 @@ void CImGui_Manager::Tick_NaviMesh_Tool(_float fTimeDeleta)
 
 void CImGui_Manager::NaviPicking()
 {
-    list<CGameObject*>& GameObjects = GI->Find_GameObjects(LEVEL_TOOL, LAYER_TYPE::LAYER_GROUND);
-
-    for (auto& pGameObject : GameObjects)
+    if (KEY_HOLD(KEY::SHIFT) && KEY_TAP(KEY::RBTN))
     {
-        CTransform* pTransform;
-        pTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform") == nullptr ? nullptr : pGameObject->Get_Component<CTransform>(L"Com_Transform");
-        if (nullptr == pTransform)
-            continue;
+        POINT pt;
+        GetCursorPos(&pt);
+        ScreenToClient(g_hWnd, &pt);
 
-        CGround* pGround = dynamic_cast<CGround*>(pGameObject);
-        if (nullptr == pGround)
-            continue;
+        _vector vMousePos = XMVectorSet(
+            _float(pt.x / (g_iWinSizeX * .5f) - 1.f),
+            _float(pt.y / (g_iWinSizeY * -.5f) + 1.f),
+            1.f, 1.f);
 
-        const vector<CMesh*>& Meshes = pGround->Get_ModelCom()->Get_Meshes();
-        for (auto& pMesh : Meshes)
+
+
+        _matrix ViewMatrixInv = GAME_INSTANCE->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
+        _matrix ProjMatrixInv = GAME_INSTANCE->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
+
+        vMousePos = XMVector3TransformCoord(vMousePos, ProjMatrixInv);
+
+        XMVECTOR vRayDir, vRayPosition;
+
+        vRayPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+        vRayDir = vMousePos - vRayPosition;
+
+
+        vMousePos = XMVector3TransformCoord(vRayPosition, ViewMatrixInv);
+        vRayDir = XMVector3TransformNormal(vRayDir, ViewMatrixInv);
+
+        m_vWorldPickedNaviPos.clear();
+        m_pTerrain->Get_NavigationCom()->Delete_Cell(vRayDir, vMousePos);
+    }
+
+
+    for (_uint i = 0; i < LAYER_TYPE::LAYER_END; ++i)
+    {
+        list<CGameObject*>& GameObjects = GI->Find_GameObjects(LEVEL_TOOL, i);
+
+        for (auto& pGameObject : GameObjects)
         {
-            _float3 vLocalPos;
-            if (CPicking_Manager::GetInstance()->Is_NaviPicking(pTransform, pMesh, &m_vNaviPickingWorldPos, &vLocalPos))
-            {
-                if (KEY_TAP(KEY::LBTN))
-                {
-                    m_vWorldPickedNaviPos.push_back(m_vNaviPickingWorldPos);
+            if (!pGameObject->Is_NaviObject())
+                continue;
 
-                    if (m_vWorldPickedNaviPos.size() == 3)
+
+            CTransform* pTransform;
+            pTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform") == nullptr ? nullptr : pGameObject->Get_Component<CTransform>(L"Com_Transform");
+            if (nullptr == pTransform)
+                continue;
+
+            CModel* pModel = pGameObject->Get_Component<CModel>(L"Com_Model");
+            if (nullptr == pModel)
+                continue;
+
+            const vector<CMesh*>& Meshes = pModel->Get_Meshes();
+            for (auto& pMesh : Meshes)
+            {
+                _float3 vLocalPos;
+                if (CPicking_Manager::GetInstance()->Is_NaviPicking(pTransform, pMesh, &m_vNaviPickingWorldPos, &vLocalPos))
+                {
+                    if (KEY_HOLD(KEY::SHIFT) && KEY_TAP(KEY::LBTN))
                     {
-                        m_pTerrain->Get_NavigationCom()->Create_Cell(m_vWorldPickedNaviPos.data());
-                        m_vWorldPickedNaviPos.clear();
+                        m_vWorldPickedNaviPos.push_back(m_vNaviPickingWorldPos);
+
+                        if (m_vWorldPickedNaviPos.size() == 3)
+                        {
+                            m_pTerrain->Get_NavigationCom()->Create_Cell(m_vWorldPickedNaviPos.data());
+                            m_vWorldPickedNaviPos.clear();
+                        }
                     }
+                    return;
                 }
-                return;
             }
         }
     }
+
 }
 
 HRESULT CImGui_Manager::Load_Map_Data(const wstring& strMapFileName)
@@ -1750,7 +1789,7 @@ void CImGui_Manager::Draw_NaviPicking_Point()
     DirectX::BoundingSphere tSphere;
     ZeroMemory(&tSphere, sizeof(DirectX::BoundingSphere));
     XMStoreFloat3(&tSphere.Center, XMLoadFloat3(&m_vNaviPickingWorldPos));
-    tSphere.Radius = 0.1f;
+    tSphere.Radius = 0.3f;
     DX::Draw(m_pBatch, tSphere, XMVectorSet(0.f, 1.f, 0.f, 1.f));
 
     for (size_t i = 0; i < m_vWorldPickedNaviPos.size(); ++i)
@@ -1833,11 +1872,13 @@ HRESULT CImGui_Manager::NaviAutoGenerate()
                         XMStoreFloat3(&fv1, v1);
                         XMStoreFloat3(&fv2, v2);
 
-                        _vector vNormal = XMVector3TransformNormal(XMVector3Normalize(XMVector3Cross(v1 - v0, v2 - v0)), pTransformCom->Get_WorldMatrix());
+                        _vector vNormal = XMVector3Normalize(XMVector3TransformNormal(XMVector3Normalize(XMVector3Cross(v1 - v0, v2 - v0)), pTransformCom->Get_WorldMatrix()));
                         _float fRadian = XMVectorGetX(XMVector3Dot(vNormal, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
                         _float fTriangleScale = fabs((fv0.x * fv1.z) + (fv1.x * fv2.z) + (fv2.x * fv0.z) - (fv1.x * fv0.z) - (fv2.x * fv1.z) - (fv0.x * fv2.z)) * 0.5f;
 
-                        if (fRadian >= m_fGenerateRadian && fTriangleScale >= m_fGenerateMinScale && fTriangleScale <= m_fGenerateMaxScale)
+                        if (fRadian >= m_fGenerateRadian 
+                            && fTriangleScale >= m_fGenerateMinScale 
+                            && fTriangleScale <= m_fGenerateMaxScale)
                         {
                             _float3  vPoints[3] = {};
                             XMStoreFloat3(&vPoints[0], XMVector3TransformCoord(v0, pTransformCom->Get_WorldMatrix()));
@@ -1854,6 +1895,7 @@ HRESULT CImGui_Manager::NaviAutoGenerate()
         }
     }
     
+    m_vWorldPickedNaviPos.clear();
 
 
     return S_OK;

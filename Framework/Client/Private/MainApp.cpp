@@ -46,7 +46,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_GAMEPLAY)))
+	if (FAILED(Open_Level(LEVEL_TOOL)))
 		return E_FAIL;
 
 
@@ -58,6 +58,7 @@ HRESULT CMainApp::Initialize()
 void CMainApp::Tick(_float fTimeDelta)
 {
 	m_pGame_Instance->Tick(fTimeDelta);
+	m_fTimeAcc += fTimeDelta;
 	
 }
 
@@ -71,6 +72,17 @@ HRESULT CMainApp::Render()
 	m_pGame_Instance->Render_Debug();
 	/* 초기화한 장면에 객체들을 그린다. */
 	m_pGame_Instance->Present();
+
+	++m_iNumDraw;
+
+	if (m_fTimeAcc >= 1.f)
+	{
+		wsprintf(m_szFPS, TEXT("fps : %d"), m_iNumDraw);
+		m_iNumDraw = 0;
+		m_fTimeAcc = 0.f;
+	}
+
+	SetWindowText(g_hWnd, m_szFPS);
 
 	return S_OK;
 }

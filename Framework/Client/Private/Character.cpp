@@ -6,6 +6,7 @@
 #include "Part.h"
 #include "Sword.h"
 #include "Sweath.h"
+#include <future>
 
 
 USING(Client)
@@ -17,17 +18,8 @@ CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, con
 
 CCharacter::CCharacter(const CCharacter& rhs)
 	: CGameObject(rhs)
-	, m_pShaderCom(rhs.m_pShaderCom)
-	, m_pRendererCom(rhs.m_pRendererCom)
-	, m_pTransformCom(rhs.m_pTransformCom)
-	, m_pModelCom(rhs.m_pModelCom)
-	, m_pStateCom(rhs.m_pStateCom)	
 {	
-	Safe_AddRef(m_pShaderCom);
-	Safe_AddRef(m_pRendererCom);
-	Safe_AddRef(m_pTransformCom);
-	Safe_AddRef(m_pModelCom);
-	Safe_AddRef(m_pStateCom);
+
 }
 
 HRESULT CCharacter::Initialize_Prototype()
@@ -52,6 +44,19 @@ void CCharacter::Tick(_float fTimeDelta)
 
 	for (auto& pPart : m_Parts)
 		pPart->Tick(fTimeDelta);
+
+	if (m_bInfinite)
+	{
+		m_fAccInfinite += fTimeDelta;
+		if (m_fAccInfinite >= m_fInfiniteTime)
+		{
+			m_bInfinite = false;
+			m_fAccInfinite = 0.f;
+
+			Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, true);
+			Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, true);
+		}
+	}
 }
 
 void CCharacter::LateTick(_float fTimeDelta)
@@ -59,7 +64,9 @@ void CCharacter::LateTick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return;
 
-	m_pModelCom->Play_Animation(m_pTransformCom, fTimeDelta);
+	
+	std::async(&CModel::Play_Animation, m_pModelCom, m_pTransformCom, fTimeDelta);
+	
 
 	for (auto& pPart : m_Parts)
 		pPart->LateTick(fTimeDelta);
@@ -155,6 +162,14 @@ void CCharacter::SweathSword()
 
 	pSword->Set_OriginRotation_Transform(XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(pSword->Get_PrevRotation().x, pSword->Get_PrevRotation().y, pSword->Get_PrevRotation().z)));
 	pSword->Set_SocketBone(m_Sockets[SOCKET_SWEATH]);
+}
+
+void CCharacter::Set_Infinite(_float fInfiniteTime, _bool bInfinite)
+{
+	m_bInfinite = bInfinite;
+	m_fInfiniteTime = fInfiniteTime;
+	m_fAccInfinite = 0.f;
+
 }
 
 HRESULT CCharacter::Set_ActiveColliders(_uint eDetectionType, _bool bActive)

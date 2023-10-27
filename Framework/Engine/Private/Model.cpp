@@ -13,6 +13,8 @@
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
 {
+	
+
 }
 
 CModel::CModel(const CModel& rhs)
@@ -35,7 +37,6 @@ CModel::CModel(const CModel& rhs)
 	, m_strFileName(rhs.m_strFileName)
 	, m_strFolderPath(rhs.m_strFolderPath)
 	, m_bFromBinary(rhs.m_bFromBinary)
-	
 	
 {
 	for (auto& pMeshContainer : m_Meshes)
@@ -126,6 +127,9 @@ HRESULT CModel::Initialize_Prototype(TYPE eType, const wstring& strModelFolderPa
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Animation_Texture()))
+		return E_FAIL;
+
 
 
 	return S_OK;
@@ -179,8 +183,7 @@ HRESULT CModel::Initialize(void* pArg)
 
 	m_Animations = Animations;
 
-	if (FAILED(Ready_Animation_Texture()))
-		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -303,6 +306,7 @@ HRESULT CModel::SetUp_OnShader(CShader* pShader, _uint iMaterialIndex, aiTexture
 
 HRESULT CModel::Play_Animation(CTransform* pTransform, _float fTimeDelta)
 {
+	
 	if (m_iCurrentAnimIndex >= m_iNumAnimations)
 		return E_FAIL;
 
@@ -357,7 +361,6 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 	if (TYPE_ANIM == m_eModelType)
 	{
 		m_Meshes[iMeshIndex]->SetUp_BoneMatrices(m_pMatrixTexture, m_Matrices, XMLoadFloat4x4(&m_PivotMatrix));
-
 		if (FAILED(pShader->Bind_Texture("g_MatrixPallete", m_pSRV)))
 			return E_FAIL;
 	}

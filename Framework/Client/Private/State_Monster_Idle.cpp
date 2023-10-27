@@ -40,6 +40,7 @@ HRESULT CState_Monster_Idle::Initialize(const list<wstring>& AnimationList)
 void CState_Monster_Idle::Enter_State(void* pArg)
 {
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
 void CState_Monster_Idle::Tick_State(_float fTimeDelta)
@@ -70,7 +71,7 @@ void CState_Monster_Idle::Tick_State(_float fTimeDelta)
 
 void CState_Monster_Idle::Exit_State()
 {
-
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
 CState_Monster_Idle* CState_Monster_Idle::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine, const list<wstring>& AnimationList)

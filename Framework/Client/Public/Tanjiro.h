@@ -21,6 +21,10 @@ public:
 	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Continue(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Exit(const COLLISION_INFO& tInfo) override;
+
+
+public:
+	virtual void On_Damaged(CGameObject* pAttacker) override;
 	
 
 protected:

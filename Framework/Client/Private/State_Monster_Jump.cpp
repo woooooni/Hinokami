@@ -44,6 +44,7 @@ HRESULT CState_Monster_Jump::Initialize(const list<wstring>& AnimationList)
 
 void CState_Monster_Jump::Enter_State(void* pArg)
 {
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	if (m_pRigidBody == nullptr)
 		m_pRigidBody = m_pStateMachineCom->Get_Owner()->Get_Component<Engine::CRigidBody>(L"Com_RigidBody");
 
@@ -76,7 +77,7 @@ void CState_Monster_Jump::Tick_State(_float fTimeDelta)
 
 void CState_Monster_Jump::Exit_State()
 {
-
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
 CState_Monster_Jump* CState_Monster_Jump::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)

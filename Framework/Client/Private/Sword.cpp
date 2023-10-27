@@ -111,17 +111,16 @@ void CSword::Collision_Enter(const COLLISION_INFO& tInfo)
 				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::BASIC, m_fPushPower);
 				break;
 			case SWORD_MODE::AIR_BONE:
-				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::AIRBONE, m_fPushPower);
+				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::AIRBONE, m_fPushPower, 5.f);
 				break;
 
 			case SWORD_MODE::BLOW:
 				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::BLOW, m_fPushPower);
 				break;
+
 			}
 			CTransform* pTransform = m_pOwner->Get_Component<CTransform>(L"Com_Transform");
 			pTransform->LookAt_ForLandObject(pMonster->Get_Component<CTransform>(L"Com_Transform")->Get_State(CTransform::STATE_POSITION));
-
-			Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 		}
 	}
 	

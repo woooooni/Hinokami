@@ -91,21 +91,32 @@ HRESULT CTanjiro::Render()
 
 void CTanjiro::Collision_Enter(const COLLISION_INFO& tInfo)
 {
-	if (tInfo.pMyCollider->Get_DetectionType() == CCollider::ATTACK)
+	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER && m_pRigidBodyCom->Is_Ground())
 	{
-		if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER)
+		if ((tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::BODY 
+			|| tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::HEAD)
+			&& tInfo.pOtherCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::ATTACK)
 		{
-
+			On_Damaged(tInfo.pOther);
 		}
 	}
 }
 
 void CTanjiro::Collision_Continue(const COLLISION_INFO& tInfo)
 {
+	
 }
 
 void CTanjiro::Collision_Exit(const COLLISION_INFO& tInfo)
 {
+}
+
+void CTanjiro::On_Damaged(CGameObject* pAttacker)
+{
+	if (m_bInfinite)
+		return;
+
+	m_pStateCom->Change_State(STATE::DAMAGED);
 }
 
 
@@ -225,21 +236,10 @@ HRESULT CTanjiro::Ready_States()
 			strAnimationName));
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_B");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_F");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_L");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_R");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_U");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_B");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_F");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_L");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_R");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_U");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_0");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_1");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBound01_0");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBound02_2");
+	// strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_F");
 	m_pStateCom->Add_State(CCharacter::DAMAGED,
 		CState_Tanjiro_Damaged::Create(m_pDevice,
 			m_pContext,
@@ -250,7 +250,7 @@ HRESULT CTanjiro::Ready_States()
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW01");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW02");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW03");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW02");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW03D01");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW04");
 
 	m_pStateCom->Add_State(CCharacter::ATTACK,
@@ -313,6 +313,7 @@ HRESULT CTanjiro::Ready_Colliders()
 		return E_FAIL;
 
 
+	Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
 	return S_OK;
 }
@@ -327,6 +328,10 @@ HRESULT CTanjiro::Ready_Sockets()
 	m_Sockets[SOCKET_SWORD] = m_pModelCom->Get_HierarchyNode(L"R_HandCommon_1_Lct");
 	m_Sockets[SOCKET_RIGHT_HAND] = m_pModelCom->Get_HierarchyNode(L"R_Hand_1");
 	m_Sockets[SOCKET_SWEATH] = m_pModelCom->Get_HierarchyNode(L"L_Weapon_1_Lct");
+
+	m_Sockets[SOCKET_LEFT_FOOT] = m_pModelCom->Get_HierarchyNode(L"R_Foot_End");
+	m_Sockets[SOCKET_RIGHT_FOOT] = m_pModelCom->Get_HierarchyNode(L"L_Foot_End");
+	
 
 	return S_OK;
 }

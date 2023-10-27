@@ -46,7 +46,7 @@ HRESULT CLevel_GamePlay::Tick(_float fTimeDelta)
 
 HRESULT CLevel_GamePlay::LateTick(_float fTimeDelta)
 {
-	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
+	
 	return S_OK;
 }
 
@@ -189,8 +189,23 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 {
-	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster"), nullptr, nullptr)))
-		return E_FAIL;
+	for (_uint i = 0; i < 10; ++i)
+	{
+		CGameObject* pMonster = nullptr;
+		if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster"), nullptr, &pMonster)))
+			return E_FAIL;
+
+		if (nullptr == pMonster)
+			return E_FAIL;
+
+		CTransform* pTransform = pMonster->Get_Component<CTransform>(L"Com_Transform");
+		if (nullptr == pTransform)
+			return E_FAIL;
+
+		_vector vPosition = XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f);
+		pTransform->Set_State(CTransform::STATE_POSITION, vPosition);
+	}
+	
 	
 
 	return S_OK;
@@ -198,17 +213,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_GamePlay::Ready_Layer_UI(const LAYER_TYPE eLayerType)
 {
-	
-
-
-	/*for (_uint i = 0; i < 1; ++i)
-	{
-		if (FAILED(GAME_INSTANCE->Add_GameObject(TEXT("Prototype_GameObject_UI"), LEVEL_GAMEPLAY, _uint(eLayerType))))
-			return E_FAIL;
-
-	} */
-
-	;
 
 
 
@@ -217,12 +221,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Effect(const LAYER_TYPE eLayerType)
 {
-	
-
-
-
-	;
-
 
 	return S_OK;
 }

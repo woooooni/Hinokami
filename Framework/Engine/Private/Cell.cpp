@@ -110,7 +110,7 @@ _bool CCell::Compare_Points(const _float3 * pSourPoint, const _float3 * pDestPoi
 	return false;
 }
 
-_bool CCell::isOut(_fvector vWorldPosition, _fmatrix WorldMatrix, _int* pNeighborIndex)
+_bool CCell::isOut(_fvector vWorldPosition, _fmatrix WorldMatrix, _int* pNeighborIndex, __out _vector* pOutLine)
 {
 	for (size_t i = 0; i < LINE_END; i++)
 	{
@@ -120,6 +120,10 @@ _bool CCell::isOut(_fvector vWorldPosition, _fmatrix WorldMatrix, _int* pNeighbo
 		if (0 < XMVectorGetX(XMVector3Dot(vSour, vDest)))
 		{
 			*pNeighborIndex = m_iNeighborIndices[i];
+
+			if (nullptr != pOutLine)
+				*pOutLine = vDest;
+
 			return true;
 		}
 	}

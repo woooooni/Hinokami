@@ -49,6 +49,7 @@ void CState_Monster_Damaged_Blow::Enter_State(void* pArg)
 	m_pRigidBodyCom->Add_Velocity(vBlowDir, 10.f);
 	m_fAccRecovery = 0.f;
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
 void CState_Monster_Damaged_Blow::Tick_State(_float fTimeDelta)
@@ -80,6 +81,7 @@ void CState_Monster_Damaged_Blow::Exit_State()
 	m_iCurrAnimIndex = 0;
 	m_bFirstGround = false;
 	m_fAccRecovery = 0.f;
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
 CState_Monster_Damaged_Blow* CState_Monster_Damaged_Blow::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)

@@ -244,11 +244,11 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 
 
-	//if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
-	//	return E_FAIL;
+	if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
+		return E_FAIL;
 
-	//if(FAILED(Load_Map_Data(L"Village")))
-	//	return E_FAIL;
+	if(FAILED(Load_Map_Data(L"Village")))
+		return E_FAIL;
 
 	
 
@@ -349,7 +349,7 @@ HRESULT CLoader::Load_Map_Data(const wstring& strMapFileName)
 			wstring strObjectTag = CUtils::ToWString(File->Read<string>());
 
 			CGameObject* pObj = nullptr;
-			if (FAILED(GI->Add_GameObject(LEVEL_TOOL, i, strPrototypeTag, nullptr, &pObj)))
+			if (FAILED(GI->Add_GameObject(LEVEL_GAMEPLAY, i, strPrototypeTag, nullptr, &pObj)))
 			{
 				MSG_BOX("Load_Objects_Failed.");
 				return E_FAIL;
@@ -381,6 +381,45 @@ HRESULT CLoader::Load_Map_Data(const wstring& strMapFileName)
 			pTransform->Set_State(CTransform::STATE_UP, XMLoadFloat4(&vUp));
 			pTransform->Set_State(CTransform::STATE_LOOK, XMLoadFloat4(&vLook));
 			pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vPos));
+
+
+			for (_uint iCollider = 0; iCollider < CCollider::DETECTION_TYPE::DETECTION_END; iCollider++)
+			{
+				_uint iColliderCount = File->Read<_uint>();
+				for (_uint iObejctColliderCount = 0; iObejctColliderCount < iColliderCount; ++iObejctColliderCount)
+				{
+					_uint iColliderType = File->Read<_uint>();
+					_float3 vColliderOffset = File->Read<_float3>();
+
+					if (iColliderType == CCollider::AABB)
+					{
+						BoundingBox tBox = File->Read<BoundingBox>();
+
+						CCollider_AABB::AABB_COLLIDER_DESC tDesc;
+						ZeroMemory(&tDesc, sizeof tDesc);
+						tDesc.vOffsetPosition = vColliderOffset;
+						tDesc.pOwnerTransform = pTransform;
+						tDesc.pNode = nullptr;
+						tDesc.tBox = tBox;
+
+						pObj->Add_Collider(LEVEL_STATIC, iColliderType, iCollider, &tDesc);
+					}
+					else if (iColliderType == CCollider::SPHERE)
+					{
+						BoundingSphere tSphere = File->Read<BoundingSphere>();
+
+						CCollider_Sphere::SPHERE_COLLIDER_DESC tDesc;
+						ZeroMemory(&tDesc, sizeof tDesc);
+						tDesc.vOffsetPosition = vColliderOffset;
+						tDesc.pOwnerTransform = pTransform;
+						tDesc.pNode = nullptr;
+						tDesc.tSphere = tSphere;
+
+
+						pObj->Add_Collider(LEVEL_STATIC, iColliderType, iCollider, &tDesc);
+					}
+				}
+			}
 		}
 	}
 	MSG_BOX("Map_Loaded.");

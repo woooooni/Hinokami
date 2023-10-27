@@ -63,6 +63,13 @@ private:
 	ID3D11DeviceContext*	m_pContext = { nullptr };
 	CRenderer*				m_pRenderer_Com = { nullptr };
 
+
+private:
+private:
+	_float			m_fTimeAcc = 0.f;
+	_tchar			m_szFPS[MAX_PATH] = TEXT("");
+	_uint			m_iNumDraw = 0;
+
 private:
 	HRESULT Open_Level(LEVELID eLevelID);
 

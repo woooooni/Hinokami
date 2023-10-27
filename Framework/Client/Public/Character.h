@@ -89,6 +89,8 @@ public:
 	void SweathSword();
 
 public:
+	virtual void Set_Infinite(_float fInfiniteTime, _bool bInfinite);
+	_bool Is_Infinite() { return m_bInfinite; }
 	virtual HRESULT Set_ActiveColliders(_uint eDetectionType, _bool bActive);
 
 protected:
@@ -116,6 +118,12 @@ protected:
 
 	vector<class CHierarchyNode*>		m_Sockets;
 	typedef vector<CGameObject*>		Sockets;
+
+protected:
+	_float m_fAccInfinite = 0.f;
+	_float m_fInfiniteTime = 5.f;
+	_bool m_bInfinite = false;
+	
 
 
 protected:
