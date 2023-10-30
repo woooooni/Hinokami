@@ -184,6 +184,7 @@
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Building.h" />
     <ClInclude Include="..\Public\Camera_Main.h" />
+    <ClInclude Include="..\Public\Effect_Manager.h" />
     <ClInclude Include="..\Public\Monster_Normal_0.h" />
     <ClInclude Include="..\Public\Grass.h" />
     <ClInclude Include="..\Public\Camera_Free.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="..\Public\Part.h" />
     <ClInclude Include="..\Public\Picking_Manager.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\Pool.h" />
     <ClInclude Include="..\Public\Prop.h" />
     <ClInclude Include="..\Public\Protocol.pb.h" />
     <ClInclude Include="..\Public\ServerSession.h" />
@@ -232,6 +234,7 @@
     <ClInclude Include="..\Public\Tanjiro.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\tinyxml2.h" />
+    <ClInclude Include="..\Public\Trail.h" />
     <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\UI.h" />
     <ClInclude Include="..\Public\UI_Loading_Anim.h" />
@@ -274,6 +277,7 @@
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Building.cpp" />
     <ClCompile Include="..\Private\Camera_Main.cpp" />
+    <ClCompile Include="..\Private\Effect_Manager.cpp" />
     <ClCompile Include="..\Private\Monster_Normal_0.cpp" />
     <ClCompile Include="..\Private\Grass.cpp" />
     <ClCompile Include="..\Private\Camera_Free.cpp" />
@@ -302,6 +306,7 @@
     <ClCompile Include="..\Private\Part.cpp" />
     <ClCompile Include="..\Private\Picking_Manager.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\Pool.cpp" />
     <ClCompile Include="..\Private\Prop.cpp" />
     <ClCompile Include="..\Private\Protocol.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -351,6 +356,7 @@
     <ClCompile Include="..\Private\UI_Logo_Title.cpp" />
     <ClCompile Include="..\Private\Sword.cpp" />
     <ClCompile Include="..\Private\UI_NextFog.cpp" />
+    <ClCompile Include="..\Private\Trail.cpp" />
     <ClCompile Include="..\Private\Zenitsu.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -368,6 +374,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimModel.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl" />

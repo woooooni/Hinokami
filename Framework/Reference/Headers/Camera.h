@@ -19,8 +19,6 @@ public:
 		CTransform::TRANSFORMDESC		TransformDesc;
 	}CAMERADESC;
 
-
-private:
 	typedef struct tagCamShake
 	{
 		_float fDuration = 0.f;
@@ -28,7 +26,15 @@ private:
 		
 		_float fAccTime = 0.f;
 		_bool bEnd = true;
-	}CAM_SHAKE;
+	} CAM_SHAKE;
+
+	typedef struct tagCamBeat
+	{
+		_float fDestfFovy;
+		_float fAspect;
+		_float fNear;
+		_float fFar;
+	} CAM_BEAT;
 
 protected:
 	CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjTag, _uint iObjectID);

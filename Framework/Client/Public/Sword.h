@@ -57,6 +57,12 @@ private:
 
 
 private:
+	class CTrail* m_pTrailCom = { nullptr };
+	
+
+
+
+private:
 	HRESULT Ready_Components();
 	HRESULT Ready_Colliders();
 

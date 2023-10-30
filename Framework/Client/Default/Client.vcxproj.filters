@@ -199,6 +199,15 @@
     <Filter Include="02.GameObjects\05. Monster\State\Regen">
       <UniqueIdentifier>{165c6d69-dcd3-4457-998d-d3fd8e0a8996}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. Manager\Effect">
+      <UniqueIdentifier>{d6edcf70-b279-4d66-8479-906959b69f23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. Manager\Pool">
+      <UniqueIdentifier>{de6e688e-9d07-4da1-8483-6dff81ae4feb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. Effect\Trail">
+      <UniqueIdentifier>{97a13059-374e-4d72-9bea-d45d78b032fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -336,9 +345,6 @@
     <ClInclude Include="..\Public\Part.h">
       <Filter>02.GameObjects\03. Character\98.Parts</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Sword.h">
-      <Filter>02.GameObjects\03. Character\98.Parts\Sword</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Sweath.h">
       <Filter>02.GameObjects\03. Character\98.Parts\Sweath</Filter>
     </ClInclude>
@@ -428,6 +434,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\State_Monster_Damaged_Blow.h">
       <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Manager.h">
+      <Filter>96. Manager\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Pool.h">
+      <Filter>96. Manager\Pool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sword.h">
+      <Filter>02.GameObjects\03. Character\98.Parts\Sword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Trail.h">
+      <Filter>02.GameObjects\07. Effect\Trail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -644,6 +662,15 @@
     <ClCompile Include="..\Private\State_Monster_Damaged_Blow.cpp">
       <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Effect_Manager.cpp">
+      <Filter>96. Manager\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Pool.cpp">
+      <Filter>96. Manager\Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Trail.cpp">
+      <Filter>02.GameObjects\07. Effect\Trail</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -681,6 +708,9 @@
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

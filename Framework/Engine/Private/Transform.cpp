@@ -245,19 +245,31 @@ _float3 CTransform::Get_Rotation_Radian()
 void CTransform::Set_Rotation(_fvector vRadianEulerAngle)
 {
 	// Áü¹ú¶ôÀ» À§ÇØ ÄõÅÍ´Ï¿ÂÀ¸·Î È¸Àü.
+	_float3 vRotation;
+	XMStoreFloat3(&vRotation, vRadianEulerAngle);
 
-	
-	_matrix RotationMatrix = XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYawFromVector(vRadianEulerAngle));
+	_matrix RotationMatrix = XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(vRotation.x, vRotation.y, vRotation.z));
 
 
 	_float3		Scale = Get_Scale();
 
 	WRITE_LOCK
 
+	if (vRotation.y <= 91.f && vRotation.y >= 89.f)
+	{
+		Set_State(CTransform::STATE_UP, XMVector3TransformNormal(XMVectorSet(0.f, 1.f, 0.f, 0.f) * Scale.y, RotationMatrix));
+		Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(XMVectorSet(1.f, 0.f, 0.f, 0.f) * Scale.x, RotationMatrix));
+		Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(XMVectorSet(0.f, 0.f, 1.f, 0.f) * Scale.z, RotationMatrix));
+	}
+	else
+	{
+		Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(XMVectorSet(1.f, 0.f, 0.f, 0.f) * Scale.x, RotationMatrix));
+		Set_State(CTransform::STATE_UP, XMVector3TransformNormal(XMVectorSet(0.f, 1.f, 0.f, 0.f) * Scale.y, RotationMatrix));
+		Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(XMVectorSet(0.f, 0.f, 1.f, 0.f) * Scale.z, RotationMatrix));
+	}
 	
-	Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(XMVectorSet(0.f, 0.f, 1.f, 0.f) * Scale.z, RotationMatrix));
-	Set_State(CTransform::STATE_UP, XMVector3TransformNormal(XMVectorSet(0.f, 1.f, 0.f, 0.f) * Scale.y, RotationMatrix));
-	Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(XMVectorSet(1.f, 0.f, 0.f, 0.f) * Scale.x, RotationMatrix));
+	
+	
 	
 	
 }

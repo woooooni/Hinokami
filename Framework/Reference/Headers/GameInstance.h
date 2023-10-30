@@ -45,6 +45,7 @@ public: /* For.Input_Device */
 public: /* For.Level_Manager */
 	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
 	HRESULT Render_Debug();
+	_uint Get_CurrentLevel();
 
 public: /* For.Object_Manager */
 	HRESULT Add_Prototype(const wstring & strPrototypeTag, class CGameObject* pPrototype, _uint iLayerType);
@@ -60,7 +61,7 @@ public: /* For.Object_Manager */
 
 public: /* For. Componenet_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const wstring & strProtoTypeTag, class CComponent* pPrototype);
-	class CComponent* Clone_Component(_uint iLevelIndex, const wstring & strProtoTypeTag, class CGameObject* pOwner, void* pArg = nullptr);
+	class CComponent* Clone_Component(_uint iLevelIndex, const wstring & strProtoTypeTag, class CGameObject* pOwner = nullptr, void* pArg = nullptr);
 	HRESULT Check_Prototype(_uint iLevelIndex, const wstring & strProtoTypeTag);
 
 public: /* For.Light_Manager */

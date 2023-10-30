@@ -199,6 +199,11 @@ HRESULT CGameInstance::Render_Debug()
 	return m_pLevel_Manager->Render_Debug();
 }
 
+_uint CGameInstance::Get_CurrentLevel()
+{
+	return m_pLevel_Manager->Get_CurrentLevel();
+}
+
 HRESULT CGameInstance::Add_Prototype(const wstring& strPrototypeTag, CGameObject* pPrototype, _uint iLayerType)
 {
 	if (nullptr == m_pObject_Manager)

@@ -87,6 +87,20 @@ void CCamera_Free::Tick(_float fTimeDelta)
 		{
 			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMove * fTimeDelta * 0.05f);
 		}
+
+
+	}
+
+	if (KEY_TAP(KEY::F9))
+	{
+		CCamera::CAM_SHAKE tShake;
+		ZeroMemory(&tShake, sizeof(CCamera::CAM_SHAKE));
+
+		tShake.fDuration = 0.1f;
+		tShake.fForce = 5.f;
+
+
+		Cam_Shake(tShake);
 	}
 
 

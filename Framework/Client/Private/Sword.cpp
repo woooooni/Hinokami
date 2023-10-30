@@ -5,6 +5,8 @@
 #include "HierarchyNode.h"
 #include "Collision_Manager.h"
 #include "Monster.h"
+#include "Trail.h"
+#include "PipeLine.h"
 
 CSword::CSword(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strObjectTag)
 	: CPart(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_WEAPON)
@@ -51,6 +53,10 @@ HRESULT CSword::Initialize(void* pArg)
 	if (FAILED(Ready_Colliders()))
 		return E_FAIL;
 
+	m_pTrailCom->SetUp_Position(XMVectorSet(0.f, 0.5f, -0.9f, 1.f), XMVectorSet(0.f, -0.5f, -0.9f, 1.f));
+
+	Generate_Trail();
+
 	return S_OK;
 }
 
@@ -63,6 +69,8 @@ void CSword::Tick(_float fTimeDelta)
 	WorldMatrix.r[2] = XMVector3Normalize(WorldMatrix.r[2]);
 	
 	Compute_RenderMatrix(WorldMatrix);
+
+	m_pTrailCom->Tick(fTimeDelta, m_pTransformCom->Get_WorldMatrix());
 }
 
 void CSword::LateTick(_float fTimeDelta)
@@ -91,6 +99,9 @@ HRESULT CSword::Render()
 		if (FAILED(m_pModelCom->Render(m_pShaderCom, i)))
 			return E_FAIL;
 	}
+
+	if (FAILED(m_pTrailCom->Render()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -137,10 +148,13 @@ void CSword::Collision_Exit(const COLLISION_INFO& tInfo)
 
 void CSword::Generate_Trail()
 {
+	Compute_RenderMatrix(m_pSocketBone->Get_CombinedTransformation() * XMLoadFloat4x4(&m_SocketPivotMatrix));
+	m_pTrailCom->Start_Trail(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CSword::Stop_Trail()
 {
+	m_pTrailCom->Stop_Trail();
 }
 
 void CSword::Generate_Effect()
@@ -167,6 +181,16 @@ HRESULT CSword::Ready_Components()
 	/* Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, m_strModelPrototype,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+		return E_FAIL;
+
+	CTrail::TRAIL_DESC TrailDesc = { };
+	TrailDesc.bTrail = true;
+	TrailDesc.fAccGenTrail = 0.f;
+	TrailDesc.fGenTrailTime = 0.01f;
+	TrailDesc.vColor = { 1.f, 0.f, 0.f, 1.f };
+
+	/* For.Com_Trail */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Trail"), TEXT("Com_Trail"), (CComponent**)&m_pTrailCom, &TrailDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -264,3 +288,4 @@ void CSword::Free()
 {
 	__super::Free();
 }
+;

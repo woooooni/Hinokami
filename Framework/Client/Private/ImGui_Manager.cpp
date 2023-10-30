@@ -303,6 +303,41 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
 void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
 {
     ImGui::Begin("Inspector");
+    if (KEY_HOLD(KEY::CTRL) && KEY_TAP(KEY::LBTN))
+    {
+        for (_uint i = 0; i < LAYER_TYPE::LAYER_END; ++i)
+        {
+            if (i == LAYER_TYPE::LAYER_CAMERA
+                || i == LAYER_TYPE::LAYER_TERRAIN
+                || i == LAYER_TYPE::LAYER_BACKGROUND
+                || i == LAYER_TYPE::LAYER_SKYBOX
+                || i == LAYER_TYPE::LAYER_UI)
+                continue;
+
+            list<CGameObject*>& GameObjects = GAME_INSTANCE->Find_GameObjects(LEVEL_TOOL, i);
+            for (auto& Object : GameObjects)
+            {
+                CTransform* pTransform = Object->Get_Component<CTransform>(L"Com_Transform");
+                CModel* pModel = Object->Get_Component<CModel>(L"Com_Model");
+                if (pTransform == nullptr)
+                    continue;
+
+                if (pModel == nullptr)
+                    continue;
+
+                for (auto& pMesh : pModel->Get_Meshes())
+                {
+                    _float4 vPosition;
+                    if (CPicking_Manager::GetInstance()->Is_Picking(pTransform, pMesh, false, &vPosition))
+                    {
+                        m_pTarget = Object;
+                        break;
+                    }
+                }
+            }
+
+        }
+    }
     if (!m_pTarget)
     {
         ImGui::End();

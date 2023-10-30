@@ -58,6 +58,17 @@ void CCamera_Main::Tick(_float fTimeDelta)
 		else if (0.f >= m_vAngle.y)
 			m_vAngle.y = 360.f;
 	}
+	if (KEY_TAP(KEY::F9))
+	{
+		CCamera::CAM_SHAKE tShake;
+		ZeroMemory(&tShake, sizeof(CCamera::CAM_SHAKE));
+
+		tShake.fDuration = 1.f;
+		tShake.fForce = 10.f;
+
+
+		Cam_Shake(tShake);
+	}
 	__super::Tick(fTimeDelta);
 }
 
@@ -84,6 +95,28 @@ void CCamera_Main::LateTick(_float fTimeDelta)
 	XMStoreFloat4(&vLookAt, vPlayerPos);
 	vLookAt.y += 1.f;
 	m_pTransformCom->LookAt(XMLoadFloat4(&vLookAt));
+
+
+
+
+	if (false == m_tShakeDesc.bEnd)
+	{
+
+		srand(time(NULL) * rand() * rand());
+		m_tShakeDesc.fAccTime += fTimeDelta;
+		if (m_tShakeDesc.fAccTime >= m_tShakeDesc.fDuration)
+			m_tShakeDesc.bEnd = true;
+
+		_float fForce = (rand() % _uint(m_tShakeDesc.fForce)) - (m_tShakeDesc.fForce / 2.f);
+
+		_vector vShakeDir = XMVector3Normalize(XMVectorSet(1.f, 0.f, 1.f, 0.f));
+		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		vPosition += vShakeDir * fForce * fTimeDelta;
+
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
+	}
 	
 	__super::LateTick(fTimeDelta);
 }

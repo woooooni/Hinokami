@@ -244,11 +244,11 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 
 
-	if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
-		return E_FAIL;
+	//if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
+	//	return E_FAIL;
 
-	if(FAILED(Load_Map_Data(L"Village")))
-		return E_FAIL;
+	//if(FAILED(Load_Map_Data(L"Village")))
+	//	return E_FAIL;
 
 	
 
