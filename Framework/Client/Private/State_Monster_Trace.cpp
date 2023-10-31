@@ -103,6 +103,7 @@ void CState_Monster_Trace::Tick_State(_float fTimeDelta)
 		m_pStateMachineCom->Change_State(CMonster::ATTACK);
 		return;
 	}
+
 	m_pTransformCom->LookAt_ForLandObject(vTargetPosition);
 	m_pTransformCom->Go_Dir(vDir, fTimeDelta, m_pStateMachineCom->Get_Owner()->Get_Component<CNavigation>(L"Com_Navigation"));
 }

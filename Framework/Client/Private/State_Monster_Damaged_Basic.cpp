@@ -56,30 +56,17 @@ void CState_Monster_Damaged_Basic::Enter_State(void* pArg)
 void CState_Monster_Damaged_Basic::Tick_State(_float fTimeDelta)
 {
 	
-	if (m_pModelCom->Get_Animations()[m_AnimationIndices[m_iRandomIndex]]->Get_AnimationProgress() >= 0.8f)
-	{
-		m_pOwnerMonster->Set_Infinite(0.f, false);
-	}
 	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[m_iRandomIndex]))
-	{
-		m_fAccReturn += fTimeDelta;
-		if (m_fAccReturn >= m_fReturnTime)
-		{
-			m_pStateMachineCom->Change_State(CMonster::MONSTER_STATE::IDLE);
-			m_fAccReturn = 0.f;
-		}
-		
-	}
+		m_pStateMachineCom->Change_State(CMonster::MONSTER_STATE::IDLE);
 		
 }
 
 void CState_Monster_Damaged_Basic::Exit_State()
 {
 	m_iRandomIndex = 0;
-	m_fAccReturn = 0.f;
 
 	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-	m_pOwnerMonster->Set_Infinite(0.f, false);
+	m_pOwnerMonster->Set_Infinite(0.5f, false);
 }
 
 CState_Monster_Damaged_Basic* CState_Monster_Damaged_Basic::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)

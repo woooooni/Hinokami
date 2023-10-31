@@ -28,6 +28,8 @@ private:
 	_float m_fAccRecovery = 0.f;
 	_float m_fRecoveryTime = 3.f;
 
+	class CMonster* m_pOwnerMonster = nullptr;
+
 public:
 	static CState_Monster_Damaged_AirBorn* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;

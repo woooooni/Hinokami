@@ -192,8 +192,12 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		CCamera_Main::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
 
+
+	CMonster::MONSTER_STAT tMonsterStat = {};
+	tMonsterStat.fHp = 10.f;
+	tMonsterStat.fStamina = 10.f;
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_NormalMonster"),
-		CMonster_Normal_0::Create(m_pDevice, m_pContext, TEXT("NormalMonster0")), LAYER_TYPE::LAYER_MONSTER)))
+		CMonster_Normal_0::Create(m_pDevice, m_pContext, TEXT("NormalMonster0"), tMonsterStat), LAYER_TYPE::LAYER_MONSTER)))
 		return E_FAIL;
 
 

@@ -74,6 +74,20 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 	}
 		
 
+	if (m_iCurrAnimIndex == 4)
+	{
+		_float fProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
+		if (fProgress >= 0.2f && fProgress <= 0.6f)
+		{
+			m_pSword->Set_PushPower(10.f);
+			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+		}
+		else
+		{
+			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+		}
+		
+	}
 	//if (m_iCurrAnimIndex == 3)
 	//{
 	//	_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
@@ -123,7 +137,7 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 	{
 		if (KEY_TAP(KEY::LBTN))
 		{
-			m_iCurrAnimIndex = min(m_iCurrAnimIndex + 1, m_AnimationIndices.size());
+			m_iCurrAnimIndex = min(m_iCurrAnimIndex + 1, m_AnimationIndices.size() - 1);
 			if (m_iCurrAnimIndex != m_AnimationIndices.size())
 				m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
 
@@ -133,6 +147,7 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 				Find_Near_Target();
 				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
 				m_pSword->Set_PushPower(0.f);
+				m_pSword->Set_Damage(1.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
 				break;
 
@@ -140,6 +155,7 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 				Find_Near_Target();
 				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
 				m_pSword->Set_PushPower(0.f);
+				m_pSword->Set_Damage(1.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
 				break;
 
@@ -147,20 +163,22 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 				Find_Near_Target();
 				m_pSword->Set_SwordMode(CSword::SWORD_MODE::AIR_BONE);
 				m_pSword->Set_PushPower(0.f);
+				m_pSword->Set_Damage(3.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
 				break;
 
 			case 4:
 				Find_Near_Target();
 				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BLOW);
-				fLookVelocity = 3.f;
 				m_pSword->Set_PushPower(10.f);
+				m_pSword->Set_Damage(3.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
+				m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 				break;
 
 			default:
 				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
-				m_iCurrAnimIndex = min(m_iCurrAnimIndex + 1, m_AnimationIndices.size() - 1);
+				m_pSword->Set_PushPower(0.f);
 				break;
 			}
 		}

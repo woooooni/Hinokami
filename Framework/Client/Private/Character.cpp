@@ -7,6 +7,7 @@
 #include "Sword.h"
 #include "Sweath.h"
 #include <future>
+#include "Trail.h"
 
 
 USING(Client)
@@ -40,7 +41,6 @@ HRESULT CCharacter::Initialize(void* pArg)
 
 void CCharacter::Tick(_float fTimeDelta)
 {
-	Input(fTimeDelta);
 
 	for (auto& pPart : m_Parts)
 		pPart->Tick(fTimeDelta);
@@ -56,6 +56,20 @@ void CCharacter::Tick(_float fTimeDelta)
 			Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, true);
 			Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, true);
 		}
+	}
+	
+
+	for(_uint i = 0; i < SOCEKT_END; ++i)
+	{
+		if (nullptr == m_pTrails[i])
+			continue;
+		_matrix		WorldMatrix = m_Sockets[i]->Get_CombinedTransformation() * m_pModelCom->Get_PivotMatrix();
+		WorldMatrix.r[0] = XMVector3Normalize(WorldMatrix.r[0]);
+		WorldMatrix.r[1] = XMVector3Normalize(WorldMatrix.r[1]);
+		WorldMatrix.r[2] = XMVector3Normalize(WorldMatrix.r[2]);
+
+		m_pTrails[i]->Tick(fTimeDelta, WorldMatrix * m_pTransformCom->Get_WorldMatrix());
+		
 	}
 }
 
@@ -105,6 +119,14 @@ HRESULT CCharacter::Render()
 
 		if (FAILED(m_pModelCom->Render(m_pShaderCom, i)))
 			return E_FAIL;
+	}
+
+	for (_uint i = 0; i < SOCEKT_END; ++i)
+	{
+		if (nullptr == m_pTrails[i])
+			continue;
+
+		m_pTrails[i]->Render();
 	}
 
 	return S_OK;

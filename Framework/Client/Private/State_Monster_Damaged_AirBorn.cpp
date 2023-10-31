@@ -26,6 +26,12 @@ HRESULT CState_Monster_Damaged_AirBorn::Initialize(const list<wstring>& Animatio
 	m_pRigidBodyCom = m_pStateMachineCom->Get_Owner()->Get_Component<CRigidBody>(L"Com_RigidBody");
 	if (nullptr == m_pRigidBodyCom)
 		return E_FAIL;
+
+	m_pOwnerMonster = dynamic_cast<CMonster*>(m_pStateMachineCom->Get_Owner());
+	if (nullptr == m_pOwnerMonster)
+		return E_FAIL;
+
+	Safe_AddRef(m_pOwnerMonster);
 	Safe_AddRef(m_pRigidBodyCom);
 	Safe_AddRef(m_pModelCom);
 	Safe_AddRef(m_pTransformCom);
@@ -80,6 +86,7 @@ void CState_Monster_Damaged_AirBorn::Exit_State()
 	m_bFirstGround = false;
 
 	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+	m_pOwnerMonster->Set_Infinite(0.5f, false);
 }
 
 CState_Monster_Damaged_AirBorn* CState_Monster_Damaged_AirBorn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
@@ -99,4 +106,5 @@ void CState_Monster_Damaged_AirBorn::Free()
 {
 	__super::Free();
 	Safe_Release(m_pRigidBodyCom);
+	Safe_Release(m_pOwnerMonster);
 }

@@ -848,7 +848,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
 
 
-    static char szEffectModelName[MAX_PATH] = "Temp";
+    static char szEffectModelName[MAX_PATH] = "";
     if (ImGui::BeginListBox("##Effect_Model_List", ImVec2(200.f, 200.f)))
     {
         for (size_t i = 0; i < m_EffectsModelFiles.size(); ++i)
@@ -944,10 +944,13 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         ImGui::Text("============================================");
         {
             ImGui::Text("Diffuse Texture");
-            if (ImGui::BeginListBox("##Effect_DiffuseTexture_List", ImVec2(200.f, 300.f)))
+            if (ImGui::BeginListBox("##Effect_DiffuseTexture_List", ImVec2(500.f, 300.f)))
             {
                 for (size_t i = 0; i < pDiffuseTexture->Get_TextureCount(); ++i)
                 {
+                    if(i % 3 != 0)
+                        IMGUI_SAME_LINE;
+
                     if (ImGui::ImageButton(pDiffuseTexture->Get_Srv(i), ImVec2(150.f, 150.f)))
                     {
                         tEffectDesc.iDiffuseTextureIndex = i;
@@ -967,10 +970,12 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         IMGUI_NEW_LINE;
         {
             ImGui::Text("Alpha Texture");
-            if (ImGui::BeginListBox("##Effect_AlphaTexture_List", ImVec2(200.f, 300.f)))
+            if (ImGui::BeginListBox("##Effect_AlphaTexture_List", ImVec2(500.f, 300.f)))
             {
                 for (size_t i = 0; i < pAlphaTexture->Get_TextureCount(); ++i)
                 {
+                    if (i % 3 != 0)
+                        IMGUI_SAME_LINE;
                     if (ImGui::ImageButton(pAlphaTexture->Get_Srv(i), ImVec2(150.f, 150.f)))
                     {
                         tEffectDesc.iAlphaTextureIndex = i;
@@ -1034,10 +1039,47 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         IMGUI_NEW_LINE;
         IMGUI_NEW_LINE;
         ImGui::Text("============================================");
-        ImGui::Text("Rotation");
+        ImGui::Text("Offset");
         ImGui::Text("============================================");
+        _vector vOffsetScale, vOffsetQuaternion, vOffsetPosition;
+        XMMatrixDecompose(&vOffsetScale, &vOffsetQuaternion, &vOffsetPosition, XMLoadFloat4x4(&tEffectDesc.OffsetMatrix));
+
+        _vector vOffsetRotation = XMLoadFloat3(&CUtils::ToEulerAngles(vOffsetQuaternion));
 
 
+        _float3 fOffsetScale, fOffsetRoation, fOffsetPosition;
+
+        XMStoreFloat3(&fOffsetScale, vOffsetScale);
+        XMStoreFloat3(&fOffsetRoation, vOffsetRotation);
+        XMStoreFloat3(&fOffsetPosition, vOffsetPosition);
+
+        ImGui::Text("Offset_Scale : ");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat3("##Effect_OffsetScale", (_float*)&fOffsetScale, 0.01f, 0.f, 10.f);
+        
+
+        fOffsetRoation.x = XMConvertToDegrees(fOffsetRoation.x);
+        fOffsetRoation.y = XMConvertToDegrees(fOffsetRoation.y);
+        fOffsetRoation.z = XMConvertToDegrees(fOffsetRoation.z);
+
+        ImGui::Text("Offset_Rotation : ");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat3("##Effect_OffsetRotation", (_float*)&fOffsetRoation, 0.1f, 0.f, 90.f);
+        
+
+        ImGui::Text("Offset_Position : ");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat3("##Effect_OffsetPosition", (_float*)&fOffsetPosition, 0.01f, -1000.f, 1000.f);
+
+
+        fOffsetRoation.x = XMConvertToRadians(fOffsetRoation.x);
+        fOffsetRoation.y = XMConvertToRadians(fOffsetRoation.y);
+        fOffsetRoation.z = XMConvertToRadians(fOffsetRoation.z);
+        
+        vOffsetQuaternion = XMQuaternionRotationRollPitchYaw(fOffsetRoation.x, fOffsetRoation.y, fOffsetRoation.z);
+        
+        XMStoreFloat4x4(&tEffectDesc.OffsetMatrix, 
+            XMMatrixAffineTransformation(XMLoadFloat3(&fOffsetScale), XMVectorSet(0.f, 0.f, 0.f, 1.f), vOffsetQuaternion, XMLoadFloat3(&fOffsetPosition)));
 
         
         IMGUI_NEW_LINE;

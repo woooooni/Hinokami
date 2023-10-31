@@ -17,8 +17,8 @@
 #include "State_Monter_Dead.h"
 
 USING(Client)
-CMonster_Normal_0::CMonster_Normal_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
-	: CMonster(pDevice, pContext, strObjectTag)
+CMonster_Normal_0::CMonster_Normal_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const MONSTER_STAT& tStat)
+	: CMonster(pDevice, pContext, strObjectTag, tStat)
 {
 }
 
@@ -115,15 +115,29 @@ void CMonster_Normal_0::Collision_Exit(const COLLISION_INFO& tInfo)
 {
 }
 
-void CMonster_Normal_0::On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageType, _float fPushPower, _float fAirBornPower)
+void CMonster_Normal_0::On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageType, _float fPushPower, _float fAirBornPower, _float fDamage)
 {
 	if (m_bInfinite)
 		return;
 
-	__super::On_Damaged(pAttacker, eDamageType, fPushPower);
+
+
+	__super::On_Damaged(pAttacker, eDamageType, fPushPower, fAirBornPower, fDamage);
 	CTransform* pAttackerTransform = pAttacker->Get_Component<CTransform>(L"Com_Transform");
 
 	m_pTransformCom->LookAt_ForLandObject(pAttackerTransform->Get_State(CTransform::STATE_POSITION));
+
+	m_tStat.fHp -= fDamage;
+	if (m_tStat.fHp <= 0.f)
+	{
+		m_bReserveDead = true;
+		m_pStateCom->Change_State(MONSTER_STATE::DIE);
+		return;
+	}
+		
+
+
+
 	switch (eDamageType)
 	{
 		case DAMAGE_TYPE::BASIC:
@@ -174,6 +188,10 @@ HRESULT CMonster_Normal_0::Ready_Components()
 
 	/* For.Com_StateMachine */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_StateMachine"), TEXT("Com_StateMachine"), (CComponent**)&m_pStateCom)))
+		return E_FAIL;
+
+	/* For.Com_DissolveTexture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Dissolve"), TEXT("Com_DissolveTexture"), (CComponent**)&m_pDissoveTexture)))
 		return E_FAIL;
 
 
@@ -249,8 +267,8 @@ HRESULT CMonster_Normal_0::Ready_States()
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
 	m_pStateCom->Add_State(CMonster::DAMAGED_AIRBORN, CState_Monster_Damaged_AirBorn::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
-	
 
+	
 
 
 	strAnimationName.clear();
@@ -260,6 +278,9 @@ HRESULT CMonster_Normal_0::Ready_States()
 	m_pStateCom->Add_State(CMonster::DAMAGED_BLOW, CState_Monster_Damaged_Blow::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 	
 
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgDown01_1");
+	m_pStateCom->Add_State(CMonster::DIE, CState_Monster_Dead::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 
 	m_pStateCom->Change_State(CMonster::MONSTER_STATE::REGEN);
@@ -356,9 +377,9 @@ HRESULT CMonster_Normal_0::Ready_Parts()
 }
 
 
-CMonster_Normal_0* CMonster_Normal_0::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
+CMonster_Normal_0* CMonster_Normal_0::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const MONSTER_STAT& tStat)
 {
-	CMonster_Normal_0* pInstance = new CMonster_Normal_0(pDevice, pContext, strObjectTag);
+	CMonster_Normal_0* pInstance = new CMonster_Normal_0(pDevice, pContext, strObjectTag, tStat);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("Create Failed : CMonster_Normal_0");

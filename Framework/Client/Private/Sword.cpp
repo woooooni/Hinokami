@@ -53,9 +53,9 @@ HRESULT CSword::Initialize(void* pArg)
 	if (FAILED(Ready_Colliders()))
 		return E_FAIL;
 
-	m_pTrailCom->SetUp_Position(XMVectorSet(0.f, 0.5f, -0.9f, 1.f), XMVectorSet(0.f, -0.5f, -0.9f, 1.f));
+	
 
-	Generate_Trail();
+	// Generate_Trail();
 
 	return S_OK;
 }
@@ -119,14 +119,14 @@ void CSword::Collision_Enter(const COLLISION_INFO& tInfo)
 			switch (m_eSwordMode)
 			{
 			case SWORD_MODE::BASIC:
-				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::BASIC, m_fPushPower);
+				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::BASIC, m_fPushPower, 0.f, m_fDamage);
 				break;
 			case SWORD_MODE::AIR_BONE:
-				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::AIRBONE, m_fPushPower, 5.f);
+				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::AIRBONE, m_fPushPower, 5.f, m_fDamage);
 				break;
 
 			case SWORD_MODE::BLOW:
-				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::BLOW, m_fPushPower);
+				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::BLOW, m_fPushPower, 0.f, m_fDamage);
 				break;
 
 			}
@@ -186,12 +186,14 @@ HRESULT CSword::Ready_Components()
 	CTrail::TRAIL_DESC TrailDesc = { };
 	TrailDesc.bTrail = true;
 	TrailDesc.fAccGenTrail = 0.f;
-	TrailDesc.fGenTrailTime = 0.01f;
-	TrailDesc.vColor = { 1.f, 0.f, 0.f, 1.f };
+	TrailDesc.fGenTrailTime = 0.f;
+	TrailDesc.vColor = { 1.f, 0.f, 0.f, 0.5f };
 
 	/* For.Com_Trail */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Trail"), TEXT("Com_Trail"), (CComponent**)&m_pTrailCom, &TrailDesc)))
 		return E_FAIL;
+
+	m_pTrailCom->SetUp_Position(XMVectorSet(0.f, 0.025f, -0.9f, 1.f), XMVectorSet(0.f, -0.025f, -0.9f, 1.f));
 
 	return S_OK;
 }

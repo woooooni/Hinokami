@@ -39,6 +39,10 @@ public:
 	_float Get_PushPower() { return m_fPushPower; }
 	SWORD_MODE Get_SwordMode() { return m_eSwordMode; }
 
+
+	void Set_Damage(_float fDamage) { m_fDamage = fDamage; }
+	_float Get_Damage() { return m_fDamage; }
+
 public:
 	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Continue(const COLLISION_INFO& tInfo) override;
@@ -54,7 +58,7 @@ private:
 	wstring					m_strModelPrototype;
 	SWORD_MODE				m_eSwordMode;
 	_float					m_fPushPower = 0.f;
-
+	_float					m_fDamage = 1.f;
 
 private:
 	class CTrail* m_pTrailCom = { nullptr };

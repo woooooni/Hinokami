@@ -4,6 +4,7 @@
 #include "HierarchyNode.h"
 #include "Sword.h"
 #include "Sweath.h"
+#include "Trail.h"
 #include "Collision_Manager.h"
 
 #include "State_Tanjiro_Basic_Idle.h"
@@ -70,7 +71,6 @@ void CTanjiro::Tick(_float fTimeDelta)
 	m_pStateCom->Tick_State(fTimeDelta);
 	m_pRigidBodyCom->Tick_RigidBody(fTimeDelta);
 	__super::Tick(fTimeDelta);
-
 }
 
 void CTanjiro::LateTick(_float fTimeDelta)
@@ -329,9 +329,34 @@ HRESULT CTanjiro::Ready_Sockets()
 	m_Sockets[SOCKET_RIGHT_HAND] = m_pModelCom->Get_HierarchyNode(L"R_Hand_1");
 	m_Sockets[SOCKET_SWEATH] = m_pModelCom->Get_HierarchyNode(L"L_Weapon_1_Lct");
 
-	m_Sockets[SOCKET_LEFT_FOOT] = m_pModelCom->Get_HierarchyNode(L"R_Foot_End");
-	m_Sockets[SOCKET_RIGHT_FOOT] = m_pModelCom->Get_HierarchyNode(L"L_Foot_End");
+	m_Sockets[SOCKET_LEFT_FOOT] = m_pModelCom->Get_HierarchyNode(L"L_Foot_End");
+	m_Sockets[SOCKET_RIGHT_FOOT] = m_pModelCom->Get_HierarchyNode(L"R_Foot_End");
 	
+
+	CTrail::TRAIL_DESC TrailDesc = {};
+	TrailDesc.bTrail = true;
+	
+	TrailDesc.fAccGenTrail = 0.f;
+	TrailDesc.fGenTrailTime = 0.01f;
+
+	TrailDesc.fUVAcc = 0.f;
+	TrailDesc.strTextureName = L"";
+	TrailDesc.vColor = { 1.f, 0.f, 1.f, 0.5f };
+
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, L"Prototype_Component_Trail", L"Com_Trail_Left_Foot", 
+		(CComponent**)&m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT], &TrailDesc)))
+		return E_FAIL;
+
+	m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.025f, 1.f), XMVectorSet(0.f, 0.0f, 0.025f, 1.f));
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, L"Prototype_Component_Trail", L"Com_Trail_Right_Foot", 
+		(CComponent**)&m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT], &TrailDesc)))
+		return E_FAIL;
+
+	m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.025f, 1.f), XMVectorSet(0.f, 0.0f, 0.025f, 1.f));
+
+
 
 	return S_OK;
 }

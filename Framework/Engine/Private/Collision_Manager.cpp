@@ -83,13 +83,13 @@ void CCollision_Manager::Collision_Update(COLLISION_GROUP eLeft, COLLISION_GROUP
 
 	for (auto& pLeft : pLeftObject)
 	{
-		if (pLeft->Is_Dead() || pLeft->Is_ReserveDead() || pLeft->Get_Collider(CCollider::DETECTION_TYPE::BOUNDARY).size() <= 0)
+		if (pLeft->Is_Dead() || pLeft->Get_Collider(CCollider::DETECTION_TYPE::BOUNDARY).size() <= 0)
 			continue;
 
 		
 		for (auto& pRight : pRightObject)
 		{
-			if (pRight->Is_ReserveDead() || pRight->Is_Dead() || pRight->Get_Collider(CCollider::DETECTION_TYPE::BOUNDARY).size() <= 0)			
+			if (pRight->Is_Dead() || pRight->Get_Collider(CCollider::DETECTION_TYPE::BOUNDARY).size() <= 0)			
 				continue;
 
 			if (pLeft == pRight)

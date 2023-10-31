@@ -5,8 +5,9 @@ BEGIN(Client)
 class CMonster_Normal_0 final : public CMonster
 {
 
+
 private:
-	CMonster_Normal_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	CMonster_Normal_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const MONSTER_STAT& tStat);
 	CMonster_Normal_0(const CMonster_Normal_0& rhs);
 	virtual ~CMonster_Normal_0() = default;
 
@@ -21,12 +22,15 @@ public:
 	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Continue(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Exit(const COLLISION_INFO& tInfo) override;
-	virtual void On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageType, _float fPushPower, _float fAirBornPower) override;
+	virtual void On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageType, _float fPushPower, _float fAirBornPower, _float fDamage) override;
 
 protected:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Ready_States() override;
 	virtual HRESULT Ready_Colliders() override;
+
+
+
 	
 
 private:
@@ -35,7 +39,7 @@ private:
 	
 
 public:
-	static CMonster_Normal_0* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	static CMonster_Normal_0* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const MONSTER_STAT& tStat);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

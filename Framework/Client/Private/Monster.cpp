@@ -6,14 +6,15 @@
 
 
 USING(Client)
-CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
+CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const MONSTER_STAT& tStat)
 	: CGameObject(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_MONSTER)
 {
-	
+	m_tStat = tStat;
 }
 
 CMonster::CMonster(const CMonster& rhs)
 	: CGameObject(rhs)
+	, m_tStat(rhs.m_tStat)
 
 {	
 	
@@ -53,6 +54,13 @@ void CMonster::Tick(_float fTimeDelta)
 		}
 
 	}
+
+	if (m_bReserveDead)
+		m_fDissolveWeight += 0.2f * fTimeDelta;
+
+	if (m_fDissolveWeight >= 1.f)
+		Set_Dead(true);
+
 }
 
 void CMonster::LateTick(_float fTimeDelta)
@@ -91,13 +99,21 @@ HRESULT CMonster::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
+		_uint iPassIndex = 0;
 		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
 			return E_FAIL;
 
-		/*if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_NORMALS, "g_NormalTexture")))
-			return E_FAIL;*/
+		if (true == m_bReserveDead)
+		{
+			iPassIndex = 1;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveWeight", &m_fDissolveWeight, sizeof(_float))))
+				return E_FAIL;
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i)))
+			if (FAILED(m_pDissoveTexture->Bind_ShaderResource(m_pShaderCom, "g_DissolveTexture")))
+				return E_FAIL;
+		}
+
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, iPassIndex)))
 			return E_FAIL;
 	}
 

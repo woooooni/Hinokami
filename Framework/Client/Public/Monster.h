@@ -38,12 +38,21 @@ public:
 		STATE_END
 	};
 
+
+
 #pragma endregion
 	enum DAMAGE_TYPE { BASIC, BLOW, AIRBONE, TYPE_END};
 	enum SOCKET_TYPE { SOCKET_LEFT_FIST, SOCKET_RIGHT_FIST, SOCKET_LEFT_FOOT, SOCKET_RIGTH_FOOT, SOCKET_END };
 
+public:
+	typedef struct tagMonsterStat
+	{
+		_float fHp = 0.f;
+		_float fStamina = 0.f;
+	} MONSTER_STAT;
+
 protected:
-	CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const MONSTER_STAT& tStat);
 	CMonster(const CMonster& rhs);
 	virtual ~CMonster() = default;
 
@@ -65,9 +74,6 @@ public:
 		m_bInfinite = bInfinite;
 		m_fInfiniteTime = fInfiniteTime;
 		m_fAccInfinite = 0.f;
-
-		Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, !bInfinite);
-		Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, !bInfinite);
 	}
 	_bool Is_Infinite() { return m_bInfinite; }
 
@@ -91,7 +97,7 @@ protected:
 
 
 public:
-	virtual void On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageType, _float fPushPower, _float fAirBornPower = 0.f) {};
+	virtual void On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageType, _float fPushPower, _float fAirBornPower, _float fDamage) {};
 
 
 protected:
@@ -108,7 +114,7 @@ protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CStateMachine* m_pStateCom = nullptr;
 	CNavigation* m_pNavigationCom = nullptr;
 
-
+	CTexture* m_pDissoveTexture = nullptr;
 
 protected:
 	vector<CGameObject*>				m_Parts;
@@ -116,10 +122,17 @@ protected:
 
 	vector<class CHierarchyNode*>		m_Sockets;
 	typedef vector<CGameObject*>		Sockets;
+
+protected:
+	MONSTER_STAT m_tStat = {};
 	
 	_float m_fAccInfinite = 0.f;
 	_float m_fInfiniteTime = 0.2f;
 	_bool m_bInfinite = false;
+
+protected:
+	_float m_fDissolveWeight = 0.f;
+
 
 public:
 	virtual void Free() override;

@@ -93,6 +93,9 @@ public:
 	_bool Is_Infinite() { return m_bInfinite; }
 	virtual HRESULT Set_ActiveColliders(_uint eDetectionType, _bool bActive);
 
+
+
+
 protected:
 	virtual HRESULT Ready_Components() PURE;
 	virtual HRESULT Ready_States() PURE;
@@ -110,6 +113,7 @@ protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CStateMachine* m_pStateCom = nullptr;
 	CNavigation* m_pNavigationCom = nullptr;
 
+	class CTrail* m_pTrails[SOCEKT_END];
 
 
 protected:
