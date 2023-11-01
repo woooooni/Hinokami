@@ -256,6 +256,8 @@ HRESULT CNavigation::Load_NaviData(const wstring& strNaviDataPath)
 		m_Cells.push_back(pCell);
 	}
 
+
+
 	return S_OK;
 }
 
@@ -285,17 +287,14 @@ HRESULT CNavigation::Render()
 		if (FAILED(m_pShader->Bind_RawValue("g_vLineColor", &vLineColor, sizeof(_float4))))
 			return E_FAIL;
 
-		_float		fHeight = 0.1f;
+		_float		fHeight = 0.02f;
 		if (FAILED(m_pShader->Bind_RawValue("g_fHeight", &fHeight, sizeof(_float))))
-			return E_FAIL;
-
-		if (FAILED(m_pShader->Begin(0)))
 			return E_FAIL;
 
 		for (auto& pCell : m_Cells)
 		{
 			if (nullptr != pCell)
-				pCell->Render();
+				pCell->Render(m_pShader);
 		}
 	}
 	else
@@ -304,14 +303,14 @@ HRESULT CNavigation::Render()
 		if (FAILED(m_pShader->Bind_RawValue("g_vLineColor", &vLineColor, sizeof(_float4))))
 			return E_FAIL;
 
-		_float		fHeight = 0.1f;
+		_float		fHeight = 0.02f;
 		if (FAILED(m_pShader->Bind_RawValue("g_fHeight", &fHeight, sizeof(_float))))
 			return E_FAIL;
 
 		if (FAILED(m_pShader->Begin(0)))
 			return E_FAIL;
 
-		m_Cells[m_iCurrentIndex]->Render();
+		m_Cells[m_iCurrentIndex]->Render(m_pShader);
 	}	
 
 	return S_OK;
@@ -347,6 +346,10 @@ HRESULT CNavigation::Initialize_Index(_vector vWorldPostion)
 /* 네비게이션을 구성하는 각각의 셀들의 이웃을 설정한다. */
 HRESULT CNavigation::SetUp_Neighbors()
 {
+	_uint iCurrentIndex = 0;
+	for (auto& pCell : m_Cells)
+		pCell->Set_Index(iCurrentIndex++);
+
 	for (auto& pSourCell : m_Cells)
 	{
 		for (auto& pDestCell : m_Cells)

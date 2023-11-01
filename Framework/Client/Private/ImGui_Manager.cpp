@@ -209,7 +209,6 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
 
             if (ImGui::BeginListBox(szListBoxLable, ImVec2(500, 0)))
             {
-                _uint iIdx = 0;
                 for (auto& Object : GameObjects)
                 {
                     string ObjectTag = CUtils::ToString(Object->Get_ObjectTag());
@@ -219,6 +218,19 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
                         TargetObjectTag = CUtils::ToString(m_pTarget->Get_ObjectTag());
                     else
                         TargetObjectTag = "";
+
+
+                    if (Object->Is_NaviObject())
+                    {
+                        if (ImGui::ColorButton("##Navi_ObjectDeselectbutton", ImVec4(0.f, 1.f, 0.f, 1.f)))
+                            Object->Set_NaviObject(false);
+                    }
+                    else
+                    {
+                        if (ImGui::ColorButton("##Navi_ObjectSelectbutton", ImVec4(1.f, 0.f, 0.f, 1.f)))
+                            Object->Set_NaviObject(true);
+                    }
+                    IMGUI_SAME_LINE;
 
                     if (ImGui::Selectable(ObjectTag.c_str(), ObjectTag == TargetObjectTag, ImGuiSelectableFlags_AllowDoubleClick, ImVec2(300, 15)))
                     {
@@ -243,22 +255,7 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
                         }
                     }
 
-                    IMGUI_SAME_LINE;
-                    if (Object->Is_NaviObject())
-                    {
-                        if (ImGui::ColorButton("##Navi_ObjectDeselectbutton", ImVec4(0.f, 1.f, 0.f, 1.f)))
-                            Object->Set_NaviObject(false);
-                    }
-                    else
-                    {
-                        if (ImGui::ColorButton("##Navi_ObjectSelectbutton", ImVec4(1.f, 0.f, 0.f, 1.f)))
-                            Object->Set_NaviObject(true);
-                    }
 
-                    
-                    
-
-                    iIdx++;
                 }
 
                 ImGui::EndListBox();
@@ -1390,6 +1387,8 @@ void CImGui_Manager::Tick_NaviMesh_Tool(_float fTimeDeleta)
     {
         if(FAILED(m_pTerrain->Get_NavigationCom()->SetUp_Neighbors()))
             MSG_BOX("Bake Failed.");
+        else
+            MSG_BOX("Bake Success");
     }
 
 
@@ -1422,7 +1421,7 @@ void CImGui_Manager::Tick_NaviMesh_Tool(_float fTimeDeleta)
 
 void CImGui_Manager::NaviPicking()
 {
-    if (KEY_HOLD(KEY::SHIFT) && KEY_TAP(KEY::RBTN))
+    if (KEY_HOLD(KEY::SHIFT) && KEY_HOLD(KEY::RBTN))
     {
         POINT pt;
         GetCursorPos(&pt);
@@ -1432,8 +1431,6 @@ void CImGui_Manager::NaviPicking()
             _float(pt.x / (g_iWinSizeX * .5f) - 1.f),
             _float(pt.y / (g_iWinSizeY * -.5f) + 1.f),
             1.f, 1.f);
-
-
 
         _matrix ViewMatrixInv = GAME_INSTANCE->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
         _matrix ProjMatrixInv = GAME_INSTANCE->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
@@ -1865,13 +1862,15 @@ void CImGui_Manager::Draw_NaviPicking_Point()
     m_pBatch->Begin();
     DirectX::BoundingSphere tSphere;
     ZeroMemory(&tSphere, sizeof(DirectX::BoundingSphere));
+    m_vNaviPickingWorldPos.y += 0.02f;
     XMStoreFloat3(&tSphere.Center, XMLoadFloat3(&m_vNaviPickingWorldPos));
-    tSphere.Radius = 0.3f;
+    tSphere.Radius = 0.05f;
     DX::Draw(m_pBatch, tSphere, XMVectorSet(0.f, 1.f, 0.f, 1.f));
 
     for (size_t i = 0; i < m_vWorldPickedNaviPos.size(); ++i)
     {
         XMStoreFloat3(&tSphere.Center, XMLoadFloat3(&m_vWorldPickedNaviPos[i]));
+        tSphere.Radius = 0.1f;
         DX::Draw(m_pBatch, tSphere, XMVectorSet(1.f, 0.f, 0.f, 1.f));
     }
 

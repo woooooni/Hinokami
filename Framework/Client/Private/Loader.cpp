@@ -239,8 +239,6 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Enemy/Monster/")))
 		return E_FAIL;
 
-	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Weapon/")))
-	//	return E_FAIL;
 
 
 	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Zenitsu/")))
@@ -248,11 +246,11 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 
 
 
-	//if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
-	//	return E_FAIL;
+	if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
+		return E_FAIL;
 
-	//if(FAILED(Load_Map_Data(L"Village")))
-	//	return E_FAIL;
+	if(FAILED(Load_Map_Data(L"Temp")))
+		return E_FAIL;
 
 	
 
@@ -426,6 +424,7 @@ HRESULT CLoader::Load_Map_Data(const wstring& strMapFileName)
 			}
 		}
 	}
+
 	MSG_BOX("Map_Loaded.");
 	return S_OK;
 }
@@ -457,7 +456,7 @@ HRESULT CLoader::Loading_Proto_AllObjects(const wstring& strPath)
 					return E_FAIL;
 				}
 			}
-			else if (strFilePath.find(L"Objects") != wstring::npos)
+			else if ((strFilePath.find(L"Objects") != wstring::npos) || (strFilePath.find(L"Prop") != wstring::npos))
 			{
 				if (FAILED(GI->Add_Prototype(wstring(strFileName),
 					CProp::Create(m_pDevice, m_pContext, wstring(strFileName), strFolderName, wstring(strFileName) + strExt), LAYER_TYPE::LAYER_PROP)))

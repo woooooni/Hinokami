@@ -14,7 +14,7 @@ xcopy /y .\ThirdParty\*.lib					.\Reference\Librarys\
 
 xcopy /y .\Engine\Bin\*.dll					.\Client\Bin\
 xcopy /y .\Engine\Bin\*.dll					.\Server\Bin\
-xcopy /y .\Engine\Bin\ShaderFiles\*.hlsl	.\Client\Bin\ShaderFiles\
+xcopy /y .\Engine\Bin\ShaderFiles\*.*		.\Client\Bin\ShaderFiles\
 
 
 .\Protocol\GenPackets.bat

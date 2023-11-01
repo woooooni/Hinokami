@@ -2,6 +2,7 @@
 #include "VIBuffer_Cell.h"
 #include <filesystem>
 #include "FileUtils.h"
+#include "Shader.h"
 
 CCell::CCell(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: m_pDevice(pDevice)
@@ -150,8 +151,22 @@ _bool CCell::Is_InCell(_vector vWorldPosition)
 	return false;
 }
 
-HRESULT CCell::Render()
+HRESULT CCell::Render(CShader* pShader)
 {
+
+	if ((m_iNeighborIndices[0] == -1) || (m_iNeighborIndices[1] == -1) || (m_iNeighborIndices[2] == -1))
+	{
+		_float4 vLineColor = _float4(1.f, 0.f, 0.f, 1.f);
+		if (FAILED(pShader->Bind_RawValue("g_vLineColor", &vLineColor, sizeof(_float4))))
+			return E_FAIL;
+	}
+	else
+	{
+		_float4 vLineColor = _float4(0.f, 0.f, 0.f, 1.f);
+		if (FAILED(pShader->Bind_RawValue("g_vLineColor", &vLineColor, sizeof(_float4))))
+			return E_FAIL;
+	}
+	pShader->Begin(0);
 	m_pVIBuffer->Render();
 	return S_OK;
 }

@@ -193,7 +193,7 @@ HRESULT CSword::Ready_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Trail"), TEXT("Com_Trail"), (CComponent**)&m_pTrailCom, &TrailDesc)))
 		return E_FAIL;
 
-	m_pTrailCom->SetUp_Position(XMVectorSet(0.f, 0.025f, -0.9f, 1.f), XMVectorSet(0.f, -0.025f, -0.9f, 1.f));
+	m_pTrailCom->SetUp_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, -0.9f, 1.f));
 
 	return S_OK;
 }

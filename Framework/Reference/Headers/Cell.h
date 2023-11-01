@@ -43,12 +43,13 @@ public:
 	}
 	_bool Is_InCell(_vector vWorldPosition);
 
+	void Set_Index(_int iIndex) { m_iIndex = iIndex; }
 	_int Get_Index() { return m_iIndex; }
 
 
 #ifdef _DEBUG
 public:
-	HRESULT Render();
+	HRESULT Render(class CShader* pShader);
 
 #endif
 

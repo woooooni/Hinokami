@@ -39,6 +39,9 @@ CComponent* CComponent_Manager::Clone_Component(_uint iLevelIndex, const wstring
         return nullptr;
 
     CComponent* pComponent = pPrototype->Clone(pArg);
+    if (nullptr == pComponent)
+        return nullptr;
+
     pComponent->Set_Owner(pOwner);
     
     return pComponent;

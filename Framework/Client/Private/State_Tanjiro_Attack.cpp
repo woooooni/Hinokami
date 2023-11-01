@@ -161,7 +161,7 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 
 			case 3:
 				Find_Near_Target();
-				m_pSword->Set_SwordMode(CSword::SWORD_MODE::AIR_BONE);
+				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
 				m_pSword->Set_PushPower(0.f);
 				m_pSword->Set_Damage(3.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
