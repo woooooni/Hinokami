@@ -8,6 +8,7 @@ BEGIN(Engine)
 class CEffect;
 END
 
+BEGIN(Client)
 class CEffect_Manager : public CBase
 {
 	DECLARE_SINGLETON(CEffect_Manager)
@@ -17,18 +18,23 @@ private:
 	virtual ~CEffect_Manager() = default;
 
 public:
-	HRESULT Reserve_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	HRESULT Reserve_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strEffectPath);
 	void	Tick(_float fTimeDelta);
 
 public:
-	HRESULT Generate_Effect(const wstring& strPrototypeEffectName, _matrix TransformMatrix);
+	HRESULT Generate_Effect(const wstring& strPrototypeEffectName, _matrix TransformMatrix, _float fEffectDeletionTime);
 
 private:
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pContext;
 
 
+private:
+	HRESULT Ready_Proto_Effects(const wstring& strEffectPath);
+
+
 public:
 	virtual void Free() override;
 };
 
+END

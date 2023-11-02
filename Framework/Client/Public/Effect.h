@@ -10,6 +10,7 @@ class CTexture;
 class CRenderer;
 class CPipeLine;
 class CTransform;
+class CRigidBody;
 class CVIBuffer_Rect;
 END
 
@@ -29,16 +30,15 @@ public:
 		// Sequencetexture Effect
 		_float			fMaxCountX		= 1.f;
 		_float			fMaxCountY		= 1.f;
-		
-		_float			fAlpha			= 1.f;
 
-		_float			fAccIndex = 0.f;
+		_float			fAlpha = 1.f;
+
 		_float			fIndexSpeed = 20.f;
+		_float2			fUVFlow = { 0.f, 0.f };
+		
 
-		_float2			fUVIndex = _float2(0.f, 0.f);
+
 		_float3			fAdditiveDiffuseColor	= _float3(0.f, 0.f, 0.f);
-
-
 		
 		// Translation
 		_float4x4		OffsetMatrix; 
@@ -61,7 +61,13 @@ public:
 
 
 protected:
-	CEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, EFFECT_TYPE eType, const wstring& strPrototypeModelName);
+	CEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, 
+		const wstring& strObjectTag, 
+		EFFECT_TYPE eType, 
+		const wstring& strPrototypeModelName,
+		_bool bIncrement,
+		_bool bLoop,
+		_bool bGravity);
 	CEffect(const CEffect& rhs);
 	virtual ~CEffect() = default;
 
@@ -97,6 +103,19 @@ public:
 	void Set_OffsetMatrix(_fmatrix fOffsetMatrix) { XMStoreFloat4x4(&m_tEffectDesc.OffsetMatrix, fOffsetMatrix); }
 	const _float4x4& Get_OffsetMatrix() { return  m_tEffectDesc.OffsetMatrix; }
 
+	void Set_Gravity(_bool bGravity) { m_pRigidBodyCom->Set_Gravity(bGravity); }
+	_bool Is_Gravity() { return m_pRigidBodyCom->Is_Gravity(); }
+
+	void Set_MoveDir(_vector vDir);
+	void Set_MoveSpeed(_float fSpeed) { m_tEffectDesc.fMoveSpeed = fSpeed; }
+
+	void Set_ParentMatrix(_matrix ParentMatrix)
+	{
+		XMStoreFloat4x4(&m_ParentMatrix, ParentMatrix);
+	}
+
+	void Set_DeletionTime(_float fDeletionTime) { m_fDeletionTime = fDeletionTime; }
+
 
 public:
 	class CTexture* Get_DiffuseTexture() { return m_pDiffuseTextureCom; }
@@ -111,6 +130,7 @@ private:
 	class CTexture* m_pAlphaTextureCom = nullptr;
 	class CRenderer* m_pRendererCom = nullptr;
 	class CTransform* m_pTransformCom = nullptr;
+	class CRigidBody* m_pRigidBodyCom = nullptr;
 	class CVIBuffer_Rect* m_pVIBufferCom = nullptr;
 
 private:
@@ -121,11 +141,22 @@ private:
 	_bool			m_bEnd = false;
 	_bool			m_bLoop = true;
 	_bool			m_bIncrement = true;
+	_bool			m_bGravity = false;
+	
 
 
 private:
-	wstring m_strModelPrototype = L"";
+	_float m_fAccIndex = 0.f;
+	_float m_fDeletionTime = 1.f;
+	
+	_float2 m_fAccUVFlow = { 0.f, 0.f };
+	_float2	m_vUVIndex = _float2(0.f, 0.f);
+	wstring m_strModelPrototype;
 	_uint m_iPassIndex = 0;
+
+	_float m_fAccDeletionTime = 0.f;
+
+	_float4x4 m_ParentMatrix;
 
 private: /* For.Texture_Effect */
 	virtual void Increment(_float fTimeDelta);
@@ -140,7 +171,10 @@ protected:
 
 public:
 	static CEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, 
-		const wstring& strObjectTag, EFFECT_TYPE eType, const wstring& strPrototypeModelName, const EFFECT_DESC& tEffectDesc);
+		const wstring& strObjectTag, EFFECT_TYPE eType, const wstring& strPrototypeModelName, const EFFECT_DESC& tEffectDesc,
+		_bool bIncrement,
+		_bool bLoop,
+		_bool bGravity);
 	virtual CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 

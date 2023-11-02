@@ -217,6 +217,12 @@
     <Filter Include="01.Utiltiy\03.Component\10. Collider\Sphere">
       <UniqueIdentifier>{2ad07e1f-f966-4311-bc1d-3d6167b84f88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Instancing">
+      <UniqueIdentifier>{c8aaaeaf-9658-42fb-8827-3c0a1bb2b58e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Cube">
+      <UniqueIdentifier>{02fd9e87-474b-48c9-aa7c-952b1c5f5856}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -444,6 +450,15 @@
     <ClInclude Include="..\Public\Collider_AABB.h">
       <Filter>01.Utiltiy\03.Component\10. Collider\AABB</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Point_Instance.h">
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Instancing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Rect_Instance.h">
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Instancing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Cube.h">
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Cube</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -652,6 +667,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Collider_AABB.cpp">
       <Filter>01.Utiltiy\03.Component\10. Collider\AABB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Point_Instance.cpp">
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Instancing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Rect_Instance.cpp">
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Instancing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Cube.cpp">
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Cube</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

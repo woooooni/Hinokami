@@ -11,16 +11,9 @@ CTree::CTree(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring
 
 CTree::CTree(const CTree& rhs)
 	: CGameObject(rhs)
-	, m_pShaderCom(rhs.m_pShaderCom)
-	, m_pRendererCom(rhs.m_pRendererCom)
-	, m_pTransformCom(rhs.m_pTransformCom)
-	, m_pModelCom(rhs.m_pModelCom)
 	, m_strPropName(rhs.m_strPropName)
 {	
-	Safe_AddRef(m_pShaderCom);
-	Safe_AddRef(m_pRendererCom);
-	Safe_AddRef(m_pTransformCom);
-	Safe_AddRef(m_pModelCom);
+
 }
 
 
@@ -69,6 +62,9 @@ HRESULT CTree::Render()
 	__super::Render();
 
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCameraPosition", &GI->Get_CamPosition(), sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TransPose(), sizeof(_float4x4))))
@@ -145,10 +141,5 @@ CGameObject* CTree::Clone(void* pArg)
 void CTree::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pTransformCom);
 
 }

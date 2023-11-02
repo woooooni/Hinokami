@@ -5,10 +5,14 @@
 
 
 CEffect::CEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, 
-	EFFECT_TYPE eType, const wstring& strPrototypeModelName)
+	EFFECT_TYPE eType, const wstring& strPrototypeModelName, _bool bIncrement,
+	_bool bLoop, _bool bGravity)
 	: CGameObject(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_EFFECT)
 	, m_eType(eType)
 	, m_strModelPrototype(strPrototypeModelName)
+	, m_bIncrement(bIncrement)
+	, m_bLoop(bLoop)
+	, m_bGravity(bGravity)
 {
 
 }
@@ -19,6 +23,11 @@ CEffect::CEffect(const CEffect& rhs)
 	, m_tEffectDesc(rhs.m_tEffectDesc)
 	, m_strModelPrototype(rhs.m_strModelPrototype)
 	, m_iPassIndex(rhs.m_iPassIndex)
+	, m_bIncrement(rhs.m_bIncrement)
+	, m_bLoop(rhs.m_bLoop)
+	, m_bGravity(rhs.m_bGravity)
+	, m_fAccUVFlow(rhs.m_fAccUVFlow)
+	, m_fAccDeletionTime(0.f)
 {
 
 }
@@ -34,16 +43,34 @@ HRESULT CEffect::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_pRigidBodyCom->Set_RefHeight(0.f);
+	m_pRigidBodyCom->Set_Gravity(m_bGravity);
+
+	XMStoreFloat4x4(&m_ParentMatrix, XMMatrixIdentity());
+
 	return S_OK;
 }
 
 void CEffect::Tick(_float fTimeDelta)
 {
+	m_fAccDeletionTime += fTimeDelta;
+
+	if (m_fAccDeletionTime >= m_fDeletionTime)
+	{
+		m_fAccDeletionTime = 0.f;
+		Set_Dead(true);
+	}
+
 	if (m_bIncrement)
 		Increment(fTimeDelta);
 	else
 		Decrement(fTimeDelta);
 
+	m_fAccUVFlow.x += m_tEffectDesc.fUVFlow.x * fTimeDelta;
+	m_fAccUVFlow.y += m_tEffectDesc.fUVFlow.y * fTimeDelta;
+
+
+	m_pRigidBodyCom->Tick_RigidBody(fTimeDelta);
 	
 	_vector vMoveDir = XMVector3Normalize(XMLoadFloat3(&m_tEffectDesc.vMoveDir));
 	_vector vTurnDir = XMVector3Normalize(XMLoadFloat3(&m_tEffectDesc.vTurnDir));
@@ -87,22 +114,32 @@ HRESULT CEffect::Save_EffectInfo()
 	return S_OK;
 }
 
+void CEffect::Set_MoveDir(_vector vDir)
+{
+	XMStoreFloat3(&m_tEffectDesc.vMoveDir, XMVector3Normalize(vDir));
+}
+
 void CEffect::Increment(_float fTimeDelta)
 {
-	m_tEffectDesc.fAccIndex += m_tEffectDesc.fIndexSpeed * fTimeDelta;
+	if (m_bEnd == true && m_bLoop == false)
+		return;
 
-	if (m_tEffectDesc.fAccIndex >= 1.f)
+	m_fAccIndex += m_tEffectDesc.fIndexSpeed * fTimeDelta;
+	if (m_fAccIndex >= 1.f)
 	{
-		m_tEffectDesc.fAccIndex = 0.f;
-		m_tEffectDesc.fUVIndex.x++;
-		if (m_tEffectDesc.fMaxCountX <= m_tEffectDesc.fUVIndex.x)
+		m_fAccIndex = 0.f;
+		m_vUVIndex.x++;
+		if (m_tEffectDesc.fMaxCountX <= m_vUVIndex.x)
 		{
-			m_tEffectDesc.fUVIndex.x = 0;
-			m_tEffectDesc.fUVIndex.y++;
-			if (m_tEffectDesc.fMaxCountY <= m_tEffectDesc.fUVIndex.y)
+			m_vUVIndex.x = 0;
+			m_vUVIndex.y++;
+			if (m_tEffectDesc.fMaxCountY <= m_vUVIndex.y)
 			{
-				m_tEffectDesc.fUVIndex.y = 0;
-				m_bEnd = true;
+				m_vUVIndex.y = 0;
+				if (m_bLoop == false)
+					m_bEnd = true;
+				else
+					m_bEnd = false;
 			}
 		}
 	}
@@ -110,20 +147,29 @@ void CEffect::Increment(_float fTimeDelta)
 
 void CEffect::Decrement(_float fTimeDelta)
 {
-	m_tEffectDesc.fAccIndex += m_tEffectDesc.fIndexSpeed * fTimeDelta;
+	if (m_bEnd == true && m_bLoop == false)
+		return;
 
-	if (m_tEffectDesc.fAccIndex >= 1.f)
+
+
+
+	m_fAccIndex += m_tEffectDesc.fIndexSpeed * fTimeDelta;
+
+	if (m_fAccIndex >= 1.f)
 	{
-		m_tEffectDesc.fAccIndex = 0.f;
-		m_tEffectDesc.fUVIndex.x--;
-		if (0 > m_tEffectDesc.fUVIndex.x)
+		m_fAccIndex = 0.f;
+		m_vUVIndex.x--;
+		if (0 > m_vUVIndex.x)
 		{
-			m_tEffectDesc.fUVIndex.x = m_tEffectDesc.fMaxCountX;
-			m_tEffectDesc.fUVIndex.y--;
-			if (0 < m_tEffectDesc.fUVIndex.y)
+			m_vUVIndex.x = m_tEffectDesc.fMaxCountX;
+			m_vUVIndex.y--;
+			if (0 > m_vUVIndex.y)
 			{
-				m_tEffectDesc.fUVIndex.y = m_tEffectDesc.fMaxCountY;
-				m_bEnd = true;
+				m_vUVIndex.y = m_tEffectDesc.fMaxCountY;
+				if (m_bLoop == false)
+					m_bEnd = true;
+				else
+					m_bEnd = false;
 			}
 		}
 	}
@@ -140,12 +186,16 @@ HRESULT CEffect::Bind_ShaderResource()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlpha", &m_tEffectDesc.fAlpha, sizeof(_float))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fUVIndex", &m_tEffectDesc.fUVIndex, sizeof(_float2))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fUVIndex", &m_vUVIndex, sizeof(_float2))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAdditiveDiffuseColor", &m_tEffectDesc.fAdditiveDiffuseColor, sizeof(_float3))))
 		return E_FAIL;
 
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fUVFlow", &m_fAccUVFlow, sizeof(_float2))))
+		return E_FAIL;
+	
 
 	{
 
@@ -180,7 +230,42 @@ HRESULT CEffect::Bind_ShaderResource()
 	}
 
 	_float4x4 WorldMatrix;
-	XMStoreFloat4x4(&WorldMatrix, XMLoadFloat4x4(&m_tEffectDesc.OffsetMatrix) * m_pTransformCom->Get_WorldMatrix());
+
+	_matrix LocalMatrix = XMLoadFloat4x4(&m_tEffectDesc.OffsetMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(&m_ParentMatrix);
+
+	
+	if (m_eType == EFFECT_TYPE::EFFECT_MESH)
+	{
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(LocalMatrix));
+	}
+	else
+	{
+		// 빌보드를 적용한다.
+		_vector vPosition = LocalMatrix.r[CTransform::STATE_POSITION];
+		_vector vCamPosition = XMLoadFloat4(&GI->Get_CamPosition());
+
+		_float fLookScale = XMVectorGetX(XMVector3Length(LocalMatrix.r[CTransform::STATE_LOOK]));
+		_vector vLook = XMVectorSetW(XMVector3Normalize(vPosition - vCamPosition), 0.f) * fLookScale;
+
+		_float fRightScale = XMVectorGetX(XMVector3Length(LocalMatrix.r[CTransform::STATE_RIGHT]));
+		_vector vRight = XMVectorSetW(XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)), 0.f) * fRightScale;
+
+		_float fUpScale = XMVectorGetX(XMVector3Length(LocalMatrix.r[CTransform::STATE_UP]));
+		_vector vUp = XMVectorSetW(XMVector3Normalize(XMVector3Cross(vLook, vRight)), 0.f) * fUpScale;
+
+		
+		
+		
+		LocalMatrix.r[CTransform::STATE_RIGHT] = vRight;
+		LocalMatrix.r[CTransform::STATE_UP] = vUp;
+		LocalMatrix.r[CTransform::STATE_LOOK] = vLook;
+
+
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(LocalMatrix));
+	}
+	
+
+	
 	
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4))))
 		return E_FAIL;
@@ -219,6 +304,18 @@ HRESULT CEffect::Ready_Components()
 
 
 
+	CRigidBody::RIGID_BODY_DESC RigidDesc;
+	ZeroMemory(&RigidDesc, sizeof RigidDesc);
+
+
+	RigidDesc.pNavigation = nullptr;
+	RigidDesc.pTransform = m_pTransformCom;
+
+
+	/* For. Com_RigidBody */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_RigidBody"), TEXT("Com_RigidBody"), (CComponent**)&m_pRigidBodyCom, &RigidDesc)))
+		return E_FAIL;
+
 	if(m_eType == EFFECT_TYPE::EFFECT_MESH)
 	{
 		/* For.Com_Shader */
@@ -249,9 +346,9 @@ HRESULT CEffect::Ready_Components()
 
 
 CEffect* CEffect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, 
-	EFFECT_TYPE eType, const wstring& strPrototypeModelName, const EFFECT_DESC& tEffectDesc)
+	EFFECT_TYPE eType, const wstring& strPrototypeModelName, const EFFECT_DESC& tEffectDesc, _bool bIncrement, _bool bLoop, _bool bGravity)
 {
-	CEffect* pInstance = new CEffect(pDevice, pContext, strObjectTag, eType, strPrototypeModelName);
+	CEffect* pInstance = new CEffect(pDevice, pContext, strObjectTag, eType, strPrototypeModelName, bIncrement, bLoop, bGravity);
 	if (FAILED(pInstance->Initialize_Prototype(tEffectDesc)))
 	{
 		MSG_BOX("Failed to Created : CEffect");

@@ -47,7 +47,7 @@ private:
 	HRESULT Initialize_Index(_vector vWorldPostion);
 
 private:
-	int Compute_CW(_float3 vPointA, _float3 vPointB, _float3 vPointC);
+	_float Compute_CW(_float3 vPointA, _float3 vPointB, _float3 vPointC);
 
 #ifdef _DEBUG
 private:

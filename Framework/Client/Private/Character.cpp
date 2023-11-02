@@ -68,7 +68,8 @@ void CCharacter::Tick(_float fTimeDelta)
 		WorldMatrix.r[1] = XMVector3Normalize(WorldMatrix.r[1]);
 		WorldMatrix.r[2] = XMVector3Normalize(WorldMatrix.r[2]);
 
-		m_pTrails[i]->Tick(fTimeDelta, WorldMatrix * m_pTransformCom->Get_WorldMatrix());
+		m_pTrails[i]->Set_TransformMatrix(WorldMatrix * m_pTransformCom->Get_WorldMatrix());
+		m_pTrails[i]->Tick(fTimeDelta);
 		
 	}
 }
@@ -91,6 +92,18 @@ void CCharacter::LateTick(_float fTimeDelta)
 
 	__super::LateTick(fTimeDelta);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+
+
+
+	for (_uint i = 0; i < SOCEKT_END; ++i)
+	{
+		if (nullptr == m_pTrails[i])
+			continue;
+
+		m_pTrails[i]->LateTick(fTimeDelta);
+	}
+		
+
 }
 
 HRESULT CCharacter::Render()
@@ -121,13 +134,7 @@ HRESULT CCharacter::Render()
 			return E_FAIL;
 	}
 
-	for (_uint i = 0; i < SOCEKT_END; ++i)
-	{
-		if (nullptr == m_pTrails[i])
-			continue;
-
-		m_pTrails[i]->Render();
-	}
+	
 
 	return S_OK;
 }
@@ -253,5 +260,13 @@ void CCharacter::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
+
+	for (_uint i = 0; i < SOCEKT_END; ++i)
+	{
+		if (nullptr == m_pTrails[i])
+			continue;
+
+		Safe_Release(m_pTrails[i]);
+	}
 
 }

@@ -32,6 +32,21 @@ HRESULT CCustomFont::Render(const _tchar* strText, _float2 vPosition, _fvector v
 	return S_OK;
 }
 
+HRESULT CCustomFont::Render(const _tchar* strText, _float3 vPosition, _fvector vColor, _float fAngle, _float3 vOrigin, _float3 vScale)
+{
+	if (nullptr == m_pFont ||
+		nullptr == m_pBatch)
+		return E_FAIL;
+
+	m_pBatch->Begin();
+
+	m_pFont->DrawString(m_pBatch, strText, XMLoadFloat3(&vPosition), vColor, fAngle, XMLoadFloat3(&vOrigin), XMLoadFloat3(&vScale));
+	
+	m_pBatch->End();
+
+	return S_OK;
+}
+
 CCustomFont * CCustomFont::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strFontFilePath)
 {
 	CCustomFont*			pInstance = new CCustomFont(pDevice, pContext);

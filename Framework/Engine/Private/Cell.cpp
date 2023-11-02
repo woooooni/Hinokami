@@ -2,7 +2,7 @@
 #include "VIBuffer_Cell.h"
 #include <filesystem>
 #include "FileUtils.h"
-#include "Shader.h"
+#include "GameInstance.h"
 
 CCell::CCell(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: m_pDevice(pDevice)
@@ -39,10 +39,21 @@ HRESULT CCell::Initialize(const _float3 * pPoints, _uint iIndex)
 	return S_OK;
 }
 
-HRESULT CCell::Initialize(const CELL_DESC& tDesc, const vector<_float3>& Points)
+HRESULT CCell::Initialize(const CELL_DESC& tDesc, vector<_float3>& Points)
 {
 	m_iIndex = tDesc.iIndex;
 	m_bMovable = tDesc.bMovable;
+
+	_vector vLineAB = XMVector3Normalize(XMVectorSetY(XMLoadFloat3(&Points[POINT_B]) - XMLoadFloat3(&Points[POINT_A]), 0.f));
+	_vector vLineAC = XMVector3Normalize(XMVectorSetY(XMLoadFloat3(&Points[POINT_C]) - XMLoadFloat3(&Points[POINT_A]), 0.f));
+
+	if (XMVectorGetY(XMVector3Cross(vLineAB, vLineAC)) < 0.f)
+	{
+		_float3 vTemp = Points[POINT_B];
+		Points[POINT_B] = Points[POINT_C];
+		Points[POINT_C] = vTemp;
+	}
+
 
 	memcpy(m_vPoints_InWorld, Points.data(), sizeof(_float3) * POINT_END);
 
@@ -68,11 +79,11 @@ HRESULT CCell::Initialize(const CELL_DESC& tDesc, const vector<_float3>& Points)
 
 void CCell::Update(_fmatrix WorldMatrix)
 {
-	for (size_t i = 0; i < POINT_END; i++)
-	{
-		XMStoreFloat3(&m_vPoints_InWorld[i],
-			XMVector3TransformCoord(XMLoadFloat3(&m_vPoints_InWorld[i]), WorldMatrix));
-	}
+	//for (size_t i = 0; i < POINT_END; i++)
+	//{
+	//	XMStoreFloat3(&m_vPoints_InWorld[i],
+	//		XMVector3TransformCoord(XMLoadFloat3(&m_vPoints_InWorld[i]), WorldMatrix));
+	//}
 
 }
 
@@ -115,10 +126,11 @@ _bool CCell::isOut(_fvector vWorldPosition, _fmatrix WorldMatrix, _int* pNeighbo
 {
 	for (size_t i = 0; i < LINE_END; i++)
 	{
-		_vector		vSour = XMVector3Normalize(vWorldPosition - XMLoadFloat3(&m_vPoints_InWorld[i]));
-		_vector		vDest = XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&m_vNormals[i]), WorldMatrix));
+		_vector		vSour = XMVector3Normalize(XMVectorSetW(vWorldPosition - XMLoadFloat3(&m_vPoints_InWorld[i]), 0.f));
+		_vector		vDest = XMVector3Normalize(XMLoadFloat3(&m_vNormals[i]));
 
-		if (0 < XMVectorGetX(XMVector3Dot(vSour, vDest)))
+		_float fRadian = XMVectorGetX(XMVector3Dot(vSour, vDest));
+		if (0.001f < fRadian)
 		{
 			*pNeighborIndex = m_iNeighborIndices[i];
 
@@ -159,13 +171,33 @@ HRESULT CCell::Render(CShader* pShader)
 		_float4 vLineColor = _float4(1.f, 0.f, 0.f, 1.f);
 		if (FAILED(pShader->Bind_RawValue("g_vLineColor", &vLineColor, sizeof(_float4))))
 			return E_FAIL;
+
+		if (FAILED(pShader->Bind_RawValue("g_vLineColor", &vLineColor, sizeof(_float4))))
+			return E_FAIL;
+
+		_float		fHeight = 0.05f;
+		if (FAILED(pShader->Bind_RawValue("g_fHeight", &fHeight, sizeof(_float))))
+			return E_FAIL;
 	}
 	else
 	{
-		_float4 vLineColor = _float4(0.f, 0.f, 0.f, 1.f);
+		_float4 vLineColor = _float4(0.f, 1.f, 0.f, 1.f);
 		if (FAILED(pShader->Bind_RawValue("g_vLineColor", &vLineColor, sizeof(_float4))))
 			return E_FAIL;
+
+		_float		fHeight = 0.02f;
+		if (FAILED(pShader->Bind_RawValue("g_fHeight", &fHeight, sizeof(_float))))
+			return E_FAIL;
 	}
+
+	//
+	//_float3 vWeightPos = _float3((m_vPoints_InWorld[POINT_A].x + m_vPoints_InWorld[POINT_B].x + m_vPoints_InWorld[POINT_C].x) / 3.f,
+	//	(m_vPoints_InWorld[POINT_A].y + m_vPoints_InWorld[POINT_B].y + m_vPoints_InWorld[POINT_C].y) / 3.f,
+	//	(m_vPoints_InWorld[POINT_A].z + m_vPoints_InWorld[POINT_B].z + m_vPoints_InWorld[POINT_C].z) / 3.f);
+	//vWeightPos.y += 1.f;
+
+	//GI->Render_Fonts(L"Batang", to_wstring(m_iIndex).c_str(), vWeightPos);
+
 	pShader->Begin(0);
 	m_pVIBuffer->Render();
 	return S_OK;
@@ -187,7 +219,7 @@ CCell * CCell::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, co
 	return pInstance;
 }
 
-CCell* CCell::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const CELL_DESC& tDesc, const vector<_float3>& Points)
+CCell* CCell::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const CELL_DESC& tDesc, vector<_float3>& Points)
 {
 	CCell* pInstance = new CCell(pDevice, pContext);
 

@@ -1,4 +1,5 @@
 #include "../Public/Utils.h"
+#include <random>
 
 bool CUtils::StartsWith(string str, string comp)
 {
@@ -81,6 +82,19 @@ _float3 CUtils::ToEulerAngles(_vector Quaternion)
 
 	return vAngles;
 	
+}
+
+_float CUtils::Random_Float(_float fMin, _float fMax)
+{	
+	_float fRealMin = min(fMin, fMax);
+	_float fRealMax = max(fMin, fMax);
+
+	std::random_device Random_Device;
+
+	std::mt19937 Generater(Random_Device());
+
+	std::uniform_real_distribution<_float> Distribution(fRealMin, fRealMax);
+	return Distribution(Generater);
 }
 
 std::wstring CUtils::ToWString(string value)

@@ -105,6 +105,9 @@ public:
 	HRESULT Render_Fonts(const wstring & strFontTag, const _tchar * strText, _float2 vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f),
 		_float fAngle = 0.f, _float2 vOrigin = _float2(0.f, 0.f), _float2 vScale = _float2(1.f, 1.f));
 
+	HRESULT Render_Fonts(const wstring & strFontTag, const _tchar * strText, _float3 vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f),
+		_float fAngle = 0.f, _float3 vOrigin = _float3(0.f, 0.f, 0.f), _float3 vScale = _float3(1.f, 1.f, 1.f));
+
 	/* For. Collision_Manager */
 public:
 	HRESULT Add_CollisionGroup(COLLISION_GROUP eCollisionGroup, class CGameObject* pGameObject);

@@ -205,7 +205,16 @@
     <Filter Include="96. Manager\Pool">
       <UniqueIdentifier>{de6e688e-9d07-4da1-8483-6dff81ae4feb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. Manager\Particle">
+      <UniqueIdentifier>{218f463e-f375-46ef-81f8-a94bc6ff85bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. Effect\Particle">
+      <UniqueIdentifier>{7e1eb069-0790-46be-8583-534eb05eb945}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\07. Effect\Trail">
+      <UniqueIdentifier>{081e52ac-0074-45fb-a979-d4251146e633}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. Effect\Trail\Buffer">
       <UniqueIdentifier>{97a13059-374e-4d72-9bea-d45d78b032fa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -444,6 +453,15 @@
     <ClInclude Include="..\Public\Sword.h">
       <Filter>02.GameObjects\03. Character\98.Parts\Sword</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Particle_Manager.h">
+      <Filter>96. Manager\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Particle.h">
+      <Filter>02.GameObjects\07. Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Trail.h">
+      <Filter>02.GameObjects\07. Effect\Trail\Buffer</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Trail.h">
       <Filter>02.GameObjects\07. Effect\Trail</Filter>
     </ClInclude>
@@ -667,6 +685,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Pool.cpp">
       <Filter>96. Manager\Pool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Particle_Manager.cpp">
+      <Filter>96. Manager\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Particle.cpp">
+      <Filter>02.GameObjects\07. Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Trail.cpp">
+      <Filter>02.GameObjects\07. Effect\Trail\Buffer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Trail.cpp">
       <Filter>02.GameObjects\07. Effect\Trail</Filter>

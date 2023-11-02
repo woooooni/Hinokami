@@ -4,6 +4,7 @@
 #include "HierarchyNode.h"
 #include "Sword.h"
 #include "Sweath.h"
+#include "Effect_Manager.h"
 
 
 #include "State_Monster_Attack.h"
@@ -134,9 +135,12 @@ void CMonster_Normal_0::On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageTy
 		m_pStateCom->Change_State(MONSTER_STATE::DIE);
 		return;
 	}
-		
 
 
+	_matrix TransformMatrix = m_pTransformCom->Get_WorldMatrix();
+	TransformMatrix.r[CTransform::STATE_POSITION] = XMVectorSetY(TransformMatrix.r[CTransform::STATE_POSITION], XMVectorGetY(TransformMatrix.r[CTransform::STATE_POSITION]) + 1.f);
+	if (FAILED(CEffect_Manager::GetInstance()->Generate_Effect(L"Prototype_Effect_Hit_0", TransformMatrix, 1.f)))
+		return;
 
 	switch (eDamageType)
 	{

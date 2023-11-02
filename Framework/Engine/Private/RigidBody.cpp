@@ -70,6 +70,9 @@ void CRigidBody::Add_Velocity_Acc(_fvector vDir, _float fForce)
 
 void CRigidBody::Update_Gravity(_float fTimeDelta)
 {
+	if (!m_bIsGravity)
+		return;
+
 	_float4 vPosition;
 	XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 

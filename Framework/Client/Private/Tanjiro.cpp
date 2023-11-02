@@ -333,7 +333,7 @@ HRESULT CTanjiro::Ready_Sockets()
 	m_Sockets[SOCKET_RIGHT_FOOT] = m_pModelCom->Get_HierarchyNode(L"R_Foot_End");
 	
 
-	CTrail::TRAIL_DESC TrailDesc = {};
+	CVIBuffer_Trail::TRAIL_DESC TrailDesc = {};
 	TrailDesc.bTrail = true;
 	
 	TrailDesc.fAccGenTrail = 0.f;
@@ -341,17 +341,25 @@ HRESULT CTanjiro::Ready_Sockets()
 
 	TrailDesc.fUVAcc = 0.f;
 	TrailDesc.strTextureName = L"";
-	TrailDesc.vColor = { 1.f, 0.f, 1.f, 0.5f };
+	TrailDesc.vColor = { 1.f, 0.f, 0.f, 0.5f };
 
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, L"Prototype_Component_Trail", L"Com_Trail_Left_Foot", 
-		(CComponent**)&m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT], &TrailDesc)))
+
+	m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT] = CTrail::Create(m_pDevice, m_pContext, L"LeftFoot_Trail", TrailDesc);
+	if (m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT] == nullptr)
+		return E_FAIL;
+
+	if (FAILED(m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT]->Initialize(nullptr)))
 		return E_FAIL;
 
 	m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.025f, 1.f), XMVectorSet(0.f, 0.0f, 0.025f, 1.f));
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, L"Prototype_Component_Trail", L"Com_Trail_Right_Foot", 
-		(CComponent**)&m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT], &TrailDesc)))
+
+	m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT] = CTrail::Create(m_pDevice, m_pContext, L"RightFoot_Trail", TrailDesc);
+	if (m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT] == nullptr)
+		return E_FAIL;
+
+	if (FAILED(m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT]->Initialize(nullptr)))
 		return E_FAIL;
 
 	m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.025f, 1.f), XMVectorSet(0.f, 0.0f, 0.025f, 1.f));

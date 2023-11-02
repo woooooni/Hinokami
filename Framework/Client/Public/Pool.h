@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine_Defines.h"
+#include "Client_Defines.h"
 #include "Base.h"
 #include "GameInstance.h"
 

@@ -419,6 +419,11 @@ HRESULT CGameInstance::Render_Fonts(const wstring& strFontTag, const _tchar* str
 	return m_pFont_Manager->Render_Fonts(strFontTag, strText, vPosition, vColor, fAngle, vOrigin, vScale);
 }
 
+HRESULT CGameInstance::Render_Fonts(const wstring& strFontTag, const _tchar* strText, _float3 vPosition, _fvector vColor, _float fAngle, _float3 vOrigin, _float3 vScale)
+{
+	return m_pFont_Manager->Render_Fonts(strFontTag, strText, vPosition, vColor, fAngle, vOrigin, vScale);
+}
+
 
 HRESULT CGameInstance::Add_CollisionGroup(COLLISION_GROUP eCollisionGroup, CGameObject* pGameObject)
 {

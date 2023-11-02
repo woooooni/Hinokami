@@ -51,6 +51,9 @@ HRESULT CTransform::Bind_ShaderResources(CShader* pShader, const char* pConstant
 	return pShader->Bind_Matrix(pConstantName, &m_WorldMatrix);
 }
 
+
+
+
 void CTransform::Go_Straight(_float fTimeDelta, CNavigation* pNavigation)
 {
 	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
@@ -64,6 +67,10 @@ void CTransform::Go_Straight(_float fTimeDelta, CNavigation* pNavigation)
 	{
 		if (true == pNavigation->Is_Movable(vPosition))
 			Set_State(CTransform::STATE_POSITION, vPosition);
+		else
+		{
+			// TODO :: 슬라이딩 벡터
+		}
 	}
 }
 

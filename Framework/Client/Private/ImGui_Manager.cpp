@@ -15,6 +15,9 @@
 #include "Utils.h"
 #include "FileUtils.h"
 #include "Effect.h"
+#include "Particle.h"
+
+
 #include <filesystem>
 #include <fstream>
 #include "tinyxml2.h"
@@ -145,6 +148,7 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
     ImGui::Checkbox("Model_Editor", &m_bShowModelWindow);
     ImGui::Checkbox("Animation", &m_bShowModelWindow);
     ImGui::Checkbox("Effect", &m_bShowEffectWindow);
+    ImGui::Checkbox("Particle", &m_bShowParticleWindow);
     ImGui::Checkbox("Map", &m_bShowMapWindow);
     ImGui::Checkbox("Terrain", &m_bShowTerrainWindow);
     ImGui::Checkbox("Navigation", &m_bShowNavigationWindow);
@@ -157,6 +161,7 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
         m_bShowDemo = false;
         m_bShowModelWindow = false;
         m_bShowEffectWindow = false;
+        m_bShowParticleWindow = false;
         m_bShowMapWindow = false;
         m_bShowTerrainWindow = false;
         m_bShowNavigationWindow = true;
@@ -173,6 +178,8 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
         
     if(m_bShowEffectWindow)
         Tick_Effect_Tool(fTimeDelta);
+    if (m_bShowParticleWindow)
+        Tick_Particle_Tool(fTimeDelta);
     if(m_bShowMapWindow)
         Tick_Map_Tool(fTimeDelta);
     if(m_bShowTerrainWindow)
@@ -308,7 +315,8 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
                 || i == LAYER_TYPE::LAYER_TERRAIN
                 || i == LAYER_TYPE::LAYER_BACKGROUND
                 || i == LAYER_TYPE::LAYER_SKYBOX
-                || i == LAYER_TYPE::LAYER_UI)
+                || i == LAYER_TYPE::LAYER_UI
+                || i == LAYER_TYPE::LAYER_GROUND)
                 continue;
 
             list<CGameObject*>& GameObjects = GAME_INSTANCE->Find_GameObjects(LEVEL_TOOL, i);
@@ -843,8 +851,6 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
     ImGui::Begin("Effect");
 
-
-
     static char szEffectModelName[MAX_PATH] = "";
     if (ImGui::BeginListBox("##Effect_Model_List", ImVec2(200.f, 200.f)))
     {
@@ -902,9 +908,9 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
         CEffect::EFFECT_DESC tEffectDesc;
         if (iSelecetedEffectType == CEffect::EFFECT_TYPE::EFFECT_MESH)
-            m_pPrevEffect = CEffect::Create(m_pDevice, m_pContext, L"Prev_Effect", CEffect::EFFECT_TYPE(iSelecetedEffectType), CUtils::ToWString(szEffectModelName), tEffectDesc);
+            m_pPrevEffect = CEffect::Create(m_pDevice, m_pContext, L"Prev_Effect", CEffect::EFFECT_TYPE(iSelecetedEffectType), CUtils::ToWString(szEffectModelName), tEffectDesc, true, true, false);
         else
-            m_pPrevEffect = CEffect::Create(m_pDevice, m_pContext, L"Prev_Effect", CEffect::EFFECT_TYPE(iSelecetedEffectType), L"", tEffectDesc);
+            m_pPrevEffect = CEffect::Create(m_pDevice, m_pContext, L"Prev_Effect", CEffect::EFFECT_TYPE(iSelecetedEffectType), L"", tEffectDesc, true, true, false);
 
 
         if (nullptr == m_pPrevEffect)
@@ -1016,10 +1022,38 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         ImGui::DragFloat("##Max_CountY", &tEffectDesc.fMaxCountY, 1.f, 1.f, 100.f);
 
 
-        
-        
+        IMGUI_NEW_LINE;
+        ImGui::Text("UV_Flow : ");
+        ImGui::DragFloat2("##Effect_UV_Flow", (_float*)&tEffectDesc.fUVFlow, 0.01f, -100.f, 100.f);
 
 
+
+        ImGui::Text("============================================");
+        ImGui::Text("Options");
+        ImGui::Text("============================================");
+        ImGui::Text("Loop ");
+        IMGUI_SAME_LINE;
+        _bool bLoop = m_pPrevEffect->Is_Loop();
+        if (ImGui::Checkbox("##Effect_Loop", &bLoop))
+        {
+            m_pPrevEffect->Set_Loop(bLoop);
+        }
+
+        ImGui::Text("Increment ");
+        IMGUI_SAME_LINE;
+        _bool bIncrement = m_pPrevEffect->Is_Increment();
+        if (ImGui::Checkbox("##Effect_Increment", &bIncrement))
+        {
+            m_pPrevEffect->Set_Increment(bIncrement);
+        }
+
+        ImGui::Text("Gravity ");
+        IMGUI_SAME_LINE;
+        _bool bGravity = m_pPrevEffect->Is_Gravity();
+        if (ImGui::Checkbox("##Effect_Gravity", &bGravity))
+        {
+            m_pPrevEffect->Set_Gravity(bGravity);
+        }
 
         IMGUI_NEW_LINE;
         IMGUI_NEW_LINE;
@@ -1125,12 +1159,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         ImGui::Text("Save & Load");
         ImGui::Text("============================================");
 
-        static char szExportEffectFolder[MAX_PATH] = "";
         static char szExportEffectName[MAX_PATH] = "";
-
-        ImGui::Text("Effect_ExportSubFolder");
-        IMGUI_SAME_LINE;
-        ImGui::InputText("##EffectExportSubFolder", szExportEffectFolder, MAX_PATH);
 
         ImGui::Text("Effect_Name");
         IMGUI_SAME_LINE;
@@ -1141,12 +1170,27 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
             {
                 char szFullPath[MAX_PATH] = "../Bin/Export/Effect/";
 
-                strcat_s(szFullPath, szExportEffectFolder);
-                strcat_s(szFullPath, "/");
                 strcat_s(szFullPath, szExportEffectName);
                 strcat_s(szFullPath, ".effect");
 
                 Save_Effect(CUtils::ToWString(szFullPath));
+            }
+            else
+            {
+                MSG_BOX("이름을 입력해주세요.");
+            }
+        }
+
+        if (ImGui::Button("Load_Effect"))
+        {
+            if (0 != strcmp(szExportEffectName, ""))
+            {
+                char szFullPath[MAX_PATH] = "../Bin/Export/Effect/";
+
+                strcat_s(szFullPath, szExportEffectName);
+                strcat_s(szFullPath, ".effect");
+
+                Load_Effect(CUtils::ToWString(szFullPath));
             }
             else
             {
@@ -1195,7 +1239,8 @@ void CImGui_Manager::Tick_Map_Tool(_float fTimeDelta)
             || i == LAYER_TYPE::LAYER_TERRAIN
             || i == LAYER_TYPE::LAYER_BACKGROUND
             || i == LAYER_TYPE::LAYER_SKYBOX
-            || i == LAYER_TYPE::LAYER_UI)
+            || i == LAYER_TYPE::LAYER_UI
+            || i == LAYER_TYPE::LAYER_TRAIL)
             continue;
 
         const map<const wstring, CGameObject*>& PrototypeObjects = GAME_INSTANCE->Find_Prototype_GameObjects(i);
@@ -1510,7 +1555,8 @@ HRESULT CImGui_Manager::Load_Map_Data(const wstring& strMapFileName)
             || i == LAYER_TYPE::LAYER_UI
             || i == LAYER_TYPE::LAYER_PLAYER
             || i == LAYER_TYPE::LAYER_PROJECTILE
-            || i == LAYER_TYPE::LAYER_EFFECT)
+            || i == LAYER_TYPE::LAYER_EFFECT
+            || i == LAYER_TYPE::LAYER_TRAIL)
             continue;
 
         GI->Clear_Layer(LEVEL_TOOL, i);
@@ -1621,7 +1667,8 @@ HRESULT CImGui_Manager::Save_Map_Data(const wstring& strMapFileName)
             || i == LAYER_TYPE::LAYER_UI
             || i == LAYER_TYPE::LAYER_PLAYER
             || i == LAYER_TYPE::LAYER_PROJECTILE
-            || i == LAYER_TYPE::LAYER_EFFECT)
+            || i == LAYER_TYPE::LAYER_EFFECT
+            || i == LAYER_TYPE::LAYER_TRAIL)
             continue;
 
         // 2. ObjectCount
@@ -1708,24 +1755,12 @@ HRESULT CImGui_Manager::Save_Effect(const wstring& strFullPath)
     shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
     File->Open(strFullPath, FileMode::Write);
 
+    File->Write<string>(CUtils::ToString(m_pPrevEffect->Get_EffectModelName()));
     File->Write<CEffect::EFFECT_TYPE>(m_pPrevEffect->Get_EffectType());
-    
-    const CEffect::EFFECT_DESC& tDesc = m_pPrevEffect->Get_EffectDesc();
-    File->Write<_float>(tDesc.fTurnSpeed);
-    File->Write<_float>(tDesc.fMoveSpeed);
-    File->Write<_float>(tDesc.fMaxCountX);
-    File->Write<_float>(tDesc.fMaxCountY);
-    File->Write<_float>(tDesc.fAlpha);
-    File->Write<_float>(tDesc.fIndexSpeed);
-    File->Write<_float3>(tDesc.fAdditiveDiffuseColor);
-    File->Write<_float3>(tDesc.vMoveDir);
-    File->Write<_float3>(tDesc.vTurnDir);
-
-
+    File->Write<CEffect::EFFECT_DESC>(m_pPrevEffect->Get_EffectDesc());
     File->Write<_bool>(m_pPrevEffect->Is_Loop());
     File->Write<_bool>(m_pPrevEffect->Is_Increment());
-
-    File->Write<_float3>(m_pPrevEffect->Get_TransformCom()->Get_Scale());
+    File->Write<_bool>(m_pPrevEffect->Is_Gravity());
  
 
     MSG_BOX("Effect Saved.");
@@ -1741,27 +1776,45 @@ HRESULT CImGui_Manager::Load_Effect(const wstring& strFullPath)
     _wsplitpath_s(strFullPath.c_str(), nullptr, 0, nullptr, 0, strFileName, MAX_PATH, nullptr, 0);
 
 
+
+
     shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
-    File->Open(strFullPath, FileMode::Write);
+    File->Open(strFullPath, FileMode::Read);
 
-    File->Write<CEffect::EFFECT_TYPE>(m_pPrevEffect->Get_EffectType());
+    string strEffectModelName;
+    strEffectModelName = File->Read<string>();
 
-    const CEffect::EFFECT_DESC& tDesc = m_pPrevEffect->Get_EffectDesc();
-    File->Write<_float>(tDesc.fTurnSpeed);
-    File->Write<_float>(tDesc.fMoveSpeed);
-    File->Write<_float>(tDesc.fMaxCountX);
-    File->Write<_float>(tDesc.fMaxCountY);
-    File->Write<_float>(tDesc.fAlpha);
-    File->Write<_float>(tDesc.fIndexSpeed);
-    File->Write<_float3>(tDesc.fAdditiveDiffuseColor);
-    File->Write<_float3>(tDesc.vMoveDir);
-    File->Write<_float3>(tDesc.vTurnDir);
+    CEffect::EFFECT_TYPE eType;
+    eType = File->Read<CEffect::EFFECT_TYPE>();
 
 
-    File->Write<_bool>(m_pPrevEffect->Is_Loop());
-    File->Write<_bool>(m_pPrevEffect->Is_Increment());
+    CEffect::EFFECT_DESC EffectDesc = {};
+    EffectDesc = File->Read<CEffect::EFFECT_DESC>();
 
-    File->Write<_float3>(m_pPrevEffect->Get_TransformCom()->Get_Scale());
+    _bool bLoop, bIncrement, bGravity;
+    bLoop = File->Read<_bool>();
+    bIncrement = File->Read<_bool>();
+    bGravity = File->Read<_bool>();
+    
+    Safe_Release(m_pPrevEffect);
+    m_pPrevEffect = CEffect::Create(m_pDevice, m_pContext, L"Prev_Effect", eType, CUtils::ToWString(strEffectModelName), EffectDesc, bLoop, bIncrement, bGravity);
+
+    if (nullptr == m_pPrevEffect)
+    {
+        MSG_BOX("Effect_Create 실패.");
+        return E_FAIL;
+    }
+        
+
+    if (FAILED(m_pPrevEffect->Initialize(nullptr)))
+    {
+        MSG_BOX("Effect_초기화 실패.");
+        return E_FAIL;
+    }
+    
+    m_pPrevEffect->Set_Loop(bLoop);
+    m_pPrevEffect->Set_Increment(bIncrement);
+    m_pPrevEffect->Set_Gravity(bGravity);
 
     return S_OK;
 }
@@ -1944,6 +1997,17 @@ HRESULT CImGui_Manager::NaviAutoGenerate()
                         v1 = XMVectorSet(Vertices[Indices[i]._1].x, Vertices[Indices[i]._1].y, Vertices[Indices[i]._1].z, 1.f);
                         v2 = XMVectorSet(Vertices[Indices[i]._2].x, Vertices[Indices[i]._2].y, Vertices[Indices[i]._2].z, 1.f);
 
+                        _vector vLineAB = XMVectorSetY(v1 - v0, 0.f);
+                        _vector vLineAC = XMVectorSetY(v2 - v0, 0.f);
+
+                        if (XMVectorGetY(XMVector3Cross(vLineAB, vLineAC)) < 0.f)
+                        {
+                            _vector vTemp = v1;
+                            v1 = v2;
+                            v2 = vTemp;
+                        }
+
+
                         XMStoreFloat3(&fv0, v0);
                         XMStoreFloat3(&fv1, v1);
                         XMStoreFloat3(&fv2, v2);
@@ -1992,4 +2056,131 @@ HRESULT CImGui_Manager::NaviLoad(const wstring& strNaviPath)
 
     MSG_BOX("Load OK.");
     return S_OK;
+}
+
+void CImGui_Manager::Tick_Particle_Tool(_float fTimeDelta)
+{
+    ImGui::Begin("Particle");
+
+
+    
+    
+
+    static char szParticleEffectName[MAX_PATH] = "";
+    ImGui::Text("Particle_Effect_Prototype_Name");
+    ImGui::InputText("##ParticleEffectName", szParticleEffectName, MAX_PATH);
+
+    const map<const wstring, CGameObject*>& Effects = GI->Find_Prototype_GameObjects(LAYER_TYPE::LAYER_EFFECT);
+
+
+    if (ImGui::BeginListBox("##Prototype_Effects"))
+    {
+
+        for (auto& iter : Effects)
+        {
+            string strPrototypeEffectName = CUtils::ToString(iter.first);
+
+            if (ImGui::Selectable(strPrototypeEffectName.c_str(), 0 == strcmp(strPrototypeEffectName.c_str(), szParticleEffectName)))
+                strcpy_s(szParticleEffectName, strPrototypeEffectName.c_str());
+        }
+        ImGui::EndListBox();
+    }
+
+    
+    if (ImGui::Button("Particle_Generate"))
+    {
+        if (nullptr != m_pPrevParticle)
+            Safe_Release(m_pPrevParticle);
+
+
+        CParticle::PARTICLE_DESC ParticleDesc;
+        ZeroMemory(&ParticleDesc, sizeof(CParticle::PARTICLE_DESC));
+
+
+        m_pPrevParticle = CParticle::Create(m_pDevice, m_pContext, L"Particle"
+            , CUtils::ToWString(szParticleEffectName)
+            , ParticleDesc);
+
+        if (nullptr == m_pPrevParticle)
+        {
+            MSG_BOX("Particle Generate Failed.");
+        }
+
+        if (FAILED(m_pPrevParticle->Initialize(nullptr)))
+        {
+            MSG_BOX("Particle Initialize Failed.");
+            Safe_Release(m_pPrevParticle);
+        }
+    }
+    
+    
+
+    if (m_pPrevParticle != nullptr)
+    {
+        if (m_pPrevParticle->Is_Dead())
+        {
+            if (ImGui::Button("Replay"))
+            {
+                if (FAILED(m_pPrevParticle->Ready_Effects()))
+                    MSG_BOX("RePlay Failed.");
+
+                m_pPrevParticle->Set_Dead(false);
+            }
+            
+        }
+
+        CParticle::PARTICLE_DESC ParticleDesc = m_pPrevParticle->Get_ParticleDesc();
+
+        ImGui::Text("Gravity ");
+        IMGUI_SAME_LINE;
+        if (ImGui::Checkbox("##ParticleGravity", &ParticleDesc.bGravity))
+            m_pPrevParticle->Set_Gravity(ParticleDesc.bGravity);
+
+
+        ImGui::Text("Effect_Count");
+        IMGUI_SAME_LINE;
+        ImGui::DragInt("##ParticleEffect_Count", (int*)&ParticleDesc.iNumEffectCount, 1.f, 1.f, 100.f);
+
+
+        ImGui::Text("Random Speed");
+        ImGui::DragFloat2("##Particle_RandomSpeed", (_float*)&ParticleDesc.vRandomSpeed, 0.01f, 0.f, 1000.f);
+
+
+        ImGui::Text("Random Dir");
+        if (ImGui::DragFloat3("##Particle_RandomDir", (_float*)&ParticleDesc.vRandomDir, 0.01f, -1000.f, 1000.f))
+        {
+            _vector vRandDir = XMLoadFloat3(&ParticleDesc.vRandomDir);
+            if (XMVectorGetX(XMVector3Length(vRandDir)) >= 0.00001f)
+            {
+                XMVectorSetY(vRandDir, 1.f);
+                XMStoreFloat3(&ParticleDesc.vRandomDir, XMVector3Normalize(vRandDir));
+            }
+            else
+            {
+                XMStoreFloat3(&ParticleDesc.vRandomDir, XMVector3Normalize(vRandDir));
+            }
+        }
+
+        ImGui::Text("Particle LifeTime");
+        ImGui::DragFloat("##Particle_LifeTime", (_float*)&ParticleDesc.fLifeTime, 0.01f, 0.f, 1000.f);
+
+
+        ImGui::Text("Random LifeTime");
+        ImGui::DragFloat2("##Particle_RandomLifeTime", (_float*)&ParticleDesc.vEffectRandomLifeTime, 0.01f, 0.f, 1000.f);
+
+        ImGui::Text("Random Force");
+        ImGui::DragFloat3("##Particle_RandomForce", (_float*)&ParticleDesc.vRandomForce, 0.01f, 0.f, 1000.f);
+
+        ImGui::Text("Max_Force");
+        ImGui::DragFloat("##Particle_RandomSpeed", (_float*)&ParticleDesc.fForceMax, 0.01f, 0.f, 1000.f);
+
+        m_pPrevParticle->Set_ParticleDesc(ParticleDesc);
+
+
+
+        m_pPrevParticle->Tick(fTimeDelta);
+        m_pPrevParticle->LateTick(fTimeDelta);
+    }
+
+    ImGui::End();
 }

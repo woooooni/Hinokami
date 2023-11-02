@@ -81,6 +81,7 @@ private:
 	void Tick_Model_Tool(_float fTimeDelta);
 	void Tick_Animation_Tool(_float fTimeDelta);
 	void Tick_Effect_Tool(_float fTimeDelta);
+	void Tick_Particle_Tool(_float fTimeDelta);
 	void Tick_Map_Tool(_float fTimeDelta);
 	void Tick_Terrain_Tool(_float fTimeDelta);
 	void Tick_NaviMesh_Tool(_float fTimeDeleta);
@@ -117,6 +118,7 @@ private:
 	_bool m_bShowDemo = true;
 	_bool m_bShowModelWindow = false;
 	_bool m_bShowEffectWindow = false;
+	_bool m_bShowParticleWindow = false;
 	_bool m_bShowMapWindow = true;
 	_bool m_bShowTerrainWindow = true;
 	_bool m_bShowNavigationWindow = false;
@@ -153,7 +155,10 @@ private:
 public:
 	class CGameObject* m_pTarget = nullptr;
 	class CGameObject* m_pPrevObject = nullptr;
+
+
 	class CEffect* m_pPrevEffect = nullptr;
+	class CParticle* m_pPrevParticle = nullptr;
 
 	class CDummy* m_pDummy = nullptr;
 	class CTerrain* m_pTerrain = nullptr;

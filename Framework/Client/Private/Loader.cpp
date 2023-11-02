@@ -25,6 +25,8 @@
 #include "Utils.h"
 #include "Ground.h"
 #include "ImGui_Manager.h"
+#include "Effect_Manager.h"
+#include "Particle_Manager.h"
 
 
 #include "UI.h"
@@ -201,18 +203,18 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 		return E_FAIL;
 
 
-	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
-		CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-		return E_FAIL;
+	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
+	//	CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+	//	return E_FAIL;
 
 
-	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sword_Zenitsu"),
-		CSword::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sword"), TEXT("Prototype_Component_Model_Sword_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-		return E_FAIL;
+	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sword_Zenitsu"),
+	//	CSword::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sword"), TEXT("Prototype_Component_Model_Sword_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+	//	return E_FAIL;
 
-	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sweath_Zenitsu"),
-		CSweath::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sweath"), TEXT("Prototype_Component_Model_Sweath_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-		return E_FAIL;
+	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sweath_Zenitsu"),
+	//	CSweath::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sweath"), TEXT("Prototype_Component_Model_Sweath_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+	//	return E_FAIL;
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Tanjiro"),
 		CTanjiro::Create(m_pDevice, m_pContext, TEXT("Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
@@ -232,18 +234,11 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Weapon/")))
 		return E_FAIL;
 
-
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Tanjiro/")))
 		return E_FAIL;
 
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Enemy/Monster/")))
 		return E_FAIL;
-
-
-
-	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Zenitsu/")))
-	//	return E_FAIL;
-
 
 
 	if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
@@ -275,9 +270,6 @@ HRESULT CLoader::Loading_For_Level_Tool()
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
 
 	/* For.Prototype_GameObject_Camera_Free */
-
-
-
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
 		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Free_Camera")), LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
@@ -293,19 +285,6 @@ HRESULT CLoader::Loading_For_Level_Tool()
  	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
 		CTerrain::Create(m_pDevice, m_pContext), LAYER_TYPE::LAYER_TERRAIN)))
 		return E_FAIL;
-
-	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
-		CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-		return E_FAIL;
-
-
-	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu_Sword"),
-		CSword::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sword"), TEXT("Prototype_Component_Model_Sword_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-		return E_FAIL;
-
-	if(FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu_Sweath"),
-		CSweath::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sweath"), TEXT("Prototype_Component_Model_Sweath_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-		return E_FAIL;
 	
 		
 	
@@ -315,6 +294,7 @@ HRESULT CLoader::Loading_For_Level_Tool()
 
 	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 	Loading_Proto_AllObjects(L"../Bin/Export/Map/");
+
 
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
@@ -338,7 +318,8 @@ HRESULT CLoader::Load_Map_Data(const wstring& strMapFileName)
 			|| i == LAYER_TYPE::LAYER_UI
 			|| i == LAYER_TYPE::LAYER_PLAYER
 			|| i == LAYER_TYPE::LAYER_PROJECTILE
-			|| i == LAYER_TYPE::LAYER_EFFECT)
+			|| i == LAYER_TYPE::LAYER_EFFECT
+			|| i == LAYER_TYPE::LAYER_TRAIL)
 			continue;
 
 		// 2. ObjectCount

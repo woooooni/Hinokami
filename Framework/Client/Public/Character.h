@@ -18,6 +18,7 @@ END
 
 
 BEGIN(Client)
+class CTrail;
 class CCharacter abstract : public CGameObject
 {
 

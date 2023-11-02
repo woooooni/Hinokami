@@ -61,7 +61,7 @@ private:
 	_float					m_fDamage = 1.f;
 
 private:
-	class CTrail* m_pTrailCom = { nullptr };
+	class CTrail* m_pTrailObject = { nullptr };
 	
 
 

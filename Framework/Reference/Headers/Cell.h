@@ -25,12 +25,15 @@ public:
 	}
 
 	void SetUp_Neighbor(LINE eLine, CCell* pCell) {
+		if (m_iNeighborIndices[eLine] != -1)
+			return;
+
 		m_iNeighborIndices[eLine] = pCell->m_iIndex;
 	}
 
 public:
 	HRESULT Initialize(const _float3* pPoints, _uint iIndex);
-	HRESULT Initialize(const CELL_DESC& tDesc, const vector<_float3>& Points);
+	HRESULT Initialize(const CELL_DESC& tDesc, vector<_float3>& Points);
 	void Update(_fmatrix WorldMatrix);
 	_bool Compare_Points(const _float3* pSourPoint, const _float3* pDestPoint);
 	_bool isOut(_fvector vPoint, _fmatrix WorldMatrix, _int* pNeighborIndex, __out _vector* pOutLine = nullptr);
@@ -46,6 +49,13 @@ public:
 	void Set_Index(_int iIndex) { m_iIndex = iIndex; }
 	_int Get_Index() { return m_iIndex; }
 
+	void Reset_Neighbor()
+	{
+		for (_uint i = 0; i < LINE_END; ++i)
+		{
+			m_iNeighborIndices[i] = -1;
+		}
+	}
 
 #ifdef _DEBUG
 public:
@@ -75,7 +85,7 @@ private:
 
 private:
 	static CCell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _float3* pPoints, _uint iIndex);
-	static CCell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const CELL_DESC& tDesc, const vector<_float3>& Points);
+	static CCell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const CELL_DESC& tDesc, vector<_float3>& Points);
 
 public:
 	virtual void Free() override;

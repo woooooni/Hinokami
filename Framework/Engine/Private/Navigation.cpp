@@ -97,16 +97,15 @@ _bool CNavigation::Is_Movable(_fvector vPoint, __out _vector* vOutSlidingDir)
 					m_iCurrentIndex = iNeighborIndex;
 					break;
 				}
-			}			
+			}
 			return true;
 		}
 		else
 		{
 			 
 			if (vOutSlidingDir != nullptr)
-			{
 				*vOutSlidingDir = vOutLine;
-			}
+
 			return false;
 		}
 
@@ -146,7 +145,7 @@ HRESULT CNavigation::Create_Cell(const _float3* vLocalPoints)
 	for (_uint i = 0; i < CCell::POINTS::POINT_END; ++i)
 		LocalPointsCW.push_back(vLocalPoints[i]);
 
-	if (0 > Compute_CW(LocalPointsCW[0], LocalPointsCW[1], LocalPointsCW[2]))
+	if (0.f > Compute_CW(LocalPointsCW[0], LocalPointsCW[1], LocalPointsCW[2]))
 		swap(LocalPointsCW[1], LocalPointsCW[2]);
 
 
@@ -287,10 +286,6 @@ HRESULT CNavigation::Render()
 		if (FAILED(m_pShader->Bind_RawValue("g_vLineColor", &vLineColor, sizeof(_float4))))
 			return E_FAIL;
 
-		_float		fHeight = 0.02f;
-		if (FAILED(m_pShader->Bind_RawValue("g_fHeight", &fHeight, sizeof(_float))))
-			return E_FAIL;
-
 		for (auto& pCell : m_Cells)
 		{
 			if (nullptr != pCell)
@@ -318,13 +313,13 @@ HRESULT CNavigation::Render()
 
 #endif
 
-int CNavigation::Compute_CW(_float3 vPointA, _float3 vPointB, _float3 vPointC)
+_float CNavigation::Compute_CW(_float3 vPointA, _float3 vPointB, _float3 vPointC)
 {
 	_vector vLineAB = XMVector3Normalize(XMVectorSetY(XMLoadFloat3(&vPointB) - XMLoadFloat3(&vPointA), 0.f));
 	_vector vLineAC = XMVector3Normalize(XMVectorSetY(XMLoadFloat3(&vPointC) - XMLoadFloat3(&vPointA), 0.f));
 
-	
-	return XMVectorGetY(XMVector3Cross(vLineAB, vLineAC));
+	_float vNormalY = XMVectorGetY(XMVector3Cross(vLineAB, vLineAC));
+	return vNormalY;
 }
 
 HRESULT CNavigation::Initialize_Index(_vector vWorldPostion)
@@ -347,8 +342,15 @@ HRESULT CNavigation::Initialize_Index(_vector vWorldPostion)
 HRESULT CNavigation::SetUp_Neighbors()
 {
 	_uint iCurrentIndex = 0;
+	
 	for (auto& pCell : m_Cells)
+	{
 		pCell->Set_Index(iCurrentIndex++);
+		pCell->Reset_Neighbor();
+	}
+		
+
+
 
 	for (auto& pSourCell : m_Cells)
 	{

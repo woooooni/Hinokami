@@ -2,12 +2,13 @@
 #include "..\Public\MainApp.h"
 
 #include "GameInstance.h"
-#include "Trail.h"
+#include "VIBuffer_Trail.h"
 #include "Level_Loading.h"
 #include "Network_Manager.h"
 #include "SocketUtils.h"
 #include "ImGui_Manager.h"
 #include "Picking_Manager.h"
+#include "Effect_Manager.h"
 
 #include "UI_Loading_Anim.h"
 #include "UI_Loading_Background.h"
@@ -139,6 +140,12 @@ HRESULT CMainApp::Initialize_Client()
 	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Loading_Icon"), CUI_Loading_Icon::Create(m_pDevice, m_pContext, tInfo), LAYER_TYPE::LAYER_UI)))
 		return E_FAIL;
 
+
+
+	if (FAILED(CEffect_Manager::GetInstance()->Reserve_Manager(m_pDevice, m_pContext, L"../Bin/Export/Effect/")))
+		return E_FAIL;
+	
+
 	return S_OK;
 }
 
@@ -171,9 +178,9 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, 256, 256))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Trail*/
-	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Trail"),
-		CTrail::Create(m_pDevice, m_pContext))))
+	/* For.Prototype_Component_VIBuffer_Trail*/
+	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Trail"),
+		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_UI*/
