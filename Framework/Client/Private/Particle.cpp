@@ -52,12 +52,8 @@ void CParticle::Tick(_float fTimeDelta)
 		m_fAccLifeTime += fTimeDelta;
 		if (m_tParticleDesc.fLifeTime <= m_fAccLifeTime)
 		{
-			m_fAccLifeTime = 0.f;
-
 			for (auto& pEffect : m_Effects)
 				Safe_Release(pEffect);
-
-			m_EffectLifeTimes.clear();
 			m_Effects.clear();
 
 			Set_Dead(true);
@@ -65,58 +61,17 @@ void CParticle::Tick(_float fTimeDelta)
 		}
 	}
 	else
-	{
 		return;
-	}
-
-
-	while(m_tParticleDesc.iNumEffectCount > m_Effects.size())
-	{
-		CEffect* pEffect = Generate_Effect();
-		if (nullptr == pEffect)
-		{
-			MSG_BOX("Effect Generate Failed. :CParticle");
-			break;
-		}
-		m_Effects.push_back(pEffect);
-		m_EffectLifeTimes.push_back(CUtils::Random_Float(m_tParticleDesc.vEffectRandomLifeTime.x, m_tParticleDesc.vEffectRandomLifeTime.y));
-	}
 
 	_uint iEffectIndex = 0;
-	auto iter = m_Effects.begin();
-	
+
+	auto& iter = m_Effects.begin();
 	while (iter != m_Effects.end())
 	{	
-		if (m_tParticleDesc.iNumEffectCount < m_Effects.size())
-		{
-			Safe_Release((*iter));
-			auto timeIter = m_EffectLifeTimes.begin() + iEffectIndex;
-			
-			iter = m_Effects.erase(iter);
-			m_EffectLifeTimes.erase(timeIter);
-			continue;
-		}
-
-		if (m_EffectLifeTimes[iEffectIndex] <= m_fAccLifeTime)
-		{
-			Safe_Release((*iter));
-
-			auto timeIter = m_EffectLifeTimes.begin() + iEffectIndex;
-
-			iter = m_Effects.erase(iter);
-			m_EffectLifeTimes.erase(timeIter);
-
-			continue;
-		}
-		
 		(*iter)->Set_ParentMatrix(m_pTransformCom->Get_WorldMatrix());
-
 		(*iter)->Tick(fTimeDelta);
 		++iter;
-		++iEffectIndex;
 	}
-
-
 		
 }
 
@@ -146,72 +101,19 @@ void CParticle::Set_Gravity(_bool bGravity)
 
 HRESULT CParticle::Ready_Effects()
 {
-
 	for (auto& pEffect : m_Effects)
 		Safe_Release(pEffect);
 
 	m_Effects.clear();
-	m_EffectLifeTimes.clear();
+	m_fAccLifeTime = 0.f;
 
 	for (_uint i = 0; i < m_tParticleDesc.iNumEffectCount; ++i)
 	{
-		CGameObject* pObject = GI->Clone_GameObject(m_strPrototypeEffectTag, LAYER_EFFECT);
-		if (nullptr == pObject)
+		CEffect* pEffect = Generate_Effect();
+		if (pEffect == nullptr)
 			return E_FAIL;
 
-		CEffect* pEffect = dynamic_cast<CEffect*>(pObject);
-		if (nullptr == pEffect)
-			return E_FAIL;
-
-		pEffect->Set_Gravity(m_tParticleDesc.bGravity);
-		if (m_tParticleDesc.bGravity)
-		{
-			_float3 vRandomForce =
-				_float3(CUtils::Random_Float(m_tParticleDesc.vRandomForce.x, m_tParticleDesc.fForceMax),
-					CUtils::Random_Float(m_tParticleDesc.vRandomForce.y, m_tParticleDesc.fForceMax),
-					CUtils::Random_Float(m_tParticleDesc.vRandomForce.z, m_tParticleDesc.fForceMax));
-
-			CTransform* pTransform = pEffect->Get_Component<CTransform>(L"Com_Transform");
-			CRigidBody* pRigidBody = pEffect->Get_Component<CRigidBody>(L"Com_RigidBody");
-
-			if (m_tParticleDesc.vRandomForce.x == 0.f)
-				vRandomForce.x = 0.f;
-
-			if (m_tParticleDesc.vRandomForce.y == 0.f)
-				vRandomForce.y = 0.f;
-
-			if (m_tParticleDesc.vRandomForce.z == 0.f)
-				vRandomForce.z = 0.f;
-
-			_vector vPosition = pTransform->Get_State(CTransform::STATE_POSITION);
-			XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.01f);
-			pTransform->Set_State(CTransform::STATE_POSITION, vPosition);
-
-			pRigidBody->Add_Velocity(XMLoadFloat3(&vRandomForce));
-		}
-
-		_vector vRandomDir = XMVectorSet(0.f, 0.f, 0.f, 0.f);
-		if (XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_tParticleDesc.vRandomDir))) <= 0.f)
-		{
-			XMVectorSetY(vRandomDir, 1.f);
-		}
-
-		while (0.01f > XMVectorGetX(XMVector3Length(vRandomDir)))
-		{
-			vRandomDir = XMVectorSet(
-				CUtils::Random_Float(-m_tParticleDesc.vRandomDir.x, m_tParticleDesc.vRandomDir.x),
-				CUtils::Random_Float(-m_tParticleDesc.vRandomDir.y, m_tParticleDesc.vRandomDir.y),
-				CUtils::Random_Float(-m_tParticleDesc.vRandomDir.z, m_tParticleDesc.vRandomDir.z), 0.f);
-		}
-		pEffect->Set_MoveDir(XMVector3Normalize(vRandomDir));
-
-		_float fRandomSpeed = CUtils::Random_Float(m_tParticleDesc.vRandomSpeed.x, m_tParticleDesc.vRandomSpeed.y);
-		pEffect->Set_MoveSpeed(fRandomSpeed);
-
-
-		Safe_AddRef(pEffect);
 		m_Effects.push_back(pEffect);
-		m_EffectLifeTimes.push_back(CUtils::Random_Float(m_tParticleDesc.vEffectRandomLifeTime.x, m_tParticleDesc.vEffectRandomLifeTime.y));
 	}
 	return S_OK;
 }
@@ -226,50 +128,47 @@ CEffect* CParticle::Generate_Effect()
 	if (nullptr == pEffect)
 		return nullptr;
 
-	pEffect->Set_Gravity(m_tParticleDesc.bGravity);
-	if (m_tParticleDesc.bGravity)
+	CEffect::EFFECT_DESC EffectDesc = pEffect->Get_EffectDesc();
+
+	EffectDesc.bBillboard = m_tParticleDesc.bBillboard;
+	
+
+	_float fSpeed = m_tParticleDesc.fSpeed;
+	if (m_tParticleDesc.bRandomSpeed)
 	{
-		_float3 vRandomForce =
-			_float3(CUtils::Random_Float(m_tParticleDesc.vRandomForce.x, m_tParticleDesc.fForceMax),
-				CUtils::Random_Float(m_tParticleDesc.vRandomForce.y, m_tParticleDesc.fForceMax),
-				CUtils::Random_Float(m_tParticleDesc.vRandomForce.z, m_tParticleDesc.fForceMax));
-
-		CTransform* pTransform = pEffect->Get_Component<CTransform>(L"Com_Transform");
-		CRigidBody* pRigidBody = pEffect->Get_Component<CRigidBody>(L"Com_RigidBody");
-
-		if (m_tParticleDesc.vRandomForce.x == 0.f)
-			vRandomForce.x = 0.f;
-
-		if (m_tParticleDesc.vRandomForce.y == 0.f)
-			vRandomForce.y = 0.f;
-
-		if (m_tParticleDesc.vRandomForce.z == 0.f)
-			vRandomForce.z = 0.f;
-
-		_vector vPosition = pTransform->Get_State(CTransform::STATE_POSITION);
-		XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.01f);
-		pTransform->Set_State(CTransform::STATE_POSITION, vPosition);
-
-		pRigidBody->Add_Velocity(XMLoadFloat3(&vRandomForce));
+		fSpeed = CUtils::Random_Float(1.f, fSpeed);
 	}
+	EffectDesc.fMoveSpeed = fSpeed;
 
-	_vector vRandomDir = XMVectorSet(0.f, 0.f, 0.f, 0.f);
-	if (XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_tParticleDesc.vRandomDir))) <= 0.f)
+
+
+	_float3 vDir = m_tParticleDesc.vDir;
+	if (m_tParticleDesc.bRandomDir)
 	{
-		XMVectorSetY(vRandomDir, 1.f);
+		vDir.x = CUtils::Random_Float(-vDir.x, vDir.x);
+		vDir.y = CUtils::Random_Float(-vDir.y, vDir.y);
+		vDir.z = CUtils::Random_Float(-vDir.z, vDir.z);
 	}
+	XMStoreFloat3(&EffectDesc.vMoveDir, XMVector3Normalize(XMLoadFloat3(&vDir)));
 
-	while (0.01f > XMVectorGetX(XMVector3Length(vRandomDir)))
+	pEffect->Set_Gravity(m_tParticleDesc.bRigidActive);
+	if (m_tParticleDesc.bRigidActive)
 	{
-		vRandomDir = XMVectorSet(
-			CUtils::Random_Float(-m_tParticleDesc.vRandomDir.x, m_tParticleDesc.vRandomDir.x),
-			CUtils::Random_Float(-m_tParticleDesc.vRandomDir.y, m_tParticleDesc.vRandomDir.y),
-			CUtils::Random_Float(-m_tParticleDesc.vRandomDir.z, m_tParticleDesc.vRandomDir.z), 0.f);
-	}
-	pEffect->Set_MoveDir(XMVector3Normalize(vRandomDir));
+		_float3 vForceDir = m_tParticleDesc.vForceDir;
+		if (m_tParticleDesc.bRandomForceDir)
+		{
+			vForceDir.x = CUtils::Random_Float(-vForceDir.x, vForceDir.x);
+			vForceDir.y = CUtils::Random_Float(-vForceDir.y, vForceDir.y);
+			vForceDir.z = CUtils::Random_Float(-vForceDir.z, vForceDir.z);
+		}
 
-	_float fRandomSpeed = CUtils::Random_Float(m_tParticleDesc.vRandomSpeed.x, m_tParticleDesc.vRandomSpeed.y);
-	pEffect->Set_MoveSpeed(fRandomSpeed);
+		pEffect->Get_RigidBodyCom()->Add_Velocity(XMVector3Normalize(XMLoadFloat3(&vForceDir)), m_tParticleDesc.fForce);
+	}	
+
+	EffectDesc.fDestAlphaSpeed = m_tParticleDesc.fDestAlphaSpeed;
+	pEffect->Set_EffectDesc(EffectDesc);
+
+	
 
 	Safe_AddRef(pEffect);
 	
@@ -331,8 +230,6 @@ void CParticle::Free()
 		Safe_Release(pEffect);
 
 	m_Effects.clear();
-	m_EffectLifeTimes.clear();
-
 }
 
 

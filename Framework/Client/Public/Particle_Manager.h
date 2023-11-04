@@ -22,7 +22,10 @@ public:
 	void	Tick(_float fTimeDelta);
 
 public:
-	HRESULT Generate_Effect(const wstring& strPrototypeEffectName, _matrix TransformMatrix);
+	HRESULT Generate_Particle(const wstring& strPrototypeParticleName, _matrix TransformMatrix);
+
+
+
 
 private:
 	ID3D11Device* m_pDevice;
@@ -30,7 +33,7 @@ private:
 
 
 private:
-	HRESULT Ready_Proto_Effects(const wstring& strEffectPath);
+	HRESULT Ready_Proto_Particles(const wstring& strParticlePath);
 
 
 public:

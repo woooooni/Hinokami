@@ -24,6 +24,9 @@ public:
 		_int iDiffuseTextureIndex = -1;
 		_int iAlphaTextureIndex = -1;
 
+		_bool bBillboard = false;
+		_int bCutUV = -1;
+
 		_float			fTurnSpeed = 0.f;
 		_float			fMoveSpeed = 0.f;
 
@@ -35,6 +38,8 @@ public:
 
 		_float			fIndexSpeed = 20.f;
 		_float2			fUVFlow = { 0.f, 0.f };
+
+		_float2			vBlurPower = { 0.f, 0.f };
 		
 
 
@@ -44,6 +49,7 @@ public:
 		_float4x4		OffsetMatrix; 
 		_float3			vMoveDir = _float3(0.f, 0.f, 0.f);
 		_float3			vTurnDir = _float3(0.f, 1.f, 0.f);
+		_float			fDestAlphaSpeed = 0.f;
 
 		tagEffectDesc()
 		{
@@ -84,6 +90,7 @@ public:
 
 
 public:
+	void Set_Owner(CGameObject* pGameObject) { m_pOwnerObject = pGameObject; }
 	const EFFECT_DESC& Get_EffectDesc() { return m_tEffectDesc; }
 	void Set_EffectDesc(const EFFECT_DESC& tDesc) { memcpy(&m_tEffectDesc, &tDesc, sizeof(EFFECT_DESC)); }
 
@@ -117,6 +124,15 @@ public:
 	void Set_DeletionTime(_float fDeletionTime) { m_fDeletionTime = fDeletionTime; }
 
 
+	class CRigidBody* Get_RigidBodyCom() { return m_pRigidBodyCom; }
+
+
+	void Reset_UV() {
+		m_tEffectDesc.fUVFlow = { 0.f, 0.f };
+		m_fAccUVFlow = { 0.f, 0.f };
+		m_vUVIndex = { 0.f, 0.f };
+	}
+
 public:
 	class CTexture* Get_DiffuseTexture() { return m_pDiffuseTextureCom; }
 	class CTexture* Get_AlphaTexture() { return m_pAlphaTextureCom; }
@@ -137,6 +153,10 @@ private:
 	EFFECT_TYPE m_eType = EFFECT_TYPE::EFFECT_END;
 	EFFECT_DESC m_tEffectDesc;
 
+
+private:
+	CGameObject* m_pOwnerObject = nullptr;
+
 private:
 	_bool			m_bEnd = false;
 	_bool			m_bLoop = true;
@@ -149,8 +169,9 @@ private:
 	_float m_fAccIndex = 0.f;
 	_float m_fDeletionTime = 1.f;
 	
-	_float2 m_fAccUVFlow = { 0.f, 0.f };
+
 	_float2	m_vUVIndex = _float2(0.f, 0.f);
+	_float2 m_fAccUVFlow = _float2(0.f, 0.f);
 	wstring m_strModelPrototype;
 	_uint m_iPassIndex = 0;
 

@@ -16,7 +16,7 @@ CTrail::CTrail(const CTrail& rhs)
 }
 
 
-HRESULT CTrail::Initialize_Prototype(const CVIBuffer_Trail::TRAIL_DESC& TrailDesc)
+HRESULT CTrail::Initialize_Prototype(const TRAIL_DESC& TrailDesc)
 {
 	m_TrailDesc = TrailDesc;
 
@@ -36,7 +36,12 @@ HRESULT CTrail::Initialize(void* pArg)
 
 void CTrail::Tick(_float fTimeDelta)
 {
-	m_pVIBufferCom->Update_Trail(fTimeDelta, XMLoadFloat4x4(&m_TransformMatrix));
+	m_TrailDesc.fAccGenTrail += fTimeDelta;
+	if(m_TrailDesc.fAccGenTrail>= m_TrailDesc.fGenTrailTime)
+		m_pVIBufferCom->Update_TrailBuffer(fTimeDelta, XMLoadFloat4x4(&m_TransformMatrix));
+
+	m_TrailDesc.vUVAcc.x += m_TrailDesc.vUV_FlowSpeed.x * fTimeDelta;
+	m_TrailDesc.vUVAcc.y += m_TrailDesc.vUV_FlowSpeed.y * fTimeDelta;
 }
 
 void CTrail::LateTick(_float fTimeDelta)
@@ -57,13 +62,63 @@ HRESULT CTrail::Render()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_ProjMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TransPose(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
 		return E_FAIL;
 
-	if (m_pShaderCom->Bind_RawValue("g_TrailColor", &m_TrailDesc.vColor, sizeof(_float4)))
+	if(FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_TrailDesc.vDiffuseColor, sizeof(_float4))))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0);
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fUVFlow", &m_TrailDesc.vUVAcc, sizeof(_float2))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_iCutUV", &m_TrailDesc.bUV_Cut, sizeof(_int))))
+		return E_FAIL;
+
+
+	_uint iPassIndex = 0;
+	{
+
+		if (-1 < m_iDiffuseTextureIndex)
+		{
+			if (FAILED(m_pDiffuseTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", m_iDiffuseTextureIndex)))
+				return E_FAIL;
+		}
+
+
+		if (-1 < m_iAlphaTextureIndex)
+		{
+			if (FAILED(m_pAlphaTextureCom->Bind_ShaderResource(m_pShaderCom, "g_AlphaTexture", m_iAlphaTextureIndex)))
+				return E_FAIL;
+		}
+
+
+		// 둘다 없다면.
+		if (-1 == m_iDiffuseTextureIndex && -1 == m_iAlphaTextureIndex)
+			iPassIndex = 0;
+
+		// 디퓨즈 텍스쳐만 있다면.
+		if (-1 != m_iDiffuseTextureIndex && -1 == m_iAlphaTextureIndex)
+			iPassIndex = 1;
+
+		// 알파 텍스쳐만 있다면.
+		if (-1 == m_iDiffuseTextureIndex && -1 != m_iAlphaTextureIndex)
+			iPassIndex = 2;
+
+		if (-1 != m_iDiffuseTextureIndex && -1 != m_iAlphaTextureIndex)
+			iPassIndex = 3;
+	}
+
+	m_pShaderCom->Begin(iPassIndex);
 
 	m_pVIBufferCom->Render();
 	return S_OK;
+}
+
+void CTrail::Set_DiffuseTexture_Index(const wstring& strDiffuseTextureName)
+{
+	m_iDiffuseTextureIndex = m_pDiffuseTextureCom->Find_Index(strDiffuseTextureName);
+}
+
+void CTrail::Set_AlphaTexture_Index(const wstring& strAlphaTextureName)
+{
+	m_iAlphaTextureIndex = m_pAlphaTextureCom->Find_Index(strAlphaTextureName);
 }
 
 HRESULT CTrail::Ready_Components()
@@ -80,7 +135,13 @@ HRESULT CTrail::Ready_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Trail"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom, &m_TrailDesc)))
 		return E_FAIL;
 
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Trail"), TEXT("Com_Diffuse_Texture"), (CComponent**)&m_pDiffuseTextureCom)))
+		return E_FAIL;
 
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Trail"), TEXT("Com_Alpha_Texture"), (CComponent**)&m_pAlphaTextureCom)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -101,7 +162,7 @@ void CTrail::Stop_Trail()
 }
 
 
-CTrail* CTrail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const CVIBuffer_Trail::TRAIL_DESC& TrailDesc)
+CTrail* CTrail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const TRAIL_DESC& TrailDesc)
 {
 	CTrail* pInstance = new CTrail(pDevice, pContext, strObjectTag);
 	if (FAILED(pInstance->Initialize_Prototype(TrailDesc)))

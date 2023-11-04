@@ -106,9 +106,6 @@
     <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Particle">
       <UniqueIdentifier>{8a127f5b-7cea-4b5f-a091-26304663d1eb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\03.Component\03. Shader">
-      <UniqueIdentifier>{ae1b5658-3515-477e-aa12-9972107b50c4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utiltiy\03.Component\04. Texture">
       <UniqueIdentifier>{445db20a-a830-4dc1-bdf8-7a3a9cbb45e1}</UniqueIdentifier>
     </Filter>
@@ -223,6 +220,12 @@
     <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Cube">
       <UniqueIdentifier>{02fd9e87-474b-48c9-aa7c-952b1c5f5856}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\03. Shader">
+      <UniqueIdentifier>{ae1b5658-3515-477e-aa12-9972107b50c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\06. PhysicsManager">
+      <UniqueIdentifier>{e26d91f2-ce4c-474b-9955-154ffc88cbd8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -280,7 +283,7 @@
       <Filter>01.Utiltiy\03.Component\02. VIBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Shader.h">
-      <Filter>01.Utiltiy\03.Component\03. Shader</Filter>
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\03. Shader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Texture.h">
       <Filter>01.Utiltiy\03.Component\04. Texture</Filter>
@@ -501,7 +504,7 @@
       <Filter>01.Utiltiy\03.Component\02. VIBuffer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Shader.cpp">
-      <Filter>01.Utiltiy\03.Component\03. Shader</Filter>
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\03. Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Texture.cpp">
       <Filter>01.Utiltiy\03.Component\04. Texture</Filter>

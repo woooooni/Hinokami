@@ -27,12 +27,8 @@ HRESULT CVIBuffer_Trail::Initialize_Prototype()
 
 HRESULT CVIBuffer_Trail::Initialize(void * pArg)
 {
-
 	if (pArg == nullptr)
 		return E_FAIL;
-
-	TRAIL_DESC* pDesc = (TRAIL_DESC*)pArg;
-	memcpy(&m_tTrailDesc, pDesc, sizeof(TRAIL_DESC));
 
 #pragma region VERTEXBUFFER
 	m_iNumVertexBuffers = 1;
@@ -114,9 +110,9 @@ HRESULT CVIBuffer_Trail::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CVIBuffer_Trail::Update_Trail(_float fTimedelta, _matrix TransformMatrix)
+void CVIBuffer_Trail::Update_TrailBuffer(_float fTimedelta, _matrix TransformMatrix)
 {
-	m_tTrailDesc.fAccGenTrail += fTimedelta;
+	
 	vector<VTXPOSTEX> Vertices;
 	Vertices.reserve(m_iNumVertices);
 
@@ -125,44 +121,36 @@ void CVIBuffer_Trail::Update_Trail(_float fTimedelta, _matrix TransformMatrix)
 	TransformMatrix.r[CTransform::STATE_LOOK] = XMVector4Normalize(TransformMatrix.r[CTransform::STATE_LOOK]);
 
 
-	if (m_tTrailDesc.fAccGenTrail >= m_tTrailDesc.fGenTrailTime)
+
+	while (m_TrailVertices.size() > m_iNumVertices - 2)
+		m_TrailVertices.pop_front();
+
+
+	_vector vHigh = XMVector3TransformCoord(XMLoadFloat4(&m_vHighPosition), TransformMatrix);
+	_vector vLow = XMVector3TransformCoord(XMLoadFloat4(&m_vLowPosition), TransformMatrix);
+
+
+	_vector vCameraPosition = XMLoadFloat4(&GI->Get_CamPosition());
+	_float fAngle = atan2(XMVectorGetX(vHigh) - XMVectorGetX(vCameraPosition), XMVectorGetZ(vHigh) - XMVectorGetZ(vCameraPosition)) * (180.0 / 3.141592);
+	fAngle = XMConvertToRadians(fAngle);
+
+
+	VTXPOSTEX Vertex = {};
+	XMStoreFloat3(&Vertex.vPosition, vHigh);
+	m_TrailVertices.push_back(Vertex);
+
+	XMStoreFloat3(&Vertex.vPosition, vLow);
+	m_TrailVertices.push_back(Vertex);
+
+	for (_uint i = 0; i < m_TrailVertices.size(); i += 2)
 	{
-		m_tTrailDesc.fAccGenTrail = 0.f;
-		m_tTrailDesc.fUVAcc += fTimedelta;
+		_float _iVtxCount = _float(m_TrailVertices.size());
 
-		if (m_tTrailDesc.fUVAcc >= 1.f)
-			m_tTrailDesc.fUVAcc = 0.f;
+		m_TrailVertices[i].vTexcoord = { ((_float)i) / ((_float)_iVtxCount), 0.f };
+		m_TrailVertices[i + 1].vTexcoord = { ((_float)i) / ((_float)_iVtxCount), 1.f };
 
-		while (m_TrailVertices.size() > m_iNumVertices - 2)
-			m_TrailVertices.pop_front();
-		
-
-		_vector vHigh = XMVector3TransformCoord(XMLoadFloat4(&m_vHighPosition), TransformMatrix);
-		_vector vLow = XMVector3TransformCoord(XMLoadFloat4(&m_vLowPosition), TransformMatrix);
-
-
-		_vector vCameraPosition = XMLoadFloat4(&GI->Get_CamPosition());
-		_float fAngle = atan2(XMVectorGetX(vHigh) - XMVectorGetX(vCameraPosition), XMVectorGetZ(vHigh) - XMVectorGetZ(vCameraPosition)) * (180.0 / 3.141592);
-		fAngle = XMConvertToRadians(fAngle);
-
-
-		VTXPOSTEX Vertex = {};
-		XMStoreFloat3(&Vertex.vPosition, vHigh);
-		m_TrailVertices.push_back(Vertex);
-
-		XMStoreFloat3(&Vertex.vPosition, vLow);
-		m_TrailVertices.push_back(Vertex);
-
-		for (_uint i = 0; i < m_TrailVertices.size(); i += 2)
-		{
-			_float _iVtxCount = _float(m_TrailVertices.size());
-				
-			m_TrailVertices[i].vTexcoord = { ((_float)i) / ((_float)_iVtxCount), 0.f };
-			m_TrailVertices[i + 1].vTexcoord = { ((_float)i) / ((_float)_iVtxCount), 1.f };
-
-			Vertices.push_back(m_TrailVertices[i]);
-			Vertices.push_back(m_TrailVertices[i + 1]);
-		}
+		Vertices.push_back(m_TrailVertices[i]);
+		Vertices.push_back(m_TrailVertices[i + 1]);
 	}
 	
 
@@ -202,12 +190,11 @@ void CVIBuffer_Trail::Start_Trail(_matrix TransformMatrix)
 		m_TrailVertices.push_back(High);
 		m_TrailVertices.push_back(Low);
 	}
-
-	m_tTrailDesc.bTrail = true;
 }
 
 void CVIBuffer_Trail::Stop_Trail()
 {
+
 	m_TrailVertices.clear();
 
 }

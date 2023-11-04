@@ -333,15 +333,12 @@ HRESULT CTanjiro::Ready_Sockets()
 	m_Sockets[SOCKET_RIGHT_FOOT] = m_pModelCom->Get_HierarchyNode(L"R_Foot_End");
 	
 
-	CVIBuffer_Trail::TRAIL_DESC TrailDesc = {};
+	CTrail::TRAIL_DESC TrailDesc = {};
 	TrailDesc.bTrail = true;
 	
 	TrailDesc.fAccGenTrail = 0.f;
 	TrailDesc.fGenTrailTime = 0.01f;
-
-	TrailDesc.fUVAcc = 0.f;
-	TrailDesc.strTextureName = L"";
-	TrailDesc.vColor = { 1.f, 0.f, 0.f, 0.5f };
+	TrailDesc.vDiffuseColor = { 1.f, 0.f, 0.f, 0.5f };
 
 
 

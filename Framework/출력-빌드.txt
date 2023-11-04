@@ -1,0 +1,12 @@
+﻿-------- 편집하며 계속하기 빌드가 시작됨 --------
+
+unity_F2BGOTOBY0981NG9.cpp
+C:\Users\xodnj\Desktop\HinokamiCronicles\Framework\Client\Private\State_Tanjiro_Attack.cpp(127,79): warning C4267: '=': 'size_t'에서 'Engine::_uint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+unity_HIQG7G2DTGCFC80Q.cpp
+unity_JWDAEOBEHWP3B21E.cpp
+C:\Users\xodnj\Desktop\HinokamiCronicles\Framework\Client\Private\Character.cpp(83,7): warning C4834: 'nodiscard' 특성이 포함된 함수의 반환 값을 버리는 중
+unity_CEIN1BI88764J2HJ.cpp
+--------------------- 완료 ----------------------
+
+편집하며 계속하기: 코드 변경 내용을 적용했습니다.
+

@@ -43,8 +43,8 @@ HRESULT CEffect::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pRigidBodyCom->Set_RefHeight(0.f);
-	m_pRigidBodyCom->Set_Gravity(m_bGravity);
+	if (nullptr != pArg)
+		m_pOwnerObject = (CGameObject*)pArg;
 
 	XMStoreFloat4x4(&m_ParentMatrix, XMMatrixIdentity());
 
@@ -68,8 +68,10 @@ void CEffect::Tick(_float fTimeDelta)
 
 	m_fAccUVFlow.x += m_tEffectDesc.fUVFlow.x * fTimeDelta;
 	m_fAccUVFlow.y += m_tEffectDesc.fUVFlow.y * fTimeDelta;
+	if(m_tEffectDesc.fAlpha > 0.f)
+		m_tEffectDesc.fAlpha -= m_tEffectDesc.fDestAlphaSpeed * fTimeDelta;
 
-
+	
 	m_pRigidBodyCom->Tick_RigidBody(fTimeDelta);
 	
 	_vector vMoveDir = XMVector3Normalize(XMLoadFloat3(&m_tEffectDesc.vMoveDir));
@@ -77,6 +79,16 @@ void CEffect::Tick(_float fTimeDelta)
 
 	m_pTransformCom->Go_Dir(vMoveDir, m_tEffectDesc.fMoveSpeed, fTimeDelta);
 	m_pTransformCom->Turn(vTurnDir, m_tEffectDesc.fTurnSpeed, fTimeDelta);
+
+	if (nullptr != m_pOwnerObject)
+	{
+		CTransform* pOwnerTransform = m_pOwnerObject->Get_Component<CTransform>(L"Com_Transform");
+
+		if (nullptr != pOwnerTransform)
+		{
+			XMStoreFloat4x4(&m_ParentMatrix, pOwnerTransform->Get_WorldMatrix());
+		}
+	}
 }
 
 void CEffect::LateTick(_float fTimeDelta)
@@ -143,15 +155,14 @@ void CEffect::Increment(_float fTimeDelta)
 			}
 		}
 	}
+
+
 }
 
 void CEffect::Decrement(_float fTimeDelta)
 {
 	if (m_bEnd == true && m_bLoop == false)
 		return;
-
-
-
 
 	m_fAccIndex += m_tEffectDesc.fIndexSpeed * fTimeDelta;
 
@@ -233,12 +244,8 @@ HRESULT CEffect::Bind_ShaderResource()
 
 	_matrix LocalMatrix = XMLoadFloat4x4(&m_tEffectDesc.OffsetMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(&m_ParentMatrix);
 
-	
-	if (m_eType == EFFECT_TYPE::EFFECT_MESH)
-	{
-		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(LocalMatrix));
-	}
-	else
+
+	if (m_tEffectDesc.bBillboard)
 	{
 		// 빌보드를 적용한다.
 		_vector vPosition = LocalMatrix.r[CTransform::STATE_POSITION];
@@ -253,9 +260,6 @@ HRESULT CEffect::Bind_ShaderResource()
 		_float fUpScale = XMVectorGetX(XMVector3Length(LocalMatrix.r[CTransform::STATE_UP]));
 		_vector vUp = XMVectorSetW(XMVector3Normalize(XMVector3Cross(vLook, vRight)), 0.f) * fUpScale;
 
-		
-		
-		
 		LocalMatrix.r[CTransform::STATE_RIGHT] = vRight;
 		LocalMatrix.r[CTransform::STATE_UP] = vUp;
 		LocalMatrix.r[CTransform::STATE_LOOK] = vLook;
@@ -263,10 +267,17 @@ HRESULT CEffect::Bind_ShaderResource()
 
 		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(LocalMatrix));
 	}
+	else
+	{
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(LocalMatrix));
+	}
+
 	
 
 	
-	
+	if(FAILED(m_pShaderCom->Bind_RawValue("g_iCutUV", &m_tEffectDesc.bCutUV, sizeof(_int))))
+		return E_FAIL;
+
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4))))
 		return E_FAIL;
 
@@ -315,6 +326,12 @@ HRESULT CEffect::Ready_Components()
 	/* For. Com_RigidBody */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_RigidBody"), TEXT("Com_RigidBody"), (CComponent**)&m_pRigidBodyCom, &RigidDesc)))
 		return E_FAIL;
+
+
+	m_pRigidBodyCom->Set_RefHeight(-999.f);
+	m_pRigidBodyCom->Set_Gravity(m_bGravity);
+
+
 
 	if(m_eType == EFFECT_TYPE::EFFECT_MESH)
 	{

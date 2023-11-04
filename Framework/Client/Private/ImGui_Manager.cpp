@@ -852,7 +852,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
     ImGui::Begin("Effect");
 
     static char szEffectModelName[MAX_PATH] = "";
-    if (ImGui::BeginListBox("##Effect_Model_List", ImVec2(200.f, 200.f)))
+    if (ImGui::BeginListBox("##Effect_Model_List", ImVec2(400.f, 200.f)))
     {
         for (size_t i = 0; i < m_EffectsModelFiles.size(); ++i)
         {
@@ -1027,10 +1027,39 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         ImGui::DragFloat2("##Effect_UV_Flow", (_float*)&tEffectDesc.fUVFlow, 0.01f, -100.f, 100.f);
 
 
+        if (ImGui::Button("Reset"))
+        {
+            m_pPrevEffect->Reset_UV();
+        }
+            
+
+        IMGUI_NEW_LINE;
+        ImGui::Text("Decrease Alpha Speed : ");
+        
 
         ImGui::Text("============================================");
         ImGui::Text("Options");
         ImGui::Text("============================================");
+
+        _int bCutUv = tEffectDesc.bCutUV;
+        _bool bCutUvChecked = bCutUv != -1;
+        ImGui::Text("Cut UV");
+        IMGUI_SAME_LINE;
+        if (ImGui::Checkbox("##Effect_BillBoard", &bCutUvChecked))
+        {
+            if (bCutUv != -1)
+                tEffectDesc.bCutUV = -1;
+            else
+                tEffectDesc.bCutUV = 1;
+        }
+
+
+        ImGui::Text("Bill_Board ");
+        IMGUI_SAME_LINE;
+        ImGui::Checkbox("##Effect_BillBoard", &tEffectDesc.bBillboard);
+
+
+
         ImGui::Text("Loop ");
         IMGUI_SAME_LINE;
         _bool bLoop = m_pPrevEffect->Is_Loop();
@@ -1054,17 +1083,6 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         {
             m_pPrevEffect->Set_Gravity(bGravity);
         }
-
-        IMGUI_NEW_LINE;
-        IMGUI_NEW_LINE;
-        ImGui::Text("============================================");
-        ImGui::Text("Scale");
-        ImGui::Text("============================================");
-
-        _float3 vScale = pTransform->Get_Scale();
-        ImGui::DragFloat3("##Effect_Scale", (_float*)&vScale, 0.01f, 0.01f, 100.f);
-        if(vScale.x >= 0.01f && vScale.y >= 0.01f && vScale.z >= 0.01f)
-            pTransform->Set_Sclae(vScale);
 
 
         IMGUI_NEW_LINE;
@@ -1102,6 +1120,14 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         IMGUI_SAME_LINE;
         ImGui::DragFloat3("##Effect_OffsetPosition", (_float*)&fOffsetPosition, 0.01f, -1000.f, 1000.f);
 
+
+
+        if (fOffsetRoation.x == XMConvertToRadians(90.f))
+            fOffsetRoation.x = XMConvertToRadians(89.5f);
+        if (fOffsetRoation.y == XMConvertToRadians(90.f))
+            fOffsetRoation.y = XMConvertToRadians(89.5f);
+        if (fOffsetRoation.z == XMConvertToRadians(90.f))
+            fOffsetRoation.z = XMConvertToRadians(89.5f);
 
         fOffsetRoation.x = XMConvertToRadians(fOffsetRoation.x);
         fOffsetRoation.y = XMConvertToRadians(fOffsetRoation.y);
@@ -1767,6 +1793,8 @@ HRESULT CImGui_Manager::Save_Effect(const wstring& strFullPath)
     return S_OK;
 }
 
+
+
 HRESULT CImGui_Manager::Load_Effect(const wstring& strFullPath)
 {
     auto path = filesystem::path(strFullPath);
@@ -1819,6 +1847,61 @@ HRESULT CImGui_Manager::Load_Effect(const wstring& strFullPath)
     return S_OK;
 }
 
+HRESULT CImGui_Manager::Save_Particle(const wstring& strFullPath)
+{
+    auto path = filesystem::path(strFullPath);
+    filesystem::create_directories(path.parent_path());
+
+    _tchar strFileName[MAX_PATH];
+    _wsplitpath_s(strFullPath.c_str(), nullptr, 0, nullptr, 0, strFileName, MAX_PATH, nullptr, 0);
+
+
+    shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
+    File->Open(strFullPath, FileMode::Write);
+
+    File->Write<string>(CUtils::ToString(strFileName));
+    File->Write<string>(CUtils::ToString(m_pPrevParticle->Get_EffectPrototypeName()));
+    File->Write<CParticle::PARTICLE_DESC>(m_pPrevParticle->Get_ParticleDesc());
+
+    MSG_BOX("Particle Saved.");
+    return S_OK;
+}
+
+HRESULT CImGui_Manager::Load_Particle(const wstring& strFullPath)
+{
+    auto path = filesystem::path(strFullPath);
+    filesystem::create_directories(path.parent_path());
+
+    _tchar strFileName[MAX_PATH];
+    _wsplitpath_s(strFullPath.c_str(), nullptr, 0, nullptr, 0, strFileName, MAX_PATH, nullptr, 0);
+
+
+
+    shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
+    File->Open(strFullPath, FileMode::Read);
+
+    wstring strParticleName = CUtils::ToWString(File->Read<string>());
+    wstring strEffectPrototypeEffectName = CUtils::ToWString(File->Read<string>());
+    CParticle::PARTICLE_DESC ParticleDesc = File->Read<CParticle::PARTICLE_DESC>();
+
+    Safe_Release(m_pPrevParticle);
+
+    m_pPrevParticle = CParticle::Create(m_pDevice, m_pContext, strParticleName, strEffectPrototypeEffectName, ParticleDesc);
+    if (nullptr == m_pPrevParticle)
+    {
+        MSG_BOX("Particle Generate Failed. : CImGui_Manager");
+        return E_FAIL;
+    }
+
+    if (FAILED(m_pPrevParticle->Initialize(nullptr)))
+    {
+        MSG_BOX("Particle Initialize Failed. : CImGui_Manager");
+        Safe_Release(m_pPrevParticle);
+        return E_FAIL;
+    }
+}
+
+
 HRESULT CImGui_Manager::Load_EffectsModelPath(const wstring& strEffectPath)
 {
 
@@ -1844,7 +1927,7 @@ HRESULT CImGui_Manager::Load_EffectsModelPath(const wstring& strEffectPath)
                 wstring(strFileName) + strExt, nullptr)))
                 return E_FAIL;
 
-            m_EffectsModelFiles.push_back(wstring(L"Prototype_Model_") + strFileName);
+            m_EffectsModelFiles.push_back(wstring(L"Prototype_Component_Model_") + strFileName);
         }
     }
 
@@ -2062,10 +2145,6 @@ void CImGui_Manager::Tick_Particle_Tool(_float fTimeDelta)
 {
     ImGui::Begin("Particle");
 
-
-    
-    
-
     static char szParticleEffectName[MAX_PATH] = "";
     ImGui::Text("Particle_Effect_Prototype_Name");
     ImGui::InputText("##ParticleEffectName", szParticleEffectName, MAX_PATH);
@@ -2081,7 +2160,12 @@ void CImGui_Manager::Tick_Particle_Tool(_float fTimeDelta)
             string strPrototypeEffectName = CUtils::ToString(iter.first);
 
             if (ImGui::Selectable(strPrototypeEffectName.c_str(), 0 == strcmp(strPrototypeEffectName.c_str(), szParticleEffectName)))
+            {
                 strcpy_s(szParticleEffectName, strPrototypeEffectName.c_str());
+                if(nullptr != m_pPrevParticle)
+                    m_pPrevParticle->Set_EffectPrototypeName(CUtils::ToWString(strPrototypeEffectName));
+            }
+                
         }
         ImGui::EndListBox();
     }
@@ -2119,63 +2203,100 @@ void CImGui_Manager::Tick_Particle_Tool(_float fTimeDelta)
     {
         if (m_pPrevParticle->Is_Dead())
         {
-            if (ImGui::Button("Replay"))
+            if (ImGui::Button("Play"))
             {
                 if (FAILED(m_pPrevParticle->Ready_Effects()))
-                    MSG_BOX("RePlay Failed.");
+                    MSG_BOX("Play Failed.");
 
                 m_pPrevParticle->Set_Dead(false);
             }
-            
         }
 
         CParticle::PARTICLE_DESC ParticleDesc = m_pPrevParticle->Get_ParticleDesc();
-
-        ImGui::Text("Gravity ");
-        IMGUI_SAME_LINE;
-        if (ImGui::Checkbox("##ParticleGravity", &ParticleDesc.bGravity))
-            m_pPrevParticle->Set_Gravity(ParticleDesc.bGravity);
 
 
         ImGui::Text("Effect_Count");
         IMGUI_SAME_LINE;
         ImGui::DragInt("##ParticleEffect_Count", (int*)&ParticleDesc.iNumEffectCount, 1.f, 1.f, 100.f);
+        
+        ImGui::Text("Particle Bill Board");
+        IMGUI_SAME_LINE;
+        ImGui::Checkbox("##ParticleBillBoard", &ParticleDesc.bBillboard);
+
+        ImGui::Text("Particle LifeTime");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat("##Particle_LifeTime", (_float*)&ParticleDesc.fLifeTime, 0.01f, 0.f, 1000.f);
+        
 
 
         ImGui::Text("Random Speed");
-        ImGui::DragFloat2("##Particle_RandomSpeed", (_float*)&ParticleDesc.vRandomSpeed, 0.01f, 0.f, 1000.f);
+        IMGUI_SAME_LINE;
+        ImGui::Checkbox("##ParticleRandom_Speed", &ParticleDesc.bRandomSpeed);
+
+        ImGui::Text("Particle Speed");
+        ImGui::DragFloat("##Particle_Speed", &ParticleDesc.fSpeed, 0.01f, 0.f, 1000.f);
+
+        IMGUI_NEW_LINE;
+        
+
+        ImGui::Text("andom Dir");
+        IMGUI_SAME_LINE;
+        ImGui::Checkbox("##Particle_Random_Dir", &ParticleDesc.bRandomDir);
+
+        ImGui::Text("Direction");
+        ImGui::DragFloat3("##Particle_Dir", (_float*)&ParticleDesc.vDir, 0.01f, 0.f, 1000.f);
+
+        IMGUI_NEW_LINE;
 
 
-        ImGui::Text("Random Dir");
-        if (ImGui::DragFloat3("##Particle_RandomDir", (_float*)&ParticleDesc.vRandomDir, 0.01f, -1000.f, 1000.f))
+        ImGui::Text("== RigidBody ==");
+        ImGui::Checkbox("Gravity", &ParticleDesc.bRigidActive);
+
+        if (ParticleDesc.bRigidActive == true)
         {
-            _vector vRandDir = XMLoadFloat3(&ParticleDesc.vRandomDir);
-            if (XMVectorGetX(XMVector3Length(vRandDir)) >= 0.00001f)
+            ImGui::DragFloat3("##RigidBodyDir", (_float*)&ParticleDesc.vDir, 0.01f, 0.f, 1000.f);
+            ImGui::Checkbox("Random ForceDir", &ParticleDesc.bRandomForceDir);
+        }
+
+        IMGUI_NEW_LINE;
+
+        ImGui::Text("== Alpha Speed ==");
+        ImGui::DragFloat("##Particle_Decrease Alpha", &ParticleDesc.fDestAlphaSpeed, 0.01f, 0.f, 100.f);
+
+        
+        m_pPrevParticle->Set_ParticleDesc(ParticleDesc);
+
+
+
+        IMGUI_NEW_LINE;
+        static char szParticleFileName[MAX_PATH] = "";
+        ImGui::Text("Particle File Name");
+        ImGui::InputText("##Particle_Name", szParticleFileName, MAX_PATH);
+
+
+        if (ImGui::Button("Save_Particle"))
+        {
+            if (0 == strcmp(szParticleFileName, ""))
             {
-                XMVectorSetY(vRandDir, 1.f);
-                XMStoreFloat3(&ParticleDesc.vRandomDir, XMVector3Normalize(vRandDir));
+                MSG_BOX("파티클 파일 이름을 설정해주세요.");
             }
             else
             {
-                XMStoreFloat3(&ParticleDesc.vRandomDir, XMVector3Normalize(vRandDir));
+                Save_Particle(L"../Bin/Export/Particle/" + CUtils::ToWString(szParticleFileName) + L".particle");
             }
         }
 
-        ImGui::Text("Particle LifeTime");
-        ImGui::DragFloat("##Particle_LifeTime", (_float*)&ParticleDesc.fLifeTime, 0.01f, 0.f, 1000.f);
-
-
-        ImGui::Text("Random LifeTime");
-        ImGui::DragFloat2("##Particle_RandomLifeTime", (_float*)&ParticleDesc.vEffectRandomLifeTime, 0.01f, 0.f, 1000.f);
-
-        ImGui::Text("Random Force");
-        ImGui::DragFloat3("##Particle_RandomForce", (_float*)&ParticleDesc.vRandomForce, 0.01f, 0.f, 1000.f);
-
-        ImGui::Text("Max_Force");
-        ImGui::DragFloat("##Particle_RandomSpeed", (_float*)&ParticleDesc.fForceMax, 0.01f, 0.f, 1000.f);
-
-        m_pPrevParticle->Set_ParticleDesc(ParticleDesc);
-
+        if (ImGui::Button("Load_Particle"))
+        {
+            if (0 == strcmp(szParticleFileName, ""))
+            {
+                MSG_BOX("파티클 파일 이름을 설정해주세요.");
+            }
+            else
+            {
+                Load_Particle(L"../Bin/Export/Particle/" + CUtils::ToWString(szParticleFileName) + L".particle");
+            }
+        }
 
 
         m_pPrevParticle->Tick(fTimeDelta);
@@ -2184,3 +2305,4 @@ void CImGui_Manager::Tick_Particle_Tool(_float fTimeDelta)
 
     ImGui::End();
 }
+

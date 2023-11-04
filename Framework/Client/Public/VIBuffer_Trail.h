@@ -14,16 +14,7 @@ BEGIN(Client)
 
 class CVIBuffer_Trail final : public CVIBuffer
 {
-public:
-	typedef struct tagTrailDesc
-	{
-		_bool bTrail = false;
-		_float fAccGenTrail = 0.f;
-		_float fGenTrailTime = 0.01f;
-		_float4 vColor = {0.f, 0.f, 0.f, 0.5f};
-		wstring strTextureName = L"";
-		_float fUVAcc = 0.f;
-	} TRAIL_DESC;
+
 
 private:
 	CVIBuffer_Trail(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -34,17 +25,15 @@ public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 
-	void Update_Trail(_float fTimedelta, _matrix TransformMatrix);
+	void Update_TrailBuffer(_float fTimedelta, _matrix TransformMatrix);
 	virtual HRESULT Render() override;
+
 
 public:
 	void SetUp_Position(_vector vHighPosition, _vector vLowPosition);
 	void Start_Trail(_matrix TransformMatrix);
 	void Stop_Trail();
 
-
-private:
-	TRAIL_DESC m_tTrailDesc;
 
 
 

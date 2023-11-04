@@ -5,6 +5,7 @@
 #include "Character.h"
 #include "Animation.h"
 #include "Sword.h"
+#include "Effect_Manager.h"
 
 CState_Tanjiro_Attack::CState_Tanjiro_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
@@ -61,12 +62,23 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 	m_pCharacter->DrawSword();
 	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
+
+	
+	Matrix OffsetMatrix;
+	Quaternion Rotation = Quaternion::CreateFromYawPitchRoll(0.f, XMConvertToRadians(0.f), 0.f);
+	OffsetMatrix = Matrix::CreateScale(5.f) * Matrix::CreateFromQuaternion(Rotation) * Matrix::CreateTranslation(0.f, 0.f, 0.f);
+
+	
+	if (FAILED(CEffect_Manager::GetInstance()->Generate_Effect(L"Vertical_Slash", OffsetMatrix, m_pSword->Get_FinalWorldMatrix(), 5.f, m_pCharacter)))
+		return;
 }
 
 void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 {
 	
 	Input(fTimeDelta);
+	
+	_float fProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
 
 	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[m_iCurrAnimIndex]))
 	{
@@ -74,9 +86,16 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 	}
 		
 
+	if (m_iCurrAnimIndex == 3)
+	{
+		if (KEY_TAP(KEY::RBTN))
+		{
+
+		}
+	}
+
 	if (m_iCurrAnimIndex == 4)
 	{
-		_float fProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
 		if (fProgress >= 0.2f && fProgress <= 0.6f)
 		{
 			m_pSword->Set_PushPower(10.f);
@@ -88,33 +107,6 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 		}
 		
 	}
-	//if (m_iCurrAnimIndex == 3)
-	//{
-	//	_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
-
-	//	if ((fAnimationProgress >= 0.3f && fAnimationProgress <= 0.6f))
-	//	{
-	//		m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
-	//		m_pSword->Set_SwordMode(CSword::SWORD_MODE::AIR_BONE);
-	//	}
-	//	else if ((fAnimationProgress >= 0.7f && fAnimationProgress <= 0.9f))
-	//	{
-	//		m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
-	//		m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
-	//	}
-	//		
-	//	else
-	//		m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
-	//}
-
-	//if (m_iCurrAnimIndex == 4)
-	//{
-	//	_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
-	//	if (fAnimationProgress >= 0.1f && fAnimationProgress <= 0.5f)
-	//		m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
-	//	else
-	//		m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
-	//}
 }
 
 void CState_Tanjiro_Attack::Exit_State()
@@ -133,7 +125,7 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 {
 	_float fLookVelocity = 3.f;
 	_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
-	if (fAnimationProgress >= 0.4f)
+	if (fAnimationProgress >= 0.3f)
 	{
 		if (KEY_TAP(KEY::LBTN))
 		{
@@ -149,6 +141,7 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 				m_pSword->Set_PushPower(0.f);
 				m_pSword->Set_Damage(1.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
+
 				break;
 
 			case 2:
@@ -157,11 +150,12 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 				m_pSword->Set_PushPower(0.f);
 				m_pSword->Set_Damage(1.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
+
 				break;
 
 			case 3:
 				Find_Near_Target();
-				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
+				m_pSword->Set_SwordMode(CSword::SWORD_MODE::AIR_BONE);
 				m_pSword->Set_PushPower(0.f);
 				m_pSword->Set_Damage(3.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);

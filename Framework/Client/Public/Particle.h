@@ -23,21 +23,30 @@ public:
 	typedef struct tagPaticleDesc
 	{	
 		// Initialize
-		_uint iNumEffectCount = 0;
-		
-		_float2		vRandomSpeed;
-		_float3		vRandomDir;
+		_uint iNumEffectCount = 1;
+
+
+		_bool bBillboard = false;
+
+		// Speed
+		_bool bRandomSpeed = false;
+		_float fSpeed = 0.f;
+
+		// Dir
+		_bool bRandomDir = false;
+		_float3 vDir = { 0.f, 1.f, 0.f };
 
 
 		// RigidBody.
-		_bool bGravity = false;
-		_float fForceMax = 10.f;
-		_float3 vRandomForce = { 0.f, 0.f, 0.f };
+		_bool		bRigidActive = false;
+		_bool		bRandomForceDir = false;
 		
+		_float3		vForceDir = { 0.f, 1.f, 0.f };
+		_float		fForce = 1.f;
 
 
-		_float2		vEffectRandomLifeTime = { 0.f, 0.f };
 		_float		fLifeTime = 0.f;
+		_float		fDestAlphaSpeed = 0.f;
 
 	} PARTICLE_DESC;
 
@@ -62,6 +71,7 @@ public:
 
 	void Set_Gravity(_bool bGravity);
 	const wstring& Get_EffectPrototypeName() { return m_strPrototypeEffectTag; }
+	void Set_EffectPrototypeName(const wstring& strPrototypeEffectTag) { m_strPrototypeEffectTag = strPrototypeEffectTag; }
  
 public:
 	HRESULT Ready_Effects();
@@ -76,10 +86,6 @@ public:
 
 private:
 	list<class CEffect*> m_Effects;
-	vector<_float> m_EffectLifeTimes;
-
-
-
 	class CTransform* m_pTransformCom = nullptr;
 
 private:

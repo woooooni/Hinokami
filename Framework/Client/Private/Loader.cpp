@@ -240,12 +240,18 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Enemy/Monster/")))
 		return E_FAIL;
 
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Resources/Effect/Model/")))
+		return E_FAIL;
+
 
 	if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
 		return E_FAIL;
 
 	if(FAILED(Load_Map_Data(L"Temp")))
 		return E_FAIL;
+
+
+
 
 	
 
@@ -285,15 +291,17 @@ HRESULT CLoader::Loading_For_Level_Tool()
  	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
 		CTerrain::Create(m_pDevice, m_pContext), LAYER_TYPE::LAYER_TERRAIN)))
 		return E_FAIL;
-	
+
+	if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
+		return E_FAIL;
 		
 	
 
 	m_strLoading = TEXT("모델을 로딩 중 입니다.");
 	_matrix		PivotMatrix = XMMatrixIdentity();
 
-	PivotMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
-	Loading_Proto_AllObjects(L"../Bin/Export/Map/");
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Resources/Effect/Model/")))
+		return E_FAIL;
 
 
 	m_strLoading = TEXT("로딩 끝.");

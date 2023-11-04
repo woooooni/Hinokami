@@ -61,8 +61,6 @@ HRESULT CVIBuffer_Particle::Initialize_Prototype()
 	_ushort* pIndices = new _ushort[m_iNumPrimitives];
 	ZeroMemory(pIndices, sizeof(_ushort) * m_iNumPrimitives);
 
-	//pIndices = 0;
-
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = pIndices;
 

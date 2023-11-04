@@ -50,9 +50,14 @@ public:
 
 
 public:
-	void Generate_Trail();
+	_matrix Get_FinalWorldMatrix() {
+		return m_pTransformCom->Get_WorldMatrix();
+	};
+		
+
+public:
+	void Generate_Trail(const wstring& strDiffuseTextureName, const wstring& strAlphaTextureName, const _float4& vColor);
 	void Stop_Trail();
-	void Generate_Effect();
 
 private:
 	wstring					m_strModelPrototype;

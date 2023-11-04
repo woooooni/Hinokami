@@ -95,6 +95,10 @@ private:
 	HRESULT Load_Effect(const wstring& strFullPath);
 	HRESULT Load_EffectsModelPath(const wstring& strEffectPath);
 
+
+	HRESULT Save_Particle(const wstring& strFullPath);
+	HRESULT Load_Particle(const wstring& strFullPath);
+
 private:
 	void PickingGroundObj();
 	void PickingTerrainObj();

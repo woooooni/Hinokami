@@ -35,10 +35,10 @@ void CEffect_Manager::Tick(_float fTimeDelta)
 
 }
 
-HRESULT CEffect_Manager::Generate_Effect(const wstring& strPrototypeEffectName, _matrix TransformMatrix, _float fEffectDeletionTime)
+HRESULT CEffect_Manager::Generate_Effect(const wstring& strEffectName, _matrix OffsetMatrix, _matrix WorldMatrix, _float fEffectDeletionTime, CGameObject* pOwner)
 {
 
-	CGameObject* pGameObject = GI->Clone_GameObject(strPrototypeEffectName, LAYER_TYPE::LAYER_EFFECT);
+	CGameObject* pGameObject = GI->Clone_GameObject(L"Prototype_Effect_" + strEffectName, LAYER_TYPE::LAYER_EFFECT);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 	
@@ -46,6 +46,14 @@ HRESULT CEffect_Manager::Generate_Effect(const wstring& strPrototypeEffectName, 
 	if (nullptr == pEffect)
 		return E_FAIL;
 
+
+
+	CEffect::EFFECT_DESC EffectDesc = pEffect->Get_EffectDesc();
+	XMStoreFloat4x4(&EffectDesc.OffsetMatrix, OffsetMatrix);
+	pEffect->Set_EffectDesc(EffectDesc);
+
+
+	pEffect->Set_Owner(pGameObject);
 	pEffect->Set_DeletionTime(fEffectDeletionTime);
 
 
@@ -53,7 +61,7 @@ HRESULT CEffect_Manager::Generate_Effect(const wstring& strPrototypeEffectName, 
 	if (pTransform == nullptr)
 		return E_FAIL;
 
-	pTransform->Set_WorldMatrix(TransformMatrix);
+	pTransform->Set_WorldMatrix(WorldMatrix);
 	
 	if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_EFFECT, pEffect)))
 		return E_FAIL;

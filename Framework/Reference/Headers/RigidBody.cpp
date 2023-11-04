@@ -75,6 +75,9 @@ void CRigidBody::Update_Gravity(_float fTimeDelta)
 	_float4 vPosition;
 	XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+	if (false == m_bIsGravity)
+		return;
+
 	if (fabs(m_fRefHeight - vPosition.y) <= 0.01f)
 	{
 		m_bIsGround = true;
@@ -88,8 +91,6 @@ void CRigidBody::Update_Gravity(_float fTimeDelta)
 
 void CRigidBody::Update_Velocity(_float fTimeDelta)
 {
-
-
 	_float fVelocityScale = XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_vVelocity)));
 	if (fVelocityScale > 0.0001f)
 	{

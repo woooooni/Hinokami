@@ -53,10 +53,6 @@ HRESULT CSword::Initialize(void* pArg)
 	if (FAILED(Ready_Colliders()))
 		return E_FAIL;
 
-	
-
-	// Generate_Trail();
-
 	return S_OK;
 }
 
@@ -68,10 +64,10 @@ void CSword::Tick(_float fTimeDelta)
 	WorldMatrix.r[1] = XMVector3Normalize(WorldMatrix.r[1]);
 	WorldMatrix.r[2] = XMVector3Normalize(WorldMatrix.r[2]);
 	
+
 	Compute_RenderMatrix(WorldMatrix);
 	m_pTrailObject->Set_TransformMatrix(m_pTransformCom->Get_WorldMatrix());
 	m_pTrailObject->Tick(fTimeDelta);
-
 }
 
 void CSword::LateTick(_float fTimeDelta)
@@ -90,7 +86,6 @@ HRESULT CSword::Render()
 		return E_FAIL;
 
 	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
-
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
@@ -146,9 +141,17 @@ void CSword::Collision_Exit(const COLLISION_INFO& tInfo)
 }
 
 
-void CSword::Generate_Trail()
+void CSword::Generate_Trail(const wstring& strDiffuseTextureName, const wstring& strAlphaTextureName, const _float4& vColor)
 {
 	Compute_RenderMatrix(m_pSocketBone->Get_CombinedTransformation() * XMLoadFloat4x4(&m_SocketPivotMatrix));
+
+	m_pTrailObject->Set_DiffuseTexture_Index(strDiffuseTextureName);
+	m_pTrailObject->Set_AlphaTexture_Index(strAlphaTextureName);
+
+	CTrail::TRAIL_DESC TrailDesc = m_pTrailObject->Get_TrailDesc();
+	TrailDesc.vDiffuseColor = vColor;
+	m_pTrailObject->Set_TrailDesc(TrailDesc);
+
 	m_pTrailObject->Start_Trail(m_pTransformCom->Get_WorldMatrix());
 }
 
@@ -157,9 +160,6 @@ void CSword::Stop_Trail()
 	m_pTrailObject->Stop_Trail();
 }
 
-void CSword::Generate_Effect()
-{
-}
 
 HRESULT CSword::Ready_Components()
 {
@@ -183,11 +183,13 @@ HRESULT CSword::Ready_Components()
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	CVIBuffer_Trail::TRAIL_DESC TrailDesc = { };
+	CTrail::TRAIL_DESC TrailDesc = { };
 	TrailDesc.bTrail = true;
 	TrailDesc.fAccGenTrail = 0.f;
 	TrailDesc.fGenTrailTime = 0.f;
-	TrailDesc.vColor = { 1.f, 0.f, 0.f, 0.5f };
+	TrailDesc.vDiffuseColor = { 1.f, 0.f, 0.f, 0.5f };
+	TrailDesc.vUV_FlowSpeed = { 5.f, 0.f };
+	TrailDesc.bUV_Cut = -1;
 
 	m_pTrailObject = CTrail::Create(m_pDevice, m_pContext, L"Sword_Trail", TrailDesc);
 	if (m_pTrailObject == nullptr)

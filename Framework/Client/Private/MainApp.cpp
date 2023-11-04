@@ -9,6 +9,7 @@
 #include "ImGui_Manager.h"
 #include "Picking_Manager.h"
 #include "Effect_Manager.h"
+#include "Particle_Manager.h"
 
 #include "UI_Loading_Anim.h"
 #include "UI_Loading_Background.h"
@@ -49,7 +50,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_TOOL)))
+	if (FAILED(Open_Level(LEVEL_GAMEPLAY)))
 		return E_FAIL;
 
 
@@ -143,6 +144,9 @@ HRESULT CMainApp::Initialize_Client()
 
 
 	if (FAILED(CEffect_Manager::GetInstance()->Reserve_Manager(m_pDevice, m_pContext, L"../Bin/Export/Effect/")))
+		return E_FAIL;
+
+	if(FAILED(CParticle_Manager::GetInstance()->Reserve_Manager(m_pDevice, m_pContext, L"../Bin/Export/Particle/")))
 		return E_FAIL;
 	
 
@@ -284,6 +288,7 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CCollider_AABB::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
+
 	
 
 

@@ -30,6 +30,20 @@ public:
 			return wstring();
 		return m_FileNames[iIdx];
 	}
+
+	_int Find_Index(const wstring& strTextureName)
+	{
+		_uint iTextureIndex = 0;
+		for (wstring strName : m_FileNames)
+		{
+			if (strName == strTextureName)
+				return iTextureIndex;
+
+			iTextureIndex++; 
+		}
+		return -1;
+	}
+
 	_uint Get_TextureCount() { return m_iNumTextures; }
 	ID3D11ShaderResourceView* Get_Srv(_uint iIdx) 
 	{
