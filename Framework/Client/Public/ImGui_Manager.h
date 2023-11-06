@@ -108,8 +108,8 @@ private:
 	void NaviPicking();
 	HRESULT NaviAutoGenerate();
 	HRESULT NaviBake();
-	HRESULT NaviSave(const wstring& strNaviPath);
-	HRESULT NaviLoad(const wstring& strNaviPath);
+	HRESULT NaviSave(const wstring& strNaviName);
+	HRESULT NaviLoad(const wstring& strNaviName);
 	
 
 private:
@@ -149,6 +149,9 @@ private:
 
 	vector<wstring> m_strBakeableObject;
 	vector<_float3> m_vWorldPickedNaviPos;
+
+	_float m_fMinTriangleY = 0.f;
+	_float m_fMaxTriangleY = 10.f;
 
 
 

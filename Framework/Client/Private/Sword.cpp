@@ -140,6 +140,11 @@ void CSword::Collision_Exit(const COLLISION_INFO& tInfo)
 {
 }
 
+_matrix CSword::Get_FinalWorldMatrix()
+{
+	return m_pTransformCom->Get_WorldMatrix();
+}
+
 
 void CSword::Generate_Trail(const wstring& strDiffuseTextureName, const wstring& strAlphaTextureName, const _float4& vColor)
 {
@@ -186,9 +191,9 @@ HRESULT CSword::Ready_Components()
 	CTrail::TRAIL_DESC TrailDesc = { };
 	TrailDesc.bTrail = true;
 	TrailDesc.fAccGenTrail = 0.f;
-	TrailDesc.fGenTrailTime = 0.f;
+	TrailDesc.fGenTrailTime = 1.f;
 	TrailDesc.vDiffuseColor = { 1.f, 0.f, 0.f, 0.5f };
-	TrailDesc.vUV_FlowSpeed = { 5.f, 0.f };
+	TrailDesc.vUV_FlowSpeed = { 0.f, 0.f };
 	TrailDesc.bUV_Cut = -1;
 
 	m_pTrailObject = CTrail::Create(m_pDevice, m_pContext, L"Sword_Trail", TrailDesc);

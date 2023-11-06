@@ -3,6 +3,9 @@
 #include "Client_Defines.h"
 #include "Part.h"
 
+BEGIN(Engine)
+class CTransform;
+END
 
 BEGIN(Client)
 
@@ -50,9 +53,7 @@ public:
 
 
 public:
-	_matrix Get_FinalWorldMatrix() {
-		return m_pTransformCom->Get_WorldMatrix();
-	};
+	_matrix Get_FinalWorldMatrix();
 		
 
 public:

@@ -86,6 +86,21 @@ HRESULT CTanjiro::Render()
 
 	m_pNavigationCom->Render();
 
+	
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	wstring strDebugPosition = L"Position X : "; 
+	strDebugPosition += to_wstring(XMVectorGetX(vPosition));
+
+	strDebugPosition += L"\n";
+	strDebugPosition += L"Position Y : ";
+	strDebugPosition += to_wstring(XMVectorGetY(vPosition));
+
+	strDebugPosition += L"\n";
+	strDebugPosition += L"Position Z : ";
+	strDebugPosition += to_wstring(XMVectorGetZ(vPosition));
+
+	GI->Render_Fonts(L"Batang", strDebugPosition.c_str(), _float2(0.f, 0.f));
+
 	return S_OK;
 }
 
@@ -153,12 +168,14 @@ HRESULT CTanjiro::Ready_Components()
 	CNavigation::NAVIGATION_DESC NavigationDesc;
 	ZeroMemory(&NavigationDesc, sizeof NavigationDesc);
 
-	XMStoreFloat3(&NavigationDesc.vStartWorldPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	NavigationDesc.vStartWorldPosition = _float3(0.f, 3.5f, 32.f);
 	NavigationDesc.bInitialize_Index = true;
 
 	/* For.Com_Navigation */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_pNavigationCom, &NavigationDesc)))
 		return E_FAIL;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_pNavigationCom->Get_NaviDesc().vStartWorldPosition), 1.f));
 
 	CRigidBody::RIGID_BODY_DESC RigidDesc;
 	ZeroMemory(&RigidDesc, sizeof RigidDesc);

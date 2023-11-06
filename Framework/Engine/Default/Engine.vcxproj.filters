@@ -462,6 +462,9 @@
     <ClInclude Include="..\Public\VIBuffer_Cube.h">
       <Filter>01.Utiltiy\03.Component\02. VIBuffer\Cube</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PhysicsX_Manager.h">
+      <Filter>01.Utiltiy\06. PhysicsManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -679,6 +682,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Cube.cpp">
       <Filter>01.Utiltiy\03.Component\02. VIBuffer\Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PhysicsX_Manager.cpp">
+      <Filter>01.Utiltiy\06. PhysicsManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

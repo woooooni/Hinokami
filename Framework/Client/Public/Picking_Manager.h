@@ -4,9 +4,13 @@
 #include "Base.h"
 
 BEGIN(Engine)
+class CNavigation;
 class CTransform;
 class CVIBuffer;
+
 END
+
+BEGIN(Client)
 
 class CPicking_Manager : public CBase
 {
@@ -23,6 +27,7 @@ public:
 public:
 	_bool Is_Picking(class CTransform* pTransform, class CVIBuffer* pBuffer, _bool bCutPos, __out _float4* vWorldOut);
 	_bool Is_NaviPicking(class CTransform* pTransform, class CVIBuffer* pBuffer, __out _float3* pWorldOut = nullptr, __out _float3* pLocalPos = nullptr);
+	_bool Is_JustNaviPicking(class CNavigation* pNavigation, __out _float3* pWorldOut);
 
 private:
 	ID3D11Device* m_pDevice;
@@ -33,3 +38,4 @@ public:
 	virtual void Free() override;
 };
 
+END

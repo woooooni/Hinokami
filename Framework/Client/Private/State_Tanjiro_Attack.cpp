@@ -69,8 +69,7 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 	OffsetMatrix = Matrix::CreateScale(5.f) * Matrix::CreateFromQuaternion(Rotation) * Matrix::CreateTranslation(0.f, 0.f, 0.f);
 
 	
-	if (FAILED(CEffect_Manager::GetInstance()->Generate_Effect(L"Vertical_Slash", OffsetMatrix, m_pSword->Get_FinalWorldMatrix(), 5.f, m_pCharacter)))
-		return;
+	m_pSword->Generate_Trail(L"T_d_e_P0001_V00_C00_SplSsr_Water_00_00.png", L"T_e_cmn_Slash006_Reverse.png", { 0.f, 0.f, 0.f, 1.f });
 }
 
 void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
@@ -117,7 +116,8 @@ void CState_Tanjiro_Attack::Exit_State()
 	m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
 	m_pSword->Set_PushPower(0.f);
 
-	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+	m_pSword->Stop_Trail();
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
 
@@ -129,10 +129,19 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 	{
 		if (KEY_TAP(KEY::LBTN))
 		{
-			m_iCurrAnimIndex = min(m_iCurrAnimIndex + 1, m_AnimationIndices.size() - 1);
+			m_iCurrAnimIndex = min(m_iCurrAnimIndex + 1, m_AnimationIndices.size());
+			if (m_iCurrAnimIndex == m_AnimationIndices.size())
+			{
+				m_iCurrAnimIndex -= 1;
+				return;
+			}
+
+				
+
 			if (m_iCurrAnimIndex != m_AnimationIndices.size())
 				m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
 
+			
 			switch (m_iCurrAnimIndex)
 			{
 			case 1:
@@ -141,7 +150,7 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 				m_pSword->Set_PushPower(0.f);
 				m_pSword->Set_Damage(1.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
-
+				m_pSword->Generate_Trail(L"T_d_e_P0001_V00_C00_SplSsr_Water_00_00.png", L"T_e_cmn_Slash006_Reverse.png", { 0.f, 0.f, 0.f, 1.f });
 				break;
 
 			case 2:
@@ -150,7 +159,7 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 				m_pSword->Set_PushPower(0.f);
 				m_pSword->Set_Damage(1.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
-
+				m_pSword->Generate_Trail(L"T_d_e_P0001_V00_C00_SplSsr_Water_00_00.png", L"T_e_cmn_Slash006_Reverse.png", { 0.f, 0.f, 0.f, 1.f });
 				break;
 
 			case 3:
@@ -159,6 +168,7 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 				m_pSword->Set_PushPower(0.f);
 				m_pSword->Set_Damage(3.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
+				m_pSword->Generate_Trail(L"T_d_e_P0001_V00_C00_SplSsr_Water_00_00.png", L"T_e_cmn_Slash006_Reverse.png", { 0.f, 0.f, 0.f, 1.f });
 				break;
 
 			case 4:
@@ -168,11 +178,13 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 				m_pSword->Set_Damage(3.f);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
 				m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+				m_pSword->Generate_Trail(L"T_d_e_P0001_V00_C00_SplSsr_Water_00_00.png", L"T_e_cmn_Slash006_Reverse.png", { 0.f, 0.f, 0.f, 1.f });
 				break;
 
 			default:
 				m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
 				m_pSword->Set_PushPower(0.f);
+				m_pSword->Generate_Trail(L"T_d_e_P0001_V00_C00_SplSsr_Water_00_00.png", L"T_e_cmn_Slash006_Reverse.png", { 0.f, 0.f, 0.f, 1.f });
 				break;
 			}
 		}

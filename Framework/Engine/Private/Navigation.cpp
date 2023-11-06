@@ -54,16 +54,35 @@ HRESULT CNavigation::Initialize(void * pArg)
 		return S_OK;
 
 	NAVIGATION_DESC*		pNaviDesc = (NAVIGATION_DESC*)pArg;
+	m_NavigationDesc = *pNaviDesc;
 
 	/*  이 네비게이션을 이용하고자하는 객체가 어떤 셀에 있는지 저장한다. */
 	if (pNaviDesc->bInitialize_Index)
 	{
-		if(FAILED(Initialize_Index(XMLoadFloat3(&pNaviDesc->vStartWorldPosition))))
-			return E_FAIL;
+		if (FAILED(Initialize_Index(XMLoadFloat3(&pNaviDesc->vStartWorldPosition))))
+		{
+			
+			_float3 vPointA = *m_Cells[0]->Get_PointWorld(CCell::POINTS::POINT_A);
+			_float3 vPointB = *m_Cells[0]->Get_PointWorld(CCell::POINTS::POINT_B);
+			_float3 vPointC = *m_Cells[0]->Get_PointWorld(CCell::POINTS::POINT_C);
+
+			_float3 vPosition; 
+			XMStoreFloat3(&vPosition, 
+				(XMLoadFloat3(&vPointA)
+				+ XMLoadFloat3(&vPointB) 
+				+ XMLoadFloat3(&vPointC)) / 3.f);
+			m_NavigationDesc.vStartWorldPosition = vPosition;
+			m_iCurrentIndex = m_Cells[0]->Get_Index();
+			return S_OK;
+		}
+		
 	}
 		
 	else
+	{
 		m_iCurrentIndex = -1;
+	}
+		
 	
 
 	return S_OK;
@@ -133,8 +152,6 @@ _float CNavigation::Compute_Height(_vector vPosition)
 	_float fb = XMVectorGetY(vPlane);
 	_float fc = XMVectorGetZ(vPlane);
 	_float fd = XMVectorGetW(vPlane);
-
-	/* y = (-ax - cz - d) / b */
 
 	return (-fa * fx - fc * fz - fd) / fb;
 }

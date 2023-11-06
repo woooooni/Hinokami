@@ -1445,6 +1445,20 @@ void CImGui_Manager::Tick_NaviMesh_Tool(_float fTimeDeleta)
     ImGui::DragFloat("##GenNaviScaleMax", &fMaxGenScale, 0.01f, 1.f, 100.f);
 
 
+    
+    static _float fMinGenY = 0.f;
+    static _float fMaxGenY = 1000.f;
+    ImGui::Text("TriangleY_Min");
+    IMGUI_SAME_LINE;
+    ImGui::DragFloat("##GenNaviYMin", &fMinGenY, 0.01f, 0.f, 100.f);
+
+    ImGui::Text("TriangleY_Max");
+    IMGUI_SAME_LINE;
+    ImGui::DragFloat("##GenNaviYMax", &fMaxGenY, 0.01f, 0.f, 100.f);
+
+    m_fMinTriangleY = fMinGenY;
+    m_fMaxTriangleY = fMaxGenY;
+
     m_fGenerateMinScale = fMinGenScale;
     m_fGenerateMaxScale = fMaxGenScale;
 
@@ -1464,25 +1478,26 @@ void CImGui_Manager::Tick_NaviMesh_Tool(_float fTimeDeleta)
 
 
     IMGUI_NEW_LINE;
-    static char szNaviSavePath[MAX_PATH] = "../Bin/DataFiles/Map/";
-    ImGui::InputText("##NaviSaveLoadPath", szNaviSavePath, MAX_PATH);
+    static char szNaviSaveName[MAX_PATH] = "";
+    ImGui::InputText("##NaviSaveLoadPath", szNaviSaveName, MAX_PATH);
 
 
     if (ImGui::Button("Save_Navi"))
     {
-        if (FAILED(NaviSave(CUtils::ToWString(szNaviSavePath))))
+        if (FAILED(NaviSave(CUtils::ToWString(szNaviSaveName))))
             MSG_BOX("Save Navi Failed.");
     }
 
     if (ImGui::Button("Load_Navi"))
     {
-        if (FAILED(NaviLoad(CUtils::ToWString(szNaviSavePath))))
+        if (FAILED(NaviLoad(CUtils::ToWString(szNaviSaveName))))
             MSG_BOX("Load Navi Failed.");
         
     }
     
     
-
+    ImGui::Text("m_vWorldPickedNaviPos Count");
+    ImGui::Text(to_string(m_vWorldPickedNaviPos.size()).c_str());
 
 
 
@@ -1492,35 +1507,23 @@ void CImGui_Manager::Tick_NaviMesh_Tool(_float fTimeDeleta)
 
 void CImGui_Manager::NaviPicking()
 {
-    if (KEY_HOLD(KEY::SHIFT) && KEY_HOLD(KEY::RBTN))
+    if (KEY_HOLD(KEY::ALT))
     {
-        POINT pt;
-        GetCursorPos(&pt);
-        ScreenToClient(g_hWnd, &pt);
+        if (true == CPicking_Manager::GetInstance()->Is_JustNaviPicking(m_pTerrain->Get_NavigationCom(), &m_vNaviPickingWorldPos))
+        {
+            if (KEY_TAP(KEY::LBTN))
+            {
+                m_vWorldPickedNaviPos.push_back(m_vNaviPickingWorldPos);
 
-        _vector vMousePos = XMVectorSet(
-            _float(pt.x / (g_iWinSizeX * .5f) - 1.f),
-            _float(pt.y / (g_iWinSizeY * -.5f) + 1.f),
-            1.f, 1.f);
-
-        _matrix ViewMatrixInv = GAME_INSTANCE->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
-        _matrix ProjMatrixInv = GAME_INSTANCE->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
-
-        vMousePos = XMVector3TransformCoord(vMousePos, ProjMatrixInv);
-
-        XMVECTOR vRayDir, vRayPosition;
-
-        vRayPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
-        vRayDir = vMousePos - vRayPosition;
-
-
-        vMousePos = XMVector3TransformCoord(vRayPosition, ViewMatrixInv);
-        vRayDir = XMVector3TransformNormal(vRayDir, ViewMatrixInv);
-
-        m_vWorldPickedNaviPos.clear();
-        m_pTerrain->Get_NavigationCom()->Delete_Cell(vRayDir, vMousePos);
+                if (m_vWorldPickedNaviPos.size() == 3)
+                {
+                    m_pTerrain->Get_NavigationCom()->Create_Cell(m_vWorldPickedNaviPos.data());
+                    m_vWorldPickedNaviPos.clear();
+                }
+            }
+        }
+        return;
     }
-
 
     for (_uint i = 0; i < LAYER_TYPE::LAYER_END; ++i)
     {
@@ -1545,19 +1548,51 @@ void CImGui_Manager::NaviPicking()
             for (auto& pMesh : Meshes)
             {
                 _float3 vLocalPos;
-                if (CPicking_Manager::GetInstance()->Is_NaviPicking(pTransform, pMesh, &m_vNaviPickingWorldPos, &vLocalPos))
+                if (KEY_HOLD(KEY::SHIFT))
                 {
-                    if (KEY_HOLD(KEY::SHIFT) && KEY_TAP(KEY::LBTN))
+                    if (CPicking_Manager::GetInstance()->Is_NaviPicking(pTransform, pMesh, &m_vNaviPickingWorldPos, &vLocalPos))
                     {
-                        m_vWorldPickedNaviPos.push_back(m_vNaviPickingWorldPos);
-
-                        if (m_vWorldPickedNaviPos.size() == 3)
+                        if (KEY_TAP(KEY::RBTN))
                         {
-                            m_pTerrain->Get_NavigationCom()->Create_Cell(m_vWorldPickedNaviPos.data());
+                            POINT pt;
+                            GetCursorPos(&pt);
+                            ScreenToClient(g_hWnd, &pt);
+
+                            _vector vMousePos = XMVectorSet(
+                                _float(pt.x / (g_iWinSizeX * .5f) - 1.f),
+                                _float(pt.y / (g_iWinSizeY * -.5f) + 1.f),
+                                1.f, 1.f);
+
+                            _matrix ViewMatrixInv = GAME_INSTANCE->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
+                            _matrix ProjMatrixInv = GAME_INSTANCE->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
+
+                            vMousePos = XMVector3TransformCoord(vMousePos, ProjMatrixInv);
+
+                            XMVECTOR vRayDir, vRayPosition;
+
+                            vRayPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+                            vRayDir = vMousePos - vRayPosition;
+
+
+                            vMousePos = XMVector3TransformCoord(vRayPosition, ViewMatrixInv);
+                            vRayDir = XMVector3TransformNormal(vRayDir, ViewMatrixInv);
+
                             m_vWorldPickedNaviPos.clear();
+                            m_pTerrain->Get_NavigationCom()->Delete_Cell(vRayDir, vMousePos);
                         }
+
+                        if (KEY_TAP(KEY::LBTN))
+                        {
+                            m_vWorldPickedNaviPos.push_back(m_vNaviPickingWorldPos);
+
+                            if (m_vWorldPickedNaviPos.size() == 3)
+                            {
+                                m_pTerrain->Get_NavigationCom()->Create_Cell(m_vWorldPickedNaviPos.data());
+                                m_vWorldPickedNaviPos.clear();
+                            }
+                        }
+                        return;
                     }
-                    return;
                 }
             }
         }
@@ -1952,6 +1987,41 @@ void CImGui_Manager::PickingTerrainObj()
 void CImGui_Manager::PickingGroundObj()
 {
     _float4 vHitPos;
+
+
+    for (_uint i = 0; i < LAYER_TYPE::LAYER_END; ++i)
+    {
+        list<CGameObject*>& GameObjects = GI->Find_GameObjects(LEVEL_TOOL, i);
+
+        for (auto& pGameObject : GameObjects)
+        {
+            if (!pGameObject->Is_NaviObject())
+                continue;
+
+            CTransform* pTransform;
+            pTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform") == nullptr ? nullptr : pGameObject->Get_Component<CTransform>(L"Com_Transform");
+            if (nullptr == pTransform)
+                continue;
+
+            CModel* pModel = pGameObject->Get_Component<CModel>(L"Com_Model");
+            if (nullptr == pModel)
+                continue;
+
+            const vector<CMesh*>& Meshes = pModel->Get_Meshes();
+            for (auto& pMesh : Meshes)
+            {
+                if (CPicking_Manager::GetInstance()->Is_Picking(pTransform, pMesh, false, &vHitPos))
+                {
+                    CTransform* pTransform = m_pPrevObject->Get_Component<CTransform>(L"Com_Transform");
+                    if (nullptr != pTransform)
+                        pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat4(&vHitPos));
+
+                    return;
+                }
+            }
+        }
+    }
+
     list<CGameObject*>& PickingObjects = GI->Find_GameObjects(LEVEL_TOOL, LAYER_TYPE::LAYER_GROUND);
     for (auto& PickingObject : PickingObjects)
     {
@@ -1978,6 +2048,8 @@ void CImGui_Manager::PickingGroundObj()
         }
     }
 
+
+    
     PickingTerrainObj();
 }
 
@@ -2000,13 +2072,13 @@ void CImGui_Manager::Draw_NaviPicking_Point()
     ZeroMemory(&tSphere, sizeof(DirectX::BoundingSphere));
     m_vNaviPickingWorldPos.y += 0.02f;
     XMStoreFloat3(&tSphere.Center, XMLoadFloat3(&m_vNaviPickingWorldPos));
-    tSphere.Radius = 0.05f;
+    tSphere.Radius = 0.5f;
     DX::Draw(m_pBatch, tSphere, XMVectorSet(0.f, 1.f, 0.f, 1.f));
 
     for (size_t i = 0; i < m_vWorldPickedNaviPos.size(); ++i)
     {
         XMStoreFloat3(&tSphere.Center, XMLoadFloat3(&m_vWorldPickedNaviPos[i]));
-        tSphere.Radius = 0.1f;
+        tSphere.Radius = 0.5f;
         DX::Draw(m_pBatch, tSphere, XMVectorSet(1.f, 0.f, 0.f, 1.f));
     }
 
@@ -2099,7 +2171,7 @@ HRESULT CImGui_Manager::NaviAutoGenerate()
                         _float fRadian = XMVectorGetX(XMVector3Dot(vNormal, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
                         _float fTriangleScale = fabs((fv0.x * fv1.z) + (fv1.x * fv2.z) + (fv2.x * fv0.z) - (fv1.x * fv0.z) - (fv2.x * fv1.z) - (fv0.x * fv2.z)) * 0.5f;
 
-                        if (fRadian >= m_fGenerateRadian 
+                        if (fRadian > m_fGenerateRadian 
                             && fTriangleScale >= m_fGenerateMinScale 
                             && fTriangleScale <= m_fGenerateMaxScale)
                         {
@@ -2107,8 +2179,16 @@ HRESULT CImGui_Manager::NaviAutoGenerate()
                             XMStoreFloat3(&vPoints[0], XMVector3TransformCoord(v0, pTransformCom->Get_WorldMatrix()));
                             XMStoreFloat3(&vPoints[1], XMVector3TransformCoord(v1, pTransformCom->Get_WorldMatrix()));
                             XMStoreFloat3(&vPoints[2], XMVector3TransformCoord(v2, pTransformCom->Get_WorldMatrix()));
-                            m_pTerrain->Get_NavigationCom()->Create_Cell(vPoints);
-                            // Safe_Delete_Array(vPoints);
+
+                            if (vPoints[0].y > m_fMinTriangleY
+                                && vPoints[1].y > m_fMinTriangleY
+                                && vPoints[2].y > m_fMinTriangleY
+                                && vPoints[0].y < m_fMaxTriangleY
+                                && vPoints[1].y < m_fMaxTriangleY
+                                && vPoints[2].y < m_fMaxTriangleY)
+                            {
+                                m_pTerrain->Get_NavigationCom()->Create_Cell(vPoints);
+                            }
                         }
 
                     }
@@ -2124,16 +2204,18 @@ HRESULT CImGui_Manager::NaviAutoGenerate()
     return S_OK;
 }
 
-HRESULT CImGui_Manager::NaviSave(const wstring& strNaviPath)
+HRESULT CImGui_Manager::NaviSave(const wstring& strNaviName)
 {
+    wstring strNaviPath = CUtils::ToWString("../Bin/DataFiles/Map/") + strNaviName + L"/" + strNaviName + L".nav";
     if (FAILED(m_pTerrain->Get_NavigationCom()->Save_NaviData(strNaviPath)))
         return E_FAIL;
     MSG_BOX("Save OK.");
     return S_OK;
 }
 
-HRESULT CImGui_Manager::NaviLoad(const wstring& strNaviPath)
+HRESULT CImGui_Manager::NaviLoad(const wstring& strNaviName)
 {
+    wstring strNaviPath = CUtils::ToWString("../Bin/DataFiles/Map/") + strNaviName + L"/" + strNaviName + L".nav";
     if (FAILED(m_pTerrain->Get_NavigationCom()->Load_NaviData(strNaviPath)))
         return E_FAIL;
 

@@ -217,6 +217,18 @@
     <Filter Include="02.GameObjects\07. Effect\Trail\Buffer">
       <UniqueIdentifier>{97a13059-374e-4d72-9bea-d45d78b032fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\02. Train_Station">
+      <UniqueIdentifier>{97130585-da4f-4a93-8104-5a061b26b854}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\04. Train_Boss_1">
+      <UniqueIdentifier>{fa86199c-349f-4dfa-b634-2ba0e3ca8d4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\06. Final_Boss">
+      <UniqueIdentifier>{cd667fdf-24ad-46bd-8ec8-b9ce988a917f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\03. Train">
+      <UniqueIdentifier>{328c0fb7-28c6-4633-86ff-20cf4ffff868}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -465,6 +477,18 @@
     <ClInclude Include="..\Public\Trail.h">
       <Filter>02.GameObjects\07. Effect\Trail</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_Train_Station.h">
+      <Filter>01.Levels\02. Train_Station</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Train.h">
+      <Filter>01.Levels\03. Train</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Train_Boss.h">
+      <Filter>01.Levels\04. Train_Boss_1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_FinalBoss.h">
+      <Filter>01.Levels\06. Final_Boss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -697,6 +721,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Trail.cpp">
       <Filter>02.GameObjects\07. Effect\Trail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Train_Station.cpp">
+      <Filter>01.Levels\02. Train_Station</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Train.cpp">
+      <Filter>01.Levels\03. Train</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Train_Boss.cpp">
+      <Filter>01.Levels\04. Train_Boss_1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_FinalBoss.cpp">
+      <Filter>01.Levels\06. Final_Boss</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

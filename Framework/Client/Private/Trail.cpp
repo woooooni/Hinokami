@@ -36,18 +36,23 @@ HRESULT CTrail::Initialize(void* pArg)
 
 void CTrail::Tick(_float fTimeDelta)
 {
+	if (!m_TrailDesc.bTrail)
+		return;
+
 	m_TrailDesc.fAccGenTrail += fTimeDelta;
 	if(m_TrailDesc.fAccGenTrail>= m_TrailDesc.fGenTrailTime)
 		m_pVIBufferCom->Update_TrailBuffer(fTimeDelta, XMLoadFloat4x4(&m_TransformMatrix));
 
 	m_TrailDesc.vUVAcc.x += m_TrailDesc.vUV_FlowSpeed.x * fTimeDelta;
 	m_TrailDesc.vUVAcc.y += m_TrailDesc.vUV_FlowSpeed.y * fTimeDelta;
+
 }
 
 void CTrail::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
+	if(m_TrailDesc.bTrail)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
 }
 
 HRESULT CTrail::Render()
@@ -153,11 +158,21 @@ void CTrail::SetUp_Position(_vector vHighPosition, _vector vLowPosition)
 
 void CTrail::Start_Trail(_matrix TransformMatrix)
 {
+	m_TrailDesc.bTrail = true;
+
+	m_TrailDesc.vUVAcc.x = 0.f;
+	m_TrailDesc.vUVAcc.y = 0.f;
+
 	m_pVIBufferCom->Start_Trail(TransformMatrix);
 }
 
 void CTrail::Stop_Trail()
 {
+	m_TrailDesc.bTrail = false;
+
+	m_TrailDesc.vUVAcc.x = 0.f;
+	m_TrailDesc.vUVAcc.y = 0.f;
+
 	m_pVIBufferCom->Stop_Trail();
 }
 

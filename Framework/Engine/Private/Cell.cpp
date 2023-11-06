@@ -151,6 +151,7 @@ _bool CCell::Is_InCell(_vector vWorldPosition)
 
 	_float fDistance = 0.f;
 	XMVectorSetW(vWorldPosition, 1.f);
+	XMVectorSetY(vWorldPosition, XMVectorGetY(vWorldPosition) + 0.1f);
 	if (TriangleTests::Intersects(XMVectorSetY(vWorldPosition, 1.f), XMVectorSet(0.f, -1.f, 0.f, 0.f)
 		, XMVectorSetY(XMLoadFloat3(&m_vPoints_InWorld[POINTS::POINT_A]), 0.f)
 		, XMVectorSetY(XMLoadFloat3(&m_vPoints_InWorld[POINTS::POINT_B]), 0.f)
@@ -166,7 +167,13 @@ _bool CCell::Is_InCell(_vector vWorldPosition)
 HRESULT CCell::Render(CShader* pShader)
 {
 
-	if ((m_iNeighborIndices[0] == -1) || (m_iNeighborIndices[1] == -1) || (m_iNeighborIndices[2] == -1))
+
+	_bool bNeighbor = false;
+	bNeighbor |= m_iNeighborIndices[0] == -1;
+	bNeighbor |= m_iNeighborIndices[1] == -1; 
+	bNeighbor |= m_iNeighborIndices[2] == -1;
+
+	if (!bNeighbor)
 	{
 		_float4 vLineColor = _float4(1.f, 0.f, 0.f, 1.f);
 		if (FAILED(pShader->Bind_RawValue("g_vLineColor", &vLineColor, sizeof(_float4))))

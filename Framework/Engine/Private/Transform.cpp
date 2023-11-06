@@ -283,6 +283,7 @@ void CTransform::Set_Rotation(_fvector vRadianEulerAngle)
 
 void CTransform::Set_Position(_fvector vPosition, CNavigation* pNavigation)
 {
+	XMVectorSetW(vPosition, 1.f);
 	if (pNavigation == nullptr)
 		Set_State(CTransform::STATE_POSITION, vPosition);
 	else

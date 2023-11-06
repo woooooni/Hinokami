@@ -12,6 +12,7 @@ public:
 		_float3	vStartWorldPosition = {};
 		_bool bInitialize_Index;
 	} NAVIGATION_DESC;
+
 private:
 	CNavigation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CNavigation(const CNavigation& rhs);
@@ -33,13 +34,18 @@ public:
 	HRESULT Save_NaviData(const wstring& strNaviDataPath);
 	HRESULT Load_NaviData(const wstring& strNaviDataPath);
 
+public:
+	const vector<class CCell*>& Get_Cells() { return m_Cells; }
+
+	const NAVIGATION_DESC& Get_NaviDesc() { return m_NavigationDesc; }
+
 #ifdef _DEBUG
 public:
 	HRESULT Render();
 #endif
 
 private:
-	static _float4x4 m_WorldIdentity;
+	static _float4x4				m_WorldIdentity;
 	_int							m_iCurrentIndex = { -1 };
 	vector<class CCell*>			m_Cells;
 
@@ -56,6 +62,10 @@ private:
 
 public:
 	HRESULT SetUp_Neighbors();
+
+
+private:
+	NAVIGATION_DESC m_NavigationDesc;
 
 public:
 	static CNavigation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strNavigationDataFiles);
