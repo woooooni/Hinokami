@@ -68,6 +68,7 @@ public:
 	const TRAIL_DESC& Get_TrailDesc() { return m_TrailDesc; }
 	void Set_TrailDesc(const TRAIL_DESC& TrailDesc) { m_TrailDesc = TrailDesc; }
 
+	void Set_VtxCount(_uint iCount) { m_pVIBufferCom->Set_VtxCount(iCount); }
 public:
 	void Set_UV_Speed(_float2 vUVSpeed) { m_vTrailUVSpeed = vUVSpeed; }
 

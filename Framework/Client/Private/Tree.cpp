@@ -53,6 +53,10 @@ void CTree::Tick(_float fTimeDelta)
 void CTree::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
+	if (FAILED(Compute_CamZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+		return;
+
+
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }

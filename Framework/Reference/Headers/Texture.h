@@ -27,7 +27,7 @@ public:
 	const wstring& Get_Name() { return m_FileNames[0]; }
 	const wstring& Get_Name(_uint iIdx) { 
 		if (iIdx >= m_FileNames.size())
-			return wstring();
+			return L"";
 		return m_FileNames[iIdx];
 	}
 

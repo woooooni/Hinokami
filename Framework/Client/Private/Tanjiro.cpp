@@ -352,13 +352,12 @@ HRESULT CTanjiro::Ready_Sockets()
 
 	CTrail::TRAIL_DESC TrailDesc = {};
 	TrailDesc.bTrail = true;
-	
 	TrailDesc.fAccGenTrail = 0.f;
 	TrailDesc.fGenTrailTime = 0.01f;
 	TrailDesc.vDiffuseColor = { 1.f, 0.f, 0.f, 0.5f };
 
 
-
+	// LeftFoot
 	m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT] = CTrail::Create(m_pDevice, m_pContext, L"LeftFoot_Trail", TrailDesc);
 	if (m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT] == nullptr)
 		return E_FAIL;
@@ -367,8 +366,11 @@ HRESULT CTanjiro::Ready_Sockets()
 		return E_FAIL;
 
 	m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.025f, 1.f), XMVectorSet(0.f, 0.0f, 0.025f, 1.f));
+	m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT]->Set_VtxCount(22);
 
 
+
+	// RightFoot
 	m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT] = CTrail::Create(m_pDevice, m_pContext, L"RightFoot_Trail", TrailDesc);
 	if (m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT] == nullptr)
 		return E_FAIL;
@@ -376,6 +378,7 @@ HRESULT CTanjiro::Ready_Sockets()
 	if (FAILED(m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT]->Initialize(nullptr)))
 		return E_FAIL;
 
+	m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT]->Set_VtxCount(22);
 	m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.025f, 1.f), XMVectorSet(0.f, 0.0f, 0.025f, 1.f));
 
 

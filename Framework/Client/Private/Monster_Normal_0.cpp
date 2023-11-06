@@ -210,6 +210,9 @@ HRESULT CMonster_Normal_0::Ready_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_pNavigationCom, &NavigationDesc)))
 		return E_FAIL;
 
+	
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_pNavigationCom->Get_NaviDesc().vStartWorldPosition), 1.f));
+
 	CRigidBody::RIGID_BODY_DESC RigidDesc;
 	ZeroMemory(&RigidDesc, sizeof RigidDesc);
 

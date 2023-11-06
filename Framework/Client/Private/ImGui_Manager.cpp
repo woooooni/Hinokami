@@ -956,7 +956,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
                     if (ImGui::ImageButton(pDiffuseTexture->Get_Srv(i), ImVec2(150.f, 150.f)))
                     {
-                        tEffectDesc.iDiffuseTextureIndex = i;
+                        tEffectDesc.strDiffuseTetextureName = pDiffuseTexture->Get_Name(i);
                     }
                 }
                 ImGui::EndListBox();
@@ -965,7 +965,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
             IMGUI_SAME_LINE;
             if (ImGui::Button("Reset_Diffuse"))
             {
-                tEffectDesc.iDiffuseTextureIndex = -1;
+                tEffectDesc.strDiffuseTetextureName = L"";
             }
 
         }
@@ -981,7 +981,8 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
                         IMGUI_SAME_LINE;
                     if (ImGui::ImageButton(pAlphaTexture->Get_Srv(i), ImVec2(150.f, 150.f)))
                     {
-                        tEffectDesc.iAlphaTextureIndex = i;
+                        tEffectDesc.strAlphaTexturName = pAlphaTexture->Get_Name(i);
+
                     }
                 }
                 ImGui::EndListBox();
@@ -990,7 +991,8 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
             IMGUI_SAME_LINE;
             if (ImGui::Button("Reset_Alpha"))
             {
-                tEffectDesc.iAlphaTextureIndex = -1;
+                tEffectDesc.strAlphaTexturName = L"";
+
             }
         }
 
@@ -1004,7 +1006,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
         IMGUI_NEW_LINE;
         ImGui::Text("ARGB");
-        ImGui::DragFloat3("##AddtiveDiffuseColor", (_float*)&tEffectDesc.fAdditiveDiffuseColor, 0.01f, 0.f, 1.f);
+        ImGui::DragFloat3("##AddtiveDiffuseColor", (_float*)&tEffectDesc.vAdditiveDiffuseColor, 0.01f, 0.f, 1.f);
         ImGui::DragFloat("##AddtiveAlpha", &tEffectDesc.fAlpha, 0.01f, 0.f, 1.f);
 
 
@@ -1024,7 +1026,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
         IMGUI_NEW_LINE;
         ImGui::Text("UV_Flow : ");
-        ImGui::DragFloat2("##Effect_UV_Flow", (_float*)&tEffectDesc.fUVFlow, 0.01f, -100.f, 100.f);
+        ImGui::DragFloat2("##Effect_UV_Flow", (_float*)&tEffectDesc.vUVFlow, 0.01f, -100.f, 100.f);
 
 
         if (ImGui::Button("Reset"))
@@ -1818,7 +1820,33 @@ HRESULT CImGui_Manager::Save_Effect(const wstring& strFullPath)
 
     File->Write<string>(CUtils::ToString(m_pPrevEffect->Get_EffectModelName()));
     File->Write<CEffect::EFFECT_TYPE>(m_pPrevEffect->Get_EffectType());
-    File->Write<CEffect::EFFECT_DESC>(m_pPrevEffect->Get_EffectDesc());
+    
+    CEffect::EFFECT_DESC EffectDesc = m_pPrevEffect->Get_EffectDesc();
+    File->Write<string>(CUtils::ToString(EffectDesc.strDiffuseTetextureName));
+    File->Write<string>(CUtils::ToString(EffectDesc.strAlphaTexturName));
+    
+    File->Write<_bool>(EffectDesc.bBillboard);
+    File->Write<_bool>(EffectDesc.bCutUV);
+    
+    File->Write<_float>(EffectDesc.fAlpha);
+    File->Write<_float>(EffectDesc.fDestAlphaSpeed);
+    File->Write<_float>(EffectDesc.fIndexSpeed);
+    File->Write<_float>(EffectDesc.fMaxCountX);
+    File->Write<_float>(EffectDesc.fMaxCountY);
+    File->Write<_float>(EffectDesc.fMoveSpeed);
+    File->Write<_float>(EffectDesc.fTurnSpeed);
+
+    File->Write<_float2>(EffectDesc.vBlurPower);
+    File->Write<_float2>(EffectDesc.vUVFlow);
+
+    File->Write<_float3>(EffectDesc.vMoveDir);
+    File->Write<_float3>(EffectDesc.vTurnDir);
+
+    
+    File->Write<_float3>(EffectDesc.vAdditiveDiffuseColor);
+    File->Write<_float4x4>(EffectDesc.OffsetMatrix);
+    
+
     File->Write<_bool>(m_pPrevEffect->Is_Loop());
     File->Write<_bool>(m_pPrevEffect->Is_Increment());
     File->Write<_bool>(m_pPrevEffect->Is_Gravity());
@@ -1839,8 +1867,6 @@ HRESULT CImGui_Manager::Load_Effect(const wstring& strFullPath)
     _wsplitpath_s(strFullPath.c_str(), nullptr, 0, nullptr, 0, strFileName, MAX_PATH, nullptr, 0);
 
 
-
-
     shared_ptr<CFileUtils> File = make_shared<CFileUtils>();
     File->Open(strFullPath, FileMode::Read);
 
@@ -1852,7 +1878,29 @@ HRESULT CImGui_Manager::Load_Effect(const wstring& strFullPath)
 
 
     CEffect::EFFECT_DESC EffectDesc = {};
-    EffectDesc = File->Read<CEffect::EFFECT_DESC>();
+    EffectDesc.strDiffuseTetextureName = CUtils::ToWString(File->Read<string>());
+    EffectDesc.strAlphaTexturName = CUtils::ToWString(File->Read<string>());
+
+    EffectDesc.bBillboard = File->Read<_bool>();
+    EffectDesc.bCutUV = File->Read<_bool>();
+
+    EffectDesc.fAlpha = File->Read<_float>();
+    EffectDesc.fDestAlphaSpeed = File->Read<_float>();
+    EffectDesc.fIndexSpeed = File->Read<_float>();
+    EffectDesc.fMaxCountX = File->Read<_float>();
+    EffectDesc.fMaxCountY = File->Read<_float>();
+    EffectDesc.fMoveSpeed = File->Read<_float>();
+    EffectDesc.fTurnSpeed = File->Read<_float>();
+
+    EffectDesc.vBlurPower = File->Read<_float2>();
+    EffectDesc.vUVFlow = File->Read<_float2>();
+
+    EffectDesc.vMoveDir = File->Read<_float3>();
+    EffectDesc.vTurnDir = File->Read<_float3>();
+
+
+    EffectDesc.vAdditiveDiffuseColor = File->Read<_float3>();
+    EffectDesc.OffsetMatrix = File->Read<_float4x4>();
 
     _bool bLoop, bIncrement, bGravity;
     bLoop = File->Read<_bool>();

@@ -28,6 +28,8 @@ CEffect::CEffect(const CEffect& rhs)
 	, m_bGravity(rhs.m_bGravity)
 	, m_fAccUVFlow(rhs.m_fAccUVFlow)
 	, m_fAccDeletionTime(0.f)
+	, m_iDiffuseTextureIdx(rhs.m_iDiffuseTextureIdx)
+	, m_iAlphaTextureIdx(rhs.m_iAlphaTextureIdx)
 {
 
 }
@@ -48,6 +50,10 @@ HRESULT CEffect::Initialize(void* pArg)
 
 	XMStoreFloat4x4(&m_ParentMatrix, XMMatrixIdentity());
 
+	m_iDiffuseTextureIdx = m_pDiffuseTextureCom->Find_Index(m_tEffectDesc.strDiffuseTetextureName);
+	m_iAlphaTextureIdx = m_pAlphaTextureCom->Find_Index(m_tEffectDesc.strAlphaTexturName);
+
+
 	return S_OK;
 }
 
@@ -66,8 +72,8 @@ void CEffect::Tick(_float fTimeDelta)
 	else
 		Decrement(fTimeDelta);
 
-	m_fAccUVFlow.x += m_tEffectDesc.fUVFlow.x * fTimeDelta;
-	m_fAccUVFlow.y += m_tEffectDesc.fUVFlow.y * fTimeDelta;
+	m_fAccUVFlow.x += m_tEffectDesc.vUVFlow.x * fTimeDelta;
+	m_fAccUVFlow.y += m_tEffectDesc.vUVFlow.y * fTimeDelta;
 	if(m_tEffectDesc.fAlpha > 0.f)
 		m_tEffectDesc.fAlpha -= m_tEffectDesc.fDestAlphaSpeed * fTimeDelta;
 
@@ -200,7 +206,7 @@ HRESULT CEffect::Bind_ShaderResource()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fUVIndex", &m_vUVIndex, sizeof(_float2))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAdditiveDiffuseColor", &m_tEffectDesc.fAdditiveDiffuseColor, sizeof(_float3))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAdditiveDiffuseColor", &m_tEffectDesc.vAdditiveDiffuseColor, sizeof(_float3))))
 		return E_FAIL;
 
 
@@ -210,33 +216,33 @@ HRESULT CEffect::Bind_ShaderResource()
 
 	{
 
-		if (-1 < m_tEffectDesc.iDiffuseTextureIndex)
+		if (-1 < m_iDiffuseTextureIdx)
 		{
-			if (FAILED(m_pDiffuseTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", m_tEffectDesc.iDiffuseTextureIndex)))
+			if (FAILED(m_pDiffuseTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", m_iDiffuseTextureIdx)))
 				return E_FAIL;
 		}
 
 
-		if (-1 < m_tEffectDesc.iAlphaTextureIndex)
+		if (-1 < m_iAlphaTextureIdx)
 		{
-			if (FAILED(m_pAlphaTextureCom->Bind_ShaderResource(m_pShaderCom, "g_AlphaTexture", m_tEffectDesc.iAlphaTextureIndex)))
+			if (FAILED(m_pAlphaTextureCom->Bind_ShaderResource(m_pShaderCom, "g_AlphaTexture", m_iAlphaTextureIdx)))
 				return E_FAIL;
 		}
 
 
 		// 둘다 없다면.
-		if (-1 == m_tEffectDesc.iDiffuseTextureIndex && -1 == m_tEffectDesc.iAlphaTextureIndex)
+		if (-1 == m_iDiffuseTextureIdx && -1 == m_iAlphaTextureIdx)
 			m_iPassIndex = 0;
 
 		// 디퓨즈 텍스쳐만 있다면.
-		if (-1 != m_tEffectDesc.iDiffuseTextureIndex && -1 == m_tEffectDesc.iAlphaTextureIndex)
+		if (-1 != m_iDiffuseTextureIdx && -1 == m_iAlphaTextureIdx)
 			m_iPassIndex = 1;
 
 		// 알파 텍스쳐만 있다면.
-		if (-1 == m_tEffectDesc.iDiffuseTextureIndex && -1 != m_tEffectDesc.iAlphaTextureIndex)
+		if (-1 == m_iDiffuseTextureIdx && -1 != m_iAlphaTextureIdx)
 			m_iPassIndex = 2;
 
-		if (-1 != m_tEffectDesc.iDiffuseTextureIndex && -1 != m_tEffectDesc.iAlphaTextureIndex)		
+		if (-1 != m_iDiffuseTextureIdx && -1 != m_iAlphaTextureIdx)
 			m_iPassIndex = 3;
 	}
 

@@ -15,6 +15,7 @@ CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const w
 CMonster::CMonster(const CMonster& rhs)
 	: CGameObject(rhs)
 	, m_tStat(rhs.m_tStat)
+	, m_fDissolveWeight(1.f)
 
 {	
 	
@@ -24,6 +25,8 @@ HRESULT CMonster::Initialize_Prototype()
 {
 	if(FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
+
+	m_fDissolveWeight = 1.f;
 
 	return S_OK;
 }
@@ -56,10 +59,25 @@ void CMonster::Tick(_float fTimeDelta)
 	}
 
 	if (m_bReserveDead)
+	{
 		m_fDissolveWeight += 0.2f * fTimeDelta;
+		if (m_fDissolveWeight >= 1.f)
+			Set_Dead(true);
+	}
 
-	if (m_fDissolveWeight >= 1.f)
-		Set_Dead(true);
+	if (m_pStateCom->Get_CurrState() == CMonster::MONSTER_STATE::REGEN)
+	{
+		m_fDissolveWeight -= 0.2f * fTimeDelta;
+		if (m_fDissolveWeight <= 0.f)
+		{
+			m_fDissolveWeight = 0.f;
+			m_pStateCom->Change_State(CMonster::MONSTER_STATE::IDLE, nullptr);
+		}
+	}
+		
+
+	
+
 
 }
 
@@ -113,6 +131,16 @@ HRESULT CMonster::Render()
 				return E_FAIL;
 		}
 
+		if (m_pStateCom->Get_CurrState() == CMonster::REGEN)
+		{
+			iPassIndex = 2;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveWeight", &m_fDissolveWeight, sizeof(_float))))
+				return E_FAIL;
+
+			if (FAILED(m_pDissoveTexture->Bind_ShaderResource(m_pShaderCom, "g_DissolveTexture")))
+				return E_FAIL;
+		}
+
 		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, iPassIndex)))
 			return E_FAIL;
 	}
@@ -133,6 +161,9 @@ CHierarchyNode* CMonster::Get_Socket(const wstring& strSocketName)
 
 void CMonster::AirBorne(_float fForce)
 {
+	if (fForce < 0.1f)
+		return;
+
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.1f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);

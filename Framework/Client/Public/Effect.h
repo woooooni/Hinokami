@@ -21,8 +21,8 @@ class CEffect final : public CGameObject
 public:
 	typedef struct tagEffectDesc
 	{	
-		_int iDiffuseTextureIndex = -1;
-		_int iAlphaTextureIndex = -1;
+		wstring strDiffuseTetextureName = L"";
+		wstring strAlphaTexturName = L"";
 
 		_bool bBillboard = false;
 		_int bCutUV = -1;
@@ -35,21 +35,24 @@ public:
 		_float			fMaxCountY		= 1.f;
 
 		_float			fAlpha = 1.f;
+		_float			fDestAlphaSpeed = 0.f;
 
 		_float			fIndexSpeed = 20.f;
-		_float2			fUVFlow = { 0.f, 0.f };
+		_float2			vUVFlow = { 0.f, 0.f };
 
 		_float2			vBlurPower = { 0.f, 0.f };
 		
 
+		_float3			vAdditiveDiffuseColor = _float3(0.f, 0.f, 0.f);
 
-		_float3			fAdditiveDiffuseColor	= _float3(0.f, 0.f, 0.f);
-		
+
 		// Translation
-		_float4x4		OffsetMatrix; 
 		_float3			vMoveDir = _float3(0.f, 0.f, 0.f);
 		_float3			vTurnDir = _float3(0.f, 1.f, 0.f);
-		_float			fDestAlphaSpeed = 0.f;
+
+		_float4x4		OffsetMatrix;
+		
+		
 
 		tagEffectDesc()
 		{
@@ -92,7 +95,12 @@ public:
 public:
 	void Set_Owner(CGameObject* pGameObject) { m_pOwnerObject = pGameObject; }
 	const EFFECT_DESC& Get_EffectDesc() { return m_tEffectDesc; }
-	void Set_EffectDesc(const EFFECT_DESC& tDesc) { memcpy(&m_tEffectDesc, &tDesc, sizeof(EFFECT_DESC)); }
+	void Set_EffectDesc(const EFFECT_DESC& tDesc) 
+	{ 
+		memcpy(&m_tEffectDesc, &tDesc, sizeof(EFFECT_DESC)); 
+		m_iDiffuseTextureIdx = m_pDiffuseTextureCom->Find_Index(m_tEffectDesc.strDiffuseTetextureName);
+		m_iAlphaTextureIdx = m_pAlphaTextureCom->Find_Index(m_tEffectDesc.strAlphaTexturName);
+	}
 
 	_bool Is_End() { return m_bEnd; };
 	void Set_End(_bool bEnd) { m_bEnd = bEnd; }
@@ -128,7 +136,7 @@ public:
 
 
 	void Reset_UV() {
-		m_tEffectDesc.fUVFlow = { 0.f, 0.f };
+		m_tEffectDesc.vUVFlow = { 0.f, 0.f };
 		m_fAccUVFlow = { 0.f, 0.f };
 		m_vUVIndex = { 0.f, 0.f };
 	}
@@ -176,8 +184,12 @@ private:
 	_uint m_iPassIndex = 0;
 
 	_float m_fAccDeletionTime = 0.f;
-
 	_float4x4 m_ParentMatrix;
+
+private:
+
+	_int m_iDiffuseTextureIdx = -1;
+	_int m_iAlphaTextureIdx = -1;
 
 private: /* For.Texture_Effect */
 	virtual void Increment(_float fTimeDelta);

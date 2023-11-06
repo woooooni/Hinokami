@@ -101,7 +101,30 @@ HRESULT CEffect_Manager::Ready_Proto_Effects(const wstring& strEffectPath)
 
 
 			CEffect::EFFECT_DESC EffectDesc = {};
-			EffectDesc = File->Read<CEffect::EFFECT_DESC>();
+			EffectDesc.strDiffuseTetextureName = CUtils::ToWString(File->Read<string>());
+			EffectDesc.strAlphaTexturName = CUtils::ToWString(File->Read<string>());
+
+			EffectDesc.bBillboard = File->Read<_bool>();
+			EffectDesc.bCutUV = File->Read<_bool>();
+
+			EffectDesc.fAlpha = File->Read<_float>();
+			EffectDesc.fDestAlphaSpeed = File->Read<_float>();
+			EffectDesc.fIndexSpeed = File->Read<_float>();
+			EffectDesc.fMaxCountX = File->Read<_float>();
+			EffectDesc.fMaxCountY = File->Read<_float>();
+			EffectDesc.fMoveSpeed = File->Read<_float>();
+			EffectDesc.fTurnSpeed = File->Read<_float>();
+
+			EffectDesc.vBlurPower = File->Read<_float2>();
+			EffectDesc.vUVFlow = File->Read<_float2>();
+
+			EffectDesc.vMoveDir = File->Read<_float3>();
+			EffectDesc.vTurnDir = File->Read<_float3>();
+
+
+			EffectDesc.vAdditiveDiffuseColor = File->Read<_float3>();
+			EffectDesc.OffsetMatrix = File->Read<_float4x4>();
+
 
 			_bool bLoop, bIncrement, bGravity;
 			bLoop = File->Read<_bool>();

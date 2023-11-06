@@ -60,6 +60,9 @@ void CProp::Tick(_float fTimeDelta)
 void CProp::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
+	if (FAILED(Compute_CamZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+		return;
+
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 

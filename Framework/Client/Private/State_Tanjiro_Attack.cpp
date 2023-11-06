@@ -64,12 +64,13 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
 
 	
-	Matrix OffsetMatrix;
+	/*Matrix OffsetMatrix;
 	Quaternion Rotation = Quaternion::CreateFromYawPitchRoll(0.f, XMConvertToRadians(0.f), 0.f);
 	OffsetMatrix = Matrix::CreateScale(5.f) * Matrix::CreateFromQuaternion(Rotation) * Matrix::CreateTranslation(0.f, 0.f, 0.f);
 
 	
-	m_pSword->Generate_Trail(L"T_d_e_P0001_V00_C00_SplSsr_Water_00_00.png", L"T_e_cmn_Slash006_Reverse.png", { 0.f, 0.f, 0.f, 1.f });
+	m_pSword->Generate_Trail(L"T_d_e_P0001_V00_C00_SplSsr_Water_00_00.png", L"T_e_cmn_Slash006_Reverse.png", { 0.f, 0.f, 0.f, 1.f });*/
+
 }
 
 void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
@@ -116,7 +117,7 @@ void CState_Tanjiro_Attack::Exit_State()
 	m_pSword->Set_SwordMode(CSword::SWORD_MODE::BASIC);
 	m_pSword->Set_PushPower(0.f);
 
-	m_pSword->Stop_Trail();
+	// m_pSword->Stop_Trail();
 	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
