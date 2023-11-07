@@ -13,9 +13,6 @@
     <Filter Include="01.Levels\00.Logo">
       <UniqueIdentifier>{f7bf0f5d-9c1a-409d-ba96-8f25a183dad7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\01.GamePlay">
-      <UniqueIdentifier>{001c8170-e0a0-429b-96c3-38ac67fa7a9c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\99.Loading">
       <UniqueIdentifier>{d3df9124-96f6-4c1d-a02e-1d2d51e29c9b}</UniqueIdentifier>
     </Filter>
@@ -229,6 +226,18 @@
     <Filter Include="01.Levels\03. Train">
       <UniqueIdentifier>{328c0fb7-28c6-4633-86ff-20cf4ffff868}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Nomal_Monster1">
+      <UniqueIdentifier>{f51eafe0-5276-43f0-ac73-552f8ff0a0cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Nomal_Monster2">
+      <UniqueIdentifier>{aaabf629-7779-43d6-8a96-cae73f4f0bc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\02. Kyojuro">
+      <UniqueIdentifier>{6a899f65-3bf0-42c8-8fd1-3860e3be496d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\01. Village">
+      <UniqueIdentifier>{001c8170-e0a0-429b-96c3-38ac67fa7a9c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -256,7 +265,7 @@
       <Filter>01.Levels\00.Logo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_GamePlay.h">
-      <Filter>01.Levels\01.GamePlay</Filter>
+      <Filter>01.Levels\01. Village</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Loading.h">
       <Filter>01.Levels\99.Loading</Filter>
@@ -504,7 +513,7 @@
       <Filter>01.Levels\00.Logo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_GamePlay.cpp">
-      <Filter>01.Levels\01.GamePlay</Filter>
+      <Filter>01.Levels\01. Village</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Loading.cpp">
       <Filter>01.Levels\99.Loading</Filter>
