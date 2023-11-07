@@ -30,6 +30,18 @@ private:
 	HRESULT Ready_Layer_UI(const LAYER_TYPE eLayerType);
 	HRESULT Ready_Layer_Effect(const LAYER_TYPE eLayerType);
 
+private:
+	list<LAYER_TYPE> m_ScrollObjectLayer;
+	_float m_fScrollSpeed;
+
+	_float m_fAccScroll = 0.f;
+	_float m_fLimitScroll = 300.f;
+
+
+private:
+	void Scroll(_float fTimeDelta);
+	void Reset_Scroll();
+
 public:
 	static class CLevel_Train* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

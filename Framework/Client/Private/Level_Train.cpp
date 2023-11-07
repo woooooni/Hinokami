@@ -36,11 +36,27 @@ HRESULT CLevel_Train::Initialize()
 	if (FAILED(Ready_Layer_UI(LAYER_TYPE::LAYER_UI)))
 		return E_FAIL;
 
+
+	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_TREE);
+	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_PROP);
+	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_GRASS);
+	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_BUILDING);
+	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_MOUNTAIN);
+	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_GROUND);
+
+	m_fScrollSpeed = 30.f;
+	m_fLimitScroll = -500.f;
 	return S_OK;
 }
 
 HRESULT CLevel_Train::Tick(_float fTimeDelta)
 {
+	m_fAccScroll -= m_fScrollSpeed * fTimeDelta;
+	if (m_fAccScroll >= m_fLimitScroll)
+		Reset_Scroll();
+
+	Scroll(fTimeDelta);
+	
 	return S_OK;
 }
 
@@ -62,9 +78,6 @@ HRESULT CLevel_Train::Exit_Level()
 
 HRESULT CLevel_Train::Ready_Lights()
 {
-	
-
-
 	LIGHTDESC			LightDesc;
 
 	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
@@ -223,6 +236,46 @@ HRESULT CLevel_Train::Ready_Layer_Effect(const LAYER_TYPE eLayerType)
 {
 
 	return S_OK;
+}
+
+void CLevel_Train::Reset_Scroll()
+{
+	for (auto& Layer : m_ScrollObjectLayer)
+	{
+		list<class CGameObject*> GameObjects = GI->Find_GameObjects(GI->Get_CurrentLevel(), Layer);
+
+		for (auto& Object : GameObjects)
+		{
+			CTransform* pTransform = Object->Get_Component<CTransform>(L"Com_Transform");
+			if (nullptr == pTransform)
+				continue;
+
+			_vector vPosition = pTransform->Get_State(CTransform::STATE::STATE_POSITION);
+			vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) + fabs(m_fAccScroll));
+			pTransform->Set_State(CTransform::STATE::STATE_POSITION, vPosition);
+		}
+	}
+
+	m_fAccScroll = 0.f;
+}
+
+void CLevel_Train::Scroll(_float fTimeDelta)
+{
+	for (auto& Layer : m_ScrollObjectLayer)
+	{
+		list<class CGameObject*> GameObjects = GI->Find_GameObjects(GI->Get_CurrentLevel(), Layer);
+
+		for (auto& Object : GameObjects)
+		{
+			CTransform* pTransform = Object->Get_Component<CTransform>(L"Com_Transform");
+			if (nullptr == pTransform)
+				continue;
+
+			_vector vPosition = pTransform->Get_State(CTransform::STATE::STATE_POSITION);
+			vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - (m_fScrollSpeed * fTimeDelta));
+			pTransform->Set_State(CTransform::STATE::STATE_POSITION, vPosition);
+		}
+	}
 }
 
 CLevel_Train * CLevel_Train::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

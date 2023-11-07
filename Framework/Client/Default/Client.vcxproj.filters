@@ -217,9 +217,6 @@
     <Filter Include="01.Levels\02. Train_Station">
       <UniqueIdentifier>{97130585-da4f-4a93-8104-5a061b26b854}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\04. Train_Boss_1">
-      <UniqueIdentifier>{fa86199c-349f-4dfa-b634-2ba0e3ca8d4e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\06. Final_Boss">
       <UniqueIdentifier>{cd667fdf-24ad-46bd-8ec8-b9ce988a917f}</UniqueIdentifier>
     </Filter>
@@ -237,6 +234,9 @@
     </Filter>
     <Filter Include="01.Levels\01. Village">
       <UniqueIdentifier>{001c8170-e0a0-429b-96c3-38ac67fa7a9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\04. Train_Boss">
+      <UniqueIdentifier>{fa86199c-349f-4dfa-b634-2ba0e3ca8d4e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -493,7 +493,7 @@
       <Filter>01.Levels\03. Train</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Train_Boss.h">
-      <Filter>01.Levels\04. Train_Boss_1</Filter>
+      <Filter>01.Levels\04. Train_Boss</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_FinalBoss.h">
       <Filter>01.Levels\06. Final_Boss</Filter>
@@ -738,7 +738,7 @@
       <Filter>01.Levels\03. Train</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Train_Boss.cpp">
-      <Filter>01.Levels\04. Train_Boss_1</Filter>
+      <Filter>01.Levels\04. Train_Boss</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_FinalBoss.cpp">
       <Filter>01.Levels\06. Final_Boss</Filter>
