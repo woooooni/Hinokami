@@ -98,7 +98,6 @@ public:
 
 private:
 	_float4x4				m_WorldMatrix;
-	_float3					m_vRotation = _float3(0.f, 0.f, 0.f);
 	TRANSFORMDESC			m_TransformDesc;
 
 private:

@@ -316,7 +316,9 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
                 || i == LAYER_TYPE::LAYER_BACKGROUND
                 || i == LAYER_TYPE::LAYER_SKYBOX
                 || i == LAYER_TYPE::LAYER_UI
-                || i == LAYER_TYPE::LAYER_GROUND)
+                || i == LAYER_TYPE::LAYER_GROUND
+                || i == LAYER_TYPE::LAYER_EFFECT
+                || i == LAYER_TYPE::LAYER_GRASS)
                 continue;
 
             list<CGameObject*>& GameObjects = GAME_INSTANCE->Find_GameObjects(LEVEL_TOOL, i);
@@ -392,19 +394,26 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
 
 #pragma region Rotaion
         ImGui::Text("Rotation");
+        _float3 vPrevRotation = pTransform->Get_Rotaion_Degree();
         _float3 vRotation = pTransform->Get_Rotaion_Degree();
 
-        if (ImGui::DragFloat3("##Object_Rotation", (_float*)&vRotation, 0.1f))
+        if (ImGui::DragFloat("##Object_RotationX", &vRotation.x, 0.01f, -360.f, 360.f))
         {
-            vRotation.x = XMConvertToRadians(vRotation.x);
-            vRotation.y = XMConvertToRadians(vRotation.y);
-            vRotation.z = XMConvertToRadians(vRotation.z);
-
-            _vector vRot = XMLoadFloat3(&vRotation);
-            vRot = XMVectorSetW(vRot, 0.f);
-
-            pTransform->Set_Rotation(vRot);
+            _float fRadian = XMConvertToRadians(vRotation.x - vPrevRotation.x);
+            pTransform->Rotation_Acc(XMVectorSet(1.f, 0.f, 0.f, 0.f), fRadian);
         }
+        if (ImGui::DragFloat("##Object_RotationY", &vRotation.y, 0.01f, -360.f, 360.f))
+        {
+            _float fRadian = XMConvertToRadians(vRotation.y - vPrevRotation.y);
+            pTransform->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fRadian);
+        }
+        if (ImGui::DragFloat("##Object_RotationZ", &vRotation.z, 0.01f, -360.f, 360.f))
+        {
+            _float fRadian = XMConvertToRadians(vRotation.z - vPrevRotation.z);
+            pTransform->Rotation_Acc(XMVectorSet(0.f, 0.f, 1.f, 0.f), fRadian);
+        }
+
+        
 #pragma endregion
 
         IMGUI_NEW_LINE;
@@ -939,7 +948,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         CTransform* pTransform = m_pPrevEffect->Get_TransformCom();
 
         CTexture* pDiffuseTexture = m_pPrevEffect->Get_DiffuseTexture();
-        CTexture* pAlphaTexture = m_pPrevEffect->Get_DiffuseTexture();
+        CTexture* pAlphaTexture = m_pPrevEffect->Get_AlphaTexture();
 
         IMGUI_NEW_LINE;
         ImGui::Text("============================================");
@@ -1982,6 +1991,8 @@ HRESULT CImGui_Manager::Load_Particle(const wstring& strFullPath)
         Safe_Release(m_pPrevParticle);
         return E_FAIL;
     }
+
+    return S_OK;
 }
 
 

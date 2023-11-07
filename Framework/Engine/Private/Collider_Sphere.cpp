@@ -63,7 +63,7 @@ void CCollider_Sphere::LateTick_Collider(_float fTimeDelta)
 
 HRESULT CCollider_Sphere::Render()
 {
-	if (m_bActive && m_eDetectionType != CCollider::BOUNDARY)
+	/*if (m_bActive && m_eDetectionType != CCollider::BOUNDARY)
 	{
 		m_pEffect->SetWorld(XMMatrixIdentity());
 		m_pEffect->SetView(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
@@ -81,7 +81,24 @@ HRESULT CCollider_Sphere::Render()
 
 
 		m_pBatch->End();
-	}
+	}*/
+
+	m_pEffect->SetWorld(XMMatrixIdentity());
+	m_pEffect->SetView(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+	m_pEffect->SetProjection(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+
+
+	m_pEffect->Apply(m_pContext);
+
+	m_pContext->IASetInputLayout(m_pInputLayout);
+
+
+	m_pBatch->Begin();
+
+	DX::Draw(m_pBatch, m_tBoundingSphere, XMLoadFloat4(&m_vColor));
+
+
+	m_pBatch->End();
 
 	return S_OK;
 }

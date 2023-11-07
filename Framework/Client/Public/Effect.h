@@ -59,6 +59,40 @@ public:
 			XMStoreFloat4x4(&OffsetMatrix, XMMatrixIdentity());
 		}
 
+		tagEffectDesc(const tagEffectDesc& rhs)
+		{
+			strDiffuseTetextureName = rhs.strDiffuseTetextureName;
+			strAlphaTexturName = rhs.strAlphaTexturName;
+
+			bBillboard = rhs.bBillboard;
+			bCutUV = rhs.bCutUV;
+
+			fTurnSpeed = rhs.fTurnSpeed;
+			fMoveSpeed = rhs.fMoveSpeed;
+
+			// Sequencetexture Effect
+			fMaxCountX = rhs.fMaxCountX;
+			fMaxCountY = rhs.fMaxCountY;
+
+			fAlpha = rhs.fAlpha;
+			fDestAlphaSpeed = rhs.fDestAlphaSpeed;
+
+			fIndexSpeed = rhs.fIndexSpeed;
+			vUVFlow = rhs.vUVFlow;
+
+			vBlurPower = rhs.vBlurPower;
+
+
+			vAdditiveDiffuseColor = rhs.vAdditiveDiffuseColor;
+
+
+			// Translation
+			vMoveDir = rhs.vMoveDir;
+			vTurnDir = rhs.vTurnDir;
+
+			OffsetMatrix = rhs.OffsetMatrix;
+		}
+
 	} EFFECT_DESC;
 
 	enum EFFECT_TYPE
@@ -97,7 +131,7 @@ public:
 	const EFFECT_DESC& Get_EffectDesc() { return m_tEffectDesc; }
 	void Set_EffectDesc(const EFFECT_DESC& tDesc) 
 	{ 
-		memcpy(&m_tEffectDesc, &tDesc, sizeof(EFFECT_DESC)); 
+		m_tEffectDesc = tDesc;
 		m_iDiffuseTextureIdx = m_pDiffuseTextureCom->Find_Index(m_tEffectDesc.strDiffuseTetextureName);
 		m_iAlphaTextureIdx = m_pAlphaTextureCom->Find_Index(m_tEffectDesc.strAlphaTexturName);
 	}

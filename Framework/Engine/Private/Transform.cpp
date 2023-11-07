@@ -13,7 +13,6 @@ CTransform::CTransform(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 CTransform::CTransform(const CTransform & rhs)
 	: CComponent(rhs)
 	, m_WorldMatrix(rhs.m_WorldMatrix)
-	, m_vRotation(rhs.m_vRotation)
 {
 
 }
@@ -222,9 +221,9 @@ _float3 CTransform::Get_Rotaion_Degree()
 
 	_vector vScale;
 	_vector vQuaternion;
-	_vector vPostion;
+	_vector vPosition;
 
-	XMMatrixDecompose(&vScale, &vQuaternion, &vPostion, XMLoadFloat4x4(&m_WorldMatrix));
+	XMMatrixDecompose(&vScale, &vQuaternion, &vPosition, XMLoadFloat4x4(&m_WorldMatrix));
 
 	_float3 fAngle = ToEulerAngles(vQuaternion);
 	fAngle.x = XMConvertToDegrees(fAngle.x);
@@ -256,29 +255,14 @@ void CTransform::Set_Rotation(_fvector vRadianEulerAngle)
 	XMStoreFloat3(&vRotation, vRadianEulerAngle);
 
 	_matrix RotationMatrix = XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(vRotation.x, vRotation.y, vRotation.z));
+	
+	_vector vScale;
+	_vector vQuaternion;
+	_vector vPosition;
 
+	XMMatrixDecompose(&vScale, &vQuaternion, &vPosition, XMLoadFloat4x4(&m_WorldMatrix));
 
-	_float3		Scale = Get_Scale();
-
-	WRITE_LOCK
-
-	if (vRotation.y <= 91.f && vRotation.y >= 89.f)
-	{
-		Set_State(CTransform::STATE_UP, XMVector3TransformNormal(XMVectorSet(0.f, 1.f, 0.f, 0.f) * Scale.y, RotationMatrix));
-		Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(XMVectorSet(1.f, 0.f, 0.f, 0.f) * Scale.x, RotationMatrix));
-		Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(XMVectorSet(0.f, 0.f, 1.f, 0.f) * Scale.z, RotationMatrix));
-	}
-	else
-	{
-		Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(XMVectorSet(1.f, 0.f, 0.f, 0.f) * Scale.x, RotationMatrix));
-		Set_State(CTransform::STATE_UP, XMVector3TransformNormal(XMVectorSet(0.f, 1.f, 0.f, 0.f) * Scale.y, RotationMatrix));
-		Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(XMVectorSet(0.f, 0.f, 1.f, 0.f) * Scale.z, RotationMatrix));
-	}
-	
-	
-	
-	
-	
+	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScalingFromVector(vScale) * RotationMatrix * XMMatrixTranslationFromVector(vPosition));
 }
 
 void CTransform::Set_Position(_fvector vPosition, CNavigation* pNavigation)

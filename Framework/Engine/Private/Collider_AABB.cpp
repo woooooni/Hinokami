@@ -65,22 +65,37 @@ void CCollider_AABB::LateTick_Collider(_float fTimeDelta)
 
 HRESULT CCollider_AABB::Render()
 {
-	if (m_bActive/* && m_eDetectionType != CCollider::BOUNDARY*/)
-	{
-		m_pEffect->SetWorld(XMMatrixIdentity());
-		m_pEffect->SetView(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
-		m_pEffect->SetProjection(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+	//if (m_bActive/* && m_eDetectionType != CCollider::BOUNDARY*/)
+	//{
+	//	m_pEffect->SetWorld(XMMatrixIdentity());
+	//	m_pEffect->SetView(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+	//	m_pEffect->SetProjection(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
 
-		m_pEffect->Apply(m_pContext);
+	//	m_pEffect->Apply(m_pContext);
 
-		m_pContext->IASetInputLayout(m_pInputLayout);
+	//	m_pContext->IASetInputLayout(m_pInputLayout);
 
 
-		m_pBatch->Begin();
+	//	m_pBatch->Begin();
 
-		DX::Draw(m_pBatch, m_tBoundingBox, XMLoadFloat4(&m_vColor));
-		m_pBatch->End();
-	}
+	//	DX::Draw(m_pBatch, m_tBoundingBox, XMLoadFloat4(&m_vColor));
+	//	m_pBatch->End();
+	//}
+
+	m_pEffect->SetWorld(XMMatrixIdentity());
+	m_pEffect->SetView(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+	m_pEffect->SetProjection(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+
+	m_pEffect->Apply(m_pContext);
+
+	m_pContext->IASetInputLayout(m_pInputLayout);
+
+
+	m_pBatch->Begin();
+
+	DX::Draw(m_pBatch, m_tBoundingBox, XMLoadFloat4(&m_vColor));
+	m_pBatch->End();
+
 	return S_OK;
 }
 
