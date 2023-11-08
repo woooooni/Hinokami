@@ -214,6 +214,7 @@
     <ClInclude Include="..\Public\Protocol.pb.h" />
     <ClInclude Include="..\Public\ServerSession.h" />
     <ClInclude Include="..\Public\Network_Manager.h" />
+    <ClInclude Include="..\Public\State_Character_Damaged_Bound.h" />
     <ClInclude Include="..\Public\State_Monster_Attack.h" />
     <ClInclude Include="..\Public\State_Monster_Damaged_AirBorn.h" />
     <ClInclude Include="..\Public\State_Monster_Damaged_Basic.h" />
@@ -227,11 +228,13 @@
     <ClInclude Include="..\Public\State_Tanjiro_Basic_Idle.h" />
     <ClInclude Include="..\Public\State_Tanjiro_Basic_Jump.h" />
     <ClInclude Include="..\Public\State_Tanjiro_Basic_Move.h" />
-    <ClInclude Include="..\Public\State_Tanjiro_Battle_Jump.h" />
-    <ClInclude Include="..\Public\State_Tanjiro_Damaged.h" />
-    <ClInclude Include="..\Public\State_Tanjiro_Dead.h" />
-    <ClInclude Include="..\Public\State_Tanjiro_Battle_Idle.h" />
-    <ClInclude Include="..\Public\State_Tanjiro_Battle_Move.h" />
+    <ClInclude Include="..\Public\State_Character_Battle_Jump.h" />
+    <ClInclude Include="..\Public\State_Character_Damaged_AirBorn.h" />
+    <ClInclude Include="..\Public\State_Character_Damaged_Basic.h" />
+    <ClInclude Include="..\Public\State_Character_Damaged_Blow.h" />
+    <ClInclude Include="..\Public\State_Character_Dead.h" />
+    <ClInclude Include="..\Public\State_Character_Battle_Idle.h" />
+    <ClInclude Include="..\Public\State_Character_Battle_Move.h" />
     <ClInclude Include="..\Public\Struct.pb.h" />
     <ClInclude Include="..\Public\Sweath.h" />
     <ClInclude Include="..\Public\Tanjiro.h" />
@@ -340,12 +343,15 @@
     <ClCompile Include="..\Private\State_Monster_Jump.cpp" />
     <ClCompile Include="..\Private\State_Monster_Trace.cpp" />
     <ClCompile Include="..\Private\State_Monster_Damaged_Basic.cpp" />
-    <ClCompile Include="..\Private\State_Tanjiro_Damaged.cpp" />
+    <ClCompile Include="..\Private\State_Character_Damaged_AirBorn.cpp" />
+    <ClCompile Include="..\Private\State_Character_Damaged_Basic.cpp" />
     <ClCompile Include="..\Private\State_Monter_Dead.cpp" />
-    <ClCompile Include="..\Private\State_Tanjiro_Dead.cpp" />
-    <ClCompile Include="..\Private\State_Tanjiro_Battle_Idle.cpp" />
-    <ClCompile Include="..\Private\State_Tanjiro_Battle_Jump.cpp" />
-    <ClCompile Include="..\Private\State_Tanjiro_Battle_Move.cpp" />
+    <ClCompile Include="..\Private\State_Character_Damaged_Blow.cpp" />
+    <ClCompile Include="..\Private\State_Character_Damaged_Bound.cpp" />
+    <ClCompile Include="..\Private\State_Character_Dead.cpp" />
+    <ClCompile Include="..\Private\State_Character_Battle_Idle.cpp" />
+    <ClCompile Include="..\Private\State_Character_Battle_Jump.cpp" />
+    <ClCompile Include="..\Private\State_Character_Battle_Move.cpp" />
     <ClCompile Include="..\Private\Struct.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>

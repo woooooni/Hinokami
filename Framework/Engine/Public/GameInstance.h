@@ -10,6 +10,7 @@ BEGIN(Engine)
 class ENGINE_DLL CGameInstance final : public CBase
 {
 	DECLARE_SINGLETON(CGameInstance)
+
 private:
 	CGameInstance();
 	virtual ~CGameInstance() = default;
@@ -67,6 +68,7 @@ public: /* For. Componenet_Manager */
 public: /* For.Light_Manager */
 	const LIGHTDESC* Get_LightDesc(_uint iIndex);
 	HRESULT Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const LIGHTDESC & LightDesc);
+	_float4x4 Get_ShadowViewMatrix(_uint iLevelIndex);
 	HRESULT Reset_Lights();
 
 
@@ -135,6 +137,7 @@ private:
 	class CModel_Manager*			m_pModel_Manager = { nullptr };
 	class CFont_Manager*			m_pFont_Manager = { nullptr };
 	class CCollision_Manager*		m_pCollision_Manager = { nullptr };
+	class CTarget_Manager*			m_pTarget_Manager = { nullptr };
 	// class CNetwork_Manager*			m_pNetwork_Manager = { nullptr };
 public:
 	static void Release_Engine();

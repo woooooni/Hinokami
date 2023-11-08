@@ -31,7 +31,7 @@ public:
     virtual void Collision_Exit(CCollider* pCollider) override;
 
     virtual _vector Get_Position() override { return XMLoadFloat3(&m_tBoundingSphere.Center); }
-
+    virtual _float Get_Radius() override { return m_tBoundingSphere.Radius; }
 
 public:
     void LateTick_Collider(_float fTimeDelta) override;

@@ -265,22 +265,28 @@ void CTransform::Set_Rotation(_fvector vRadianEulerAngle)
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScalingFromVector(vScale) * RotationMatrix * XMMatrixTranslationFromVector(vPosition));
 }
 
-void CTransform::Set_Position(_fvector vPosition, CNavigation* pNavigation)
+void CTransform::Set_Position(_fvector vPosition, _bool* bMovable, CNavigation* pNavigation)
 {
 	XMVectorSetW(vPosition, 1.f);
 	if (pNavigation == nullptr)
+	{
 		Set_State(CTransform::STATE_POSITION, vPosition);
+		*bMovable = true;
+	}
 	else
 	{
 		if (true == pNavigation->Is_Movable(vPosition))
 		{
 			Set_State(CTransform::STATE_POSITION, vPosition);
+			*bMovable = true;
 		}
 		else
 		{
 			_vector vTransformPosition = Get_State(CTransform::STATE_POSITION);
 			vTransformPosition = XMVectorSetY(vTransformPosition, XMVectorGetY(vPosition));
 			Set_State(CTransform::STATE_POSITION, vTransformPosition);
+
+			*bMovable = false;
 		}
 			
 	}

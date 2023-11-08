@@ -65,31 +65,31 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	
 
 
-	LIGHTDESC			LightDesc;
+	// LIGHTDESC			LightDesc;
 
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(15.0f, 5.0f, 15.0f, 1.f);
-	LightDesc.fRange = 10.f;
-	LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
+	//ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	//LightDesc.eType = LIGHTDESC::TYPE_POINT;
+	//LightDesc.vPosition = _float4(15.0f, 5.0f, 15.0f, 1.f);
+	//LightDesc.fRange = 10.f;
+	//LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.f, 1.f);
+	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vSpecular = LightDesc.vDiffuse;
 
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
+	//if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	//	return E_FAIL;
 
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(25.0f, 5.0f, 15.0f, 1.f);
-	LightDesc.fRange = 10.f;
-	LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
+	//ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	//LightDesc.eType = LIGHTDESC::TYPE_POINT;
+	//LightDesc.vPosition = _float4(25.0f, 5.0f, 15.0f, 1.f);
+	//LightDesc.fRange = 10.f;
+	//LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.f, 1.f);
+	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vSpecular = LightDesc.vDiffuse;
 
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
+	//if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	//	return E_FAIL;
 
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	/*ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
 	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(0.5, 0.5, 0.5, 1.f);
@@ -97,9 +97,8 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
+		return E_FAIL;*/
 
-	;
 
 	return S_OK;
 }

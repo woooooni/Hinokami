@@ -9,11 +9,11 @@ END
 
 BEGIN(Client)
 
-class CState_Tanjiro_Battle_Move final : public CState
+class CState_Character_Battle_Move final : public CState
 {
 private:
-	CState_Tanjiro_Battle_Move(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
-	virtual ~CState_Tanjiro_Battle_Move() = default;
+	CState_Character_Battle_Move(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
+	virtual ~CState_Character_Battle_Move() = default;
 
 public:
 	HRESULT Initialize(const list<wstring>& AnimationList);
@@ -29,7 +29,7 @@ public:
 
 
 public:
-	static CState_Tanjiro_Battle_Move* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
+	static CState_Character_Battle_Move* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;
 };
 

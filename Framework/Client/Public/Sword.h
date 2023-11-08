@@ -12,12 +12,12 @@ BEGIN(Client)
 class CSword final : public CPart
 {
 public:
-	enum SWORD_MODE { BASIC, BLOW, BOUND, AIR_BONE, SPL_STRIKE, MODE_END };
-
+	enum SWORD_TYPE { TANJIRO, ZENITSU, KYOJURO, SWORD_END };
 public:
 	typedef struct tagWeaponDesc : public CPart::PART_DESC
 	{		
 		_float3			vRotationDegree;
+		SWORD_TYPE eType;
 	} SWORD_DESC;
 
 protected:
@@ -35,14 +35,7 @@ public:
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
 
-
 public:
-	void Set_SwordMode(SWORD_MODE eMode) { m_eSwordMode = eMode; }
-	void Set_PushPower(_float fPower) { m_fPushPower = fPower; }
-	_float Get_PushPower() { return m_fPushPower; }
-	SWORD_MODE Get_SwordMode() { return m_eSwordMode; }
-
-
 	void Set_Damage(_float fDamage) { m_fDamage = fDamage; }
 	_float Get_Damage() { return m_fDamage; }
 
@@ -62,9 +55,8 @@ public:
 
 private:
 	wstring					m_strModelPrototype;
-	SWORD_MODE				m_eSwordMode;
-	_float					m_fPushPower = 0.f;
 	_float					m_fDamage = 1.f;
+	SWORD_TYPE				m_eType = SWORD_END;
 
 private:
 	class CTrail* m_pTrailObject = { nullptr };

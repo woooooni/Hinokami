@@ -49,7 +49,8 @@ HRESULT CParticle_Manager::Generate_Particle(const wstring& strParticleName, _ma
 
 	pTransform->Set_WorldMatrix(TransformMatrix);
 
-	if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_EFFECT, pGameObject)))
+	_uint iLevelIndex = GI->Get_CurrentLevel();
+	if (FAILED(GI->Add_GameObject(iLevelIndex, LAYER_TYPE::LAYER_EFFECT, pGameObject)))
 		return E_FAIL;
 
 	return S_OK;

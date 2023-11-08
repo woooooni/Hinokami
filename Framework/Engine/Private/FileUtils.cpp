@@ -48,7 +48,8 @@ HRESULT CFileUtils::Open(wstring filePath, FileMode mode)
 		MessageBox(nullptr, msg.c_str(), L"System Message", MB_OK);
 		return E_FAIL;
 	}
-		
+
+	return S_OK;
 }
 
 void CFileUtils::Write(void* data, _uint dataSize)

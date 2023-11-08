@@ -1,16 +1,16 @@
 #include "stdafx.h"
-#include "State_Tanjiro_Battle_Idle.h"
+#include "State_Character_Battle_Idle.h"
 #include "GameInstance.h"
 #include "Model.h"
 #include "Character.h"
 
-CState_Tanjiro_Battle_Idle::CState_Tanjiro_Battle_Idle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
+CState_Character_Battle_Idle::CState_Character_Battle_Idle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
 {
 
 }
 
-HRESULT CState_Tanjiro_Battle_Idle::Initialize(const list<wstring>& AnimationList)
+HRESULT CState_Character_Battle_Idle::Initialize(const list<wstring>& AnimationList)
 {
 	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
 	if (nullptr == m_pModelCom)
@@ -37,7 +37,7 @@ HRESULT CState_Tanjiro_Battle_Idle::Initialize(const list<wstring>& AnimationLis
 	return S_OK;
 }
 
-void CState_Tanjiro_Battle_Idle::Enter_State(void* pArg)
+void CState_Character_Battle_Idle::Enter_State(void* pArg)
 {
 	if (KEY_HOLD(KEY::W) || KEY_HOLD(KEY::S) || KEY_HOLD(KEY::A) || KEY_HOLD(KEY::D))
 	{
@@ -59,7 +59,7 @@ void CState_Tanjiro_Battle_Idle::Enter_State(void* pArg)
 	m_fAccBaseNut = 0.f;
 }
 
-void CState_Tanjiro_Battle_Idle::Tick_State(_float fTimeDelta)
+void CState_Character_Battle_Idle::Tick_State(_float fTimeDelta)
 {
 	m_fAccBaseNut += fTimeDelta;
 	if (m_fAccBaseNut >= m_fBaseNutTime)
@@ -78,25 +78,25 @@ void CState_Tanjiro_Battle_Idle::Tick_State(_float fTimeDelta)
 		m_pStateMachineCom->Change_State(CCharacter::BATTLE_JUMP);
 }
 
-void CState_Tanjiro_Battle_Idle::Exit_State()
+void CState_Character_Battle_Idle::Exit_State()
 {
 
 }
 
-CState_Tanjiro_Battle_Idle* CState_Tanjiro_Battle_Idle::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine, const list<wstring>& AnimationList)
+CState_Character_Battle_Idle* CState_Character_Battle_Idle::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine, const list<wstring>& AnimationList)
 {
-	CState_Tanjiro_Battle_Idle* pInstance =  new CState_Tanjiro_Battle_Idle(pDevice, pContext, pStateMachine);
+	CState_Character_Battle_Idle* pInstance =  new CState_Character_Battle_Idle(pDevice, pContext, pStateMachine);
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);
-		MSG_BOX("Failed Create : CState_Tanjiro_Battle_Idle");
+		MSG_BOX("Failed Create : CState_Character_Battle_Idle");
 		return nullptr;
 	}
 		
 	return pInstance;
 }
 
-void CState_Tanjiro_Battle_Idle::Free()
+void CState_Character_Battle_Idle::Free()
 {
 	__super::Free();
 }

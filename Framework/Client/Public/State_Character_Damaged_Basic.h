@@ -8,11 +8,11 @@ END
 
 BEGIN(Client)
 
-class CState_Tanjiro_Damaged final : public CState
+class CState_Character_Damaged_Basic final : public CState
 {
 private:
-	CState_Tanjiro_Damaged(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
-	virtual ~CState_Tanjiro_Damaged() = default;
+	CState_Character_Damaged_Basic(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
+	virtual ~CState_Character_Damaged_Basic() = default;
 
 public:
 	HRESULT Initialize(const list<wstring>& AnimationList);
@@ -27,7 +27,7 @@ private:
 	_uint m_iRandomIndex = 0;
 
 public:
-	static CState_Tanjiro_Damaged* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
+	static CState_Character_Damaged_Basic* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;
 };
 

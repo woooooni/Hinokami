@@ -62,6 +62,11 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
+HRESULT CGameObject::Render_ShadowDepth()
+{
+	return S_OK;
+}
+
 
 HRESULT CGameObject::Add_Component(const wstring& strComponentTag, CComponent* pComponent)
 {
@@ -109,9 +114,10 @@ HRESULT CGameObject::Compute_CamZ(_fvector vWorldPos)
 	CPipeLine* pPipeLine = CPipeLine::GetInstance();
 	Safe_AddRef(pPipeLine);
 
-	_fvector		vCamPos = XMLoadFloat4(&pPipeLine->Get_CamPosition());
+	_float4 vCamPos = pPipeLine->Get_CamPosition();
+	_vector	vCamPosition = XMLoadFloat4(&vCamPos);
 
-	m_fCamDistance = XMVectorGetX(XMVector3Length(vWorldPos - vCamPos));
+	m_fCamDistance = XMVectorGetX(XMVector3Length(vWorldPos - vCamPosition));
 
 	Safe_Release(pPipeLine);
 
@@ -145,7 +151,10 @@ HRESULT CGameObject::Add_Collider(_uint iLevelIndex, _uint eColliderType, _uint 
 		Safe_Release(pComponent);
 		return E_FAIL;
 	}
+
 	pCollider->Set_DetectionType(CCollider::DETECTION_TYPE(eDetectionType));
+
+	Safe_AddRef(pCollider);
 	iter->second.push_back(pCollider);
 	return S_OK;
 }
@@ -162,11 +171,23 @@ HRESULT CGameObject::Set_ActiveColliders(_uint eDetectionType, _bool bActive)
 	return S_OK;
 }
 
+HRESULT CGameObject::Set_Collider_AttackMode(_uint eDetectionType, _uint eAttackMode)
+{
+	auto iter = m_Colliders.find(eDetectionType);
+	if (iter == m_Colliders.end())
+		return E_FAIL;
+
+	for (auto& pCollider : iter->second)
+		pCollider->Set_AttackType(CCollider::ATTACK_TYPE(eAttackMode));
+
+	return S_OK;
+}
+
 void CGameObject::LateUpdate_Collider(_float fTimedelta)
 {
-	for (auto& Collider : m_Colliders)
+	for (auto& Pair : m_Colliders)
 	{
-		for (auto& pCollider : Collider.second)
+		for (auto& pCollider : Pair.second)
 			pCollider->LateTick_Collider(fTimedelta);
 	}
 }
@@ -187,4 +208,17 @@ void CGameObject::Free()
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
+
+	for (auto& Pair : m_Components)	
+		Safe_Release(Pair.second);
+
+	m_Components.clear();
+
+	for (auto& Pair : m_Colliders)
+	{
+		for (auto& pCollider : Pair.second)
+			Safe_Release(pCollider);
+		Pair.second.clear();
+	}
+	m_Colliders.clear();
 }

@@ -11,6 +11,7 @@
 #include "Model_Manager.h"
 #include "Key_Manager.h"
 #include "Collision_Manager.h"
+#include "Target_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -28,9 +29,11 @@ CGameInstance::CGameInstance()
 	, m_pFont_Manager(CFont_Manager::GetInstance())
 	, m_pModel_Manager(CModel_Manager::GetInstance())
 	, m_pCollision_Manager(CCollision_Manager::GetInstance())
+	, m_pTarget_Manager(CTarget_Manager::GetInstance())
 	// , m_pNetwork_Manager(CNetwork_Manager::GetInstance())
 	
 {
+	Safe_AddRef(m_pTarget_Manager);
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pGraphic_Device);
@@ -89,9 +92,9 @@ void CGameInstance::Tick(_float fTimeDelta)
 {
 	m_pInput_Device->Update();
 	m_pKey_Manager->Tick(fTimeDelta);
+	m_pLevel_Manager->Tick(fTimeDelta);
 	m_pObject_Manager->Priority_Tick(fTimeDelta);
 	m_pObject_Manager->Tick(fTimeDelta);
-	m_pLevel_Manager->Tick(fTimeDelta);
   	m_pPipeLine->Tick();
 	
 
@@ -109,7 +112,6 @@ void CGameInstance::Clear(_uint iLevelIndex)
 		return;
 
 	m_pObject_Manager->Clear(iLevelIndex);
-	// m_pComponent_Manager->Clear(iLevelIndex);
 }
 
 _float CGameInstance::Compute_TimeDelta(const wstring & strTimerTag)
@@ -304,6 +306,11 @@ HRESULT CGameInstance::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return m_pLight_Manager->Add_Light(pDevice, pContext, LightDesc);
 }
 
+_float4x4 CGameInstance::Get_ShadowViewMatrix(_uint iLevelIndex)
+{
+	return m_pLight_Manager->Get_ShadowLightViewMatrix(iLevelIndex);
+}
+
 HRESULT CGameInstance::Reset_Lights()
 {
 	return m_pLight_Manager->Reset_Lights();
@@ -493,6 +500,7 @@ void CGameInstance::Reset()
 void CGameInstance::Release_Engine()
 {
 	CLevel_Manager::GetInstance()->DestroyInstance();
+	CTarget_Manager::GetInstance()->DestroyInstance();
 	CObject_Manager::GetInstance()->DestroyInstance();
 	CComponent_Manager::GetInstance()->DestroyInstance();
 	CTimer_Manager::GetInstance()->DestroyInstance();
@@ -521,5 +529,6 @@ void CGameInstance::Free()
 	Safe_Release(m_pKey_Manager);
 	Safe_Release(m_pModel_Manager);
 	Safe_Release(m_pCollision_Manager);
+	Safe_Release(m_pTarget_Manager);
 	// Safe_Release(m_pNetwork_Manager);
 }

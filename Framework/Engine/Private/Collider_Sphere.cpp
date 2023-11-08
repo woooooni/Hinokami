@@ -53,6 +53,8 @@ _bool CCollider_Sphere::Is_Collision(CCollider* pCollider)
 		CCollider_Sphere* pOtherCollider = static_cast<CCollider_Sphere*>(pCollider);
 		return m_tBoundingSphere.Intersects(pOtherCollider->Get_Sphere());
 	}
+
+	return false;
 }
 
 void CCollider_Sphere::LateTick_Collider(_float fTimeDelta)
@@ -82,6 +84,8 @@ HRESULT CCollider_Sphere::Render()
 
 		m_pBatch->End();
 	}*/
+	if (false == m_bActive)
+		return S_OK;
 
 	m_pEffect->SetWorld(XMMatrixIdentity());
 	m_pEffect->SetView(GAME_INSTANCE->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));

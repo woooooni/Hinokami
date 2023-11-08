@@ -10,6 +10,7 @@
 #include "Picking_Manager.h"
 #include "Effect_Manager.h"
 #include "Particle_Manager.h"
+#include "Light.h"
 
 #include "UI_Loading_Anim.h"
 #include "UI_Loading_Background.h"
@@ -50,7 +51,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_TOOL)))
+	if (FAILED(Open_Level(LEVEL_GAMEPLAY)))
 		return E_FAIL;
 
 
@@ -148,6 +149,18 @@ HRESULT CMainApp::Initialize_Client()
 
 	if(FAILED(CParticle_Manager::GetInstance()->Reserve_Manager(m_pDevice, m_pContext, L"../Bin/Export/Particle/")))
 		return E_FAIL;
+
+	LIGHTDESC LightDesc;
+	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(0.5, 0.5, 0.5, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(GI->Add_Light(m_pDevice, m_pContext, LightDesc)))
+		return E_FAIL;
+
 	
 
 	return S_OK;

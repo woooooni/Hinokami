@@ -60,7 +60,10 @@ bool Handle_C_CREATE_OBJECT(PacketSessionRef& session, Protocol::C_CREATE_OBJECT
 
 		// pModelCom->Set_AnimationIndex_Force(pkt.ianimationindex());
 		// pModelCom->Get_Animations()[pModelCom->Get_CurrAnimationIndex()]->Set_AnimationPlayTime(pTranform, pkt.fanimationplaytime());
+		return true;
 	}
+
+	return true;
 }
 
 bool Handle_C_DELETE_OBJECT(PacketSessionRef& session, Protocol::C_DELETE_OBJECT& pkt)

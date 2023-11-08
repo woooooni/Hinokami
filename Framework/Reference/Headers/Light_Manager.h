@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Base.h"
+#include "Engine_Defines.h"
 
 BEGIN(Engine)
-
-/* 빛들을 보관한다. */
 
 class CLight_Manager final : public CBase
 {
@@ -18,7 +17,13 @@ public:
 
 public:
 	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHTDESC& LightDesc);
+	HRESULT Add_ShadowLight(_uint iLevelIndex, _matrix WorldMatrix);
+
 	HRESULT Render(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+
+
+public:
+	_float4x4 Get_ShadowLightViewMatrix(_uint iLevelIndex);
 
 public:
 	HRESULT Reset_Lights();
@@ -26,6 +31,11 @@ public:
 private:
 	list<class CLight*>			m_Lights;
 	typedef list<class CLight*>	LIGHTS;
+
+
+private:
+	map<_uint, _float4x4> m_ShadowWorldMatrix;
+
 
 public:
 	virtual void Free() override;

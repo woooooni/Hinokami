@@ -1038,8 +1038,13 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         ImGui::DragFloat2("##Effect_UV_Flow", (_float*)&tEffectDesc.vUVFlow, 0.01f, -100.f, 100.f);
 
 
+        IMGUI_NEW_LINE;
+        ImGui::Text("Dest_AlphaSpeed : ");
+        ImGui::DragFloat("##Effect_DestAlphaSpeed", &tEffectDesc.fDestAlphaSpeed, 0.01f, 0.f, 100.f);
+
         if (ImGui::Button("Reset"))
         {
+            tEffectDesc.fAlpha = 1.f;
             m_pPrevEffect->Reset_UV();
         }
             
@@ -1810,11 +1815,11 @@ HRESULT CImGui_Manager::Save_Map_Data(const wstring& strMapFileName)
 HRESULT CImGui_Manager::Save_Effect(const wstring& strFullPath)
 {
     auto path = filesystem::path(strFullPath);
-    if (filesystem::exists(path))
-    {
-        MSG_BOX("File is Exist. Press Other Name.");
-        return E_FAIL;
-    }
+    //if (filesystem::exists(path))
+    //{
+    //    MSG_BOX("File is Exist. Press Other Name.");
+    //    return E_FAIL;
+    //}
         
     
 

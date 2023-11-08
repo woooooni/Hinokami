@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "State_Tanjiro_Battle_Move.h"
+#include "State_Character_Battle_Move.h"
 #include "GameInstance.h"
 #include "Tanjiro.h"
 #include "PipeLine.h"
@@ -7,13 +7,13 @@
 #include "Navigation.h"
 
 USING(Client)
-CState_Tanjiro_Battle_Move::CState_Tanjiro_Battle_Move(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
+CState_Character_Battle_Move::CState_Character_Battle_Move(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
 {
 
 }
 
-HRESULT CState_Tanjiro_Battle_Move::Initialize(const list<wstring>& AnimationList)
+HRESULT CState_Character_Battle_Move::Initialize(const list<wstring>& AnimationList)
 {
 	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
 	if (nullptr == m_pModelCom)
@@ -46,7 +46,7 @@ HRESULT CState_Tanjiro_Battle_Move::Initialize(const list<wstring>& AnimationLis
 	return S_OK;
 }
 
-void CState_Tanjiro_Battle_Move::Enter_State(void* pArg)
+void CState_Character_Battle_Move::Enter_State(void* pArg)
 {
 	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
 	if (nullptr != pOwner)
@@ -63,7 +63,7 @@ void CState_Tanjiro_Battle_Move::Enter_State(void* pArg)
 	m_fMoveSpeed = m_pTransformCom->Get_TickPerSecond();
 }
 
-void CState_Tanjiro_Battle_Move::Tick_State(_float fTimeDelta)
+void CState_Character_Battle_Move::Tick_State(_float fTimeDelta)
 {
 	_bool bKeyHolding = false;
 
@@ -162,26 +162,26 @@ void CState_Tanjiro_Battle_Move::Tick_State(_float fTimeDelta)
 	
 }
 
-void CState_Tanjiro_Battle_Move::Exit_State()
+void CState_Character_Battle_Move::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
 	m_pTransformCom->Set_TickPerSecond(m_fMoveSpeed);
 }
 
-CState_Tanjiro_Battle_Move* CState_Tanjiro_Battle_Move::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
+CState_Character_Battle_Move* CState_Character_Battle_Move::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
 {
-	CState_Tanjiro_Battle_Move* pInstance =  new CState_Tanjiro_Battle_Move(pDevice, pContext, pStateMachine);
+	CState_Character_Battle_Move* pInstance =  new CState_Character_Battle_Move(pDevice, pContext, pStateMachine);
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);
-		MSG_BOX("Failed Create : CState_Tanjiro_Battle_Move");
+		MSG_BOX("Failed Create : CState_Character_Battle_Move");
 		return nullptr;
 	}
 		
 	return pInstance;
 }
 
-void CState_Tanjiro_Battle_Move::Free()
+void CState_Character_Battle_Move::Free()
 {
 	__super::Free();
 	Safe_Release(m_pNavigation);

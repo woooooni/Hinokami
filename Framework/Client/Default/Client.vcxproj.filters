@@ -238,6 +238,27 @@
     <Filter Include="01.Levels\04. Train_Boss">
       <UniqueIdentifier>{fa86199c-349f-4dfa-b634-2ba0e3ca8d4e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03. Character\00. Tanjiro\State\Battle\Attack">
+      <UniqueIdentifier>{739b56af-14e6-4181-9c99-c11f4535a471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\00. State">
+      <UniqueIdentifier>{6cd8844c-d462-4360-8d37-b209ad006488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\00. State\Damaged">
+      <UniqueIdentifier>{e78011f5-bfbc-4200-86b0-24396aa0328f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\00. State\Move">
+      <UniqueIdentifier>{53552ffa-863e-46a0-b037-d5fdf8d4708f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\00. State\Dead">
+      <UniqueIdentifier>{8b4a8443-c1b5-4735-bfcb-7a095029bbce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\00. State\Idle">
+      <UniqueIdentifier>{829747dc-8459-48ea-a3bc-902c15f3f8dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\00. State\Jump">
+      <UniqueIdentifier>{bccafb2c-4998-405c-b1e5-a7bb8fcb0203}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -405,9 +426,6 @@
     <ClInclude Include="..\Public\Camera_Main.h">
       <Filter>02.GameObjects\02. Camera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_Tanjiro_Attack.h">
-      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\State_Tanjiro_Basic_Idle.h">
       <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Basic</Filter>
     </ClInclude>
@@ -416,21 +434,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\State_Tanjiro_Basic_Move.h">
       <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Basic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_Tanjiro_Battle_Jump.h">
-      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_Tanjiro_Damaged.h">
-      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_Tanjiro_Dead.h">
-      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_Tanjiro_Battle_Idle.h">
-      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\State_Tanjiro_Battle_Move.h">
-      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster.h">
       <Filter>02.GameObjects\05. Monster</Filter>
@@ -497,6 +500,33 @@
     </ClInclude>
     <ClInclude Include="..\Public\Level_FinalBoss.h">
       <Filter>01.Levels\06. Final_Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Tanjiro_Attack.h">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Character_Battle_Jump.h">
+      <Filter>02.GameObjects\03. Character\00. State\Jump</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Character_Battle_Move.h">
+      <Filter>02.GameObjects\03. Character\00. State\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Character_Damaged_AirBorn.h">
+      <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Character_Damaged_Basic.h">
+      <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Character_Damaged_Blow.h">
+      <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Character_Damaged_Bound.h">
+      <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Character_Dead.h">
+      <Filter>02.GameObjects\03. Character\00. State\Dead</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Character_Battle_Idle.h">
+      <Filter>02.GameObjects\03. Character\00. State\Idle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -653,9 +683,6 @@
     <ClCompile Include="..\Private\Camera_Main.cpp">
       <Filter>02.GameObjects\02. Camera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\State_Tanjiro_Attack.cpp">
-      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\State_Tanjiro_Basic_Idle.cpp">
       <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Basic</Filter>
     </ClCompile>
@@ -664,21 +691,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Tanjiro_Basic_Move.cpp">
       <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Basic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Tanjiro_Battle_Jump.cpp">
-      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Tanjiro_Damaged.cpp">
-      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Tanjiro_Dead.cpp">
-      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Tanjiro_Battle_Idle.cpp">
-      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\State_Tanjiro_Battle_Move.cpp">
-      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster.cpp">
       <Filter>02.GameObjects\05. Monster</Filter>
@@ -742,6 +754,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_FinalBoss.cpp">
       <Filter>01.Levels\06. Final_Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Tanjiro_Attack.cpp">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Character_Battle_Jump.cpp">
+      <Filter>02.GameObjects\03. Character\00. State\Jump</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Character_Battle_Move.cpp">
+      <Filter>02.GameObjects\03. Character\00. State\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Character_Damaged_AirBorn.cpp">
+      <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Character_Damaged_Basic.cpp">
+      <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Character_Damaged_Blow.cpp">
+      <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Character_Damaged_Bound.cpp">
+      <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Character_Dead.cpp">
+      <Filter>02.GameObjects\03. Character\00. State\Dead</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Character_Battle_Idle.cpp">
+      <Filter>02.GameObjects\03. Character\00. State\Idle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

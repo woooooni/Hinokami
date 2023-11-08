@@ -26,7 +26,7 @@ CEffect::CEffect(const CEffect& rhs)
 	, m_bIncrement(rhs.m_bIncrement)
 	, m_bLoop(rhs.m_bLoop)
 	, m_bGravity(rhs.m_bGravity)
-	, m_fAccUVFlow(rhs.m_fAccUVFlow)
+	, m_fAccUVFlow(0.f, 0.f)
 	, m_fAccDeletionTime(0.f)
 	, m_iDiffuseTextureIdx(rhs.m_iDiffuseTextureIdx)
 	, m_iAlphaTextureIdx(rhs.m_iAlphaTextureIdx)
@@ -376,6 +376,7 @@ CEffect* CEffect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, c
 	{
 		MSG_BOX("Failed to Created : CEffect");
 		Safe_Release(pInstance);
+		return nullptr;
 	}
 	return pInstance;
 }
@@ -388,6 +389,7 @@ CGameObject* CEffect::Clone(void* pArg)
 	{
 		MSG_BOX("Failed to Cloned : CEffect");
 		Safe_Release(pInstance);
+		return nullptr;
 	}
 
 	return pInstance;
@@ -396,13 +398,15 @@ CGameObject* CEffect::Clone(void* pArg)
 void CEffect::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pDiffuseTextureCom);
 	Safe_Release(m_pAlphaTextureCom);
+	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pTransformCom);
+	Safe_Release(m_pRigidBodyCom);
 	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pModelCom);
 }
 
 

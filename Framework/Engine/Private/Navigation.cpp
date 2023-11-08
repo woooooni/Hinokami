@@ -286,11 +286,12 @@ HRESULT CNavigation::Render()
 		return E_FAIL;
 
 	CPipeLine*		pPipeLine = GET_INSTANCE(CPipeLine);
-
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &pPipeLine->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW))))
+	_float4x4 ViewMatirix = pPipeLine->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW);
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &ViewMatirix)))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &pPipeLine->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ))))
+	_float4x4 ProjMatirx = pPipeLine->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ);
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &ProjMatirx)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CPipeLine);

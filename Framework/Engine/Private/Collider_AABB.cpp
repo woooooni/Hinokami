@@ -53,6 +53,8 @@ _bool CCollider_AABB::Is_Collision(CCollider* pCollider)
 		CCollider_Sphere* pOtherCollider = static_cast<CCollider_Sphere*>(pCollider);
 		return m_tBoundingBox.Intersects(pOtherCollider->Get_Sphere());
 	}
+
+	return false;
 }
 
 

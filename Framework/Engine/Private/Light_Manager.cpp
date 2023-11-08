@@ -28,12 +28,40 @@ HRESULT CLight_Manager::Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * 
 	return S_OK;
 }
 
+HRESULT CLight_Manager::Add_ShadowLight(_uint iLevelIndex, _matrix WorldMatrix)
+{
+	auto iter = m_ShadowWorldMatrix.find(iLevelIndex);
+
+	if (iter != m_ShadowWorldMatrix.end())
+		return E_FAIL;
+
+	_float4x4 Matrix;
+	XMStoreFloat4x4(&Matrix, WorldMatrix);
+
+	m_ShadowWorldMatrix.emplace(iLevelIndex, Matrix);
+	return S_OK;
+}
+
 HRESULT CLight_Manager::Render(CShader * pShader, CVIBuffer_Rect * pVIBuffer)
 {
 	for (auto& pLight : m_Lights)
 		pLight->Render(pShader, pVIBuffer);
 
 	return S_OK;
+}
+
+_float4x4 CLight_Manager::Get_ShadowLightViewMatrix(_uint iLevelIndex)
+{
+	_float4x4 ShadowWorldMatrix;
+	XMStoreFloat4x4(&ShadowWorldMatrix, XMMatrixIdentity());
+
+	auto iter = m_ShadowWorldMatrix.find(iLevelIndex);
+
+	if (iter == m_ShadowWorldMatrix.end())
+		return ShadowWorldMatrix;
+
+	XMStoreFloat4x4(&ShadowWorldMatrix, XMMatrixTranspose(XMLoadFloat4x4(&iter->second)));
+	return ShadowWorldMatrix;
 }
 
 HRESULT CLight_Manager::Reset_Lights()

@@ -1,17 +1,17 @@
 #include "stdafx.h"
-#include "State_Tanjiro_Damaged.h"
+#include "State_Character_Damaged_Basic.h"
 #include "GameInstance.h"
 #include "Model.h"
 #include "Character.h"
 
 
-CState_Tanjiro_Damaged::CState_Tanjiro_Damaged(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
+CState_Character_Damaged_Basic::CState_Character_Damaged_Basic(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
 {
 
 }
 
-HRESULT CState_Tanjiro_Damaged::Initialize(const list<wstring>& AnimationList)
+HRESULT CState_Character_Damaged_Basic::Initialize(const list<wstring>& AnimationList)
 {
 	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
 	if (nullptr == m_pModelCom)
@@ -42,7 +42,7 @@ HRESULT CState_Tanjiro_Damaged::Initialize(const list<wstring>& AnimationList)
 	return S_OK;
 }
 
-void CState_Tanjiro_Damaged::Enter_State(void* pArg)
+void CState_Character_Damaged_Basic::Enter_State(void* pArg)
 {
 	m_pCharacter->Set_Infinite(5.f, true);
 	m_pCharacter->DrawSword();
@@ -54,31 +54,31 @@ void CState_Tanjiro_Damaged::Enter_State(void* pArg)
 
 }
 
-void CState_Tanjiro_Damaged::Tick_State(_float fTimeDelta)
+void CState_Character_Damaged_Basic::Tick_State(_float fTimeDelta)
 {
 	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[m_iRandomIndex]))
 		m_pStateMachineCom->Change_State(CCharacter::STATE::BATTLE_IDLE);
 }
 
-void CState_Tanjiro_Damaged::Exit_State()
+void CState_Character_Damaged_Basic::Exit_State()
 {
-	m_pCharacter->Set_Infinite(5.f, true);
+	m_pCharacter->Set_Infinite(0.5f, true);
 }
 
-CState_Tanjiro_Damaged* CState_Tanjiro_Damaged::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
+CState_Character_Damaged_Basic* CState_Character_Damaged_Basic::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
 {
-	CState_Tanjiro_Damaged* pInstance =  new CState_Tanjiro_Damaged(pDevice, pContext, pStateMachine);
+	CState_Character_Damaged_Basic* pInstance =  new CState_Character_Damaged_Basic(pDevice, pContext, pStateMachine);
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);
-		MSG_BOX("Failed Create : CState_Tanjiro_Damaged");
+		MSG_BOX("Failed Create : CState_Character_Damaged_Basic");
 		return nullptr;
 	}
 		
 	return pInstance;
 }
 
-void CState_Tanjiro_Damaged::Free()
+void CState_Character_Damaged_Basic::Free()
 {
 	__super::Free();
 	Safe_Release(m_pCharacter);

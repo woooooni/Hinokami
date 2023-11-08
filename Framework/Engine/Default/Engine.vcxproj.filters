@@ -220,11 +220,14 @@
     <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Cube">
       <UniqueIdentifier>{02fd9e87-474b-48c9-aa7c-952b1c5f5856}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\03. Shader">
-      <UniqueIdentifier>{ae1b5658-3515-477e-aa12-9972107b50c4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utiltiy\06. PhysicsManager">
       <UniqueIdentifier>{e26d91f2-ce4c-474b-9955-154ffc88cbd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\03. Shader">
+      <UniqueIdentifier>{ae1b5658-3515-477e-aa12-9972107b50c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\97. ShaderFiles">
+      <UniqueIdentifier>{8fa7b1dc-e34f-4049-afc5-bb12e296a974}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -283,7 +286,7 @@
       <Filter>01.Utiltiy\03.Component\02. VIBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Shader.h">
-      <Filter>01.Utiltiy\03.Component\02. VIBuffer\03. Shader</Filter>
+      <Filter>01.Utiltiy\03.Component\03. Shader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Texture.h">
       <Filter>01.Utiltiy\03.Component\04. Texture</Filter>
@@ -356,12 +359,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\DebugDraw.h">
       <Filter>01.Utiltiy\98. Utils\Debug_Draw</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\RenderTarget.h">
-      <Filter>01.Utiltiy\04. RenderTarget</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Target_Manager.h">
-      <Filter>01.Utiltiy\04. RenderTarget\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\FileUtils.h">
       <Filter>01.Utiltiy\98. Utils</Filter>
@@ -465,6 +462,12 @@
     <ClInclude Include="..\Public\PhysicsX_Manager.h">
       <Filter>01.Utiltiy\06. PhysicsManager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Target_Manager.h">
+      <Filter>01.Utiltiy\04. RenderTarget\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RenderTarget.h">
+      <Filter>01.Utiltiy\04. RenderTarget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -507,7 +510,7 @@
       <Filter>01.Utiltiy\03.Component\02. VIBuffer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Shader.cpp">
-      <Filter>01.Utiltiy\03.Component\02. VIBuffer\03. Shader</Filter>
+      <Filter>01.Utiltiy\03.Component\03. Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Texture.cpp">
       <Filter>01.Utiltiy\03.Component\04. Texture</Filter>
@@ -580,12 +583,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\DebugDraw.cpp">
       <Filter>01.Utiltiy\98. Utils\Debug_Draw</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\RenderTarget.cpp">
-      <Filter>01.Utiltiy\04. RenderTarget</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Target_Manager.cpp">
-      <Filter>01.Utiltiy\04. RenderTarget\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\FileUtils.cpp">
       <Filter>01.Utiltiy\98. Utils</Filter>
@@ -686,10 +683,19 @@
     <ClCompile Include="..\Private\PhysicsX_Manager.cpp">
       <Filter>01.Utiltiy\06. PhysicsManager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Target_Manager.cpp">
+      <Filter>01.Utiltiy\04. RenderTarget\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RenderTarget.cpp">
+      <Filter>01.Utiltiy\04. RenderTarget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
-      <Filter>01.Utiltiy\03.Component\09. Navigation\Cell\Shader</Filter>
+      <Filter>01.Utiltiy\97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl">
+      <Filter>01.Utiltiy\97. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

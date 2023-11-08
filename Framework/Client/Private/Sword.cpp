@@ -7,6 +7,7 @@
 #include "Monster.h"
 #include "Trail.h"
 #include "PipeLine.h"
+#include "Particle_Manager.h"
 
 CSword::CSword(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strObjectTag)
 	: CPart(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_WEAPON)
@@ -36,6 +37,7 @@ HRESULT CSword::Initialize(void* pArg)
 
 		if (FAILED(__super::Initialize(pArg)))
 			return E_FAIL;
+		m_eType = pWeaponDesc->eType;
 	}
 
 	if (FAILED(Ready_Components()))
@@ -86,15 +88,18 @@ HRESULT CSword::Render()
 		return E_FAIL;
 
 	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
+	_uint		iPassIndex = 0;
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
 			return E_FAIL;
 
-		/*if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_NORMALS, "g_NormalTexture")))
-			return E_FAIL;*/
+		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_NORMALS, "g_NormalTexture")))
+			return E_FAIL;
+		else
+			iPassIndex++;
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, iPassIndex)))
 			return E_FAIL;
 	}
 
@@ -103,41 +108,46 @@ HRESULT CSword::Render()
 
 void CSword::Collision_Enter(const COLLISION_INFO& tInfo)
 {
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER) 
+	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER)
 	{
-		CMonster* pMonster = dynamic_cast<CMonster*>(tInfo.pOther);
-
-		if (tInfo.pMyCollider->Get_DetectionType() == CCollider::ATTACK
-			&& tInfo.pOtherCollider->Get_DetectionType() != CCollider::ATTACK
-			&& tInfo.pOtherCollider->Get_DetectionType() != CCollider::BOUNDARY)
+		
+		if ((tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::ATTACK) && (tInfo.pOtherCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::BODY))
 		{
-			switch (m_eSwordMode)
+			CMonster* pMonster = dynamic_cast<CMonster*>(tInfo.pOther);
+			if (nullptr == pMonster)
+				return;
+
+
+			_matrix WorldMatrix = XMMatrixIdentity();
+			WorldMatrix.r[CTransform::STATE::STATE_POSITION] = XMVectorSetW(tInfo.pOtherCollider->Get_Position(), 1.f);
+
+			switch (m_eType)
 			{
-			case SWORD_MODE::BASIC:
-				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::BASIC, m_fPushPower, 0.f, m_fDamage);
+			case SWORD_TYPE::TANJIRO:
+				CParticle_Manager::GetInstance()->Generate_Particle(L"Tanjiro_Attack_Particle", WorldMatrix);
 				break;
-			case SWORD_MODE::AIR_BONE:
-				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::AIRBONE, m_fPushPower, 5.f, m_fDamage);
+			case SWORD_TYPE::ZENITSU:
+				CParticle_Manager::GetInstance()->Generate_Particle(L"Zenitsu_Attack_Particle", WorldMatrix);
 				break;
-
-			case SWORD_MODE::BLOW:
-				pMonster->On_Damaged(m_pOwner, CMonster::DAMAGE_TYPE::BLOW, m_fPushPower, 0.f, m_fDamage);
+			case SWORD_TYPE::KYOJURO:
+				CParticle_Manager::GetInstance()->Generate_Particle(L"Kyojuro_Attack_Particle", WorldMatrix);
 				break;
-
 			}
-			CTransform* pTransform = m_pOwner->Get_Component<CTransform>(L"Com_Transform");
-			pTransform->LookAt_ForLandObject(pMonster->Get_Component<CTransform>(L"Com_Transform")->Get_State(CTransform::STATE_POSITION));
+
+			// TODO :: 데미지 공식적용해 수정할 것.
+			pMonster->On_Damaged(m_pOwner, tInfo.pMyCollider->Get_AttackType(), 0.f);
 		}
 	}
-	
 }
 
 void CSword::Collision_Continue(const COLLISION_INFO& tInfo)
 {
+
 }
 
 void CSword::Collision_Exit(const COLLISION_INFO& tInfo)
 {
+
 }
 
 _matrix CSword::Get_FinalWorldMatrix()

@@ -133,8 +133,13 @@ void CRigidBody::Update_Velocity(_float fTimeDelta)
 			m_pTransformCom->Set_State(CTransform::STATE::STATE_POSITION, vPrefixPosition);
 		}
 			
-			
-		m_pTransformCom->Set_Position(vLerp, m_pNavigationCom);
+		_bool bMovable = false;
+		m_pTransformCom->Set_Position(vLerp, &bMovable, m_pNavigationCom);
+		if (false == bMovable)
+		{
+			m_vVelocity.x = 0.f;
+			m_vVelocity.z = 0.f;
+		}
 	}
 
 

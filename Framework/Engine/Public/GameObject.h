@@ -25,6 +25,7 @@ public:
 	virtual void Tick(_float fTimeDelta);
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
+	virtual HRESULT Render_ShadowDepth();
 
 public:
 	virtual void Collision_Enter(const COLLISION_INFO& tInfo) {};
@@ -72,6 +73,9 @@ public:
 	HRESULT Add_Collider(_uint iLevelIndex, _uint eColliderType, _uint eDetectionType, void* pArg);
 	virtual HRESULT Set_ActiveColliders(_uint eDetectionType, _bool bActive);
 
+
+	virtual HRESULT Set_Collider_AttackMode(_uint eDetectionType, _uint eAttackMode);
+
 protected:
 	void LateUpdate_Collider(_float fTimedelta);
 	void Render_Collider();
@@ -113,7 +117,7 @@ protected:
 
 
 protected:
-	CComponent* CGameObject::Find_Component(const wstring & strComponentTag);
+	CComponent* Find_Component(const wstring & strComponentTag);
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

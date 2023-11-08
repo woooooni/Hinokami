@@ -1,17 +1,17 @@
 #include "stdafx.h"
-#include "State_Monster_Damaged_Blow.h"
+#include "State_Character_Damaged_Blow.h"
 #include "GameInstance.h"
 #include "Model.h"
-#include "Monster.h"
+#include "Character.h"
 
 
-CState_Monster_Damaged_Blow::CState_Monster_Damaged_Blow(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
+CState_Character_Damaged_Blow::CState_Character_Damaged_Blow(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
 {
 
 }
 
-HRESULT CState_Monster_Damaged_Blow::Initialize(const list<wstring>& AnimationList)
+HRESULT CState_Character_Damaged_Blow::Initialize(const list<wstring>& AnimationList)
 {
 	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
 	if (nullptr == m_pModelCom)
@@ -27,14 +27,14 @@ HRESULT CState_Monster_Damaged_Blow::Initialize(const list<wstring>& AnimationLi
 		return E_FAIL;
 
 
-	m_pOwnerMonster = dynamic_cast<CMonster*>(m_pStateMachineCom->Get_Owner());
-	if (nullptr == m_pOwnerMonster)
+	m_pOwnerCharacter = dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner());
+	if (nullptr == m_pOwnerCharacter)
 		return E_FAIL;
 
 	Safe_AddRef(m_pRigidBodyCom);
 	Safe_AddRef(m_pModelCom);
 	Safe_AddRef(m_pTransformCom);
-	Safe_AddRef(m_pOwnerMonster);
+	Safe_AddRef(m_pOwnerCharacter);
 
 	for (auto strAnimName : AnimationList)
 	{
@@ -48,7 +48,7 @@ HRESULT CState_Monster_Damaged_Blow::Initialize(const list<wstring>& AnimationLi
 	return S_OK;
 }
 
-void CState_Monster_Damaged_Blow::Enter_State(void* pArg)
+void CState_Character_Damaged_Blow::Enter_State(void* pArg)
 {
 	_vector vBlowDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1);
 	XMVectorSetY(vBlowDir, 0.f);
@@ -58,7 +58,7 @@ void CState_Monster_Damaged_Blow::Enter_State(void* pArg)
 	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
-void CState_Monster_Damaged_Blow::Tick_State(_float fTimeDelta)
+void CState_Character_Damaged_Blow::Tick_State(_float fTimeDelta)
 {
 	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[0]))
 	{
@@ -76,25 +76,25 @@ void CState_Monster_Damaged_Blow::Tick_State(_float fTimeDelta)
 		m_fAccRecovery += fTimeDelta;
 		if (m_fAccRecovery >= m_fRecoveryTime)
 		{
-			m_pStateMachineCom->Change_State(CMonster::MONSTER_STATE::IDLE);
+			m_pStateMachineCom->Change_State(CCharacter::STATE::BATTLE_IDLE);
 		}
 	}
 	
 }
 
-void CState_Monster_Damaged_Blow::Exit_State()
+void CState_Character_Damaged_Blow::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
 	m_bFirstGround = false;
 	m_fAccRecovery = 0.f;
 
-	m_pOwnerMonster->Set_Infinite(0.5f, false);
+	m_pOwnerCharacter->Set_Infinite(0.5f, false);
 	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
-CState_Monster_Damaged_Blow* CState_Monster_Damaged_Blow::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
+CState_Character_Damaged_Blow* CState_Character_Damaged_Blow::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
 {
-	CState_Monster_Damaged_Blow* pInstance =  new CState_Monster_Damaged_Blow(pDevice, pContext, pStateMachine);
+	CState_Character_Damaged_Blow* pInstance =  new CState_Character_Damaged_Blow(pDevice, pContext, pStateMachine);
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);
@@ -105,9 +105,9 @@ CState_Monster_Damaged_Blow* CState_Monster_Damaged_Blow::Create(ID3D11Device* p
 	return pInstance;
 }
 
-void CState_Monster_Damaged_Blow::Free()
+void CState_Character_Damaged_Blow::Free()
 {
 	__super::Free();
+	Safe_Release(m_pOwnerCharacter);
 	Safe_Release(m_pRigidBodyCom);
-	Safe_Release(m_pOwnerMonster);
 }

@@ -26,19 +26,43 @@ public:
 	HRESULT Draw();
 
 
+public:
+	HRESULT Add_Debug(class CComponent* pDebug) {
+		m_RenderDebug.push_back(pDebug);
+		Safe_AddRef(pDebug);
+		return S_OK;
+	}
+
+
 
 private:
 	HRESULT Render_Priority();
 	HRESULT Render_Shadow();
+	HRESULT Render_NonLight();
 	HRESULT Render_NonAlphaBlend();
 	HRESULT Render_Lights();
+	HRESULT Render_Deferred();
+
 	HRESULT Render_Blend();
-	HRESULT Render_NonLight();
 	HRESULT Render_AlphaBlend();
 	HRESULT Render_UI();
 
 private:
+	HRESULT Render_Debug();
+
+private:
+	class CVIBuffer_Rect* m_pVIBuffer = { nullptr };
+	class CShader* m_pShader = { nullptr };
+
+	class CTarget_Manager* m_pTarget_Manager = { nullptr };
+	class CLight_Manager* m_pLight_Manager = { nullptr };
+
+	_float4x4					m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
+
+
+private:
 	list<class CGameObject*>			m_RenderObjects[RENDER_END];
+	list<class CComponent*>				m_RenderDebug;
 
 public:
 	static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

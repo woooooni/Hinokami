@@ -8,11 +8,11 @@ END
 
 BEGIN(Client)
 
-class CState_Tanjiro_Dead final : public CState
+class CState_Character_Dead final : public CState
 {
 private:
-	CState_Tanjiro_Dead(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
-	virtual ~CState_Tanjiro_Dead() = default;
+	CState_Character_Dead(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
+	virtual ~CState_Character_Dead() = default;
 
 public:
 	HRESULT Initialize(const list<wstring>& AnimationList);
@@ -24,7 +24,7 @@ public:
 
 
 public:
-	static CState_Tanjiro_Dead* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
+	static CState_Character_Dead* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;
 };
 

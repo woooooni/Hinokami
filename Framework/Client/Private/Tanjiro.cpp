@@ -7,18 +7,24 @@
 #include "Trail.h"
 #include "Collision_Manager.h"
 
+
+
+#include "State_Tanjiro_Attack.h"
+
+
 #include "State_Tanjiro_Basic_Idle.h"
 #include "State_Tanjiro_Basic_Move.h"
 #include "State_Tanjiro_Basic_Jump.h"
 
-#include "State_Tanjiro_Battle_Idle.h"
-#include "State_Tanjiro_Battle_Move.h"
-#include "State_Tanjiro_Battle_Jump.h"
-#include "State_Tanjiro_Attack.h"
-#include "State_Tanjiro_Damaged.h"
-#include "State_Tanjiro_Dead.h"
+#include "State_Character_Battle_Idle.h"
+#include "State_Character_Battle_Move.h"
+#include "State_Character_Battle_Jump.h"
+#include "State_Character_Dead.h"
 
-#include "Monster.h"
+#include "State_Character_Damaged_Basic.h"
+#include "State_Character_Damaged_Blow.h"
+#include "State_Character_Damaged_Bound.h"
+#include "State_Character_Damaged_AirBorn.h"
 
 USING(Client)
 
@@ -106,7 +112,7 @@ HRESULT CTanjiro::Render()
 
 void CTanjiro::Collision_Enter(const COLLISION_INFO& tInfo)
 {
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER && m_pRigidBodyCom->Is_Ground())
+	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER)
 	{
 		if ((tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::BODY 
 			|| tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::HEAD)
@@ -119,11 +125,12 @@ void CTanjiro::Collision_Enter(const COLLISION_INFO& tInfo)
 
 void CTanjiro::Collision_Continue(const COLLISION_INFO& tInfo)
 {
-	
+	__super::Collision_Continue(tInfo);
 }
 
 void CTanjiro::Collision_Exit(const COLLISION_INFO& tInfo)
 {
+	__super::Collision_Exit(tInfo);
 }
 
 void CTanjiro::On_Damaged(CGameObject* pAttacker)
@@ -131,7 +138,7 @@ void CTanjiro::On_Damaged(CGameObject* pAttacker)
 	if (m_bInfinite)
 		return;
 
-	m_pStateCom->Change_State(STATE::DAMAGED);
+	
 }
 
 
@@ -217,13 +224,13 @@ HRESULT CTanjiro::Ready_States()
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseNut01_1");
-	m_pStateCom->Add_State(CCharacter::BATTLE_IDLE, CState_Tanjiro_Battle_Idle::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
+	m_pStateCom->Add_State(CCharacter::BATTLE_IDLE, CState_Character_Battle_Idle::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseRun01_1");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseDashF01_1");
 	m_pStateCom->Add_State(CCharacter::BATTLE_MOVE,
-		CState_Tanjiro_Battle_Move::Create(m_pDevice, 
+		CState_Character_Battle_Move::Create(m_pDevice, 
 			m_pContext, 
 			m_pStateCom, 
 			strAnimationName));
@@ -234,7 +241,7 @@ HRESULT CTanjiro::Ready_States()
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseJump01_2");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseJump01_3");
 	m_pStateCom->Add_State(CCharacter::BATTLE_JUMP,
-		CState_Tanjiro_Battle_Jump::Create(m_pDevice,
+		CState_Character_Battle_Jump::Create(m_pDevice,
 			m_pContext,
 			m_pStateCom,
 			strAnimationName));
@@ -244,24 +251,53 @@ HRESULT CTanjiro::Ready_States()
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Death");
-
-
 	m_pStateCom->Add_State(CCharacter::DIE,
-		CState_Tanjiro_Dead::Create(m_pDevice,
+		CState_Character_Dead::Create(m_pDevice,
 			m_pContext,
 			m_pStateCom,
 			strAnimationName));
+
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_F");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_L");
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01_R");
-	// strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_Dmg01A_F");
-	m_pStateCom->Add_State(CCharacter::DAMAGED,
-		CState_Tanjiro_Damaged::Create(m_pDevice,
+	m_pStateCom->Add_State(CCharacter::DAMAGED_BASIC,
+		CState_Character_Damaged_Basic::Create(m_pDevice,
 			m_pContext,
 			m_pStateCom,
 			strAnimationName));
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBound01_0");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBound02_2");
+	m_pStateCom->Add_State(CCharacter::DAMAGED_BOUND,
+		CState_Character_Damaged_Bound::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_0");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_1");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
+	m_pStateCom->Add_State(CCharacter::DAMAGED_BLOW,
+		CState_Character_Damaged_Blow::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_0");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_1");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_2");
+	m_pStateCom->Add_State(CCharacter::DAMAGED_AIRBORN,
+		CState_Character_Damaged_AirBorn::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW01");
@@ -411,6 +447,7 @@ HRESULT CTanjiro::Ready_Parts()
 
 	CSword::SWORD_DESC			SwordDesc;
 
+	SwordDesc.eType = CSword::SWORD_TYPE::TANJIRO;
 	SwordDesc.pOwner = this;
 	SwordDesc.pParentTransform = m_pTransformCom;
 	SwordDesc.pSocketBone = m_Sockets[SOCKET_SWEATH];

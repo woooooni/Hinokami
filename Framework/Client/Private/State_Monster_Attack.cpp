@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Model.h"
 #include "Monster.h"
+#include "Navigation.h"
 #include "Animation.h"
 
 CState_Monster_Attack::CState_Monster_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
@@ -22,9 +23,12 @@ HRESULT CState_Monster_Attack::Initialize(const list<wstring>& AnimationList)
 	if (nullptr == m_pTransformCom)
 		return E_FAIL;
 
+	m_pNavigationCom = m_pStateMachineCom->Get_Owner()->Get_Component<CNavigation>(L"Com_Navigation");
+
 
 	Safe_AddRef(m_pModelCom);
 	Safe_AddRef(m_pTransformCom);
+	Safe_AddRef(m_pNavigationCom);
 
 	for (auto strAnimName : AnimationList)
 	{
@@ -47,11 +51,19 @@ void CState_Monster_Attack::Enter_State(void* pArg)
 
 void CState_Monster_Attack::Tick_State(_float fTimeDelta)
 {
+	_vector vLook = m_pTransformCom->Get_WorldMatrix().r[CTransform::STATE_LOOK];
+	_vector vPosition = m_pTransformCom->Get_WorldMatrix().r[CTransform::STATE_POSITION];
+
+	vLook = XMVector3Normalize(vLook);
+	vPosition += vLook * 1.f;
+
+	_bool bMovable = false;
+	m_pTransformCom->Set_Position(vLook, &bMovable, m_pNavigationCom);
+
 	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[m_iRandomIndex]))
 	{
 		m_pStateMachineCom->Change_State(CMonster::MONSTER_STATE::IDLE);
 	}
-		
 }
 
 void CState_Monster_Attack::Exit_State()
@@ -78,4 +90,5 @@ CState_Monster_Attack* CState_Monster_Attack::Create(ID3D11Device* pDevice, ID3D
 void CState_Monster_Attack::Free()
 {
 	__super::Free();
+	Safe_Release(m_pNavigationCom);
 }

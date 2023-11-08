@@ -62,9 +62,6 @@ void CState_Monster_Idle::Tick_State(_float fTimeDelta)
 				m_pStateMachineCom->Change_State(CMonster::TRACE);
 				return;
 			}
-				
-
-			
 		}	
 	}
 }

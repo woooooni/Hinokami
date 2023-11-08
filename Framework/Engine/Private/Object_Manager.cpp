@@ -1,6 +1,8 @@
 #include "..\Public\Object_Manager.h"
 #include "Layer.h"
+#include "GameInstance.h"
 #include "GameObject.h"
+
 
 IMPLEMENT_SINGLETON(CObject_Manager)
 
@@ -172,36 +174,25 @@ HRESULT CObject_Manager::Clear_Layer(_uint iLevelIndex, const _uint iLayerType)
 void CObject_Manager::Priority_Tick(_float fTimeDelta)
 {
 
-	for (size_t i = 0; i < m_iNumLevels; i++)
+	for (auto& pLayer : m_pLayers[GI->Get_CurrentLevel()])
 	{
-		for (auto& pLayer : m_pLayers[i])
-		{
-			pLayer->Priority_Tick(fTimeDelta);
-		}
+		pLayer->Priority_Tick(fTimeDelta);
 	}
 }
 
 void CObject_Manager::Tick(_float fTimeDelta)
 {
-	for (size_t i = 0; i < m_iNumLevels; i++)
+	for (auto& pLayer : m_pLayers[GI->Get_CurrentLevel()])
 	{
-		for (auto& pLayer : m_pLayers[i])
-		{
-			pLayer->Tick(fTimeDelta);
-		}
+		pLayer->Tick(fTimeDelta);
 	}
-
 }
 
 void CObject_Manager::LateTick(_float fTimeDelta)
 {
-	for (size_t i = 0; i < m_iNumLevels; i++)
+	for (auto& pLayer : m_pLayers[GI->Get_CurrentLevel()])
 	{
-		for (auto& pLayer : m_pLayers[i])
-		{
-			pLayer->LateTick(fTimeDelta);
-			
-		}
+		pLayer->LateTick(fTimeDelta);
 	}
 }
 

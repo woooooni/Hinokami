@@ -44,7 +44,7 @@ public:
     _float Get_RefHeight() { return m_fRefHeight; }
 
     _float3 Get_Velocity() { return m_vVelocity; }
-    
+    void Set_Velocity(_float3 vVelocity) { m_vVelocity = vVelocity; }
 
 private:
     void Update_Gravity(_float fTimeDelta);

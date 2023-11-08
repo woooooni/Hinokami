@@ -33,15 +33,13 @@ public:
 		DAMAGED_BASIC, 
 		DAMAGED_BLOW,
 		DAMAGED_AIRBORN,
+		DAMAGED_BOUND,
 		KNOCKDOWN,
 		DIE,
 		STATE_END
 	};
 
-
-
 #pragma endregion
-	enum DAMAGE_TYPE { BASIC, BLOW, AIRBONE, TYPE_END};
 	enum SOCKET_TYPE { SOCKET_LEFT_FIST, SOCKET_RIGHT_FIST, SOCKET_LEFT_FOOT, SOCKET_RIGTH_FOOT, SOCKET_END };
 
 public:
@@ -64,9 +62,9 @@ public:
 	virtual HRESULT Render();
 
 public:
-	virtual void Collision_Enter(const COLLISION_INFO& tInfo) PURE;
-	virtual void Collision_Continue(const COLLISION_INFO& tInfo) PURE;
-	virtual void Collision_Exit(const COLLISION_INFO& tInfo) PURE;
+	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;
+	virtual void Collision_Continue(const COLLISION_INFO& tInfo) override;
+	virtual void Collision_Exit(const COLLISION_INFO& tInfo) override;
 
 public:
 	virtual void Set_Infinite(_float fInfiniteTime, _bool bInfinite)
@@ -97,11 +95,7 @@ protected:
 
 
 public:
-	virtual void On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageType, _float fPushPower, _float fAirBornPower, _float fDamage) {};
-
-
-protected:
-	virtual void AirBorne(_float fForce);
+	virtual void On_Damaged(CGameObject* pAttacker, _uint eDamageType, _float fDamage) {};
 	
 
 

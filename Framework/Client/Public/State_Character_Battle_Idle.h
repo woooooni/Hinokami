@@ -8,11 +8,11 @@ END
 
 BEGIN(Client)
 
-class CState_Tanjiro_Battle_Idle final : public CState
+class CState_Character_Battle_Idle final : public CState
 {
 private:
-	CState_Tanjiro_Battle_Idle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,class CStateMachine* pStateMachine);
-	virtual ~CState_Tanjiro_Battle_Idle() = default;
+	CState_Character_Battle_Idle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,class CStateMachine* pStateMachine);
+	virtual ~CState_Character_Battle_Idle() = default;
 
 public:
 	HRESULT Initialize(const list<wstring>& AnimationList);
@@ -28,7 +28,7 @@ private:
 	_float m_fAccBaseNut = 0.f;
 	
 public:
-	static CState_Tanjiro_Battle_Idle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
+	static CState_Character_Battle_Idle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;
 };
 

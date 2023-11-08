@@ -24,6 +24,7 @@ public:
 
 private:
 	_uint m_iRandomIndex = 0;
+	class CNavigation* m_pNavigationCom = nullptr;
 
 public:
 	static CState_Monster_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

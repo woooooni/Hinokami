@@ -64,21 +64,6 @@ void CMonster::Tick(_float fTimeDelta)
 		if (m_fDissolveWeight >= 1.f)
 			Set_Dead(true);
 	}
-
-	if (m_pStateCom->Get_CurrState() == CMonster::MONSTER_STATE::REGEN)
-	{
-		m_fDissolveWeight -= 0.2f * fTimeDelta;
-		if (m_fDissolveWeight <= 0.f)
-		{
-			m_fDissolveWeight = 0.f;
-			m_pStateCom->Change_State(CMonster::MONSTER_STATE::IDLE, nullptr);
-		}
-	}
-		
-
-	
-
-
 }
 
 void CMonster::LateTick(_float fTimeDelta)
@@ -114,24 +99,20 @@ HRESULT CMonster::Render()
 		return E_FAIL;
 
 	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
+	
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		_uint iPassIndex = 0;
+		_uint		iPassIndex = 0;
 		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
 			return E_FAIL;
 
+		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_NormalTexture")))
+			return E_FAIL;
+		else
+			iPassIndex++;
+
 		if (true == m_bReserveDead)
-		{
-			iPassIndex = 1;
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveWeight", &m_fDissolveWeight, sizeof(_float))))
-				return E_FAIL;
-
-			if (FAILED(m_pDissoveTexture->Bind_ShaderResource(m_pShaderCom, "g_DissolveTexture")))
-				return E_FAIL;
-		}
-
-		if (m_pStateCom->Get_CurrState() == CMonster::REGEN)
 		{
 			iPassIndex = 2;
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveWeight", &m_fDissolveWeight, sizeof(_float))))
@@ -148,6 +129,93 @@ HRESULT CMonster::Render()
 	return S_OK;
 }
 
+void CMonster::Collision_Enter(const COLLISION_INFO& tInfo)
+{
+
+}
+
+void CMonster::Collision_Continue(const COLLISION_INFO& tInfo)
+{
+	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER || tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
+	{
+		CTransform* pOtherTransform = tInfo.pOther->Get_Component<CTransform>(L"Com_Transform");
+		_vector vTargetDir = XMVector3Normalize(pOtherTransform->Get_State(CTransform::STATE::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION));
+
+		_float fTargetLen = XMVectorGetX(XMVector3Length(vTargetDir));
+		if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
+			&& tInfo.pMyCollider->Get_DetectionType() == CCollider::BODY)
+		{
+			if (fTargetLen <= 0.f)
+				vTargetDir = XMVectorSetX(vTargetDir, _float(rand() % 10 - 5));
+
+			vTargetDir = XMVector3Normalize(vTargetDir);
+			vTargetDir *= -1.f;
+
+			_float fForce = (tInfo.pMyCollider->Get_Radius() + tInfo.pOtherCollider->Get_Radius()) - fTargetLen;
+
+			CRigidBody* pOtherRigidBody = tInfo.pOther->Get_Component<CRigidBody>(L"Com_RigidBody");
+			if (pOtherRigidBody)			
+				fForce += XMVectorGetX(XMVector3Length(XMLoadFloat3(&pOtherRigidBody->Get_Velocity())));
+
+			m_pRigidBodyCom->Add_Velocity_Acc(vTargetDir, fForce);
+		}
+	}
+	//if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER)
+	//{
+	//	if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
+	//		&& tInfo.pMyCollider->Get_DetectionType() == CCollider::BODY)
+	//	{
+	//		CTransform* pOtherTransform = tInfo.pOther->Get_Component<CTransform>(L"Com_Transform");
+	//		_vector vPushDir = XMVector3Normalize(pOtherTransform->Get_State(CTransform::STATE::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION));
+	//		if (XMVectorGetX(XMVector3Length(vPushDir)) <= 0.f)
+	//			vPushDir = XMVector3Normalize(XMVectorSetX(vPushDir, _float(rand() % 10 - 5)));
+
+
+	//		vPushDir *= -1.f;
+	//		XMVectorSetY(vPushDir, 0.f);
+	//		m_pRigidBodyCom->Add_Velocity(vPushDir, 1.f);
+	//	}
+	//}
+
+	//if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
+	//{
+	//	if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
+	//		&& tInfo.pMyCollider->Get_DetectionType() == CCollider::BODY)
+	//	{
+	//		CTransform* pOtherTransform = tInfo.pOther->Get_Component<CTransform>(L"Com_Transform");
+	//		_vector vPushDir = XMVector3Normalize(pOtherTransform->Get_State(CTransform::STATE::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION));
+	//		if (XMVectorGetX(XMVector3Length(vPushDir)) <= 0.f)
+	//			vPushDir = XMVector3Normalize(XMVectorSetX(vPushDir, _float(rand() % 10 - 5)));
+
+	//		vPushDir *= -1.f;
+	//		XMVectorSetY(vPushDir, 0.f);
+	//		m_pRigidBodyCom->Add_Velocity(vPushDir, 10.f);
+	//	}
+	//}
+}
+
+void CMonster::Collision_Exit(const COLLISION_INFO& tInfo)
+{
+	
+	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER
+		|| tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
+	{
+		if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
+			&& tInfo.pMyCollider->Get_DetectionType() == CCollider::BODY)
+		{
+			if (m_pStateCom->Get_CurrState() == CMonster::MONSTER_STATE::DAMAGED_BLOW)
+				return;
+
+			_float3 vVelocity = m_pRigidBodyCom->Get_Velocity();
+
+			vVelocity.x = 0.f;
+			vVelocity.z = 0.f;
+
+			m_pRigidBodyCom->Set_Velocity(vVelocity);
+		}
+	}
+}
+
 
 CHierarchyNode* CMonster::Get_Socket(const wstring& strSocketName)
 {
@@ -159,19 +227,6 @@ CHierarchyNode* CMonster::Get_Socket(const wstring& strSocketName)
 	return nullptr;
 }
 
-void CMonster::AirBorne(_float fForce)
-{
-	if (fForce < 0.1f)
-		return;
-
-	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.1f);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-
-	m_pRigidBodyCom->Add_Velocity_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fForce);
-	m_pRigidBodyCom->Set_Ground(false);
-	m_pRigidBodyCom->Set_Gravity(true);
-}
 
 
 

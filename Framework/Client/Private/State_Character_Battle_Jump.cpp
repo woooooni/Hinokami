@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "State_Tanjiro_Battle_Jump.h"
+#include "State_Character_Battle_Jump.h"
 #include "GameInstance.h"
 #include "Model.h"
 #include "Character.h"
@@ -9,13 +9,13 @@
 
 
 
-CState_Tanjiro_Battle_Jump::CState_Tanjiro_Battle_Jump(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
+CState_Character_Battle_Jump::CState_Character_Battle_Jump(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
 {
 
 }
 
-HRESULT CState_Tanjiro_Battle_Jump::Initialize(const list<wstring>& AnimationList)
+HRESULT CState_Character_Battle_Jump::Initialize(const list<wstring>& AnimationList)
 {
 	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
 	if (nullptr == m_pModelCom)
@@ -42,7 +42,7 @@ HRESULT CState_Tanjiro_Battle_Jump::Initialize(const list<wstring>& AnimationLis
 	return S_OK;
 }
 
-void CState_Tanjiro_Battle_Jump::Enter_State(void* pArg)
+void CState_Character_Battle_Jump::Enter_State(void* pArg)
 {
 	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
 	if (nullptr != pOwner)
@@ -72,7 +72,7 @@ void CState_Tanjiro_Battle_Jump::Enter_State(void* pArg)
 	m_pRigidBody->Add_Velocity(XMVector3Normalize(vJumpDir), 10.f);
 }
 
-void CState_Tanjiro_Battle_Jump::Tick_State(_float fTimeDelta)
+void CState_Character_Battle_Jump::Tick_State(_float fTimeDelta)
 {
 	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[0]) || m_pModelCom->Is_Animation_Finished(m_AnimationIndices[1]))
 	{
@@ -86,25 +86,25 @@ void CState_Tanjiro_Battle_Jump::Tick_State(_float fTimeDelta)
 		m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
 }
 
-void CState_Tanjiro_Battle_Jump::Exit_State()
+void CState_Character_Battle_Jump::Exit_State()
 {
 
 }
 
-CState_Tanjiro_Battle_Jump* CState_Tanjiro_Battle_Jump::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
+CState_Character_Battle_Jump* CState_Character_Battle_Jump::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
 {
-	CState_Tanjiro_Battle_Jump* pInstance =  new CState_Tanjiro_Battle_Jump(pDevice, pContext, pStateMachine);
+	CState_Character_Battle_Jump* pInstance =  new CState_Character_Battle_Jump(pDevice, pContext, pStateMachine);
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);
-		MSG_BOX("Failed Create : CState_Tanjiro_Battle_Jump");
+		MSG_BOX("Failed Create : CState_Character_Battle_Jump");
 		return nullptr;
 	}
 		
 	return pInstance;
 }
 
-void CState_Tanjiro_Battle_Jump::Free()
+void CState_Character_Battle_Jump::Free()
 {
 	__super::Free();
 }

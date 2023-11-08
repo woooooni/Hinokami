@@ -92,39 +92,20 @@ void CMonster_Normal_0::Collision_Enter(const COLLISION_INFO& tInfo)
 
 void CMonster_Normal_0::Collision_Continue(const COLLISION_INFO& tInfo)
 {
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER && m_pRigidBodyCom->Is_Ground())
-	{
-		CTransform* pOtherTransform = tInfo.pOther->Get_Component<CTransform>(L"Com_Transform");
-		_vector vPushDir = XMVector3Normalize(pOtherTransform->Get_State(CTransform::STATE::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION));
-		vPushDir *= -1.f;
-		XMVectorSetY(vPushDir, 0.f);
-		m_pRigidBodyCom->Add_Velocity(vPushDir, 1.f);
-	}
-
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER 
-		&& m_pRigidBodyCom->Is_Ground()
-		&& m_pStateCom->Get_CurrState() != MONSTER_STATE::DAMAGED_AIRBORN)
-	{
-		CTransform* pOtherTransform = tInfo.pOther->Get_Component<CTransform>(L"Com_Transform");
-		_vector vPushDir = XMVector3Normalize(pOtherTransform->Get_State(CTransform::STATE::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION));
-		vPushDir *= -1.f;
-		XMVectorSetY(vPushDir, 0.f);
-		m_pRigidBodyCom->Add_Velocity(vPushDir, 1.f);
-	}
+	__super::Collision_Continue(tInfo);
 }
 
 void CMonster_Normal_0::Collision_Exit(const COLLISION_INFO& tInfo)
 {
+	__super::Collision_Exit(tInfo);
 }
 
-void CMonster_Normal_0::On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageType, _float fPushPower, _float fAirBornPower, _float fDamage)
+void CMonster_Normal_0::On_Damaged(CGameObject* pAttacker, _uint eColliderDamageType, _float fDamage)
 {
-	if (m_bInfinite)
+	if (m_bInfinite || m_bReserveDead)
 		return;
 
-
-
-	__super::On_Damaged(pAttacker, eDamageType, fPushPower, fAirBornPower, fDamage);
+	__super::On_Damaged(pAttacker, eColliderDamageType, fDamage);
 	CTransform* pAttackerTransform = pAttacker->Get_Component<CTransform>(L"Com_Transform");
 
 	m_pTransformCom->LookAt_ForLandObject(pAttackerTransform->Get_State(CTransform::STATE_POSITION));
@@ -137,31 +118,28 @@ void CMonster_Normal_0::On_Damaged(CGameObject* pAttacker, DAMAGE_TYPE eDamageTy
 		return;
 	}
 
-
-	_matrix TransformMatrix = m_pTransformCom->Get_WorldMatrix();
-	TransformMatrix.r[CTransform::STATE_POSITION] = XMVectorSetY(TransformMatrix.r[CTransform::STATE_POSITION], XMVectorGetY(TransformMatrix.r[CTransform::STATE_POSITION]) + 1.f);
-	/*if (FAILED(CParticle_Manager::GetInstance()->Generate_Particle(L"Tanjiro_Water_Hit", TransformMatrix)))
-		return;*/
-
-	switch (eDamageType)
+	switch (eColliderDamageType)
 	{
-		case DAMAGE_TYPE::BASIC:
-			m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BASIC);
-			m_pRigidBodyCom->Add_Velocity(XMVectorSetY(XMVector3Normalize(-1.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 0.f), fPushPower);
-			break;
+	case CCollider::ATTACK_TYPE::BASIC:
+		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BASIC);
+		break;
 
-		case DAMAGE_TYPE::AIRBONE:
-			m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_AIRBORN);
-			AirBorne(fAirBornPower);
-			m_pRigidBodyCom->Add_Velocity_Acc(XMVectorSetY(XMVector3Normalize(-1.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 0.f), fPushPower);
-			Set_Infinite(0.5f, true);
-			break;
+	case CCollider::ATTACK_TYPE::AIR_BORN:
+		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_AIRBORN);
+		_vector vPosition = m_pTransformCom->Get_WorldMatrix().r[CTransform::STATE_POSITION];
+		Set_Infinite(0.5f, true);
+		break;
 
-		case DAMAGE_TYPE::BLOW:
-			m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BLOW);
-			m_pRigidBodyCom->Add_Velocity(XMVectorSetY(XMVector3Normalize(-1.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 0.f), fPushPower);
-			Set_Infinite(0.5f, true);
-			break;
+	case CCollider::ATTACK_TYPE::BLOW:
+		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BLOW);
+		m_pRigidBodyCom->Add_Velocity(XMVectorSetY(XMVector3Normalize(-1.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 0.f), 10.f);
+		Set_Infinite(0.5f, true);
+		break;
+
+	case CCollider::ATTACK_TYPE::BOUND:
+		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BOUND);
+		Set_Infinite(0.5f, true);
+		break;
 	}
 
 }
@@ -324,8 +302,8 @@ HRESULT CMonster_Normal_0::Ready_Colliders()
 		return E_FAIL;
 
 	ColliderDesc.tSphere.Radius = .6f;
-	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"C_Spine_1");
-	ColliderDesc.vOffsetPosition = _float3(0.f, -0.25f, 0.f);
+	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"Root");
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.5f, 0.f);
 	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::BODY, &ColliderDesc)))
 		return E_FAIL;
 

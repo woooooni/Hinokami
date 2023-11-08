@@ -67,7 +67,10 @@ public:
 
 public:
 	const PARTICLE_DESC& Get_ParticleDesc() { return m_tParticleDesc; }
-	void Set_ParticleDesc(const PARTICLE_DESC& tDesc) { memcpy(&m_tParticleDesc, &tDesc, sizeof(PARTICLE_DESC)); }
+	void Set_ParticleDesc(const PARTICLE_DESC& tDesc) 
+	{ 
+		m_tParticleDesc = tDesc;
+	}
 
 	void Set_Gravity(_bool bGravity);
 	const wstring& Get_EffectPrototypeName() { return m_strPrototypeEffectTag; }

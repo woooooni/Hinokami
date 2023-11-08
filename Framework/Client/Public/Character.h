@@ -34,7 +34,10 @@ public:
 		BATTLE_DASH,
 		ATTACK,
 		SKILL,
-		DAMAGED, 
+		DAMAGED_BASIC,
+		DAMAGED_BOUND,
+		DAMAGED_BLOW,
+		DAMAGED_AIRBORN,
 		KNOCKDOWN, 
 		DIE,
 		STATE_END
@@ -56,11 +59,12 @@ public:
 	virtual void Tick(_float fTimeDelta);
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
+	virtual HRESULT Render_ShadowDepth();
 
 public:
-	virtual void Collision_Enter(const COLLISION_INFO& tInfo) PURE;
-	virtual void Collision_Continue(const COLLISION_INFO& tInfo) PURE;
-	virtual void Collision_Exit(const COLLISION_INFO& tInfo) PURE;
+	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;
+	virtual void Collision_Continue(const COLLISION_INFO& tInfo) override;
+	virtual void Collision_Exit(const COLLISION_INFO& tInfo) override;
 
 
 	
@@ -92,7 +96,6 @@ public:
 public:
 	virtual void Set_Infinite(_float fInfiniteTime, _bool bInfinite);
 	_bool Is_Infinite() { return m_bInfinite; }
-	virtual HRESULT Set_ActiveColliders(_uint eDetectionType, _bool bActive);
 
 
 

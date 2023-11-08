@@ -301,6 +301,9 @@ HRESULT CModel::SetUp_OnShader(CShader* pShader, _uint iMaterialIndex, aiTexture
 	if (iMaterialIndex >= m_iNumMaterials)
 		return E_FAIL;
 
+	if (m_Materials[iMaterialIndex].pTexture[eTextureType] == nullptr)
+		return E_FAIL;
+
 	return m_Materials[iMaterialIndex].pTexture[eTextureType]->Bind_ShaderResource(pShader, pConstantName);
 }
 
@@ -366,7 +369,6 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 	}
 
 	pShader->Begin(iPassIndex);
-
 	m_Meshes[iMeshIndex]->Render();
 
 	return S_OK;

@@ -36,16 +36,16 @@ HRESULT CLevel_Manager::Render_Debug()
 		{
 			m_pCurrentLevel->Exit_Level();
 			/* 기존에 추가되어있던 레벨용 자원을 정리한다. */
-			GAME_INSTANCE->Clear(m_iCurrentLevelIndex);
+			GI->Clear(m_iCurrentLevelIndex);
 		}
 		Safe_Release(m_pCurrentLevel);
-
-		/* 기존레벨 객체를 파굏란다. */
 		m_pCurrentLevel = m_pReserveLevel;
+
+
 		m_iCurrentLevelIndex = m_iNextLevelIndex;
 
 		m_pReserveLevel = nullptr;
-		m_iNextLevelIndex = 0;
+		m_iNextLevelIndex = -1;
 
 		m_pCurrentLevel->Enter_Level();
 	}
@@ -60,6 +60,12 @@ HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel* pNewLevel)
 
 
 	return S_OK;
+}
+
+_uint CLevel_Manager::Get_CurrentLevel()
+{
+	READ_LOCK
+	return m_iCurrentLevelIndex;
 }
 
 void CLevel_Manager::Free()

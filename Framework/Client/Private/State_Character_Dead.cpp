@@ -1,17 +1,17 @@
 #include "stdafx.h"
-#include "State_Tanjiro_Dead.h"
+#include "State_Character_Dead.h"
 #include "GameInstance.h"
 #include "Model.h"
 #include "Character.h"
 
 
-CState_Tanjiro_Dead::CState_Tanjiro_Dead(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
+CState_Character_Dead::CState_Character_Dead(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
 {
 
 }
 
-HRESULT CState_Tanjiro_Dead::Initialize(const list<wstring>& AnimationList)
+HRESULT CState_Character_Dead::Initialize(const list<wstring>& AnimationList)
 {
 	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
 	if (nullptr == m_pModelCom)
@@ -38,7 +38,7 @@ HRESULT CState_Tanjiro_Dead::Initialize(const list<wstring>& AnimationList)
 	return S_OK;
 }
 
-void CState_Tanjiro_Dead::Enter_State(void* pArg)
+void CState_Character_Dead::Enter_State(void* pArg)
 {
 	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
 	if (nullptr != pOwner)
@@ -56,12 +56,12 @@ void CState_Tanjiro_Dead::Enter_State(void* pArg)
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
 }
 
-void CState_Tanjiro_Dead::Tick_State(_float fTimeDelta)
+void CState_Character_Dead::Tick_State(_float fTimeDelta)
 {
 	
 }
 
-void CState_Tanjiro_Dead::Exit_State()
+void CState_Character_Dead::Exit_State()
 {
 	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
 	pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, true);
@@ -70,20 +70,20 @@ void CState_Tanjiro_Dead::Exit_State()
 	pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 }
 
-CState_Tanjiro_Dead* CState_Tanjiro_Dead::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
+CState_Character_Dead* CState_Character_Dead::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
 {
-	CState_Tanjiro_Dead* pInstance =  new CState_Tanjiro_Dead(pDevice, pContext, pStateMachine);
+	CState_Character_Dead* pInstance =  new CState_Character_Dead(pDevice, pContext, pStateMachine);
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);
-		MSG_BOX("Failed Create : CState_Tanjiro_Dead");
+		MSG_BOX("Failed Create : CState_Character_Dead");
 		return nullptr;
 	}
 		
 	return pInstance;
 }
 
-void CState_Tanjiro_Dead::Free()
+void CState_Character_Dead::Free()
 {
 	__super::Free();
 }

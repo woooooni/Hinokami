@@ -52,10 +52,6 @@ void CParticle::Tick(_float fTimeDelta)
 		m_fAccLifeTime += fTimeDelta;
 		if (m_tParticleDesc.fLifeTime <= m_fAccLifeTime)
 		{
-			for (auto& pEffect : m_Effects)
-				Safe_Release(pEffect);
-			m_Effects.clear();
-
 			Set_Dead(true);
 			return;
 		}
@@ -85,11 +81,6 @@ void CParticle::LateTick(_float fTimeDelta)
 
 HRESULT CParticle::Render()
 {
-	__super::Render();
-
-	for (auto& pEffect : m_Effects)
-		pEffect->Render();
-
 	return S_OK;
 }
 
@@ -167,10 +158,6 @@ CEffect* CParticle::Generate_Effect()
 
 	EffectDesc.fDestAlphaSpeed = m_tParticleDesc.fDestAlphaSpeed;
 	pEffect->Set_EffectDesc(EffectDesc);
-
-	
-
-	Safe_AddRef(pEffect);
 	
 	return pEffect;
 }
@@ -230,6 +217,7 @@ void CParticle::Free()
 		Safe_Release(pEffect);
 
 	m_Effects.clear();
+	Safe_Release(m_pTransformCom);
 }
 
 

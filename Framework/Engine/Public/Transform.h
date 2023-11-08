@@ -74,7 +74,7 @@ public:
 	void Go_Dir(_fvector vDir, _float fTimeDelta, class CNavigation* pNavigation = nullptr);
 	void Go_Dir(_fvector vDir, _float fSpeed, _float fTimeDelta, class CNavigation* pNavigation = nullptr);
 
-	void Set_Position(_fvector vPosition, class CNavigation* pNavigation = nullptr);
+	void Set_Position(_fvector vPosition, _bool* bMovable, class CNavigation* pNavigation = nullptr);
 	void Set_Scale(_fvector vScaleInfo);
 	void Set_Sclae(_float3 vScale);
 	_float3 Get_Scale();

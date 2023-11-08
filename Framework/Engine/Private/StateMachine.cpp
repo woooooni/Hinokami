@@ -102,5 +102,7 @@ void CStateMachine::Free()
 		Safe_Release(State.second);
 	m_States.clear();
 
+	Safe_Release(m_pCurrState);
+
 	__super::Free();
 }
