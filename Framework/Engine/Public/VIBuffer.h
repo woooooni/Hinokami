@@ -21,9 +21,18 @@ public:
 
 public:
 	_uint Get_VertexCount() { return m_iNumVertices; }
-	_uint Get_PrimitiveCount() { return m_iNumPrimitives; }
+
+	_uint Get_NumPrimitives() { return m_iNumPrimitives; }
 	const vector<_float3>& Get_VertexLocalPositions() { return m_VertexLocalPositions; }
 	const vector<FACEINDICES32>& Get_FaceIndices() { return m_FaceIndices; }
+
+public:
+	ID3D11Buffer* Get_Vertex_Buffer() { return m_pVB; }
+	ID3D11Buffer* Get_Index_Buffer() { return m_pIB; }
+	_uint		Get_IndicesOfPrimitive() { return m_iNumIndicesofPrimitive; }
+	_uint		Get_Stride() { return m_iStride; }
+	DXGI_FORMAT	Get_IndexFormat() { return m_eIndexFormat; }
+	D3D11_PRIMITIVE_TOPOLOGY Get_Topology() { return m_eTopology; }
 
 protected:
 	ID3D11Buffer* m_pVB = nullptr;

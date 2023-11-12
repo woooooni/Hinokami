@@ -5,6 +5,7 @@
 
 #include "GameInstance.h"
 
+
 CRenderer::CRenderer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
 	, m_pTarget_Manager(CTarget_Manager::GetInstance())
@@ -158,11 +159,15 @@ HRESULT CRenderer::Initialize_Prototype()
 
 
 
+	m_pVIBufferInstance = CVIBuffer_Instancing::Create(m_pDevice, m_pContext);
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pVIBuffer)
 		return E_FAIL;
 
-	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Deferred.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
+	if (nullptr == m_pVIBufferInstance)
+		return E_FAIL;
+
+	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Deferred.hlsl"), VTXPOSTEX_DECLARATION::Elements, VTXPOSTEX_DECLARATION::iNumElements);
 	if (nullptr == m_pShader)
 		return E_FAIL;
 
@@ -172,8 +177,7 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
-
-
+	
 	return S_OK;
 }
 
@@ -187,8 +191,17 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject * pGame
 	if (eRenderGroup >= RENDER_END)
 		return E_FAIL;
 
-	m_RenderObjects[eRenderGroup].push_back(pGameObject);
+	auto iter = m_RenderObjects[eRenderGroup].find(pGameObject->Get_PrototypeTag());
+	if (iter == m_RenderObjects[eRenderGroup].end())
+	{
+		vector<CGameObject*> Temp;
+		Temp.reserve(1000);
+		m_RenderObjects[eRenderGroup].emplace(pGameObject->Get_PrototypeTag(), Temp);
 
+		iter = m_RenderObjects[eRenderGroup].find(pGameObject->Get_PrototypeTag());
+	}
+
+	iter->second.push_back(pGameObject);
 	Safe_AddRef(pGameObject);
 
 	return S_OK;
@@ -231,13 +244,27 @@ HRESULT CRenderer::Draw()
 
 HRESULT CRenderer::Render_Priority()
 {
-	for (auto& iter : m_RenderObjects[RENDER_PRIORITY])
+	for (auto GameObjects : m_RenderObjects[RENDER_PRIORITY])
 	{
-		if (FAILED(iter->Render()))
+		vector<_float4x4> WorldMatrices;
+		WorldMatrices.reserve(GameObjects.second.size());
+
+		CGameObject* pFirstGameObject = GameObjects.second[0];
+		Safe_AddRef(pFirstGameObject);
+		for (auto& pGameObject : GameObjects.second)
+		{
+			CTransform* pTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform");
+			WorldMatrices.push_back(pTransform->Get_WorldFloat4x4());
+
+			Safe_Release(pGameObject);
+		}
+
+		if (FAILED(pFirstGameObject->Render(m_pVIBufferInstance, WorldMatrices)))
 			return E_FAIL;
-		Safe_Release(iter);
+
+		Safe_Release(pFirstGameObject);
+		GameObjects.second.clear();
 	}
-	m_RenderObjects[RENDER_PRIORITY].clear();
 
 	return S_OK;
 }
@@ -247,16 +274,27 @@ HRESULT CRenderer::Render_Shadow()
 	/*if (FAILED(m_pTarget_Manager->Begin_Shadow_MRT(m_pContext, TEXT("MRT_Shadow"))))
 		return E_FAIL;*/
 
-	for (auto& iter : m_RenderObjects[RENDER_SHADOW])
+	for (auto GameObjects : m_RenderObjects[RENDER_SHADOW])
 	{
-		/*if (FAILED(iter->Render_ShadowDepth()))
-			return E_FAIL;*/
-		Safe_Release(iter);
-	}
-	m_RenderObjects[RENDER_SHADOW].clear();
+		vector<_float4x4> WorldMatrices;
+		WorldMatrices.reserve(GameObjects.second.size());
 
-	/*if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
-		return E_FAIL;*/
+		CGameObject* pFirstGameObject = GameObjects.second[0];
+		Safe_AddRef(pFirstGameObject);
+		for (auto& pGameObject : GameObjects.second)
+		{
+			CTransform* pTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform");
+			WorldMatrices.push_back(pTransform->Get_WorldFloat4x4());
+
+			Safe_Release(pGameObject);
+		}
+
+		if (FAILED(pFirstGameObject->Render_ShadowDepth(m_pVIBufferInstance, WorldMatrices)))
+			return E_FAIL;
+
+		Safe_Release(pFirstGameObject);
+		GameObjects.second.clear();
+	}
 
 	return S_OK;
 }
@@ -264,13 +302,27 @@ HRESULT CRenderer::Render_Shadow()
 
 HRESULT CRenderer::Render_NonLight()
 {
-	for (auto& iter : m_RenderObjects[RENDERGROUP::RENDER_NONLIGHT])
+	for (auto GameObjects : m_RenderObjects[RENDER_NONLIGHT])
 	{
-		if (FAILED(iter->Render()))
+		vector<_float4x4> WorldMatrices;
+		WorldMatrices.reserve(GameObjects.second.size());
+
+		CGameObject* pFirstGameObject = GameObjects.second[0];
+		Safe_AddRef(pFirstGameObject);
+		for (auto& pGameObject : GameObjects.second)
+		{
+			CTransform* pTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform");
+			WorldMatrices.push_back(pTransform->Get_WorldFloat4x4());
+
+			Safe_Release(pGameObject);
+		}
+
+		if (FAILED(pFirstGameObject->Render(m_pVIBufferInstance, WorldMatrices)))
 			return E_FAIL;
-		Safe_Release(iter);
+
+		Safe_Release(pFirstGameObject);
+		GameObjects.second.clear();
 	}
-	m_RenderObjects[RENDER_NONLIGHT].clear();
 
 	return S_OK;
 }
@@ -280,14 +332,27 @@ HRESULT CRenderer::Render_NonAlphaBlend()
 	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_GameObjects"))))
 		return E_FAIL;
 
-	for (auto& iter : m_RenderObjects[RENDER_NONBLEND])
+	for (auto GameObjects : m_RenderObjects[RENDER_NONBLEND])
 	{
-		if (FAILED(iter->Render()))
-			return E_FAIL;
-		Safe_Release(iter);
-	}
+		vector<_float4x4> WorldMatrices;
+		WorldMatrices.reserve(GameObjects.second.size());
 
-	m_RenderObjects[RENDER_NONBLEND].clear();
+		CGameObject* pFirstGameObject = GameObjects.second[0];
+		Safe_AddRef(pFirstGameObject);
+		for (auto& pGameObject : GameObjects.second)
+		{
+			CTransform* pTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform");
+			WorldMatrices.push_back(pTransform->Get_WorldFloat4x4());
+
+			Safe_Release(pGameObject);
+		}
+
+		if (FAILED(pFirstGameObject->Render(m_pVIBufferInstance, WorldMatrices)))
+			return E_FAIL;
+
+		Safe_Release(pFirstGameObject);
+		GameObjects.second.clear();
+	}
 	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
 		return E_FAIL;
 
@@ -410,13 +475,27 @@ HRESULT CRenderer::Render_AlphaBlend()
 {
 
 
-	for (auto& iter : m_RenderObjects[RENDERGROUP::RENDER_ALPHABLEND])
+	for (auto GameObjects : m_RenderObjects[RENDER_ALPHABLEND])
 	{
-		if (FAILED(iter->Render()))
+		vector<_float4x4> WorldMatrices;
+		WorldMatrices.reserve(GameObjects.second.size());
+
+		CGameObject* pFirstGameObject = GameObjects.second[0];
+		Safe_AddRef(pFirstGameObject);
+		for (auto& pGameObject : GameObjects.second)
+		{
+			CTransform* pTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform");
+			WorldMatrices.push_back(pTransform->Get_WorldFloat4x4());
+
+			Safe_Release(pGameObject);
+		}
+
+		if (FAILED(pFirstGameObject->Render(m_pVIBufferInstance, WorldMatrices)))
 			return E_FAIL;
-		Safe_Release(iter);
+
+		Safe_Release(pFirstGameObject);
+		GameObjects.second.clear();
 	}
-	m_RenderObjects[RENDER_ALPHABLEND].clear();
 
 	
 	return S_OK;
@@ -428,13 +507,27 @@ HRESULT CRenderer::Render_Effect()
 		return E_FAIL;
 
 	
-	for (auto& iter : m_RenderObjects[RENDERGROUP::RENDER_EFFECT])
+	for (auto GameObjects : m_RenderObjects[RENDER_EFFECT])
 	{
-		if (FAILED(iter->Render()))
+		vector<_float4x4> WorldMatrices;
+		WorldMatrices.reserve(GameObjects.second.size());
+
+		CGameObject* pFirstGameObject = GameObjects.second[0];
+		Safe_AddRef(pFirstGameObject);
+		for (auto& pGameObject : GameObjects.second)
+		{
+			CTransform* pTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform");
+			WorldMatrices.push_back(pTransform->Get_WorldFloat4x4());
+
+			Safe_Release(pGameObject);
+		}
+
+		if (FAILED(pFirstGameObject->Render(m_pVIBufferInstance, WorldMatrices)))
 			return E_FAIL;
-		Safe_Release(iter);
+
+		Safe_Release(pFirstGameObject);
+		GameObjects.second.clear();
 	}
-	m_RenderObjects[RENDER_EFFECT].clear();
 
 	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
 		return E_FAIL;
@@ -489,13 +582,27 @@ HRESULT CRenderer::Render_MRT_Final()
 
 HRESULT CRenderer::Render_UI()
 {
-	for (auto& iter : m_RenderObjects[RENDERGROUP::RENDER_UI])
+	for (auto GameObjects : m_RenderObjects[RENDER_UI])
 	{
-		if (FAILED(iter->Render()))
+		vector<_float4x4> WorldMatrices;
+		WorldMatrices.reserve(GameObjects.second.size());
+
+		CGameObject* pFirstGameObject = GameObjects.second[0];
+		Safe_AddRef(pFirstGameObject);
+		for (auto& pGameObject : GameObjects.second)
+		{
+			CTransform* pTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform");
+			WorldMatrices.push_back(pTransform->Get_WorldFloat4x4());
+
+			Safe_Release(pGameObject);
+		}
+
+		if (FAILED(pFirstGameObject->Render(m_pVIBufferInstance, WorldMatrices)))
 			return E_FAIL;
-		Safe_Release(iter);
+
+		Safe_Release(pFirstGameObject);
+		GameObjects.second.clear();
 	}
-	m_RenderObjects[RENDER_UI].clear();
 
 	return S_OK;
 }

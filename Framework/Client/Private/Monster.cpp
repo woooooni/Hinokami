@@ -89,10 +89,10 @@ void CMonster::LateTick(_float fTimeDelta)
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 
-HRESULT CMonster::Render()
+HRESULT CMonster::Render(class CVIBuffer_Instancing* pInstanceBuffer, const vector<_float4x4>& WorldMatrices)
 {
-	__super::Render();
-	 
+	__super::Render(pInstanceBuffer, WorldMatrices);
+
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
 
@@ -104,40 +104,32 @@ HRESULT CMonster::Render()
 		return E_FAIL;
 
 	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
-	
-
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		_uint		iPassIndex = 0;
+
 		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
 			return E_FAIL;
 
-		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_NormalTexture")))
+		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_NORMALS, "g_NormalTexture")))
 			return E_FAIL;
 		else
 			iPassIndex++;
 
-		if (true == m_bReserveDead)
-		{
-			iPassIndex = 2;
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveWeight", &m_fDissolveWeight, sizeof(_float))))
-				return E_FAIL;
-
-			if (FAILED(m_pDissoveTexture->Bind_ShaderResource(m_pShaderCom, "g_DissolveTexture")))
-				return E_FAIL;
-		}
-
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, iPassIndex)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, pInstanceBuffer, WorldMatrices, iPassIndex)))
 			return E_FAIL;
 	}
 
+
+	m_pNavigationCom->Render();
 	return S_OK;
 }
 
-HRESULT CMonster::Render_ShadowDepth()
+HRESULT CMonster::Render_ShadowDepth(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
 {
 
-	if (nullptr == m_pShaderCom || nullptr == m_pTransformCom)
+	if (nullptr == m_pShaderCom ||
+		nullptr == m_pTransformCom)
 		return E_FAIL;
 
 
@@ -159,13 +151,14 @@ HRESULT CMonster::Render_ShadowDepth()
 		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(0), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
 			return E_FAIL;
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 10)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, pBufferInstance, WorldMatrices, 10)))
 			return E_FAIL;
 	}
 
 
 	return S_OK;
 }
+
 
 void CMonster::Collision_Enter(const COLLISION_INFO& tInfo)
 {

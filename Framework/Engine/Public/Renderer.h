@@ -7,6 +7,7 @@
 
 BEGIN(Engine)
 
+class CVIBuffer_Instancing;
 class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
@@ -57,6 +58,7 @@ private:
 	HRESULT Render_Debug();
 
 private:
+	class CVIBuffer_Instancing* m_pVIBufferInstance = { nullptr };
 	class CVIBuffer_Rect* m_pVIBuffer = { nullptr };
 	class CShader* m_pShader = { nullptr };
 
@@ -67,8 +69,8 @@ private:
 
 
 private:
-	list<class CGameObject*>			m_RenderObjects[RENDER_END];
-	list<class CComponent*>				m_RenderDebug;
+	map<wstring, vector<class CGameObject*>>			m_RenderObjects[RENDER_END];
+	list<class CComponent*>								m_RenderDebug;
 
 public:
 	static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

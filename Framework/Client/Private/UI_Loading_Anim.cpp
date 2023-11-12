@@ -64,7 +64,7 @@ void CUI_Loading_Anim::LateTick(_float fTimeDelta)
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDERGROUP::RENDER_UI, this);
 }
 
-HRESULT CUI_Loading_Anim::Render()
+HRESULT CUI_Loading_Anim::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -74,12 +74,12 @@ HRESULT CUI_Loading_Anim::Render()
 
 
 	m_pShaderCom->Begin(0);
+	pBufferInstance->Render(WorldMatrices, m_pVIBufferCom);
 
-	m_pVIBufferCom->Render();
-	
 
 	return S_OK;
 }
+
 
 HRESULT CUI_Loading_Anim::Ready_Components()
 {

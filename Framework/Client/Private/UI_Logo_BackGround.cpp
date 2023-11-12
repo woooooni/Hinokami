@@ -6,6 +6,7 @@
 #include "VIBuffer_Rect.h"
 #include "Texture.h"
 #include "Renderer.h"
+#include "VIBuffer_Instancing.h"
 
 CUI_Logo_BackGround::CUI_Logo_BackGround(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext, L"UI_Logo_BackGround")
@@ -52,7 +53,7 @@ void CUI_Logo_BackGround::LateTick(_float fTimeDelta)
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDERGROUP::RENDER_UI, this);
 }
 
-HRESULT CUI_Logo_BackGround::Render()
+HRESULT CUI_Logo_BackGround::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -60,10 +61,12 @@ HRESULT CUI_Logo_BackGround::Render()
 
 	m_pShaderCom->Begin(0);
 
-	m_pVIBufferCom->Render();
+	pBufferInstance->Render(WorldMatrices, m_pVIBufferCom);
 
 	return S_OK;
 }
+
+
 
 HRESULT CUI_Logo_BackGround::Ready_Components()
 {

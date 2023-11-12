@@ -112,10 +112,6 @@ void CCamera_Free::LateTick(_float fTimeDelta)
 	__super::LateTick(fTimeDelta);
 }
 
-HRESULT CCamera_Free::Render()
-{
-	return S_OK;
-}
 
 HRESULT CCamera_Free::Ready_Components()
 {

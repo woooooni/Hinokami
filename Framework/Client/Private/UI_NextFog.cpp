@@ -72,16 +72,15 @@ void CUI_NextFog::LateTick(_float fTimeDelta)
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDERGROUP::RENDER_UI, this);
 }
 
-HRESULT CUI_NextFog::Render()
+HRESULT CUI_NextFog::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
 
 	m_pShaderCom->Begin(2);
+	pBufferInstance->Render(WorldMatrices, m_pVIBufferCom);
 
-	m_pVIBufferCom->Render();
-	
 
 	return S_OK;
 }

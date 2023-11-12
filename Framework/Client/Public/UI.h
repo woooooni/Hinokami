@@ -36,7 +36,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override { return S_OK; }
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void LateTick(_float fTimeDelta) override {}
-	virtual HRESULT Render() override { return S_OK; }
+	virtual HRESULT Render(class CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices) override { return S_OK; }
 
 public:
 	const UI_INFO& Get_UI_Info() { return m_tInfo; }

@@ -59,13 +59,6 @@ void CZenitsu::LateTick(_float fTimeDelta)
 	__super::LateTick(fTimeDelta);
 }
 
-HRESULT CZenitsu::Render()
-{
-	if (FAILED(__super::Render()))
-		return E_FAIL;
-
-	return S_OK;
-}
 
 void CZenitsu::Collision_Enter(const COLLISION_INFO& tInfo)
 {

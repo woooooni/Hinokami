@@ -64,7 +64,7 @@ void CTerrain::LateTick(_float fTimeDelta)
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDERGROUP::RENDER_NONBLEND, this);	
 }
 
-HRESULT CTerrain::Render()
+HRESULT CTerrain::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
 {
 
 #ifdef _DEBUG
@@ -102,11 +102,13 @@ HRESULT CTerrain::Render()
 
 	if (FAILED(m_pNavigationCom->Render()))
 		return E_FAIL;
-	
+
 #endif
 
 	return S_OK;
 }
+
+
 
 
 HRESULT CTerrain::Ready_Components()
