@@ -69,7 +69,7 @@ public:
 	_bool Is_NaviObject() { return m_bNaviObject; }
 
 public:
-	const vector<class CCollider*>& Get_Collider(_uint eDetectionType) { return m_Colliders[eDetectionType]; }
+	vector<class CCollider*>& Get_Collider(_uint eDetectionType) { return m_Colliders[eDetectionType]; }
 	HRESULT Add_Collider(_uint iLevelIndex, _uint eColliderType, _uint eDetectionType, void* pArg);
 	virtual HRESULT Set_ActiveColliders(_uint eDetectionType, _bool bActive);
 

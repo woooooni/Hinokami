@@ -28,6 +28,7 @@ public:
 	virtual void Tick(_float fTimeDelta);
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
+	virtual HRESULT Render_ShadowDepth() override;
 
 public:
 	CShader* Get_ShaderCom() { return m_pShaderCom; }

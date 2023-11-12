@@ -204,6 +204,8 @@
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Monster.h" />
+    <ClInclude Include="..\Public\Monster_Normal_1.h" />
+    <ClInclude Include="..\Public\Monster_Normal_2.h" />
     <ClInclude Include="..\Public\Part.h" />
     <ClInclude Include="..\Public\Particle.h" />
     <ClInclude Include="..\Public\Particle_Manager.h" />
@@ -316,6 +318,8 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\Monster.cpp" />
+    <ClCompile Include="..\Private\Monster_Normal_1.cpp" />
+    <ClCompile Include="..\Private\Monster_Normal_2.cpp" />
     <ClCompile Include="..\Private\Network_Manager.cpp" />
     <ClCompile Include="..\Private\Part.cpp" />
     <ClCompile Include="..\Private\Particle.cpp" />

@@ -90,13 +90,13 @@ void CCharacter::LateTick(_float fTimeDelta)
 	for (auto& pPart : m_Parts)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, pPart);
-		//m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, pPart);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, pPart);
 	}
 		
 
 	__super::LateTick(fTimeDelta);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
-	//m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 
 
 
@@ -149,7 +149,6 @@ HRESULT CCharacter::Render()
 
 HRESULT CCharacter::Render_ShadowDepth()
 {
-	__super::Render_ShadowDepth();
 
 	if (nullptr == m_pShaderCom ||
 		nullptr == m_pTransformCom)
@@ -159,13 +158,12 @@ HRESULT CCharacter::Render_ShadowDepth()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TransPose(), sizeof(_float4x4))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_ViewMatrix", &GI->Get_ShadowViewMatrix(GI->Get_CurrentLevel()), sizeof(_float4x4))))
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &GI->Get_ShadowViewMatrix(GI->Get_CurrentLevel()))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_ProjMatrix", &GI->Get_TransformFloat4x4_TransPose(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
 		return E_FAIL;
 
-	RELEASE_INSTANCE(CGameInstance);
 
 
 	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();

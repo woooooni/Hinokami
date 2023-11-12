@@ -9,6 +9,11 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 
+#include "Terrain.h"
+#include "Camera_Free.h"
+#include "Dummy.h"
+#include "GameObject.h"
+
 #pragma region IMGUI_MACRO
 
 #define IMGUI_NEW_LINE ImGui::NewLine()
@@ -48,6 +53,7 @@ public:
 	{
 		if (nullptr == pObj)
 			return;
+		
 		m_pTarget = pObj;
 	}
 
@@ -55,6 +61,7 @@ public:
 	{
 		if (nullptr == pDummy)
 			return;
+
 		m_pDummy = pDummy;
 	}
 
@@ -62,6 +69,7 @@ public:
 	{
 		if (nullptr == pTerrain)
 			return;
+
 		m_pTerrain = pTerrain;
 	}
 

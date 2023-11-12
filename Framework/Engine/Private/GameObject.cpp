@@ -111,15 +111,11 @@ CComponent* CGameObject::Find_Component(const wstring& strComponentTag)
 
 HRESULT CGameObject::Compute_CamZ(_fvector vWorldPos)
 {
-	CPipeLine* pPipeLine = CPipeLine::GetInstance();
-	Safe_AddRef(pPipeLine);
 
-	_float4 vCamPos = pPipeLine->Get_CamPosition();
+	_float4 vCamPos = GI->Get_CamPosition();
 	_vector	vCamPosition = XMLoadFloat4(&vCamPos);
 
 	m_fCamDistance = XMVectorGetX(XMVector3Length(vWorldPos - vCamPosition));
-
-	Safe_Release(pPipeLine);
 
 	return S_OK;
 

@@ -153,12 +153,31 @@ HRESULT CMainApp::Initialize_Client()
 	LIGHTDESC LightDesc;
 	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
 	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDirection = _float4(-1.f, -1.f, -1.f, 0.f);
 	LightDesc.vDiffuse = _float4(0.5, 0.5, 0.5, 1.f);
 	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(GI->Add_Light(m_pDevice, m_pContext, LightDesc)))
+		return E_FAIL;
+
+
+	_vector vEye = XMVectorSet(0.f, 100.f, -100.f, 1.f);
+	_vector vAt = XMVectorSet(60.f, -10.f, 115.f, 1.f);
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	if (FAILED(GI->Add_ShadowLight(LEVEL_FINAL_BOSS, vEye, vAt, vUp)))
+		return E_FAIL;
+
+	vEye = XMVectorSet(0.f, 100.f, -100.f, 1.f);
+	vAt = XMVectorSet(60.f, -10.f, 115.f, 1.f);
+	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	if (FAILED(GI->Add_ShadowLight(LEVEL_TOOL, vEye, vAt, vUp)))
+		return E_FAIL;
+
+	vEye = XMVectorSet(0.f, 100.f, -100.f, 1.f);
+	vAt = XMVectorSet(60.f, -10.f, 115.f, 1.f);
+	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	if (FAILED(GI->Add_ShadowLight(LEVEL_GAMEPLAY, vEye, vAt, vUp)))
 		return E_FAIL;
 
 	

@@ -24,11 +24,12 @@ public:
 		return &m_vPoints_InWorld[ePoint];
 	}
 
-	void SetUp_Neighbor(LINE eLine, CCell* pCell) {
+	HRESULT SetUp_Neighbor(LINE eLine, CCell* pCell) {
 		if (m_iNeighborIndices[eLine] != -1)
-			return;
+			return E_FAIL;
 
 		m_iNeighborIndices[eLine] = pCell->m_iIndex;
+		return S_OK;
 	}
 
 public:
@@ -45,6 +46,10 @@ public:
 		return m_iNeighborIndices[LINE_AB] != -1 || m_iNeighborIndices[LINE_BC] != -1 || m_iNeighborIndices[LINE_CA] != -1;
 	}
 	_bool Is_InCell(_vector vWorldPosition);
+
+
+
+	_bool Is_Equal(class CCell* pOtherCell);
 
 	void Set_Index(_int iIndex) { m_iIndex = iIndex; }
 	_int Get_Index() { return m_iIndex; }

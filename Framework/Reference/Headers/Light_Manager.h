@@ -17,13 +17,14 @@ public:
 
 public:
 	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHTDESC& LightDesc);
-	HRESULT Add_ShadowLight(_uint iLevelIndex, _matrix WorldMatrix);
+	HRESULT Add_ShadowLight(_uint iLevelIndex, _vector vEye, _vector vAt, _vector vUp);
 
 	HRESULT Render(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 
 
 public:
 	_float4x4 Get_ShadowLightViewMatrix(_uint iLevelIndex);
+	_float4x4 Get_ShadowLightViewMatrix_Inverse(_uint iLevelIndex);
 
 public:
 	HRESULT Reset_Lights();

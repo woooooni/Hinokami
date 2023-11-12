@@ -36,7 +36,6 @@ public:
 
 public:
 	const vector<class CCell*>& Get_Cells() { return m_Cells; }
-
 	const NAVIGATION_DESC& Get_NaviDesc() { return m_NavigationDesc; }
 
 #ifdef _DEBUG
@@ -54,6 +53,7 @@ private:
 
 private:
 	_float Compute_CW(_float3 vPointA, _float3 vPointB, _float3 vPointC);
+	HRESULT Delete_Duplicate_Cell();
 
 #ifdef _DEBUG
 private:

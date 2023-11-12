@@ -156,7 +156,7 @@ _matrix CSword::Get_FinalWorldMatrix()
 }
 
 
-void CSword::Generate_Trail(const wstring& strDiffuseTextureName, const wstring& strAlphaTextureName, const _float4& vColor)
+void CSword::Generate_Trail(const wstring& strDiffuseTextureName, const wstring& strAlphaTextureName, const _float4& vColor, _uint iVertexCount)
 {
 	Compute_RenderMatrix(m_pSocketBone->Get_CombinedTransformation() * XMLoadFloat4x4(&m_SocketPivotMatrix));
 
@@ -167,6 +167,7 @@ void CSword::Generate_Trail(const wstring& strDiffuseTextureName, const wstring&
 	TrailDesc.vDiffuseColor = vColor;
 	m_pTrailObject->Set_TrailDesc(TrailDesc);
 
+	m_pTrailObject->Set_VtxCount(iVertexCount);
 	m_pTrailObject->Start_Trail(m_pTransformCom->Get_WorldMatrix());
 }
 
@@ -233,7 +234,7 @@ HRESULT CSword::Ready_Colliders()
 
 	ColliderDesc.tSphere = tSphere;
 
-	ColliderDesc.tSphere.Radius = 0.8f;
+	ColliderDesc.tSphere.Radius = 1.f;
 	ColliderDesc.pOwnerTransform = m_pTransformCom;
 	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 50.f);
 	XMStoreFloat4x4(&ColliderDesc.ModePivotMatrix, m_pModelCom->Get_PivotMatrix());
@@ -242,7 +243,7 @@ HRESULT CSword::Ready_Colliders()
 		return E_FAIL;
 
 
-	ColliderDesc.tSphere.Radius = 0.1f;
+	ColliderDesc.tSphere.Radius = 0.2f;
 	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 110.f);
 	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
 		return E_FAIL;

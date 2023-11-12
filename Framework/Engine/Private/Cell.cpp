@@ -164,6 +164,26 @@ _bool CCell::Is_InCell(_vector vWorldPosition)
 	return false;
 }
 
+_bool CCell::Is_Equal(CCell* pOtherCell)
+{
+	_bool bCompares[3] = { false, false, false };
+	for (_uint i = 0; i < POINT_END; ++i)
+	{
+		for (_uint j = 0; j < POINT_END; ++j)
+		{
+			if ((m_vPoints_InWorld[i].x == pOtherCell->m_vPoints_InWorld[j].x)
+				&& m_vPoints_InWorld[i].z == pOtherCell->m_vPoints_InWorld[j].z)
+			{
+				bCompares[i] = true;
+			}
+		}	
+	}
+	
+	return ((bCompares[0] == true)
+		&& (bCompares[1] == true) 
+		&& (bCompares[2] == true));
+}
+
 HRESULT CCell::Render(CShader* pShader)
 {
 

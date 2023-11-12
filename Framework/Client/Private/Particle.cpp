@@ -109,7 +109,7 @@ HRESULT CParticle::Ready_Effects()
 	return S_OK;
 }
 
-CEffect* CParticle::Generate_Effect()
+Client::CEffect* CParticle::Generate_Effect()
 {
 	CGameObject* pObject = GI->Clone_GameObject(m_strPrototypeEffectTag, LAYER_EFFECT);
 	if (nullptr == pObject)

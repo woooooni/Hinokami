@@ -182,6 +182,7 @@ void CObject_Manager::Priority_Tick(_float fTimeDelta)
 
 void CObject_Manager::Tick(_float fTimeDelta)
 {
+	_uint iCurrentLevel = GI->Get_CurrentLevel();
 	for (auto& pLayer : m_pLayers[GI->Get_CurrentLevel()])
 	{
 		pLayer->Tick(fTimeDelta);

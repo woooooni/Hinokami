@@ -28,17 +28,18 @@ HRESULT CLight_Manager::Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * 
 	return S_OK;
 }
 
-HRESULT CLight_Manager::Add_ShadowLight(_uint iLevelIndex, _matrix WorldMatrix)
+HRESULT CLight_Manager::Add_ShadowLight(_uint iLevelIndex, _vector vEye, _vector vAt, _vector vUp)
 {
 	auto iter = m_ShadowWorldMatrix.find(iLevelIndex);
 
 	if (iter != m_ShadowWorldMatrix.end())
 		return E_FAIL;
 
-	_float4x4 Matrix;
-	XMStoreFloat4x4(&Matrix, WorldMatrix);
+	_float4x4 LightViewMatrix; 
+	XMStoreFloat4x4(&LightViewMatrix, XMMatrixLookAtLH(vEye, vAt, vUp));
 
-	m_ShadowWorldMatrix.emplace(iLevelIndex, Matrix);
+	m_ShadowWorldMatrix.emplace(iLevelIndex, LightViewMatrix);
+
 	return S_OK;
 }
 
@@ -51,17 +52,28 @@ HRESULT CLight_Manager::Render(CShader * pShader, CVIBuffer_Rect * pVIBuffer)
 }
 
 _float4x4 CLight_Manager::Get_ShadowLightViewMatrix(_uint iLevelIndex)
-{
-	_float4x4 ShadowWorldMatrix;
-	XMStoreFloat4x4(&ShadowWorldMatrix, XMMatrixIdentity());
-
+{	
+	_float4x4 IdentityMatrix;  
+	XMStoreFloat4x4(&IdentityMatrix, XMMatrixIdentity());
 	auto iter = m_ShadowWorldMatrix.find(iLevelIndex);
 
 	if (iter == m_ShadowWorldMatrix.end())
-		return ShadowWorldMatrix;
+		return IdentityMatrix;
 
-	XMStoreFloat4x4(&ShadowWorldMatrix, XMMatrixTranspose(XMLoadFloat4x4(&iter->second)));
-	return ShadowWorldMatrix;
+	return iter->second;
+}
+
+_float4x4 CLight_Manager::Get_ShadowLightViewMatrix_Inverse(_uint iLevelIndex)
+{
+	_float4x4 LightViewMatrix;
+	XMStoreFloat4x4(&LightViewMatrix, XMMatrixIdentity());
+	auto iter = m_ShadowWorldMatrix.find(iLevelIndex);
+
+	if (iter == m_ShadowWorldMatrix.end())
+		return LightViewMatrix;
+
+	XMStoreFloat4x4(&LightViewMatrix, XMMatrixInverse(nullptr, XMLoadFloat4x4(&iter->second)));
+	return LightViewMatrix;
 }
 
 HRESULT CLight_Manager::Reset_Lights()

@@ -50,7 +50,7 @@ public:
 		
 
 public:
-	void Generate_Trail(const wstring& strDiffuseTextureName, const wstring& strAlphaTextureName, const _float4& vColor);
+	void Generate_Trail(const wstring& strDiffuseTextureName, const wstring& strAlphaTextureName, const _float4& vColor, _uint iVertexCount);
 	void Stop_Trail();
 
 private:

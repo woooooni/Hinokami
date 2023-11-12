@@ -223,12 +223,6 @@
     <Filter Include="01.Levels\03. Train">
       <UniqueIdentifier>{328c0fb7-28c6-4633-86ff-20cf4ffff868}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\05. Monster\Nomal_Monster1">
-      <UniqueIdentifier>{f51eafe0-5276-43f0-ac73-552f8ff0a0cb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\05. Monster\Nomal_Monster2">
-      <UniqueIdentifier>{aaabf629-7779-43d6-8a96-cae73f4f0bc4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\03. Character\02. Kyojuro">
       <UniqueIdentifier>{6a899f65-3bf0-42c8-8fd1-3860e3be496d}</UniqueIdentifier>
     </Filter>
@@ -258,6 +252,12 @@
     </Filter>
     <Filter Include="02.GameObjects\03. Character\00. State\Jump">
       <UniqueIdentifier>{bccafb2c-4998-405c-b1e5-a7bb8fcb0203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Normal_Monster2">
+      <UniqueIdentifier>{aaabf629-7779-43d6-8a96-cae73f4f0bc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Normal_Monster1">
+      <UniqueIdentifier>{f51eafe0-5276-43f0-ac73-552f8ff0a0cb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -528,6 +528,12 @@
     <ClInclude Include="..\Public\State_Character_Battle_Idle.h">
       <Filter>02.GameObjects\03. Character\00. State\Idle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Monster_Normal_1.h">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Normal_2.h">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -781,6 +787,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Character_Battle_Idle.cpp">
       <Filter>02.GameObjects\03. Character\00. State\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Normal_1.cpp">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Normal_2.cpp">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

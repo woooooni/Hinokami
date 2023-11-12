@@ -209,6 +209,14 @@ namespace Engine
 		XMFLOAT2			vSize;
 	}VTXPOINT_INSTANCE;
 
+	typedef struct ENGINE_DLL tagVertexModelInstance_Declaration
+	{
+		/* 내가 그릴려고 했던 정점(VTXTEX)과 해당 모델의 로컬 상탤르 ㄹ표현하는
+		VTXINSTANCE의 정보가 함께 셰이더로 전달되어야한다. */
+		static const unsigned int iNumElements = 8;
+		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
+	}VTXMODELINSTANCE_DECLARATION;
+
 	typedef struct ENGINE_DLL tagVertexPointInstance_Declaration
 	{
 		/* 내가 그릴려고 했던 정점(VTXTEX)과 해당 모델의 로컬 상탤르 ㄹ표현하는
@@ -217,6 +225,10 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
 	}VTXPOINTINSTANCE_DECLARATION;
 
+	typedef struct ENGINE_DLL tagVertexModelInstance
+	{
+
+	};
 
 	typedef struct tagGraphicDesc
 	{

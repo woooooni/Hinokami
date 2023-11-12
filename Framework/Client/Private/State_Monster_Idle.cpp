@@ -39,12 +39,21 @@ HRESULT CState_Monster_Idle::Initialize(const list<wstring>& AnimationList)
 
 void CState_Monster_Idle::Enter_State(void* pArg)
 {
+	m_fAccAttackCoolTime = 0.f;
+	m_bAttackable = false;
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
 	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
 void CState_Monster_Idle::Tick_State(_float fTimeDelta)
 {
+	m_fAccAttackCoolTime += fTimeDelta;
+	if (m_fAccAttackCoolTime >= m_fAttackCoolTime)
+	{
+		m_fAccAttackCoolTime = 0.f;
+		m_bAttackable = true;
+	}
+	
 	list<CGameObject*> Objects =  GI->Find_GameObjects(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_CHARACTER);
 
 	for (auto& pGameObject : Objects)
@@ -57,17 +66,19 @@ void CState_Monster_Idle::Tick_State(_float fTimeDelta)
 			_vector vPositon = pTargetTransform->Get_State(CTransform::STATE::STATE_POSITION);
 
 			_vector vDir = vTargetPos - vPositon;
-			if (m_fDistance >= XMVectorGetX(XMVector3Length(vDir)))
+			if ((m_fDistance >= XMVectorGetX(XMVector3Length(vDir)) && m_bAttackable))
 			{
 				m_pStateMachineCom->Change_State(CMonster::TRACE);
 				return;
 			}
-		}	
+		}
 	}
 }
 
 void CState_Monster_Idle::Exit_State()
 {
+	m_fAccAttackCoolTime = 0.f;
+	m_bAttackable = false;
 	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 

@@ -25,7 +25,10 @@ public:
 
 private:
 	_float m_fDistance = 5.f;
+	_float m_fAccAttackCoolTime = 0.f;
+	_float m_fAttackCoolTime = 1.f;
 	
+	_bool m_bAttackable = false;
 public:
 	static CState_Monster_Idle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;

@@ -101,7 +101,7 @@ void CEffect::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
 
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
+	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
 }
 
 HRESULT CEffect::Render()

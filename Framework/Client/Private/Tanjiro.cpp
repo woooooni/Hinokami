@@ -6,6 +6,7 @@
 #include "Sweath.h"
 #include "Trail.h"
 #include "Collision_Manager.h"
+#include "Particle_Manager.h"
 
 
 
@@ -74,6 +75,10 @@ HRESULT CTanjiro::Initialize(void* pArg)
 
 void CTanjiro::Tick(_float fTimeDelta)
 {
+	if (KEY_TAP(KEY::E))
+	{
+		CParticle_Manager::GetInstance()->Generate_Particle(L"Kyojuro_Attack_Particle", m_pTransformCom->Get_WorldMatrix());
+	}
 	m_pStateCom->Tick_State(fTimeDelta);
 	m_pRigidBodyCom->Tick_RigidBody(fTimeDelta);
 	__super::Tick(fTimeDelta);
@@ -105,7 +110,7 @@ HRESULT CTanjiro::Render()
 	strDebugPosition += L"Position Z : ";
 	strDebugPosition += to_wstring(XMVectorGetZ(vPosition));
 
-	GI->Render_Fonts(L"Batang", strDebugPosition.c_str(), _float2(0.f, 0.f));
+	GI->Render_Fonts(L"Batang", strDebugPosition.c_str(), _float2(g_iWinSizeX / 2.f, 0.f));
 
 	return S_OK;
 }

@@ -5,6 +5,7 @@
 #include "Camera_Main.h"
 #include "Character.h"
 
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 {
@@ -115,7 +116,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
 	CameraDesc.fNear = 0.2f;
-	CameraDesc.fFar = 300.0f;
+	CameraDesc.fFar = 1000.f;
 
 	CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
 	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
@@ -188,10 +189,30 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 {
-	for (_uint i = 0; i < 5; ++i)
+	for (_uint i = 0; i < 3; ++i)
 	{
 		CGameObject* pMonster = nullptr;
-		if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster"), nullptr, &pMonster)))
+		if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_0"), nullptr, &pMonster)))
+			return E_FAIL;
+
+		if (nullptr == pMonster)
+			return E_FAIL;
+	}
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		CGameObject* pMonster = nullptr;
+		if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_1"), nullptr, &pMonster)))
+			return E_FAIL;
+
+		if (nullptr == pMonster)
+			return E_FAIL;
+	}
+
+	for (_uint i = 0; i < 3; ++i)
+	{
+		CGameObject* pMonster = nullptr;
+		if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_2"), nullptr, &pMonster)))
 			return E_FAIL;
 
 		if (nullptr == pMonster)

@@ -15,8 +15,9 @@ class CVIBuffer_Rect;
 END
 
 BEGIN(Client)
-class CEffect;
 
+
+class CEffect;
 class CParticle final : public CGameObject
 {
 public:
@@ -78,7 +79,7 @@ public:
  
 public:
 	HRESULT Ready_Effects();
-	class CEffect* Generate_Effect();
+	class Client::CEffect* Generate_Effect();
 
 
 

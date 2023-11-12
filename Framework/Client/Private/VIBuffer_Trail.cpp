@@ -275,10 +275,9 @@ void CVIBuffer_Trail::Start_Trail(_matrix TransformMatrix)
 }
 
 void CVIBuffer_Trail::Stop_Trail()
-{
+{	
 
 	m_TrailVertices.clear();
-
 }
 
 CVIBuffer_Trail * CVIBuffer_Trail::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _uint iVtxCount)

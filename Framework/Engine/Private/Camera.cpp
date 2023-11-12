@@ -1,5 +1,5 @@
 #include "..\Public\Camera.h"
-#include "PipeLine.h"
+#include "GameInstance.h"
 
 CCamera::CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjTag, _uint iObjectID)
 	: CGameObject(pDevice, pContext, strObjTag, iObjectID)
@@ -45,10 +45,8 @@ void CCamera::Tick(_float fTimeDelta)
 
 void CCamera::LateTick(_float fTimeDelta)
 {
-	CPipeLine* pPipeLine = CPipeLine::GetInstance();
-
-	pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransformCom->Get_WorldMatrixInverse());
-	pPipeLine->Set_Transform(CPipeLine::D3DTS_PROJ, XMMatrixPerspectiveFovLH(m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar));
+	GI->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransformCom->Get_WorldMatrixInverse());
+	GI->Set_Transform(CPipeLine::D3DTS_PROJ, XMMatrixPerspectiveFovLH(m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar));
 }
 
 HRESULT CCamera::Render()

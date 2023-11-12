@@ -8,6 +8,44 @@ CTarget_Manager::CTarget_Manager()
 
 }
 
+
+
+HRESULT CTarget_Manager::Ready_Shadow_DSV(ID3D11Device* pDevice, _uint iWinSizeX, _uint iWinSizeY)
+{
+	if (nullptr == pDevice)
+		return E_FAIL;
+
+	ID3D11Texture2D* pDSV = nullptr;
+
+	D3D11_TEXTURE2D_DESC	TextureDesc;
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+	TextureDesc.Width = iWinSizeX;
+	TextureDesc.Height = iWinSizeY;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.SampleDesc.Count = 1;
+
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	TextureDesc.CPUAccessFlags = 0;
+	TextureDesc.MiscFlags = 0;
+
+	if (FAILED(pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDSV)))
+		return E_FAIL;
+
+
+	if (FAILED(pDevice->CreateDepthStencilView(pDSV, nullptr, &m_pShadowDSV)))
+		return E_FAIL;
+
+	Safe_Release(pDSV);
+
+	return S_OK;
+}
+
 HRESULT CTarget_Manager::Add_RenderTarget(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring & strTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vColor)
 {
 	if (nullptr != Find_RenderTarget(strTargetTag))
@@ -61,7 +99,7 @@ HRESULT CTarget_Manager::Begin_MRT(ID3D11DeviceContext* pContext, const wstring 
 	if (nullptr == pMRTList)
 		return E_FAIL;
 		
-	pContext->OMGetRenderTargets(1, &m_pBackBufferRTV, &m_pDSV);
+	pContext->OMGetRenderTargets(8, m_pPrevRTVs, &m_pDSV);
 
 	ID3D11RenderTargetView*		pRenderTargets[8] = {};
 
@@ -78,12 +116,39 @@ HRESULT CTarget_Manager::Begin_MRT(ID3D11DeviceContext* pContext, const wstring 
 	return	S_OK;
 }
 
+HRESULT CTarget_Manager::Begin_Shadow_MRT(ID3D11DeviceContext* pContext, const wstring& strMRTTag)
+{
+	list<CRenderTarget*>* pMRTList = Find_MRT(strMRTTag);
+
+	if (nullptr == pMRTList)
+		return E_FAIL;
+
+	pContext->OMGetRenderTargets(8, m_pPrevRTVs, &m_pDSV);
+
+	ID3D11RenderTargetView* pRenderTargets[8] = {};
+
+	_uint			iNumRTVs = 0;
+
+	for (auto& pRenderTarget : *pMRTList)
+	{
+		pRenderTargets[iNumRTVs++] = pRenderTarget->Get_RTV();
+		pRenderTarget->Clear();
+	}
+
+	pContext->ClearDepthStencilView(m_pShadowDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+	pContext->OMSetRenderTargets(iNumRTVs, pRenderTargets, m_pShadowDSV);
+
+	return	S_OK;
+}
+
 HRESULT CTarget_Manager::End_MRT(ID3D11DeviceContext* pContext)
 {
 
-	pContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDSV);
+	pContext->OMSetRenderTargets(8, m_pPrevRTVs, m_pDSV);
 
-	Safe_Release(m_pBackBufferRTV);
+	for (_uint i = 0; i < 8; ++i)	
+		Safe_Release(m_pPrevRTVs[i]);
+
 	Safe_Release(m_pDSV);
 
 	return	S_OK;

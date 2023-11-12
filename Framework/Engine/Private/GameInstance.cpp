@@ -83,6 +83,9 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, _uint iNumLayerType,
 	if (FAILED(m_pCollision_Manager->Reserve_Manager()))
 		return E_FAIL;
 
+	if (FAILED(m_pTarget_Manager->Ready_Shadow_DSV(*ppDevice, GraphicDesc.iWinSizeX, GraphicDesc.iWinSizeY)))
+		return E_FAIL;
+
 	
 
 	return S_OK;
@@ -306,9 +309,21 @@ HRESULT CGameInstance::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return m_pLight_Manager->Add_Light(pDevice, pContext, LightDesc);
 }
 
+HRESULT CGameInstance::Add_ShadowLight(_uint iLevelIndex, _vector vEye, _vector vAt, _vector vUp)
+{
+	return m_pLight_Manager->Add_ShadowLight(iLevelIndex, vEye, vAt, vUp);
+}
+
+
+
 _float4x4 CGameInstance::Get_ShadowViewMatrix(_uint iLevelIndex)
 {
 	return m_pLight_Manager->Get_ShadowLightViewMatrix(iLevelIndex);
+}
+
+_float4x4 CGameInstance::Get_ShadowLightViewMatrix_Inverse(_uint iLevelIndex)
+{
+	return m_pLight_Manager->Get_ShadowLightViewMatrix_Inverse(iLevelIndex);
 }
 
 HRESULT CGameInstance::Reset_Lights()
@@ -355,6 +370,11 @@ _float4 CGameInstance::Get_CamPosition()
 		return _float4();
 
 	return m_pPipeLine->Get_CamPosition();
+}
+
+_float4x4 CGameInstance::Get_TransformMatrixInverse_Float4x4(CPipeLine::TRANSFORMSTATE eTransformState)
+{
+	return m_pPipeLine->Get_TransformMatrixInverse_Float4x4(eTransformState);
 }
 
 _matrix CGameInstance::Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE eTransformState) const

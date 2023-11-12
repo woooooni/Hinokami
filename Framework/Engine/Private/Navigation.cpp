@@ -4,6 +4,8 @@
 #include "PipeLine.h"
 #include "FileUtils.h"
 #include <filesystem>
+#include "GameInstance.h"
+#include <set>
 
 _float4x4 CNavigation::m_WorldIdentity = {};
 
@@ -285,16 +287,13 @@ HRESULT CNavigation::Render()
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldIdentity)))
 		return E_FAIL;
 
-	CPipeLine*		pPipeLine = GET_INSTANCE(CPipeLine);
-	_float4x4 ViewMatirix = pPipeLine->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW);
+	_float4x4 ViewMatirix = GI->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW);
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &ViewMatirix)))
 		return E_FAIL;
 
-	_float4x4 ProjMatirx = pPipeLine->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ);
+	_float4x4 ProjMatirx = GI->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ);
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &ProjMatirx)))
 		return E_FAIL;
-
-	RELEASE_INSTANCE(CPipeLine);
 
 
 
@@ -359,6 +358,8 @@ HRESULT CNavigation::Initialize_Index(_vector vWorldPostion)
 /* 네비게이션을 구성하는 각각의 셀들의 이웃을 설정한다. */
 HRESULT CNavigation::SetUp_Neighbors()
 {
+	
+
 	_uint iCurrentIndex = 0;
 	
 	for (auto& pCell : m_Cells)
@@ -366,9 +367,15 @@ HRESULT CNavigation::SetUp_Neighbors()
 		pCell->Set_Index(iCurrentIndex++);
 		pCell->Reset_Neighbor();
 	}
-		
 
+	Delete_Duplicate_Cell();
 
+	iCurrentIndex = 0;
+	for (auto& pCell : m_Cells)
+	{
+		pCell->Set_Index(iCurrentIndex++);
+		pCell->Reset_Neighbor();
+	}
 
 	for (auto& pSourCell : m_Cells)
 	{
@@ -393,21 +400,36 @@ HRESULT CNavigation::SetUp_Neighbors()
 			}
 		}
 	}
+	return S_OK;
+}
 
-	auto iter = m_Cells.begin();
-	while (iter != m_Cells.end())
+
+HRESULT CNavigation::Delete_Duplicate_Cell()
+{
+	auto iterSour = m_Cells.begin();
+
+	while (iterSour != m_Cells.end())
 	{
-		if (!((*iter)->Is_HasNeighbor()))
+		auto iterDest = m_Cells.begin();
+		while (iterDest != m_Cells.end())
 		{
-			iter = m_Cells.erase(iter);
-			continue;
-		}
-			
-		++iter;
-	}
-	
+			if ((*iterSour)->Get_Index() == (*iterDest)->Get_Index())
+			{
+				iterDest++;
+				continue;
+			}
+				
 
-	
+			if ((*iterSour)->Is_Equal(*iterDest))
+			{
+				iterDest = m_Cells.erase(iterDest);
+				continue;
+			}	
+			iterDest++;
+		}
+		iterSour++;
+	}
+
 	return S_OK;
 }
 
@@ -448,3 +470,5 @@ void CNavigation::Free()
 	for (auto& pCell : m_Cells)
 		Safe_Release(pCell);
 }
+
+

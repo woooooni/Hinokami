@@ -229,6 +229,15 @@
     <Filter Include="01.Utiltiy\97. ShaderFiles">
       <UniqueIdentifier>{8fa7b1dc-e34f-4049-afc5-bb12e296a974}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Instancing\Rect">
+      <UniqueIdentifier>{b298ffe8-d81c-4b40-9ff5-6207c654c66a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Instancing\Point">
+      <UniqueIdentifier>{ef38afe6-1cfd-4244-a6d4-9f3dad6a537a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Instancing\Model">
+      <UniqueIdentifier>{8348d9e7-d8aa-4594-8cc2-4055ed74034e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -450,12 +459,6 @@
     <ClInclude Include="..\Public\Collider_AABB.h">
       <Filter>01.Utiltiy\03.Component\10. Collider\AABB</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\VIBuffer_Point_Instance.h">
-      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Instancing</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\VIBuffer_Rect_Instance.h">
-      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Instancing</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Cube.h">
       <Filter>01.Utiltiy\03.Component\02. VIBuffer\Cube</Filter>
     </ClInclude>
@@ -467,6 +470,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\RenderTarget.h">
       <Filter>01.Utiltiy\04. RenderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Instancing.h">
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Instancing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -671,12 +677,6 @@
     <ClCompile Include="..\Private\Collider_AABB.cpp">
       <Filter>01.Utiltiy\03.Component\10. Collider\AABB</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\VIBuffer_Point_Instance.cpp">
-      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Instancing</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\VIBuffer_Rect_Instance.cpp">
-      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Instancing</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Cube.cpp">
       <Filter>01.Utiltiy\03.Component\02. VIBuffer\Cube</Filter>
     </ClCompile>
@@ -688,6 +688,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\RenderTarget.cpp">
       <Filter>01.Utiltiy\04. RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Instancing.cpp">
+      <Filter>01.Utiltiy\03.Component\02. VIBuffer\Instancing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

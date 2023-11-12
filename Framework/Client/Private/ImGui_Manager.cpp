@@ -23,6 +23,7 @@
 #include "tinyxml2.h"
 
 
+
 USING(Client)
 IMPLEMENT_SINGLETON(CImGui_Manager)
 
@@ -495,6 +496,12 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
                     tBox.Extents = { 1.f, 1.f, 1.f };
                     XMStoreFloat3(&tBox.Center, pTransform->Get_State(CTransform::STATE_POSITION));
 
+                    CModel* pModel = m_pTarget->Get_Component<CModel>(L"Com_Model");
+                    if (pModel == nullptr)
+                        XMStoreFloat4x4(&tBoxDesc.ModePivotMatrix, XMMatrixIdentity());
+                    else
+                        XMStoreFloat4x4(&tBoxDesc.ModePivotMatrix, pModel->Get_PivotMatrix());
+
                     tBoxDesc.tBox = tBox;
                     tBoxDesc.pOwnerTransform = pTransform;
                     tBoxDesc.vOffsetPosition = {};
@@ -517,6 +524,12 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
                     tSphere.Radius = 0.f;
                     XMStoreFloat3(&tSphere.Center, pTransform->Get_State(CTransform::STATE_POSITION));
                     
+                    CModel* pModel = m_pTarget->Get_Component<CModel>(L"Com_Model");
+                    if (pModel == nullptr)
+                        XMStoreFloat4x4(&tSphereDesc.ModePivotMatrix, XMMatrixIdentity());
+                    else
+                        XMStoreFloat4x4(&tSphereDesc.ModePivotMatrix, pModel->Get_PivotMatrix());
+
                     tSphereDesc.tSphere = tSphere;
                     tSphereDesc.pOwnerTransform = pTransform;
                     tSphereDesc.vOffsetPosition = {};
@@ -527,35 +540,68 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
             }
             
         }
-
+        
+        _uint iColliderId = 0;
         for (_uint i = 0; i < CCollider::DETECTION_TYPE::DETECTION_END; ++i)
         {
-            const vector<CCollider*> Colliders = m_pTarget->Get_Collider(i);
-            for (auto& pCollider : Colliders)
-            {
-                _float3 vOffset = pCollider->Get_Offset();
-                ImGui::Text("Collider_Offset");
-                ImGui::DragFloat3("##OffsetPosition", (_float*)&vOffset, 0.01f, -1000.f, 1000.f);
-                pCollider->Set_Offset(vOffset);
+            vector<CCollider*>& Colliders = m_pTarget->Get_Collider(i);
+            auto iter = Colliders.begin();
 
-                if (pCollider->Get_ColliderType() == CCollider::COLLIDER_TYPE::AABB)
+            
+            char szColliderDetectionType[MAX_PATH] = "===========";
+            if (i == CCollider::DETECTION_TYPE::BOUNDARY)
+                strcat_s(szColliderDetectionType, "BOUNDARY===========");
+            else if(i == CCollider::DETECTION_TYPE::BODY)
+                strcat_s(szColliderDetectionType, "BODY===========");
+            else if(i == CCollider::DETECTION_TYPE::HEAD)
+                strcat_s(szColliderDetectionType, "HEAD===========");
+            else if(i == CCollider::DETECTION_TYPE::ATTACK)
+                strcat_s(szColliderDetectionType, "ATTACK===========");
+
+            ImGui::Text(szColliderDetectionType);
+            while (iter != Colliders.end())
+            {
+                IMGUI_NEW_LINE;
+                
+                char szTagOffset[MAX_PATH] = "##";
+                strcat_s(szTagOffset, to_string(++iColliderId).c_str());
+                strcat_s(szTagOffset, "OffsetPosition");
+
+                _float3 vOffset = (*iter)->Get_Offset();
+                ImGui::Text("Collider_Offset");
+                ImGui::DragFloat3(szTagOffset, (_float*)&vOffset, 0.01f, -1000.f, 1000.f);
+                (*iter)->Set_Offset(vOffset);
+
+                if (ImGui::Button("Delete"))
                 {
-                    CCollider_AABB* pBoxCollider = dynamic_cast<CCollider_AABB*>(pCollider);
+                    iter = Colliders.erase(iter);
+                    continue;
+                }
+
+                if ((*iter)->Get_ColliderType() == CCollider::COLLIDER_TYPE::AABB)
+                {
+                    CCollider_AABB* pBoxCollider = dynamic_cast<CCollider_AABB*>((*iter));
                     if (nullptr != pBoxCollider)
                     {
                         BoundingBox tBox = pBoxCollider->Get_AABB_Box();
                         ImGui::Text("Extents : ");
                         IMGUI_SAME_LINE;
-                        ImGui::DragFloat("##BoxExtentsX", &tBox.Extents.x, 0.01f, 0.1f, 100.f);
-                        ImGui::DragFloat("##BoxExtentsY", &tBox.Extents.y, 0.01f, 0.1f, 100.f);
-                        ImGui::DragFloat("##BoxExtentsZ", &tBox.Extents.z, 0.01f, 0.1f, 100.f);
+                        char szTagExtexts[MAX_PATH] = "";
+                        strcpy_s(szTagExtexts, "##");
+                        strcat_s(szTagExtexts, to_string(iColliderId).c_str());
+                        strcat_s(szTagExtexts, "X");
+                        ImGui::DragFloat(szTagExtexts, &tBox.Extents.x, 0.01f, 0.1f, 100.f);
+                        strcat_s(szTagExtexts, "Y");
+                        ImGui::DragFloat(szTagExtexts, &tBox.Extents.y, 0.01f, 0.1f, 100.f);
+                        strcat_s(szTagExtexts, "Z");
+                        ImGui::DragFloat(szTagExtexts, &tBox.Extents.z, 0.01f, 0.1f, 100.f);
                         pBoxCollider->Set_AABB_Box(tBox);
                     }
 
                 }
-                else if(pCollider->Get_ColliderType() == CCollider::COLLIDER_TYPE::SPHERE)
+                else if ((*iter)->Get_ColliderType() == CCollider::COLLIDER_TYPE::SPHERE)
                 {
-                    CCollider_Sphere* pShpereCollider = dynamic_cast<CCollider_Sphere*>(pCollider);
+                    CCollider_Sphere* pShpereCollider = dynamic_cast<CCollider_Sphere*>((*iter));
                     if (nullptr != pShpereCollider)
                     {
                         BoundingSphere tSphere = pShpereCollider->Get_Sphere();
@@ -565,6 +611,8 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
                         pShpereCollider->Set_Sphere(tSphere);
                     }
                 }
+
+                ++iter;
             }
         }
         
@@ -1100,6 +1148,10 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
             m_pPrevEffect->Set_Gravity(bGravity);
         }
 
+        ImGui::Text("Blur_Power");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat2("##EffectBlurPower", (_float*)&tEffectDesc.vBlurPower, 0.01f, 0.f, 100.f);
+
 
         IMGUI_NEW_LINE;
         IMGUI_NEW_LINE;
@@ -1537,6 +1589,35 @@ void CImGui_Manager::NaviPicking()
                     m_vWorldPickedNaviPos.clear();
                 }
             }
+
+            if (KEY_TAP(KEY::RBTN))
+            {
+                POINT pt;
+                GetCursorPos(&pt);
+                ScreenToClient(g_hWnd, &pt);
+
+                _vector vMousePos = XMVectorSet(
+                    _float(pt.x / (g_iWinSizeX * .5f) - 1.f),
+                    _float(pt.y / (g_iWinSizeY * -.5f) + 1.f),
+                    1.f, 1.f);
+
+                _matrix ViewMatrixInv = GAME_INSTANCE->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
+                _matrix ProjMatrixInv = GAME_INSTANCE->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_PROJ);
+
+                vMousePos = XMVector3TransformCoord(vMousePos, ProjMatrixInv);
+
+                XMVECTOR vRayDir, vRayPosition;
+
+                vRayPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+                vRayDir = vMousePos - vRayPosition;
+
+
+                vMousePos = XMVector3TransformCoord(vRayPosition, ViewMatrixInv);
+                vRayDir = XMVector3TransformNormal(vRayDir, ViewMatrixInv);
+
+                m_vWorldPickedNaviPos.clear();
+                m_pTerrain->Get_NavigationCom()->Delete_Cell(vRayDir, vMousePos);
+            }
         }
         return;
     }
@@ -1568,7 +1649,7 @@ void CImGui_Manager::NaviPicking()
                 {
                     if (CPicking_Manager::GetInstance()->Is_NaviPicking(pTransform, pMesh, &m_vNaviPickingWorldPos, &vLocalPos))
                     {
-                        if (KEY_TAP(KEY::RBTN))
+                        if (KEY_HOLD(KEY::RBTN))
                         {
                             POINT pt;
                             GetCursorPos(&pt);
@@ -2159,8 +2240,13 @@ void CImGui_Manager::Free()
     Safe_Release(m_pContext);
 
 
+    Safe_Release(m_pTarget);
     m_pTarget = nullptr;
+
+    Safe_Release(m_pDummy);
     m_pDummy = nullptr;
+
+    Safe_Release(m_pTerrain);
     m_pTerrain = nullptr;
     
 
