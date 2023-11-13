@@ -171,7 +171,10 @@ HRESULT CEffect::Render_Instance(CShader* pInstancingShader, CVIBuffer_Instancin
 	{
 		_uint iNumMesh = m_pModelCom->Get_NumMeshes();
 		for (_uint i = 0; i < iNumMesh; ++i)
-			m_pModelCom->Render_Instancing(m_pShaderCom, i, pInstancingBuffer, WorldMatrices, m_iPassIndex);
+		{
+			if (FAILED(m_pModelCom->Render_Instancing(pInstancingShader, i, pInstancingBuffer, WorldMatrices, m_iPassIndex)))
+				return E_FAIL;
+		}
 	}
 	else
 	{
@@ -261,6 +264,9 @@ HRESULT CEffect::Bind_ShaderResource()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAdditiveDiffuseColor", &m_tEffectDesc.vAdditiveDiffuseColor, sizeof(_float3))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_BlurPower", &m_tEffectDesc.vBlurPower, sizeof(_float2))))
 		return E_FAIL;
 
 

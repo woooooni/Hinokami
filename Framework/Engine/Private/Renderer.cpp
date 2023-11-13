@@ -194,7 +194,9 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (nullptr == m_pIntancingShaders[SHADER_TYPE::EFFECT_TEXTURE])
 		return E_FAIL;
 
-	m_pIntancingShaders[SHADER_TYPE::EFFECT_MODEL] = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_MeshEffect_Instance.hlsl"), VTXMODELINSTANCE_DECLARATION::Elements, VTXMODELINSTANCE_DECLARATION::iNumElements);
+	m_pIntancingShaders[SHADER_TYPE::EFFECT_MODEL] = CShader::Create(m_pDevice, m_pContext, 
+		TEXT("../Bin/ShaderFiles/Shader_MeshEffect_Instance.hlsl"), VTXMODELINSTANCE_DECLARATION::Elements, VTXMODELINSTANCE_DECLARATION::iNumElements);
+
 	if (nullptr == m_pIntancingShaders[SHADER_TYPE::EFFECT_MODEL])
 		return E_FAIL;
 

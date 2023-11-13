@@ -965,9 +965,18 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
         CEffect::EFFECT_DESC tEffectDesc;
         if (iSelecetedEffectType == CEffect::EFFECT_TYPE::EFFECT_MESH)
+        {
             m_pPrevEffect = CEffect::Create(m_pDevice, m_pContext, L"Prev_Effect", CEffect::EFFECT_TYPE(iSelecetedEffectType), CUtils::ToWString(szEffectModelName), tEffectDesc, true, true, false);
+
+            m_pPrevEffect->Set_PrototypeTag(L"Mesh_Temp");
+        }
+            
         else
+        {
             m_pPrevEffect = CEffect::Create(m_pDevice, m_pContext, L"Prev_Effect", CEffect::EFFECT_TYPE(iSelecetedEffectType), L"", tEffectDesc, true, true, false);
+            m_pPrevEffect->Set_PrototypeTag(L"Texture_Temp");
+        }
+            
 
 
         if (nullptr == m_pPrevEffect)
