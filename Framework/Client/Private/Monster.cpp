@@ -113,7 +113,7 @@ HRESULT CMonster::Render()
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_NormalTexture")))
-			return E_FAIL;
+			iPassIndex = 0;
 		else
 			iPassIndex++;
 

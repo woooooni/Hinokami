@@ -39,15 +39,15 @@ HRESULT CVIBuffer_Instancing::Initialize_Prototype(const INSTANCE_DESC& Instance
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 	m_SubResourceData.pSysMem = m_pVertices;
 
-
+	if (FAILED(__super::Create_Buffer(&m_pVBInstance)))
+		return E_FAIL;
 
 	return S_OK;
 }
 
 HRESULT CVIBuffer_Instancing::Initialize(void * pArg)
 {
-	if (FAILED(__super::Create_Buffer(&m_pVBInstance)))
-		return E_FAIL;
+	
 
 	return S_OK;
 }
