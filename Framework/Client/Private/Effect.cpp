@@ -26,12 +26,15 @@ CEffect::CEffect(const CEffect& rhs)
 	, m_bIncrement(rhs.m_bIncrement)
 	, m_bLoop(rhs.m_bLoop)
 	, m_bGravity(rhs.m_bGravity)
-	, m_fAccUVFlow(0.f, 0.f)
+	, m_vUVIndex({0.f, 0.f})
+	, m_fAccUVFlow({ 0.f, 0.f })
 	, m_fAccDeletionTime(0.f)
 	, m_iDiffuseTextureIdx(rhs.m_iDiffuseTextureIdx)
 	, m_iAlphaTextureIdx(rhs.m_iAlphaTextureIdx)
+	, m_fDeletionTime(rhs.m_fDeletionTime)
+	, m_fAccIndex(0.f)
 {
-
+	m_tEffectDesc.fAlpha = 1.f;
 }
 
 HRESULT CEffect::Initialize_Prototype(const EFFECT_DESC& tEffectDesc)
@@ -48,10 +51,11 @@ HRESULT CEffect::Initialize(void* pArg)
 	if (nullptr != pArg)
 		m_pOwnerObject = (CGameObject*)pArg;
 
-	XMStoreFloat4x4(&m_ParentMatrix, XMMatrixIdentity());
-
 	m_iDiffuseTextureIdx = m_pDiffuseTextureCom->Find_Index(m_tEffectDesc.strDiffuseTetextureName);
 	m_iAlphaTextureIdx = m_pAlphaTextureCom->Find_Index(m_tEffectDesc.strAlphaTexturName);
+	XMStoreFloat4x4(&m_ParentMatrix, XMMatrixIdentity());
+
+	
 
 
 	return S_OK;
@@ -101,7 +105,38 @@ void CEffect::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
 
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
+	_float4x4 WolrdMatrix;
+	XMStoreFloat4x4(&WolrdMatrix, XMLoadFloat4x4(&m_tEffectDesc.OffsetMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(&m_ParentMatrix));
+
+	if (m_tEffectDesc.bBillboard)
+	{
+		_matrix Temp = XMLoadFloat4x4(&WolrdMatrix);
+		_vector vPosition = Temp.r[CTransform::STATE_POSITION];
+		_vector vCamPosition = XMLoadFloat4(&GI->Get_CamPosition());
+
+		_float fLookScale = XMVectorGetX(XMVector3Length(Temp.r[CTransform::STATE_LOOK]));
+		_vector vLook = XMVectorSetW(XMVector3Normalize(vPosition - vCamPosition), 0.f) * fLookScale;
+
+		_float fRightScale = XMVectorGetX(XMVector3Length(Temp.r[CTransform::STATE_RIGHT]));
+		_vector vRight = XMVectorSetW(XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)), 0.f) * fRightScale;
+
+		_float fUpScale = XMVectorGetX(XMVector3Length(Temp.r[CTransform::STATE_UP]));
+		_vector vUp = XMVectorSetW(XMVector3Normalize(XMVector3Cross(vLook, vRight)), 0.f) * fUpScale;
+
+		Temp.r[CTransform::STATE_RIGHT] = vRight;
+		Temp.r[CTransform::STATE_UP] = vUp;
+		Temp.r[CTransform::STATE_LOOK] = vLook;
+
+		XMStoreFloat4x4(&WolrdMatrix, Temp);
+	}
+	
+
+
+
+	if (m_eType == EFFECT_TYPE::EFFECT_MESH)
+		m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDER_EFFECT, CRenderer::SHADER_TYPE::EFFECT_MODEL, this, WolrdMatrix);
+	else
+		m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDER_EFFECT, CRenderer::SHADER_TYPE::EFFECT_TEXTURE, this, WolrdMatrix);
 }
 
 HRESULT CEffect::Render()
@@ -124,6 +159,25 @@ HRESULT CEffect::Render()
 		m_pVIBufferCom->Render();
 	}
 
+	return S_OK;
+}
+
+HRESULT CEffect::Render_Instance(CShader* pInstancingShader, CVIBuffer_Instancing* pInstancingBuffer, const vector<_float4x4>& WorldMatrices)
+{
+	if (FAILED(Bind_ShaderResource_Instance(pInstancingShader)))
+		return E_FAIL;
+
+	if (m_eType == EFFECT_TYPE::EFFECT_MESH)
+	{
+		_uint iNumMesh = m_pModelCom->Get_NumMeshes();
+		for (_uint i = 0; i < iNumMesh; ++i)
+			m_pModelCom->Render_Instancing(m_pShaderCom, i, pInstancingBuffer, WorldMatrices, m_iPassIndex);
+	}
+	else
+	{
+		pInstancingShader->Begin(m_iPassIndex);
+		pInstancingBuffer->Render(WorldMatrices, m_pVIBufferCom);
+	}
 	return S_OK;
 }
 
@@ -296,6 +350,109 @@ HRESULT CEffect::Bind_ShaderResource()
 	return S_OK;
 }
 
+HRESULT CEffect::Bind_ShaderResource_Instance(CShader* pShader)
+{
+	if (FAILED(pShader->Bind_RawValue("g_fMaxCountX", &m_tEffectDesc.fMaxCountX, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(pShader->Bind_RawValue("g_fMaxCountY", &m_tEffectDesc.fMaxCountY, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(pShader->Bind_RawValue("g_fAlpha", &m_tEffectDesc.fAlpha, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(pShader->Bind_RawValue("g_fUVIndex", &m_vUVIndex, sizeof(_float2))))
+		return E_FAIL;
+
+	if (FAILED(pShader->Bind_RawValue("g_fAdditiveDiffuseColor", &m_tEffectDesc.vAdditiveDiffuseColor, sizeof(_float3))))
+		return E_FAIL;
+
+
+	if (FAILED(pShader->Bind_RawValue("g_fUVFlow", &m_fAccUVFlow, sizeof(_float2))))
+		return E_FAIL;
+
+	{
+
+		if (-1 < m_iDiffuseTextureIdx)
+		{
+			if (FAILED(m_pDiffuseTextureCom->Bind_ShaderResource(pShader, "g_DiffuseTexture", m_iDiffuseTextureIdx)))
+				return E_FAIL;
+		}
+
+
+		if (-1 < m_iAlphaTextureIdx)
+		{
+			if (FAILED(m_pAlphaTextureCom->Bind_ShaderResource(pShader, "g_AlphaTexture", m_iAlphaTextureIdx)))
+				return E_FAIL;
+		}
+
+
+		// 둘다 없다면.
+		if (-1 == m_iDiffuseTextureIdx && -1 == m_iAlphaTextureIdx)
+			m_iPassIndex = 0;
+
+		// 디퓨즈 텍스쳐만 있다면.
+		if (-1 != m_iDiffuseTextureIdx && -1 == m_iAlphaTextureIdx)
+			m_iPassIndex = 1;
+
+		// 알파 텍스쳐만 있다면.
+		if (-1 == m_iDiffuseTextureIdx && -1 != m_iAlphaTextureIdx)
+			m_iPassIndex = 2;
+
+		if (-1 != m_iDiffuseTextureIdx && -1 != m_iAlphaTextureIdx)
+			m_iPassIndex = 3;
+	}
+
+	_float4x4 WorldMatrix;
+
+	_matrix LocalMatrix = XMLoadFloat4x4(&m_tEffectDesc.OffsetMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(&m_ParentMatrix);
+
+
+	if (m_tEffectDesc.bBillboard)
+	{
+		// 빌보드를 적용한다.
+		_vector vPosition = LocalMatrix.r[CTransform::STATE_POSITION];
+		_vector vCamPosition = XMLoadFloat4(&GI->Get_CamPosition());
+
+		_float fLookScale = XMVectorGetX(XMVector3Length(LocalMatrix.r[CTransform::STATE_LOOK]));
+		_vector vLook = XMVectorSetW(XMVector3Normalize(vPosition - vCamPosition), 0.f) * fLookScale;
+
+		_float fRightScale = XMVectorGetX(XMVector3Length(LocalMatrix.r[CTransform::STATE_RIGHT]));
+		_vector vRight = XMVectorSetW(XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)), 0.f) * fRightScale;
+
+		_float fUpScale = XMVectorGetX(XMVector3Length(LocalMatrix.r[CTransform::STATE_UP]));
+		_vector vUp = XMVectorSetW(XMVector3Normalize(XMVector3Cross(vLook, vRight)), 0.f) * fUpScale;
+
+		LocalMatrix.r[CTransform::STATE_RIGHT] = vRight;
+		LocalMatrix.r[CTransform::STATE_UP] = vUp;
+		LocalMatrix.r[CTransform::STATE_LOOK] = vLook;
+
+
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(LocalMatrix));
+	}
+	else
+	{
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(LocalMatrix));
+	}
+
+
+
+
+	if (FAILED(pShader->Bind_RawValue("g_iCutUV", &m_tEffectDesc.bCutUV, sizeof(_int))))
+		return E_FAIL;
+
+	if (FAILED(pShader->Bind_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4))))
+		return E_FAIL;
+
+	if (FAILED(pShader->Bind_RawValue("g_ViewMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TransPose(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
+		return E_FAIL;
+
+	if (FAILED(pShader->Bind_RawValue("g_ProjMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TransPose(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 
 
 HRESULT CEffect::Ready_Components()
@@ -399,14 +556,7 @@ void CEffect::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pDiffuseTextureCom);
-	Safe_Release(m_pAlphaTextureCom);
-	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pRigidBodyCom);
-	Safe_Release(m_pVIBufferCom);
+	
 }
 
 

@@ -19,7 +19,7 @@ public:
 
 
 protected:
-	_uint m_iCurrAnimIndex = 0;
+	_int m_iCurrAnimIndex = -1;
 	vector<_uint> m_AnimationIndices;
 
 protected:

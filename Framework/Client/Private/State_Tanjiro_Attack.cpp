@@ -67,8 +67,9 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 	/*if (FAILED(CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixIdentity(), m_pSword->Get_FinalWorldMatrix(), 1.f, m_pSword)))
 		return;*/
 
+	m_pSword->SetUp_Trail_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, -1.5f, 1.f));
 	m_pSword->Stop_Trail();
-	m_pSword->Generate_Trail(L"T_e_cmn_Slash007.png", L"T_e_cmn_Slash006_Reverse.png", _float4(1.f, 0.65f, 0.f, 1.f), 22);
+	m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
 
 }
 
@@ -107,6 +108,11 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 		break;
 
 	case 2:
+		if (fProgress > 0.5f)
+		{
+			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+			m_pSword->Stop_Trail();
+		}
 		m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::BASIC);
 		break;
 
@@ -184,28 +190,31 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 			case 1:
 				Find_Near_Target();
 				m_pSword->Set_Damage(1.f);
-				m_pSword->Generate_Trail(L"T_e_cmn_Slash007.png", L"T_e_cmn_Slash006_Reverse.png", _float4(1.f, 0.65f, 0.f, 1.f), 22);
+				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
+				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
 				break;
 
 			case 2:
 				Find_Near_Target();
 				m_pSword->Set_Damage(1.f);
-				m_pSword->Generate_Trail(L"T_e_cmn_Slash007.png", L"T_e_cmn_Slash006_Reverse.png", _float4(1.f, 0.65f, 0.f, 1.f), 22);
+				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 66);
+				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
 				break;
 
 			case 3:
 				Find_Near_Target();
 				m_pSword->Set_Damage(3.f);
-				m_pSword->Generate_Trail(L"T_e_cmn_Slash007.png", L"T_e_cmn_Slash006_Reverse.png", _float4(1.f, 0.65f, 0.f, 1.f), 22);
+				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
+				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity + 5.f);
 				break;
 
 			case 4:
 				Find_Near_Target();
 				m_pSword->Set_Damage(3.f);
-				m_pSword->Generate_Trail(L"T_e_cmn_Slash007.png", L"T_e_cmn_Slash006_Reverse.png", _float4(1.f, 0.65f, 0.f, 1.f), 22);
+				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
 				m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 				break;
@@ -213,6 +222,12 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 			default:
 				break;
 			}
+		}
+
+		if (KEY_TAP(KEY::RBTN))
+		{
+			if (m_iCurrAnimIndex == 3)			
+				m_pStateMachineCom->Change_State(CCharacter::AIR_ATTACK);
 		}
 	}
 }

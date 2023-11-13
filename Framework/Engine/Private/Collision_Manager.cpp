@@ -109,14 +109,16 @@ void CCollision_Manager::Collision_Update(COLLISION_GROUP eLeft, COLLISION_GROUP
 			{
 				for (_uint i = 1; i < CCollider::DETECTION_TYPE::DETECTION_END; ++i)
 				{
-					const vector<CCollider*> LeftColliders = pLeft->Get_Collider(i);
+					const vector<CCollider*>& LeftColliders = pLeft->Get_Collider(i);
 					for (_uint j = 1; j < CCollider::DETECTION_TYPE::DETECTION_END; ++j)
 					{
-						const vector<CCollider*> RightColliders = pRight->Get_Collider(j);
+						const vector<CCollider*>& RightColliders = pRight->Get_Collider(j);
 						for (auto& pLeftCollider : LeftColliders)
 						{
 							for (auto& pRightCollider : RightColliders)
 							{
+								if (pRightCollider == pLeftCollider)
+									continue;
 
 								COLLIDER_ID ID;
 								ID.iLeft_id = min(pLeftCollider->Get_ColliderID(), pRightCollider->Get_ColliderID());
@@ -185,10 +187,10 @@ void CCollision_Manager::Collision_Update(COLLISION_GROUP eLeft, COLLISION_GROUP
 			{
 				for (_uint i = 0; i < CCollider::DETECTION_TYPE::DETECTION_END; ++i)
 				{
-					const vector<CCollider*> LeftColliders = pLeft->Get_Collider(i);
+					const vector<CCollider*>& LeftColliders = pLeft->Get_Collider(i);
 					for (_uint j =0; j < CCollider::DETECTION_TYPE::DETECTION_END; ++j)
 					{
-						const vector<CCollider*> RightColliders = pRight->Get_Collider(j);
+						const vector<CCollider*>& RightColliders = pRight->Get_Collider(j);
 						for (auto& pLeftCollider : LeftColliders)
 						{
 							for (auto& pRightCollider : RightColliders)

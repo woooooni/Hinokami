@@ -42,6 +42,8 @@ public:
     const _float3 Get_Offset() { return m_vOffsetPosition; }
 
     COLLIDER_TYPE Get_ColliderType() { return m_eColliderType; }
+
+    void Set_ColliderID(_uint iColliderID) { m_iColliderID = iColliderID; }
     _uint Get_ColliderID() { return m_iColliderID; }
 
     DETECTION_TYPE Get_DetectionType() { return m_eDetectionType; }

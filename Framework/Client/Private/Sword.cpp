@@ -156,6 +156,11 @@ _matrix CSword::Get_FinalWorldMatrix()
 }
 
 
+void CSword::SetUp_Trail_Position(_vector vHighPosition, _vector vLowPosition)
+{
+	m_pTrailObject->SetUp_Position(vHighPosition, vLowPosition);
+}
+
 void CSword::Generate_Trail(const wstring& strDiffuseTextureName, const wstring& strAlphaTextureName, const _float4& vColor, _uint iVertexCount)
 {
 	Compute_RenderMatrix(m_pSocketBone->Get_CombinedTransformation() * XMLoadFloat4x4(&m_SocketPivotMatrix));
@@ -215,7 +220,7 @@ HRESULT CSword::Ready_Components()
 	if (FAILED(m_pTrailObject->Initialize(nullptr)))
 		return E_FAIL;
 
-	m_pTrailObject->SetUp_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, -0.9f, 1.f));
+	m_pTrailObject->SetUp_Position(XMVectorSet(0.f, 0.f, 0.5f, 1.f), XMVectorSet(0.f, 0.f, -0.9f, 1.f));
 
 	return S_OK;
 }
@@ -242,6 +247,10 @@ HRESULT CSword::Ready_Colliders()
 	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::BOUNDARY, &ColliderDesc)))
 		return E_FAIL;
 
+	ColliderDesc.tSphere.Radius = 0.2f;
+	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 130.f);
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+		return E_FAIL;
 
 	ColliderDesc.tSphere.Radius = 0.2f;
 	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 110.f);
@@ -263,6 +272,12 @@ HRESULT CSword::Ready_Colliders()
 	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 30.f);
 	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
 		return E_FAIL;
+
+	vector<CCollider*>& Colliders = Get_Collider(CCollider_Sphere::DETECTION_TYPE::ATTACK);
+	for (auto& pCollider : Colliders)
+	{
+		pCollider->Set_ColliderID(Colliders[0]->Get_ColliderID());
+	}
 
 	return S_OK;
 }

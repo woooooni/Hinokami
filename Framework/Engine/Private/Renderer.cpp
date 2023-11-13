@@ -166,6 +166,44 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (nullptr == m_pShader)
 		return E_FAIL;
 
+
+
+
+	m_pIntancingShaders[SHADER_TYPE::RECT] = CShader::Create(m_pDevice, m_pContext, 
+		TEXT("../Bin/ShaderFiles/Shader_Rect_Instance.hlsl"), 
+		VTXRECTINSTANCE_DECLARATION::Elements, VTXRECTINSTANCE_DECLARATION::iNumElements);
+
+	if (nullptr == m_pIntancingShaders[SHADER_TYPE::RECT])
+		return E_FAIL;
+
+
+
+	m_pIntancingShaders[SHADER_TYPE::MODEL] = CShader::Create(m_pDevice, m_pContext, 
+		TEXT("../Bin/ShaderFiles/Shader_Model_Instance.hlsl"),
+		VTXMODELINSTANCE_DECLARATION::Elements, 
+		VTXMODELINSTANCE_DECLARATION::iNumElements);
+
+	if (nullptr == m_pIntancingShaders[SHADER_TYPE::MODEL])
+		return E_FAIL;
+
+	m_pIntancingShaders[SHADER_TYPE::EFFECT_TEXTURE] = CShader::Create(m_pDevice, m_pContext, 
+		TEXT("../Bin/ShaderFiles/Shader_TextureEffect_Instance.hlsl"), 
+		VTXRECTINSTANCE_DECLARATION::Elements, 
+		VTXRECTINSTANCE_DECLARATION::iNumElements);
+
+	if (nullptr == m_pIntancingShaders[SHADER_TYPE::EFFECT_TEXTURE])
+		return E_FAIL;
+
+	m_pIntancingShaders[SHADER_TYPE::EFFECT_MODEL] = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_MeshEffect_Instance.hlsl"), VTXMODELINSTANCE_DECLARATION::Elements, VTXMODELINSTANCE_DECLARATION::iNumElements);
+	if (nullptr == m_pIntancingShaders[SHADER_TYPE::EFFECT_MODEL])
+		return E_FAIL;
+
+
+
+	m_pVIBuffer_Instancing = CVIBuffer_Instancing::Create(m_pDevice, m_pContext);
+	if (nullptr == m_pVIBuffer_Instancing)
+		return E_FAIL;
+
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
 	m_WorldMatrix._11 = ViewportDesc.Width;
 	m_WorldMatrix._22 = ViewportDesc.Height;
@@ -191,6 +229,31 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject * pGame
 
 	Safe_AddRef(pGameObject);
 
+	return S_OK;
+}
+
+HRESULT CRenderer::Add_RenderGroup_Instancing(RENDERGROUP eRenderGroup, SHADER_TYPE eShaderType, CGameObject* pGameObject, _float4x4 WorldMatrix)
+{
+	if (eRenderGroup >= RENDER_END)
+		return E_FAIL;
+
+	auto iter = m_Render_Instancing_Objects[eRenderGroup].find(pGameObject->Get_PrototypeTag());
+	if (iter == m_Render_Instancing_Objects[eRenderGroup].end())
+	{
+		INSTANCING_DESC InstancingDesc;
+		InstancingDesc.pGameObject = pGameObject;
+		Safe_AddRef(pGameObject);
+
+		InstancingDesc.eShaderType = eShaderType;
+		InstancingDesc.WorldMatrices.reserve(100);
+		InstancingDesc.WorldMatrices.push_back(WorldMatrix);
+
+		m_Render_Instancing_Objects[eRenderGroup].emplace(pGameObject->Get_PrototypeTag(), InstancingDesc);
+	}
+	else
+	{
+		iter->second.WorldMatrices.push_back(WorldMatrix);
+	}
 	return S_OK;
 }
 
@@ -239,24 +302,46 @@ HRESULT CRenderer::Render_Priority()
 	}
 	m_RenderObjects[RENDER_PRIORITY].clear();
 
+	for (auto& Pair : m_Render_Instancing_Objects[RENDER_PRIORITY])
+	{
+		if (FAILED(Pair.second.pGameObject->Render_Instance(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
+			return E_FAIL;
+
+		Pair.second.WorldMatrices.clear();
+
+		Safe_Release(Pair.second.pGameObject);
+	}
+	m_Render_Instancing_Objects[RENDER_PRIORITY].clear();
+
 	return S_OK;
 }
 
 HRESULT CRenderer::Render_Shadow()
 {
-	/*if (FAILED(m_pTarget_Manager->Begin_Shadow_MRT(m_pContext, TEXT("MRT_Shadow"))))
-		return E_FAIL;*/
+	if (FAILED(m_pTarget_Manager->Begin_Shadow_MRT(m_pContext, TEXT("MRT_Shadow"))))
+		return E_FAIL;
 
 	for (auto& iter : m_RenderObjects[RENDER_SHADOW])
 	{
-		/*if (FAILED(iter->Render_ShadowDepth()))
-			return E_FAIL;*/
+		if (FAILED(iter->Render_ShadowDepth()))
+			return E_FAIL;
 		Safe_Release(iter);
 	}
 	m_RenderObjects[RENDER_SHADOW].clear();
 
-	/*if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
-		return E_FAIL;*/
+	for (auto& Pair : m_Render_Instancing_Objects[RENDER_SHADOW])
+	{
+		if (FAILED(Pair.second.pGameObject->Render_Instance_Shadow(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
+			return E_FAIL;
+
+		Safe_Release(Pair.second.pGameObject);
+		Pair.second.WorldMatrices.clear();
+	}
+	
+	m_Render_Instancing_Objects[RENDER_SHADOW].clear();
+
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -271,6 +356,16 @@ HRESULT CRenderer::Render_NonLight()
 		Safe_Release(iter);
 	}
 	m_RenderObjects[RENDER_NONLIGHT].clear();
+
+	for (auto& Pair : m_Render_Instancing_Objects[RENDER_NONLIGHT])
+	{
+		if (FAILED(Pair.second.pGameObject->Render_Instance(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
+			return E_FAIL;
+		Pair.second.WorldMatrices.clear();
+
+		Safe_Release(Pair.second.pGameObject);
+	}
+	m_Render_Instancing_Objects[RENDER_NONLIGHT].clear();
 
 	return S_OK;
 }
@@ -288,6 +383,21 @@ HRESULT CRenderer::Render_NonAlphaBlend()
 	}
 
 	m_RenderObjects[RENDER_NONBLEND].clear();
+
+
+	for (auto& Pair : m_Render_Instancing_Objects[RENDER_NONBLEND])
+	{
+		if (FAILED(Pair.second.pGameObject->Render_Instance(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
+			return E_FAIL;
+
+		Pair.second.WorldMatrices.clear();
+
+		Safe_Release(Pair.second.pGameObject);
+
+	}
+	m_Render_Instancing_Objects[RENDER_NONBLEND].clear();
+
+
 	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
 		return E_FAIL;
 
@@ -409,7 +519,6 @@ HRESULT CRenderer::Render_Deferred()
 HRESULT CRenderer::Render_AlphaBlend()
 {
 
-
 	for (auto& iter : m_RenderObjects[RENDERGROUP::RENDER_ALPHABLEND])
 	{
 		if (FAILED(iter->Render()))
@@ -418,14 +527,26 @@ HRESULT CRenderer::Render_AlphaBlend()
 	}
 	m_RenderObjects[RENDER_ALPHABLEND].clear();
 
+
+	for (auto& Pair : m_Render_Instancing_Objects[RENDER_ALPHABLEND])
+	{
+		if (FAILED(Pair.second.pGameObject->Render_Instance(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
+			return E_FAIL;
+
+		Pair.second.WorldMatrices.clear();
+
+		Safe_Release(Pair.second.pGameObject);
+	}
+	m_Render_Instancing_Objects[RENDER_ALPHABLEND].clear();
+
 	
 	return S_OK;
 }
 
 HRESULT CRenderer::Render_Effect()
 {
-	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Blur"))))
-		return E_FAIL;
+	//if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Blur"))))
+	//	return E_FAIL;
 
 	
 	for (auto& iter : m_RenderObjects[RENDERGROUP::RENDER_EFFECT])
@@ -436,32 +557,44 @@ HRESULT CRenderer::Render_Effect()
 	}
 	m_RenderObjects[RENDER_EFFECT].clear();
 
-	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
-		return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_BlurXY"))))
-		return E_FAIL;
+	for (auto& Pair : m_Render_Instancing_Objects[RENDER_EFFECT])
+	{
+		if (FAILED(Pair.second.pGameObject->Render_Instance(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
+			return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Blur"), "g_BlurTarget")))
-		return E_FAIL;
-		
-	m_pShader->Begin(4);
-	m_pVIBuffer->Render();
+		Pair.second.WorldMatrices.clear();
 
-	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
-		return E_FAIL;
+		Safe_Release(Pair.second.pGameObject);
+	}
+	m_Render_Instancing_Objects[RENDER_EFFECT].clear();
+
+	//if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+	//	return E_FAIL;
+
+	//if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_BlurXY"))))
+	//	return E_FAIL;
+
+	//if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Blur"), "g_BlurTarget")))
+	//	return E_FAIL;
+	//	
+	//m_pShader->Begin(4);
+	//m_pVIBuffer->Render();
+
+	//if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+	//	return E_FAIL;
 
 
 
-	// 백버퍼에 옮겨 그린다.
-	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Blur_XY"), "g_BlurTarget")))
-		return E_FAIL;
+	//// 백버퍼에 옮겨 그린다.
+	//if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Blur_XY"), "g_BlurTarget")))
+	//	return E_FAIL;
 
-	if (FAILED(m_pShader->Begin(5)))
-		return E_FAIL;
+	//if (FAILED(m_pShader->Begin(5)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pVIBuffer->Render()))
-		return E_FAIL;
+	//if (FAILED(m_pVIBuffer->Render()))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -496,6 +629,8 @@ HRESULT CRenderer::Render_UI()
 		Safe_Release(iter);
 	}
 	m_RenderObjects[RENDER_UI].clear();
+
+
 
 	return S_OK;
 }

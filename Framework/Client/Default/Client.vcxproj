@@ -216,16 +216,20 @@
     <ClInclude Include="..\Public\Protocol.pb.h" />
     <ClInclude Include="..\Public\ServerSession.h" />
     <ClInclude Include="..\Public\Network_Manager.h" />
+    <ClInclude Include="..\Public\Skill.h" />
+    <ClInclude Include="..\Public\Skill_Manager.h" />
     <ClInclude Include="..\Public\State_Character_Damaged_Bound.h" />
     <ClInclude Include="..\Public\State_Monster_Attack.h" />
     <ClInclude Include="..\Public\State_Monster_Damaged_AirBorn.h" />
     <ClInclude Include="..\Public\State_Monster_Damaged_Basic.h" />
     <ClInclude Include="..\Public\State_Monster_Damaged_Blow.h" />
+    <ClInclude Include="..\Public\State_Monster_Damaged_Bound.h" />
     <ClInclude Include="..\Public\State_Monster_Idle.h" />
     <ClInclude Include="..\Public\State_Monster_Jump.h" />
     <ClInclude Include="..\Public\State_Monster_Trace.h" />
     <ClInclude Include="..\Public\State_Monter_Dead.h" />
     <ClInclude Include="..\Public\State_Monster_Regen.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Air_Attack.h" />
     <ClInclude Include="..\Public\State_Tanjiro_Attack.h" />
     <ClInclude Include="..\Public\State_Tanjiro_Basic_Idle.h" />
     <ClInclude Include="..\Public\State_Tanjiro_Basic_Jump.h" />
@@ -335,10 +339,14 @@
     <ClCompile Include="..\Private\ServerSession.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\Skill.cpp" />
+    <ClCompile Include="..\Private\Skill_Manager.cpp" />
     <ClCompile Include="..\Private\State_Monster_Attack.cpp" />
     <ClCompile Include="..\Private\State_Monster_Damaged_AirBorn.cpp" />
     <ClCompile Include="..\Private\State_Monster_Damaged_Blow.cpp" />
+    <ClCompile Include="..\Private\State_Monster_Damaged_Bound.cpp" />
     <ClCompile Include="..\Private\State_Monster_Regen.cpp" />
+    <ClCompile Include="..\Private\State_Tanjiro_Air_Attack.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Attack.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Basic_Idle.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Basic_Jump.cpp" />
@@ -398,15 +406,19 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect_Instance.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_TextureEffect_Instance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimModel.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_AnimModel.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshEffect.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Model.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Model_Instance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect_Instance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTextureEffect.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_TextureEffect.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Protocol\GenPackets.bat" />

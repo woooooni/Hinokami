@@ -49,15 +49,9 @@ HRESULT CState_Tanjiro_Basic_Move::Initialize(const list<wstring>& AnimationList
 
 void CState_Tanjiro_Basic_Move::Enter_State(void* pArg)
 {
-	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
-	if (nullptr != pOwner)
-	{
-		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
-		if (pCharacter != nullptr)
-			pCharacter->SweathSword();
-
-		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-	}
+	dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner())->SweathSword();
+	dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner())->Get_Part<CSword>(CCharacter::PARTTYPE::PART_SWORD)->Stop_Trail();
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
 	m_iCurrAnimIndex = m_AnimationIndices[0];
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);

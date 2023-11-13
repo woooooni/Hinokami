@@ -36,15 +36,15 @@ HRESULT CTrail::Initialize(void* pArg)
 
 void CTrail::Tick(_float fTimeDelta)
 {
+	m_TrailDesc.vUVAcc.x += m_TrailDesc.vUV_FlowSpeed.x * fTimeDelta;
+	m_TrailDesc.vUVAcc.y += m_TrailDesc.vUV_FlowSpeed.y * fTimeDelta;
+
 	if (!m_TrailDesc.bTrail)
 		return;
 
 	m_TrailDesc.fAccGenTrail += fTimeDelta;
 	if(m_TrailDesc.fAccGenTrail>= m_TrailDesc.fGenTrailTime)
 		m_pVIBufferCom->Update_TrailBuffer(fTimeDelta, XMLoadFloat4x4(&m_TransformMatrix));
-
-	m_TrailDesc.vUVAcc.x += m_TrailDesc.vUV_FlowSpeed.x * fTimeDelta;
-	m_TrailDesc.vUVAcc.y += m_TrailDesc.vUV_FlowSpeed.y * fTimeDelta;
 }
 
 void CTrail::LateTick(_float fTimeDelta)

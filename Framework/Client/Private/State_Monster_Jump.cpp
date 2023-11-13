@@ -61,6 +61,9 @@ void CState_Monster_Jump::Enter_State(void* pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
 	m_pRigidBody->Add_Velocity(XMVector3Normalize(vJumpDir), 10.f);
+
+	m_pRigidBody->Set_Gravity(true);
+	m_pRigidBody->Set_Ground(false);
 }
 
 void CState_Monster_Jump::Tick_State(_float fTimeDelta)

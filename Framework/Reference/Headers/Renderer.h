@@ -6,11 +6,20 @@
 /* 2. 보관하고 있는 객체들의 렌더콜(드로우콜)을 수행한다. */
 
 BEGIN(Engine)
-
+class CVIBuffer_Instancing;
 class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
 	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOW, RENDER_NONLIGHT, RENDER_LIGHT, RENDER_NONBLEND, RENDER_ALPHABLEND, RENDER_EFFECT, RENDER_UI, RENDER_END };
+	enum SHADER_TYPE { MODEL, RECT, EFFECT_TEXTURE, EFFECT_MODEL, TYPE_END };
+
+private:
+	typedef struct tagInstancingDesc
+	{
+		class CGameObject* pGameObject = { nullptr };
+		vector<XMFLOAT4X4> WorldMatrices;
+		SHADER_TYPE eShaderType = SHADER_TYPE::TYPE_END;
+	}INSTANCING_DESC;
 
 private:
 	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);	
@@ -23,6 +32,7 @@ public:
 
 public:
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pGameObject);
+	HRESULT Add_RenderGroup_Instancing(RENDERGROUP eRenderGroup, SHADER_TYPE eShaderType, class CGameObject* pGameObject, _float4x4 WorldMatrix);
 	HRESULT Draw();
 
 
@@ -70,6 +80,14 @@ private:
 	list<class CGameObject*>			m_RenderObjects[RENDER_END];
 	list<class CComponent*>				m_RenderDebug;
 
+
+	// Instancing
+	class CVIBuffer_Instancing*			m_pVIBuffer_Instancing = nullptr;
+	class CShader*						m_pIntancingShaders[SHADER_TYPE::TYPE_END];
+	map<wstring, INSTANCING_DESC>		m_Render_Instancing_Objects[RENDER_END];
+
+
+	
 public:
 	static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg) override;

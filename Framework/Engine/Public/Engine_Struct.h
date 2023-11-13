@@ -149,13 +149,13 @@ namespace Engine
 		XMFLOAT3		vNormal;
 		XMFLOAT2		vTexture;
 		XMFLOAT3		vTangent;
-	}VTXMODEL;
+	} VTXMODEL;
 
 	typedef struct ENGINE_DLL tagVertexModel_Declaration
 	{
 		static const unsigned int iNumElements = 4;
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
-	}VTXMODEL_DECLARATION;
+	} VTXMODEL_DECLARATION;
 
 	typedef struct tagVertexAnimModel
 	{
@@ -179,7 +179,7 @@ namespace Engine
 	{
 		XMFLOAT3		vPosition;
 		XMFLOAT4		vColor;
-	}VTXCOL;
+	} VTXCOL;
 
 	typedef struct ENGINE_DLL tagVertexColor_Declaration
 	{
@@ -193,7 +193,7 @@ namespace Engine
 		XMFLOAT4		vUp;
 		XMFLOAT4		vLook;
 		XMFLOAT4		vPosition;
-	}VTXINSTANCE;
+	} VTXINSTANCE;
 
 	typedef struct ENGINE_DLL tagVertexRectInstance_Declaration
 	{
@@ -201,13 +201,13 @@ namespace Engine
 		VTXINSTANCE의 정보가 함께 셰이더로 전달되어야한다. */
 		static const unsigned int iNumElements = 6;
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
-	}VTXRECTINSTANCE_DECLARATION;
+	} VTXRECTINSTANCE_DECLARATION;
 
 	typedef struct tagVertexPointInstance
 	{
 		XMFLOAT3			vPosition;
 		XMFLOAT2			vSize;
-	}VTXPOINT_INSTANCE;
+	} VTXPOINT_INSTANCE;
 
 	typedef struct ENGINE_DLL tagVertexModelInstance_Declaration
 	{
@@ -215,7 +215,7 @@ namespace Engine
 		VTXINSTANCE의 정보가 함께 셰이더로 전달되어야한다. */
 		static const unsigned int iNumElements = 8;
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
-	}VTXMODELINSTANCE_DECLARATION;
+	} VTXMODELINSTANCE_DECLARATION;
 
 	typedef struct ENGINE_DLL tagVertexPointInstance_Declaration
 	{
@@ -225,10 +225,6 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
 	}VTXPOINTINSTANCE_DECLARATION;
 
-	typedef struct ENGINE_DLL tagVertexModelInstance
-	{
-
-	};
 
 	typedef struct tagGraphicDesc
 	{

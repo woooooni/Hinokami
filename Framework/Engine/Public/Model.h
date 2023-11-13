@@ -49,6 +49,7 @@ public:
 	/* 3. 애니메이션에 의해 움직인 뼈들의 CombinedTransfromation을 셋팅한다. */
 	HRESULT Play_Animation(class CTransform* pTransform, _float fTimeDelta);
 	HRESULT Render(class CShader* pShader, _uint iMeshIndex, _uint iPassIndex = 0);
+	HRESULT Render_Instancing(class CShader* pShader, _uint iMeshIndex, class CVIBuffer_Instancing* pInstancingBuffer, const vector<_float4x4>& WorldMatrices, _uint iPassIndex = 0);
 
 
 	HRESULT Swap_Animation(_uint iSrcIndex, _uint iDestIndex);

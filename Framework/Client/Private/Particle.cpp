@@ -19,6 +19,7 @@ CParticle::CParticle(const CParticle& rhs)
 	, m_tParticleDesc(rhs.m_tParticleDesc)
 	, m_fAccLifeTime(0.f)
 	, m_strPrototypeEffectTag(rhs.m_strPrototypeEffectTag)
+	
 {
 	
 }
@@ -59,16 +60,12 @@ void CParticle::Tick(_float fTimeDelta)
 	else
 		return;
 
-	_uint iEffectIndex = 0;
 
-	auto& iter = m_Effects.begin();
-	while (iter != m_Effects.end())
-	{	
-		(*iter)->Set_ParentMatrix(m_pTransformCom->Get_WorldMatrix());
-		(*iter)->Tick(fTimeDelta);
-		++iter;
+	for (auto& pEffect : m_Effects)
+	{
+		pEffect->Set_ParentMatrix(m_pTransformCom->Get_WorldMatrix());
+		pEffect->Tick(fTimeDelta);
 	}
-		
 }
 
 void CParticle::LateTick(_float fTimeDelta)
@@ -81,6 +78,7 @@ void CParticle::LateTick(_float fTimeDelta)
 
 HRESULT CParticle::Render()
 {
+
 	return S_OK;
 }
 
@@ -157,7 +155,7 @@ Client::CEffect* CParticle::Generate_Effect()
 	}	
 
 	EffectDesc.fDestAlphaSpeed = m_tParticleDesc.fDestAlphaSpeed;
-	pEffect->Set_EffectDesc(EffectDesc);
+	pEffect->Set_EffectDesc(EffectDesc);	
 	
 	return pEffect;
 }

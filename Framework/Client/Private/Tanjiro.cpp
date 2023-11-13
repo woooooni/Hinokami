@@ -11,6 +11,7 @@
 
 
 #include "State_Tanjiro_Attack.h"
+#include "State_Tanjiro_Air_Attack.h"
 
 
 #include "State_Tanjiro_Basic_Idle.h"
@@ -317,6 +318,21 @@ HRESULT CTanjiro::Ready_States()
 			m_pStateCom,
 			strAnimationName));
 
+
+	strAnimationName.clear();
+	
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseJump01_2");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbAW01");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbAW02");
+
+	m_pStateCom->Add_State(CCharacter::AIR_ATTACK,
+		CState_Tanjiro_Air_Attack::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+	
+
 	m_pStateCom->Change_State(CCharacter::BASIC_IDLE);
 	return S_OK;
 }
@@ -407,7 +423,7 @@ HRESULT CTanjiro::Ready_Sockets()
 		return E_FAIL;
 
 	m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.025f, 1.f), XMVectorSet(0.f, 0.0f, 0.025f, 1.f));
-	m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT]->Set_VtxCount(22);
+	m_pTrails[SOCKET_TYPE::SOCKET_LEFT_FOOT]->Set_VtxCount(44);
 
 
 
@@ -419,8 +435,9 @@ HRESULT CTanjiro::Ready_Sockets()
 	if (FAILED(m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT]->Initialize(nullptr)))
 		return E_FAIL;
 
-	m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT]->Set_VtxCount(22);
 	m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.025f, 1.f), XMVectorSet(0.f, 0.0f, 0.025f, 1.f));
+	m_pTrails[SOCKET_TYPE::SOCKET_RIGHT_FOOT]->Set_VtxCount(44);
+	
 
 
 

@@ -122,6 +122,8 @@ public:
 	virtual void LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual HRESULT Render_Instance(CShader* pInstancingShader, CVIBuffer_Instancing* pInstancingBuffer, const vector<_float4x4>& WorldMatrices) override;
+
 public:
 	virtual HRESULT Save_EffectInfo();
 
@@ -231,6 +233,7 @@ private: /* For.Texture_Effect */
 
 private:
 	HRESULT Bind_ShaderResource();
+	HRESULT Bind_ShaderResource_Instance(class CShader* pShader);
 
 protected:
 	// CGameObject을(를) 통해 상속됨

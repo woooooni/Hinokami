@@ -12,6 +12,7 @@
 #include "State_Monster_Damaged_Basic.h"
 #include "State_Monster_Damaged_AirBorn.h"
 #include "State_Monster_Damaged_Blow.h"
+#include "State_Monster_Damaged_Bound.h"
 #include "State_Monster_Idle.h"
 #include "State_Monster_Jump.h"
 #include "State_Monster_Trace.h"
@@ -127,7 +128,7 @@ void CMonster_Normal_2::On_Damaged(CGameObject* pAttacker, _uint eColliderDamage
 	case CCollider::ATTACK_TYPE::AIR_BORN:
 		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_AIRBORN);
 		_vector vPosition = m_pTransformCom->Get_WorldMatrix().r[CTransform::STATE_POSITION];
-		Set_Infinite(0.5f, true);
+		Set_Infinite(0.1f, true);
 		break;
 
 	case CCollider::ATTACK_TYPE::BLOW:
@@ -248,9 +249,9 @@ HRESULT CMonster_Normal_2::Ready_States()
 	m_pStateCom->Add_State(CMonster::DAMAGED_BASIC, CState_Monster_Damaged_Basic::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_E0001_V03_C00.ao|A_P0000_V00_C00_DmgBlowF01_0");
-	strAnimationName.push_back(L"SK_E0001_V03_C00.ao|A_P0000_V00_C00_DmgBlowF01_1");
-	strAnimationName.push_back(L"SK_E0001_V03_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
+	strAnimationName.push_back(L"SK_E0001_V03_C00.ao|A_P0000_V00_C00_DmgUpperF01_0");
+	strAnimationName.push_back(L"SK_E0001_V03_C00.ao|A_P0000_V00_C00_DmgUpperF01_1");
+	strAnimationName.push_back(L"SK_E0001_V03_C00.ao|A_P0000_V00_C00_DmgUpperF01_2");
 	m_pStateCom->Add_State(CMonster::DAMAGED_AIRBORN, CState_Monster_Damaged_AirBorn::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 
@@ -262,6 +263,17 @@ HRESULT CMonster_Normal_2::Ready_States()
 	strAnimationName.push_back(L"SK_E0001_V03_C00.ao|A_P0000_V00_C00_DmgBlowF01_1");
 	strAnimationName.push_back(L"SK_E0001_V03_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
 	m_pStateCom->Add_State(CMonster::DAMAGED_BLOW, CState_Monster_Damaged_Blow::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
+
+	strAnimationName.clear();
+	
+	
+	
+	strAnimationName.push_back(L"SK_E0001_V03_C00.ao|A_P0000_V00_C00_DmgBound01_0");
+	strAnimationName.push_back(L"SK_E0001_V03_C00.ao|A_P0000_V00_C00_DmgBound02_2");
+	strAnimationName.push_back(L"SK_E0001_V03_C00.ao|A_P0000_V00_C00_DmgDown01_2");
+	m_pStateCom->Add_State(CMonster::DAMAGED_BOUND, CState_Monster_Damaged_Bound::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
+	
+
 	
 
 	strAnimationName.clear();

@@ -259,6 +259,18 @@
     <Filter Include="02.GameObjects\05. Monster\Normal_Monster1">
       <UniqueIdentifier>{f51eafe0-5276-43f0-ac73-552f8ff0a0cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. ShaderFiles\Instancing">
+      <UniqueIdentifier>{9dc92367-cff9-46a1-9a4d-f72d7df5ad80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. ShaderFiles\Effect">
+      <UniqueIdentifier>{0eb0bbd2-3014-4244-8bcf-b8af8bda1a3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Skill">
+      <UniqueIdentifier>{64ee1a0c-5d3e-4e30-956e-4bfdd855c9e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. Manager\Skill">
+      <UniqueIdentifier>{8f644f2f-b503-4fff-9b21-d9eb127921af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -534,6 +546,18 @@
     <ClInclude Include="..\Public\Monster_Normal_2.h">
       <Filter>02.GameObjects\05. Monster\Normal_Monster2</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Skill_Manager.h">
+      <Filter>96. Manager\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Tanjiro_Air_Attack.h">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Skill.h">
+      <Filter>03. Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Monster_Damaged_Bound.h">
+      <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -794,6 +818,18 @@
     <ClCompile Include="..\Private\Monster_Normal_2.cpp">
       <Filter>02.GameObjects\05. Monster\Normal_Monster2</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Skill_Manager.cpp">
+      <Filter>96. Manager\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Tanjiro_Air_Attack.cpp">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\State\Battle\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Skill.cpp">
+      <Filter>03. Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Monster_Damaged_Bound.cpp">
+      <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -809,13 +845,13 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimModel.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_AnimModel.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Model.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
@@ -824,17 +860,29 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshEffect.hlsl">
-      <Filter>97. ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTextureEffect.hlsl">
-      <Filter>97. ShaderFiles</Filter>
-    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_UI.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl">
       <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect_Instance.hlsl">
+      <Filter>97. ShaderFiles\Instancing</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Model_Instance.hlsl">
+      <Filter>97. ShaderFiles\Instancing</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect_Instance.hlsl">
+      <Filter>97. ShaderFiles\Instancing</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_TextureEffect_Instance.hlsl">
+      <Filter>97. ShaderFiles\Instancing</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
+      <Filter>97. ShaderFiles\Effect</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_TextureEffect.hlsl">
+      <Filter>97. ShaderFiles\Effect</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

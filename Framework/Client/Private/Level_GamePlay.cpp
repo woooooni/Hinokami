@@ -189,37 +189,14 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 {
-	for (_uint i = 0; i < 3; ++i)
-	{
-		CGameObject* pMonster = nullptr;
-		if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_0"), nullptr, &pMonster)))
-			return E_FAIL;
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_0"), nullptr)))
+		return E_FAIL;
 
-		if (nullptr == pMonster)
-			return E_FAIL;
-	}
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_1"), nullptr)))
+		return E_FAIL;
 
-	for (_uint i = 0; i < 3; ++i)
-	{
-		CGameObject* pMonster = nullptr;
-		if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_1"), nullptr, &pMonster)))
-			return E_FAIL;
-
-		if (nullptr == pMonster)
-			return E_FAIL;
-	}
-
-	for (_uint i = 0; i < 3; ++i)
-	{
-		CGameObject* pMonster = nullptr;
-		if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_2"), nullptr, &pMonster)))
-			return E_FAIL;
-
-		if (nullptr == pMonster)
-			return E_FAIL;
-	}
-	
-	
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_2"), nullptr)))
+		return E_FAIL;
 
 	return S_OK;
 }

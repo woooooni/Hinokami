@@ -50,6 +50,7 @@ public:
 		
 
 public:
+	void SetUp_Trail_Position(_vector vHighPosition, _vector vLowPosition);
 	void Generate_Trail(const wstring& strDiffuseTextureName, const wstring& strAlphaTextureName, const _float4& vColor, _uint iVertexCount);
 	void Stop_Trail();
 

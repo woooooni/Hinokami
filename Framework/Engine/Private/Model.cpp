@@ -8,6 +8,7 @@
 #include "Transform.h"
 #include <fstream>
 #include <filesystem>
+#include "VIBuffer_Instancing.h"
 
 
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -370,6 +371,21 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 
 	pShader->Begin(iPassIndex);
 	m_Meshes[iMeshIndex]->Render();
+
+	return S_OK;
+}
+
+HRESULT CModel::Render_Instancing(CShader* pShader, _uint iMeshIndex, CVIBuffer_Instancing* pInstancingBuffer, const vector<_float4x4>& WorldMatrices, _uint iPassIndex)
+{
+	if (TYPE_ANIM == m_eModelType)
+	{
+		m_Meshes[iMeshIndex]->SetUp_BoneMatrices(m_pMatrixTexture, m_Matrices, XMLoadFloat4x4(&m_PivotMatrix));
+		if (FAILED(pShader->Bind_Texture("g_MatrixPallete", m_pSRV)))
+			return E_FAIL;
+	}
+
+	pShader->Begin(iPassIndex);
+	pInstancingBuffer->Render(WorldMatrices, m_Meshes[iMeshIndex]);
 
 	return S_OK;
 }

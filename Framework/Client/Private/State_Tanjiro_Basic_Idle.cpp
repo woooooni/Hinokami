@@ -22,7 +22,6 @@ HRESULT CState_Tanjiro_Basic_Idle::Initialize(const list<wstring>& AnimationList
 	if (nullptr == m_pTransformCom)
 		return E_FAIL;
 
-
 	Safe_AddRef(m_pModelCom);
 	Safe_AddRef(m_pTransformCom);
 
@@ -41,7 +40,6 @@ HRESULT CState_Tanjiro_Basic_Idle::Initialize(const list<wstring>& AnimationList
 void CState_Tanjiro_Basic_Idle::Enter_State(void* pArg)
 {
 
-
 	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
 
 	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
@@ -53,6 +51,10 @@ void CState_Tanjiro_Basic_Idle::Enter_State(void* pArg)
 
 		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	}
+
+
+	dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner())->SweathSword();
+	dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner())->Get_Part<CSword>(CCharacter::PARTTYPE::PART_SWORD)->Stop_Trail();
 
 	if (KEY_HOLD(KEY::W) || KEY_HOLD(KEY::S) || KEY_HOLD(KEY::A) || KEY_HOLD(KEY::D))
 	{
