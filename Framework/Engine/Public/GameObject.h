@@ -24,8 +24,8 @@ public:
 	virtual void Priority_Tick(_float fTimeDelta) {};
 	virtual void Tick(_float fTimeDelta);
 	virtual void LateTick(_float fTimeDelta);
-	virtual HRESULT Render(class CVIBuffer_Instancing* pInstanceBuffer, const vector<_float4x4>& WorldMatrices);
-	virtual HRESULT Render_ShadowDepth(class CVIBuffer_Instancing* pInstanceBuffer, const vector<_float4x4>& WorldMatrices);
+	virtual HRESULT Render();
+	virtual HRESULT Render_ShadowDepth();
 
 public:
 	virtual void Collision_Enter(const COLLISION_INFO& tInfo) {};

@@ -8,7 +8,6 @@
 #include "Transform.h"
 #include <fstream>
 #include <filesystem>
-#include "VIBuffer_Instancing.h"
 
 
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -360,7 +359,7 @@ HRESULT CModel::Play_Animation(CTransform* pTransform, _float fTimeDelta)
 	return S_OK;
 }
 
-HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, class CVIBuffer_Instancing* pInstanceBuffer, const vector<_float4x4>& WorldMatrices, _uint iPassIndex)
+HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, _uint iPassIndex)
 {
 	if (TYPE_ANIM == m_eModelType)
 	{
@@ -370,7 +369,7 @@ HRESULT CModel::Render(CShader* pShader, _uint iMeshIndex, class CVIBuffer_Insta
 	}
 
 	pShader->Begin(iPassIndex);
-	pInstanceBuffer->Render(WorldMatrices, m_Meshes[iMeshIndex]);
+	m_Meshes[iMeshIndex]->Render();
 
 	return S_OK;
 }

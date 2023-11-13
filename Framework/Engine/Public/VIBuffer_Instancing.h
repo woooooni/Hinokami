@@ -6,28 +6,35 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CVIBuffer_Instancing : public CVIBuffer
+class ENGINE_DLL CVIBuffer_Instancing abstract : public CVIBuffer
 {
-private:
+public:
+	typedef struct tagInstanceDesc
+	{
+		_uint			iNumInstance = 0;
+	} INSTANCE_DESC;
+
+protected:
 	CVIBuffer_Instancing(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CVIBuffer_Instancing(const CVIBuffer_Instancing& rhs);
 	virtual ~CVIBuffer_Instancing() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(void) override;
+	virtual HRESULT Initialize_Prototype(const INSTANCE_DESC& InstanceDesc);
 	virtual HRESULT Initialize(void* pArg) override;
-	virtual HRESULT Render(const vector<_float4x4>& WorldMatrices, class CVIBuffer* pVIBuffer);
+	virtual HRESULT Update(_float fTimeDelta) { return S_OK; }
+	virtual HRESULT Render() override;
 
 protected:
 	_uint					m_iStrideInstance = { 0 };
 	_uint					m_iNumInstance = { 0 };
+	_uint					m_iNumIndicesPerInstance = { 0 };
 	ID3D11Buffer*			m_pVBInstance = { nullptr };
 	VTXINSTANCE*			m_pVertices = { nullptr };
 
 
 public:
-	static CVIBuffer_Instancing* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CComponent* Clone(void* pArg) override;
+	virtual CComponent* Clone(void* pArg) = 0;
 	virtual void Free() override;
 };
 

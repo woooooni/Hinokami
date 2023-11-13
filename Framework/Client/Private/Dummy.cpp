@@ -77,7 +77,7 @@ void CDummy::LateTick(_float fTimeDelta)
 	
 }
 
-HRESULT CDummy::Render(class CVIBuffer_Instancing* pInstanceBuffer, const vector<_float4x4>& WorldMatrices)
+HRESULT CDummy::Render()
 {
 	if (nullptr == m_pModelCom)
 		return S_OK;
@@ -100,7 +100,7 @@ HRESULT CDummy::Render(class CVIBuffer_Instancing* pInstanceBuffer, const vector
 			return E_FAIL;
 
 
-		if (FAILED(m_pModelCom->Render(pShader, i, pInstanceBuffer, WorldMatrices)))
+		if (FAILED(m_pModelCom->Render(pShader, i)))
 			return E_FAIL;
 	}
 

@@ -27,8 +27,7 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Tick(_float fTimeDelta);
 	virtual void LateTick(_float fTimeDelta);
-	virtual HRESULT Render(class CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices) override;
-	virtual HRESULT Render_ShadowDepth(class CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices) override;
+	virtual HRESULT Render();
 
 public:
 	CShader* Get_ShaderCom() { return m_pShaderCom; }

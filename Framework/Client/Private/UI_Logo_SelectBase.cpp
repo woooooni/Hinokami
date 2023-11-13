@@ -55,7 +55,7 @@ void CUI_Logo_SelectBase::LateTick(_float fTimeDelta)
 
 }
 
-HRESULT CUI_Logo_SelectBase::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
+HRESULT CUI_Logo_SelectBase::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -64,7 +64,7 @@ HRESULT CUI_Logo_SelectBase::Render(CVIBuffer_Instancing* pBufferInstance, const
 
 	m_pShaderCom->Begin(0);
 
-	pBufferInstance->Render(WorldMatrices, m_pVIBufferCom);
+	m_pVIBufferCom->Render();
 
 	if (m_eMouseState == CUI::MOUSE_END)
 	{
@@ -76,9 +76,9 @@ HRESULT CUI_Logo_SelectBase::Render(CVIBuffer_Instancing* pBufferInstance, const
 		_float2 vFontPosition = _float2(m_tInfo.fX - 50.f, m_tInfo.fY - 10.f);
 		GI->Render_Fonts(L"Maple", m_strText.c_str(), vFontPosition, XMVectorSet(1.f, 1.f, 1.f, 1.f));
 	}
+	
 
-
-
+	
 
 	return S_OK;
 }

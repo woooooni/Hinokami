@@ -56,13 +56,13 @@ void CGameObject::LateTick(_float fTimeDelta)
 	LateUpdate_Collider(fTimeDelta);
 }
 
-HRESULT CGameObject::Render(class CVIBuffer_Instancing* pInstanceBuffer, const vector<_float4x4>& WorldMatrices)
+HRESULT CGameObject::Render()
 {
 	Render_Collider();
 	return S_OK;
 }
 
-HRESULT CGameObject::Render_ShadowDepth(class CVIBuffer_Instancing* pInstanceBuffer, const vector<_float4x4>& WorldMatrices)
+HRESULT CGameObject::Render_ShadowDepth()
 {
 	return S_OK;
 }

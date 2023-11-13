@@ -121,6 +121,11 @@ void CCamera_Main::LateTick(_float fTimeDelta)
 	__super::LateTick(fTimeDelta);
 }
 
+HRESULT CCamera_Main::Render()
+{
+	return S_OK;
+}
+
 HRESULT CCamera_Main::Ready_Components()
 {
 	__super::Ready_Components();

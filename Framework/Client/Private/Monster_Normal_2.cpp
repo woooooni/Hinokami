@@ -75,6 +75,15 @@ void CMonster_Normal_2::LateTick(_float fTimeDelta)
 	GI->Add_CollisionGroup(COLLISION_GROUP::MONSTER, this);
 }
 
+HRESULT CMonster_Normal_2::Render()
+{
+	if (FAILED(__super::Render()))
+		return E_FAIL;
+
+	m_pNavigationCom->Render();
+
+	return S_OK;
+}
 
 void CMonster_Normal_2::Collision_Enter(const COLLISION_INFO& tInfo)
 {

@@ -79,7 +79,7 @@ void CParticle::LateTick(_float fTimeDelta)
 		pEffect->LateTick(fTimeDelta);
 }
 
-HRESULT CParticle::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
+HRESULT CParticle::Render()
 {
 	return S_OK;
 }

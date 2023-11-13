@@ -90,9 +90,9 @@ void CTanjiro::LateTick(_float fTimeDelta)
 	GI->Add_CollisionGroup(COLLISION_GROUP::CHARACTER, this);
 }
 
-HRESULT CTanjiro::Render(CVIBuffer_Instancing* pInstanceBuffer, const vector<_float4x4>& WorldMatrices)
+HRESULT CTanjiro::Render()
 {
-	if (FAILED(__super::Render(pInstanceBuffer, WorldMatrices)))
+	if (FAILED(__super::Render()))
 		return E_FAIL;
 
 	m_pNavigationCom->Render();

@@ -6,7 +6,6 @@
 #include "VIBuffer_Rect.h"
 #include "Texture.h"
 #include "Renderer.h"
-#include "VIBuffer_Instancing.h"
 
 CUI_Logo_Title::CUI_Logo_Title(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext, L"UI_Logo_Title")
@@ -55,14 +54,14 @@ void CUI_Logo_Title::LateTick(_float fTimeDelta)
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDERGROUP::RENDER_UI, this);
 }
 
-HRESULT CUI_Logo_Title::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
+HRESULT CUI_Logo_Title::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
 	m_pShaderCom->Begin(0);
 
-	pBufferInstance->Render(WorldMatrices, m_pVIBufferCom);
+	m_pVIBufferCom->Render();
 
 
 	return S_OK;

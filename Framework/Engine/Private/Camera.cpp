@@ -49,7 +49,7 @@ void CCamera::LateTick(_float fTimeDelta)
 	GI->Set_Transform(CPipeLine::D3DTS_PROJ, XMMatrixPerspectiveFovLH(m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar));
 }
 
-HRESULT CCamera::Render(CVIBuffer_Instancing* pInstanceBuffer, const vector<_float4x4>& WorldMatrices)
+HRESULT CCamera::Render()
 {
 	return S_OK;
 }

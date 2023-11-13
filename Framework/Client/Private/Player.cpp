@@ -56,16 +56,13 @@ void CPlayer::LateTick(_float fTimeDelta)
 		m_Characters[i]->LateTick(fTimeDelta);
 }
 
-HRESULT CPlayer::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
+HRESULT CPlayer::Render()
 {
-	return S_OK;
-}
+	if(FAILED(m_pCurrCharacter->Render()))
+		return E_FAIL;
 
-HRESULT CPlayer::Render_ShadowDepth(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
-{
-	return S_OK;
+    return S_OK;
 }
-
 
 HRESULT CPlayer::Set_MainCharacter(CCharacter* pCharacter)
 {

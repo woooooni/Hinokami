@@ -70,9 +70,9 @@ void CSweath::LateTick(_float fTimeDelta)
 	__super::LateTick(fTimeDelta);
 }
 
-HRESULT CSweath::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
+HRESULT CSweath::Render()
 {
-	__super::Render(pBufferInstance, WorldMatrices);
+	__super::Render();
 
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -89,14 +89,12 @@ HRESULT CSweath::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_flo
 		else
 			iPassIndex++;
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, pBufferInstance, WorldMatrices, iPassIndex)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, iPassIndex)))
 			return E_FAIL;
 	}
 
 	return S_OK;
 }
-
-
 
 HRESULT CSweath::Ready_Components()
 {

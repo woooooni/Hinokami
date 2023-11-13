@@ -111,9 +111,9 @@ void CCharacter::LateTick(_float fTimeDelta)
 
 }
 
-HRESULT CCharacter::Render(class CVIBuffer_Instancing* pInstanceBuffer, const vector<_float4x4>& WorldMatrices)
+HRESULT CCharacter::Render()
 {
-	__super::Render(pInstanceBuffer, WorldMatrices);
+	__super::Render();
 
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -138,7 +138,7 @@ HRESULT CCharacter::Render(class CVIBuffer_Instancing* pInstanceBuffer, const ve
 		else
 			iPassIndex++;
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, pInstanceBuffer, WorldMatrices, iPassIndex)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, iPassIndex)))
 			return E_FAIL;
 	}
 
@@ -147,7 +147,7 @@ HRESULT CCharacter::Render(class CVIBuffer_Instancing* pInstanceBuffer, const ve
 	return S_OK;
 }
 
-HRESULT CCharacter::Render_ShadowDepth(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
+HRESULT CCharacter::Render_ShadowDepth()
 {
 
 	if (nullptr == m_pShaderCom ||
@@ -173,7 +173,7 @@ HRESULT CCharacter::Render_ShadowDepth(CVIBuffer_Instancing* pBufferInstance, co
 		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(0), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
 			return E_FAIL;
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, pBufferInstance, WorldMatrices, 10)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 10)))
 			return E_FAIL;
 	}
 

@@ -57,7 +57,7 @@ void CGround::LateTick(_float fTimeDelta)
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 }
 
-HRESULT CGround::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
+HRESULT CGround::Render()
 {
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -81,13 +81,14 @@ HRESULT CGround::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_flo
 		/*if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_NORMALS, "g_NormalTexture")))
 			return E_FAIL;*/
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, pBufferInstance, WorldMatrices)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i)))
 			return E_FAIL;
 	}
 	return S_OK;
 }
 
-HRESULT CGround::Render_ShadowDepth(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
+
+HRESULT CGround::Render_ShadowDepth()
 {
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -109,13 +110,11 @@ HRESULT CGround::Render_ShadowDepth(CVIBuffer_Instancing* pBufferInstance, const
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, pBufferInstance, WorldMatrices, 10)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 10)))
 			return E_FAIL;
 	}
 	return S_OK;
 }
-
-
 
 HRESULT CGround::Ready_Components()
 {

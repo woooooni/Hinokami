@@ -80,9 +80,9 @@ void CSword::LateTick(_float fTimeDelta)
 	GI->Add_CollisionGroup(COLLISION_GROUP::CHARACTER, this);
 }
 
-HRESULT CSword::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
+HRESULT CSword::Render()
 {
-	__super::Render(pBufferInstance, WorldMatrices);
+	__super::Render();
 
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -99,7 +99,7 @@ HRESULT CSword::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_floa
 		else
 			iPassIndex++;
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, pBufferInstance, WorldMatrices, iPassIndex)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, iPassIndex)))
 			return E_FAIL;
 	}
 

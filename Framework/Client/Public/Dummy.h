@@ -31,7 +31,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void LateTick(_float fTimeDelta) override;
-	virtual HRESULT Render(class CVIBuffer_Instancing* pInstanceBuffer, const vector<_float4x4>& WorldMatrices) override;
+	virtual HRESULT Render() override;
 
 public:
 	CShader* Get_ShaderCom(CModel::TYPE eType) 

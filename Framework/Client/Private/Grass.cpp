@@ -56,9 +56,9 @@ void CGrass::LateTick(_float fTimeDelta)
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 }
 
-HRESULT CGrass::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
+HRESULT CGrass::Render()
 {
-	__super::Render(pBufferInstance, WorldMatrices);
+	__super::Render();
 
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -83,12 +83,11 @@ HRESULT CGrass::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_floa
 		/*if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_NORMALS, "g_NormalTexture")))
 			return E_FAIL;*/
 
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, pBufferInstance, WorldMatrices)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i)))
 			return E_FAIL;
 	}
 	return S_OK;
 }
-
 
 HRESULT CGrass::Ready_Components()
 {

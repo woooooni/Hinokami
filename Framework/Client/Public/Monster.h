@@ -59,14 +59,15 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Tick(_float fTimeDelta);
 	virtual void LateTick(_float fTimeDelta);
-	virtual HRESULT Render(class CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices) override;
-	virtual HRESULT Render_ShadowDepth(class CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices) override;
+	virtual HRESULT Render();
 
+	HRESULT Render_ShadowDepth();
 
 public:
 	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Continue(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Exit(const COLLISION_INFO& tInfo) override;
+
 public:
 	virtual void Set_Infinite(_float fInfiniteTime, _bool bInfinite)
 	{

@@ -104,9 +104,9 @@ void CEffect::LateTick(_float fTimeDelta)
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
 }
 
-HRESULT CEffect::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
+HRESULT CEffect::Render()
 {
-	__super::Render(pBufferInstance, WorldMatrices);
+	__super::Render();
 
 	if (FAILED(Bind_ShaderResource()))
 		return E_FAIL;
@@ -116,7 +116,7 @@ HRESULT CEffect::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_flo
 		_uint iNumMesh = m_pModelCom->Get_NumMeshes();
 
 		for (_uint i = 0; i < iNumMesh; ++i)
-			m_pModelCom->Render(m_pShaderCom, i, pBufferInstance, WorldMatrices, m_iPassIndex);
+			m_pModelCom->Render(m_pShaderCom, i, m_iPassIndex);
 	}
 	else
 	{
@@ -126,7 +126,6 @@ HRESULT CEffect::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_flo
 
 	return S_OK;
 }
-
 
 HRESULT CEffect::Save_EffectInfo()
 {

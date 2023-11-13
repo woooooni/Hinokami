@@ -15,7 +15,6 @@
 #include "Collider_Sphere.h"
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Particle.h"
-#include "VIBuffer_Instancing.h"
 
 #include "DebugDraw.h"
 

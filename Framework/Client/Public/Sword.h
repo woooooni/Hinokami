@@ -33,7 +33,7 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Tick(_float fTimeDelta);
 	virtual void LateTick(_float fTimeDelta);
-	virtual HRESULT Render(class CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices) override;
+	virtual HRESULT Render();
 
 public:
 	void Set_Damage(_float fDamage) { m_fDamage = fDamage; }

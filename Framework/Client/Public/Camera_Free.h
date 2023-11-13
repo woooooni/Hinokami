@@ -17,6 +17,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void LateTick(_float fTimeDelta) override;
+	virtual HRESULT Render() override;
 
 protected:
 	virtual HRESULT Ready_Components() override;

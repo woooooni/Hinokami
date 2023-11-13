@@ -31,28 +31,28 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	ZeroMemory(pVertices, sizeof(VTXCUBETEX) * 8);
 
 	pVertices[0].vPosition = _float3(-0.5f, 0.5f, -0.5f);
-	pVertices[0].vTexcoord = pVertices[0].vPosition;
+	pVertices[0].vTexture = pVertices[0].vPosition;
 
 	pVertices[1].vPosition = _float3(0.5f, 0.5f, -0.5f);
-	pVertices[1].vTexcoord = pVertices[1].vPosition;
+	pVertices[1].vTexture = pVertices[1].vPosition;
 
 	pVertices[2].vPosition = _float3(0.5f, -0.5f, -0.5f);
-	pVertices[2].vTexcoord = pVertices[2].vPosition;
+	pVertices[2].vTexture = pVertices[2].vPosition;
 
 	pVertices[3].vPosition = _float3(-0.5f, -0.5f, -0.5f);
-	pVertices[3].vTexcoord = pVertices[3].vPosition;
+	pVertices[3].vTexture = pVertices[3].vPosition;
 
 	pVertices[4].vPosition = _float3(-0.5f, 0.5f, 0.5f);
-	pVertices[4].vTexcoord = pVertices[4].vPosition;
+	pVertices[4].vTexture = pVertices[4].vPosition;
 
 	pVertices[5].vPosition = _float3(0.5f, 0.5f, 0.5f);
-	pVertices[5].vTexcoord = pVertices[5].vPosition;
+	pVertices[5].vTexture = pVertices[5].vPosition;
 
 	pVertices[6].vPosition = _float3(0.5f, -0.5f, 0.5f);
-	pVertices[6].vTexcoord = pVertices[6].vPosition;
+	pVertices[6].vTexture = pVertices[6].vPosition;
 
 	pVertices[7].vPosition = _float3(-0.5f, -0.5f, 0.5f);
-	pVertices[7].vTexcoord = pVertices[7].vPosition;
+	pVertices[7].vTexture = pVertices[7].vPosition;
 
 	ZeroMemory(&m_SubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_SubResourceData.pSysMem = pVertices;

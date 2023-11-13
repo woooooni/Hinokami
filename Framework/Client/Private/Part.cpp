@@ -73,9 +73,9 @@ void CPart::LateTick(_float fTimeDelta)
 	__super::LateTick(fTimeDelta);
 }
 
-HRESULT CPart::Render(CVIBuffer_Instancing* pBufferInstance, const vector<_float4x4>& WorldMatrices)
+HRESULT CPart::Render()
 {
-	return __super::Render(pBufferInstance, WorldMatrices);
+	return __super::Render();
 }
 
 
