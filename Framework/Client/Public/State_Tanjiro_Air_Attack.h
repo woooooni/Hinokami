@@ -27,6 +27,7 @@ private:
 	class CCharacter* m_pCharacter = nullptr;
 	class CRigidBody* m_pRigidBodyCom = nullptr;
 	class CSword* m_pSword = nullptr;
+	_bool bFirstGravity = true;
 
 private:
 	void Input(_float fTimeDelta);

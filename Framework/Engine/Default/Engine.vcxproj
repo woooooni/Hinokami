@@ -184,6 +184,7 @@
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\Public\Component_Manager.h" />
     <ClInclude Include="..\Public\CustomFont.h" />
+    <ClInclude Include="..\Public\Frustum.h" />
     <ClInclude Include="..\Public\Model_Manager.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
@@ -269,6 +270,7 @@
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\Private\Component_Manager.cpp" />
     <ClCompile Include="..\Private\CustomFont.cpp" />
+    <ClCompile Include="..\Private\Frustum.cpp" />
     <ClCompile Include="..\Private\IocpCore.cpp" />
     <ClCompile Include="..\Private\IocpEvent.cpp" />
     <ClCompile Include="..\Private\Listener.cpp" />

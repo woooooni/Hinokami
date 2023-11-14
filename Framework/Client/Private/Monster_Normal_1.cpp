@@ -11,6 +11,7 @@
 #include "State_Monster_Attack.h"
 #include "State_Monster_Damaged_Basic.h"
 #include "State_Monster_Damaged_AirBorn.h"
+#include "State_Monster_Damaged_AirStay.h"
 #include "State_Monster_Damaged_Blow.h"
 #include "State_Monster_Damaged_Bound.h"
 #include "State_Monster_Idle.h"
@@ -127,7 +128,11 @@ void CMonster_Normal_1::On_Damaged(CGameObject* pAttacker, _uint eColliderDamage
 
 	case CCollider::ATTACK_TYPE::AIR_BORN:
 		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_AIRBORN);
-		_vector vPosition = m_pTransformCom->Get_WorldMatrix().r[CTransform::STATE_POSITION];
+		Set_Infinite(0.1f, true);
+		break;
+
+	case CCollider::ATTACK_TYPE::AIR_STAY:
+		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_AIRSTAY);
 		Set_Infinite(0.1f, true);
 		break;
 
@@ -212,7 +217,7 @@ HRESULT CMonster_Normal_1::Ready_States()
 	list<wstring> strAnimationName;
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_E0001_V01_C00.ao|A_E0001_V01_C00_AtkBurst01");
+	strAnimationName.push_back(L"SK_E0001_V01_C00.ao|A_E0001_V01_C00_BaseNut01_1");
 	m_pStateCom->Add_State(CMonster::MONSTER_STATE::IDLE, CState_Monster_Idle::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 	strAnimationName.clear();
@@ -253,6 +258,12 @@ HRESULT CMonster_Normal_1::Ready_States()
 	strAnimationName.push_back(L"SK_E0001_V01_C00.ao|A_P0000_V00_C00_DmgBlowF01_1");
 	strAnimationName.push_back(L"SK_E0001_V01_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
 	m_pStateCom->Add_State(CMonster::DAMAGED_AIRBORN, CState_Monster_Damaged_AirBorn::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_E0001_V01_C00.ao|A_P0000_V00_C00_DmgBlowF01_0");
+	strAnimationName.push_back(L"SK_E0001_V01_C00.ao|A_P0000_V00_C00_DmgBlowF01_1");
+	strAnimationName.push_back(L"SK_E0001_V01_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
+	m_pStateCom->Add_State(CMonster::DAMAGED_AIRSTAY, CState_Monster_Damaged_AirStay::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 
 	

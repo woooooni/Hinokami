@@ -238,6 +238,9 @@
     <Filter Include="01.Utiltiy\03.Component\02. VIBuffer\Instancing\Model">
       <UniqueIdentifier>{8348d9e7-d8aa-4594-8cc2-4055ed74034e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utiltiy\07. Frustum">
+      <UniqueIdentifier>{2d646b6c-06a6-41d9-a9c3-4a18d9779c86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -474,6 +477,9 @@
     <ClInclude Include="..\Public\VIBuffer_Instancing.h">
       <Filter>01.Utiltiy\03.Component\02. VIBuffer\Instancing</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Frustum.h">
+      <Filter>01.Utiltiy\07. Frustum</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -691,6 +697,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Instancing.cpp">
       <Filter>01.Utiltiy\03.Component\02. VIBuffer\Instancing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Frustum.cpp">
+      <Filter>01.Utiltiy\07. Frustum</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

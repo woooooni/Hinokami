@@ -116,7 +116,11 @@ public:
 	/* For. Collision_Manager */
 public:
 	HRESULT Add_CollisionGroup(COLLISION_GROUP eCollisionGroup, class CGameObject* pGameObject);
-	void Reset();
+	void Reset_CollisionGroup();
+
+public:
+	_bool Intersect_Frustum_World(_fvector vWorldPos, _float fRadius = 0.f);
+
 
 /* For. Network_Manager */
 //public:
@@ -141,6 +145,7 @@ private:
 	class CFont_Manager*			m_pFont_Manager = { nullptr };
 	class CCollision_Manager*		m_pCollision_Manager = { nullptr };
 	class CTarget_Manager*			m_pTarget_Manager = { nullptr };
+	class CFrustum*					m_pFrustum = { nullptr };
 	// class CNetwork_Manager*			m_pNetwork_Manager = { nullptr };
 public:
 	static void Release_Engine();

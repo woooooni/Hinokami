@@ -89,13 +89,21 @@ void CState_Tanjiro_Air_Attack::Tick_State(_float fTimeDelta)
 	{
 		if (fProgress >= 0.3f && fProgress <= 0.5f)
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
-		else 
+		else
+		{
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+		}
+			
 
 		if (fProgress >= 0.8f)
 		{
+			if (bFirstGravity)
+			{
+				bFirstGravity = false;
+				m_pRigidBodyCom->Set_Gravity(true);
+			}
+				
 			m_pSword->Stop_Trail();
-			m_pRigidBodyCom->Set_Gravity(true);
 		}
 			
 
@@ -110,7 +118,11 @@ void CState_Tanjiro_Air_Attack::Tick_State(_float fTimeDelta)
 		if (fProgress >= 0.8f)
 		{
 			m_pSword->Stop_Trail();
-			m_pRigidBodyCom->Set_Gravity(true);
+			if (bFirstGravity)
+			{
+				bFirstGravity = false;
+				m_pRigidBodyCom->Set_Gravity(true);
+			}
 		}
 	}
 	
@@ -158,10 +170,11 @@ void CState_Tanjiro_Air_Attack::Input(_float fTimeDelta)
 			{
 			case 1:
 				Follow_Near_Target();
+				bFirstGravity = true;
 				m_pSword->Set_Damage(1.f);
 				m_pSword->Generate_Trail(L"T_e_cmn_Slash007.png", L"T_e_cmn_Slash006.png", _float4(0.561f, 0.945f, 1.f, 1.f), 22);
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
-				m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::BOUND);
+				m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::AIR_STAY);
 
 				m_pRigidBodyCom->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), 2.f);
 				m_pRigidBodyCom->Set_Gravity(false);
@@ -171,6 +184,7 @@ void CState_Tanjiro_Air_Attack::Input(_float fTimeDelta)
 			case 2:
 				// Follow_Near_Target();
 				m_pSword->Set_Damage(1.f);
+				bFirstGravity = true;
 				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 				m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::BOUND);

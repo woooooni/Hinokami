@@ -218,6 +218,7 @@
     <ClInclude Include="..\Public\Network_Manager.h" />
     <ClInclude Include="..\Public\Skill.h" />
     <ClInclude Include="..\Public\Skill_Manager.h" />
+    <ClInclude Include="..\Public\State_Monster_Damaged_AirStay.h" />
     <ClInclude Include="..\Public\State_Character_Damaged_Bound.h" />
     <ClInclude Include="..\Public\State_Monster_Attack.h" />
     <ClInclude Include="..\Public\State_Monster_Damaged_AirBorn.h" />
@@ -341,6 +342,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\Skill.cpp" />
     <ClCompile Include="..\Private\Skill_Manager.cpp" />
+    <ClCompile Include="..\Private\State_Monster_Damaged_AirStay.cpp" />
     <ClCompile Include="..\Private\State_Monster_Attack.cpp" />
     <ClCompile Include="..\Private\State_Monster_Damaged_AirBorn.cpp" />
     <ClCompile Include="..\Private\State_Monster_Damaged_Blow.cpp" />

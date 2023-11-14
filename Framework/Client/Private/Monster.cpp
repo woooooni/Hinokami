@@ -85,8 +85,11 @@ void CMonster::LateTick(_float fTimeDelta)
 		
 
 	__super::LateTick(fTimeDelta);
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+	if (true == GI->Intersect_Frustum_World(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.f))
+	{
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
+	}
 }
 
 HRESULT CMonster::Render()

@@ -558,6 +558,9 @@
     <ClInclude Include="..\Public\State_Monster_Damaged_Bound.h">
       <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_Monster_Damaged_AirStay.h">
+      <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -828,6 +831,9 @@
       <Filter>03. Skill</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Monster_Damaged_Bound.cpp">
+      <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Monster_Damaged_AirStay.cpp">
       <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
     </ClCompile>
   </ItemGroup>

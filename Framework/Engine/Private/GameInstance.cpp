@@ -12,6 +12,7 @@
 #include "Key_Manager.h"
 #include "Collision_Manager.h"
 #include "Target_Manager.h"
+#include "Frustum.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -31,6 +32,7 @@ CGameInstance::CGameInstance()
 	, m_pCollision_Manager(CCollision_Manager::GetInstance())
 	, m_pTarget_Manager(CTarget_Manager::GetInstance())
 	// , m_pNetwork_Manager(CNetwork_Manager::GetInstance())
+	, m_pFrustum(CFrustum::GetInstance())
 	
 {
 	Safe_AddRef(m_pTarget_Manager);
@@ -46,6 +48,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pModel_Manager);
 	Safe_AddRef(m_pCollision_Manager);
+	Safe_AddRef(m_pFrustum);
 	// Safe_AddRef(m_pNetwork_Manager);
 }
 
@@ -99,7 +102,7 @@ void CGameInstance::Tick(_float fTimeDelta)
 	m_pObject_Manager->Priority_Tick(fTimeDelta);
 	m_pObject_Manager->Tick(fTimeDelta);
   	m_pPipeLine->Tick();
-	
+	m_pFrustum->Tick();
 
 	m_pObject_Manager->LateTick(fTimeDelta);
 	m_pCollision_Manager->LateTick(fTimeDelta);
@@ -457,9 +460,14 @@ HRESULT CGameInstance::Add_CollisionGroup(COLLISION_GROUP eCollisionGroup, CGame
 	return m_pCollision_Manager->Add_CollisionGroup(eCollisionGroup, pGameObject);
 }
 
-void CGameInstance::Reset()
+void CGameInstance::Reset_CollisionGroup()
 {
 	m_pCollision_Manager->Reset();
+}
+
+_bool CGameInstance::Intersect_Frustum_World(_fvector vWorldPos, _float fRadius)
+{
+	return m_pFrustum->Intersect_Frustum_World(vWorldPos, fRadius);
 }
 
 //void CGameInstance::Set_ServerSession(ServerSessionRef session)
@@ -524,6 +532,7 @@ void CGameInstance::Release_Engine()
 	CObject_Manager::GetInstance()->DestroyInstance();
 	CComponent_Manager::GetInstance()->DestroyInstance();
 	CTimer_Manager::GetInstance()->DestroyInstance();
+	CFrustum::GetInstance()->DestroyInstance();
 	CPipeLine::GetInstance()->DestroyInstance();
 	CInput_Device::GetInstance()->DestroyInstance();
 	CLight_Manager::GetInstance()->DestroyInstance();
@@ -550,5 +559,6 @@ void CGameInstance::Free()
 	Safe_Release(m_pModel_Manager);
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pTarget_Manager);
+	Safe_Release(m_pFrustum);
 	// Safe_Release(m_pNetwork_Manager);
 }
