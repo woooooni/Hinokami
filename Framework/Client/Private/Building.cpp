@@ -13,16 +13,9 @@ CBuilding::CBuilding(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const
 
 CBuilding::CBuilding(const CBuilding& rhs)
 	: CGameObject(rhs)
-	, m_pShaderCom(rhs.m_pShaderCom)
-	, m_pRendererCom(rhs.m_pRendererCom)
-	, m_pTransformCom(rhs.m_pTransformCom)
-	, m_pModelCom(rhs.m_pModelCom)
 	, m_strBuildingName(rhs.m_strBuildingName)
 {	
-	Safe_AddRef(m_pShaderCom);
-	Safe_AddRef(m_pRendererCom);
-	Safe_AddRef(m_pTransformCom);
-	Safe_AddRef(m_pModelCom);
+
 }
 
 HRESULT CBuilding::Initialize_Prototype(const wstring& strFilePath, const wstring& strFileName)
@@ -58,14 +51,15 @@ HRESULT CBuilding::Initialize(void* pArg)
 
 void CBuilding::Tick(_float fTimeDelta)
 {
-
+	m_strPrototypeTag;
+	__super::Tick(fTimeDelta);
 }
 
 void CBuilding::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
 
-
+	m_strPrototypeTag;
 	if (true == GI->Intersect_Frustum_World(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3.f))
 	{
 		m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDERGROUP::RENDER_SHADOW, CRenderer::SHADER_TYPE::MODEL, this, m_pTransformCom->Get_WorldFloat4x4());
@@ -76,6 +70,9 @@ void CBuilding::LateTick(_float fTimeDelta)
 
 HRESULT CBuilding::Render_Instance(CShader* pInstancingShader, CVIBuffer_Instancing* pInstancingBuffer, const vector<_float4x4>& WorldMatrices)
 {
+	__super::Render();
+	m_strPrototypeTag;
+
 	if (nullptr == m_pModelCom || nullptr == pInstancingShader)
 		return E_FAIL;
 

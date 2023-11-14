@@ -403,6 +403,12 @@ HRESULT CLoader::Load_Map_Data(const wstring& strMapFileName)
 
 						CCollider_AABB::AABB_COLLIDER_DESC tDesc;
 						ZeroMemory(&tDesc, sizeof tDesc);
+
+						if (nullptr == pObj->Get_Component<CModel>(L"Com_Model"))
+							XMStoreFloat4x4(&tDesc.ModePivotMatrix, XMMatrixIdentity());
+						else
+							XMStoreFloat4x4(&tDesc.ModePivotMatrix, pObj->Get_Component<CModel>(L"Com_Model")->Get_PivotMatrix());
+
 						tDesc.vOffsetPosition = vColliderOffset;
 						tDesc.pOwnerTransform = pTransform;
 						tDesc.pNode = nullptr;
@@ -416,6 +422,12 @@ HRESULT CLoader::Load_Map_Data(const wstring& strMapFileName)
 
 						CCollider_Sphere::SPHERE_COLLIDER_DESC tDesc;
 						ZeroMemory(&tDesc, sizeof tDesc);
+
+						if (nullptr == pObj->Get_Component<CModel>(L"Com_Model"))
+							XMStoreFloat4x4(&tDesc.ModePivotMatrix, XMMatrixIdentity());
+						else
+							XMStoreFloat4x4(&tDesc.ModePivotMatrix, pObj->Get_Component<CModel>(L"Com_Model")->Get_PivotMatrix());
+
 						tDesc.vOffsetPosition = vColliderOffset;
 						tDesc.pOwnerTransform = pTransform;
 						tDesc.pNode = nullptr;

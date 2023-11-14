@@ -227,15 +227,19 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
                     else
                         TargetObjectTag = "";
 
-
+                    char szTempName[MAX_PATH] = "##";
+                    strcat_s(szTempName, ObjectTag.c_str());
                     if (Object->Is_NaviObject())
                     {
-                        if (ImGui::ColorButton("##Navi_ObjectDeselectbutton", ImVec4(0.f, 1.f, 0.f, 1.f)))
+                        
+                        
+                        if (ImGui::ColorButton(szTempName, ImVec4(0.f, 1.f, 0.f, 1.f)))
                             Object->Set_NaviObject(false);
                     }
                     else
                     {
-                        if (ImGui::ColorButton("##Navi_ObjectSelectbutton", ImVec4(1.f, 0.f, 0.f, 1.f)))
+                        strcat_s(szTempName, ObjectTag.c_str());
+                        if (ImGui::ColorButton(szTempName, ImVec4(1.f, 0.f, 0.f, 1.f)))
                             Object->Set_NaviObject(true);
                     }
                     IMGUI_SAME_LINE;
@@ -307,6 +311,64 @@ void CImGui_Manager::Tick_Hierachy(_float fTimeDelta)
 
 void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
 {
+
+    /*if (KEY_TAP(KEY::F2))
+    {
+        list<CGameObject*>& GameObjects = GI->Find_GameObjects(LEVEL_TOOL, LAYER_TYPE::LAYER_BUILDING);
+        for (auto& pGameObject : GameObjects)
+        {
+            if (pGameObject->Get_PrototypeTag() != L"Wall_43")
+                continue;
+
+            CTransform* pTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform");
+            if (nullptr == pTransform)
+                continue;
+
+            CCollider_AABB::AABB_COLLIDER_DESC tBoxDesc;
+            ZeroMemory(&tBoxDesc, sizeof tBoxDesc);
+
+            BoundingBox tBox;
+            ZeroMemory(&tBox, sizeof tBox);
+            tBox.Extents = { 4.f, 2.f, 0.52f };
+            XMStoreFloat3(&tBox.Center, pTransform->Get_State(CTransform::STATE_POSITION));
+
+            CModel* pModel = pGameObject->Get_Component<CModel>(L"Com_Model");
+            if (pModel == nullptr)
+                XMStoreFloat4x4(&tBoxDesc.ModePivotMatrix, XMMatrixIdentity());
+            else
+                XMStoreFloat4x4(&tBoxDesc.ModePivotMatrix, pModel->Get_PivotMatrix());
+
+            tBoxDesc.tBox = tBox;
+            tBoxDesc.pOwnerTransform = pTransform;
+            tBoxDesc.vOffsetPosition = { 405.f, 204.f, 50.f };
+            tBoxDesc.pNode = nullptr;
+
+            pGameObject->Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::AABB, CCollider::DETECTION_TYPE::BOUNDARY, &tBoxDesc);
+            pGameObject->Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::AABB, CCollider::DETECTION_TYPE::BODY, &tBoxDesc);
+        }
+    }
+
+    if (KEY_TAP(KEY::F3))
+    {
+        list<CGameObject*>& GameObjects = GI->Find_GameObjects(LEVEL_TOOL, LAYER_TYPE::LAYER_BUILDING);
+        for (auto& pGameObject : GameObjects)
+        {
+            if (pGameObject->Get_PrototypeTag() != L"Wall_43")
+                continue;
+
+            for (_uint i = 0; i < CCollider::DETECTION_TYPE::DETECTION_END; ++i)
+            {
+                vector<CCollider*>& Colliders = pGameObject->Get_Collider(i);
+
+                auto iter = Colliders.begin();
+                while (iter != Colliders.end())
+                    iter = Colliders.erase(iter);
+            }
+            
+            
+        }
+    }*/
+
     ImGui::Begin("Inspector");
     if (KEY_HOLD(KEY::CTRL) && KEY_TAP(KEY::LBTN))
     {
@@ -569,7 +631,7 @@ void CImGui_Manager::Tick_Inspector(_float fTimeDelta)
 
                 _float3 vOffset = (*iter)->Get_Offset();
                 ImGui::Text("Collider_Offset");
-                ImGui::DragFloat3(szTagOffset, (_float*)&vOffset, 0.01f, -1000.f, 1000.f);
+                ImGui::DragFloat3(szTagOffset, (_float*)&vOffset, 1.f, -10000.f, 10000.f);
                 (*iter)->Set_Offset(vOffset);
 
                 if (ImGui::Button("Delete"))
@@ -1527,11 +1589,11 @@ void CImGui_Manager::Tick_NaviMesh_Tool(_float fTimeDeleta)
     static _float fMaxGenY = 1000.f;
     ImGui::Text("TriangleY_Min");
     IMGUI_SAME_LINE;
-    ImGui::DragFloat("##GenNaviYMin", &fMinGenY, 0.01f, 0.f, 100.f);
+    ImGui::DragFloat("##GenNaviYMin", &fMinGenY, 0.01f, -100.f, 100.f);
 
     ImGui::Text("TriangleY_Max");
     IMGUI_SAME_LINE;
-    ImGui::DragFloat("##GenNaviYMax", &fMaxGenY, 0.01f, 0.f, 100.f);
+    ImGui::DragFloat("##GenNaviYMax", &fMaxGenY, 0.01f, -100.f, 100.f);
 
     m_fMinTriangleY = fMinGenY;
     m_fMaxTriangleY = fMaxGenY;
@@ -1786,6 +1848,12 @@ HRESULT CImGui_Manager::Load_Map_Data(const wstring& strMapFileName)
 
                         CCollider_AABB::AABB_COLLIDER_DESC tDesc;
                         ZeroMemory(&tDesc, sizeof tDesc);
+
+                        if (nullptr == pObj->Get_Component<CModel>(L"Com_Model"))
+                            XMStoreFloat4x4(&tDesc.ModePivotMatrix, XMMatrixIdentity());
+                        else
+                            XMStoreFloat4x4(&tDesc.ModePivotMatrix, pObj->Get_Component<CModel>(L"Com_Model")->Get_PivotMatrix());
+
                         tDesc.vOffsetPosition = vColliderOffset;
                         tDesc.pOwnerTransform = pTransform;
                         tDesc.pNode = nullptr;
@@ -1799,6 +1867,12 @@ HRESULT CImGui_Manager::Load_Map_Data(const wstring& strMapFileName)
 
                         CCollider_Sphere::SPHERE_COLLIDER_DESC tDesc;
                         ZeroMemory(&tDesc, sizeof tDesc);
+
+                        if (nullptr == pObj->Get_Component<CModel>(L"Com_Model"))
+                            XMStoreFloat4x4(&tDesc.ModePivotMatrix, XMMatrixIdentity());
+                        else
+                            XMStoreFloat4x4(&tDesc.ModePivotMatrix, pObj->Get_Component<CModel>(L"Com_Model")->Get_PivotMatrix());
+
                         tDesc.vOffsetPosition = vColliderOffset;
                         tDesc.pOwnerTransform = pTransform;
                         tDesc.pNode = nullptr;
@@ -1811,6 +1885,8 @@ HRESULT CImGui_Manager::Load_Map_Data(const wstring& strMapFileName)
             }
         }
     }
+    m_pTarget = nullptr;
+    m_pPrevObject = nullptr;
     MSG_BOX("Map_Loaded.");
     return S_OK;
 }
@@ -2142,6 +2218,7 @@ void CImGui_Manager::PickingGroundObj()
 {
     _float4 vHitPos;
 
+    
 
     for (_uint i = 0; i < LAYER_TYPE::LAYER_END; ++i)
     {
@@ -2167,6 +2244,9 @@ void CImGui_Manager::PickingGroundObj()
                 if (CPicking_Manager::GetInstance()->Is_Picking(pTransform, pMesh, false, &vHitPos))
                 {
                     CTransform* pTransform = m_pPrevObject->Get_Component<CTransform>(L"Com_Transform");
+                    vHitPos.x = floor(vHitPos.x);
+                    vHitPos.y = floor(vHitPos.y);
+                    vHitPos.z = floor(vHitPos.z);
                     if (nullptr != pTransform)
                         pTransform->Set_State(CTransform::STATE::STATE_POSITION, XMLoadFloat4(&vHitPos));
 

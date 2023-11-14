@@ -187,7 +187,7 @@ void CState_Tanjiro_Air_Attack::Input(_float fTimeDelta)
 				bFirstGravity = true;
 				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
-				m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::BOUND);
+				m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::BLOW);
 
 				m_pRigidBodyCom->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), 2.f);
 				m_pRigidBodyCom->Set_Gravity(true);

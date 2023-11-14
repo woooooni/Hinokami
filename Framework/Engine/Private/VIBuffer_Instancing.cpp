@@ -24,15 +24,15 @@ HRESULT CVIBuffer_Instancing::Initialize_Prototype()
 	/* 정점버퍼와 인덱스 버퍼를 만드낟. */
 	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
 
-	m_BufferDesc.ByteWidth = m_iStrideInstance * 1000;
+	m_BufferDesc.ByteWidth = m_iStrideInstance * 2000;
 	m_BufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_BufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	m_BufferDesc.MiscFlags = 0;
 	m_BufferDesc.StructureByteStride = m_iStrideInstance;
 
-	m_pVertices = new VTXINSTANCE[1000];
-	ZeroMemory(m_pVertices, sizeof(VTXINSTANCE) * 1000);
+	m_pVertices = new VTXINSTANCE[2000];
+	ZeroMemory(m_pVertices, sizeof(VTXINSTANCE) * 2000);
 
 
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);

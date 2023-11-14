@@ -271,6 +271,9 @@
     <Filter Include="96. Manager\Skill">
       <UniqueIdentifier>{8f644f2f-b503-4fff-9b21-d9eb127921af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03. Character\97. AttackCollider">
+      <UniqueIdentifier>{502b566f-2bda-4ce8-af8f-40f928f491b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

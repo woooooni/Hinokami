@@ -11,16 +11,9 @@ CProp::CProp(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring
 
 CProp::CProp(const CProp& rhs)
 	: CGameObject(rhs)
-	, m_pShaderCom(rhs.m_pShaderCom)
-	, m_pRendererCom(rhs.m_pRendererCom)
-	, m_pTransformCom(rhs.m_pTransformCom)
-	, m_pModelCom(rhs.m_pModelCom)
 	, m_strPropName(rhs.m_strPropName)
 {	
-	Safe_AddRef(m_pShaderCom);
-	Safe_AddRef(m_pRendererCom);
-	Safe_AddRef(m_pTransformCom);
-	Safe_AddRef(m_pModelCom);
+
 }
 
 
