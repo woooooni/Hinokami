@@ -1,9 +1,10 @@
 #include "stdafx.h"
-#include "..\Public\Level_Train_Station.h"
+#include "Level_Train_Station.h"
 #include "GameInstance.h"
 #include "Camera.h"
 #include "Camera_Main.h"
 #include "Character.h"
+
 
 CLevel_Train_Station::CLevel_Train_Station(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -65,31 +66,31 @@ HRESULT CLevel_Train_Station::Ready_Lights()
 	
 
 
-	LIGHTDESC			LightDesc;
+	// LIGHTDESC			LightDesc;
 
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(15.0f, 5.0f, 15.0f, 1.f);
-	LightDesc.fRange = 10.f;
-	LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
+	//ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	//LightDesc.eType = LIGHTDESC::TYPE_POINT;
+	//LightDesc.vPosition = _float4(15.0f, 5.0f, 15.0f, 1.f);
+	//LightDesc.fRange = 10.f;
+	//LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.f, 1.f);
+	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vSpecular = LightDesc.vDiffuse;
 
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
+	//if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	//	return E_FAIL;
 
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(25.0f, 5.0f, 15.0f, 1.f);
-	LightDesc.fRange = 10.f;
-	LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
+	//ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	//LightDesc.eType = LIGHTDESC::TYPE_POINT;
+	//LightDesc.vPosition = _float4(25.0f, 5.0f, 15.0f, 1.f);
+	//LightDesc.fRange = 10.f;
+	//LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.f, 1.f);
+	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vSpecular = LightDesc.vDiffuse;
 
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
+	//if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	//	return E_FAIL;
 
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	/*ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
 	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(0.5, 0.5, 0.5, 1.f);
@@ -97,9 +98,8 @@ HRESULT CLevel_Train_Station::Ready_Lights()
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
+		return E_FAIL;*/
 
-	;
 
 	return S_OK;
 }
@@ -116,12 +116,12 @@ HRESULT CLevel_Train_Station::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
 	CameraDesc.fNear = 0.2f;
-	CameraDesc.fFar = 300.0f;
+	CameraDesc.fFar = 1000.f;
 
 	CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
 	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
 
- 	if(FAILED(GI->Add_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
+ 	if(FAILED(GI->Add_GameObject(LEVELID::LEVEL_TRAIN_STATION, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
 		return E_FAIL;
 
 	/*if (FAILED(GI->Add_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
@@ -136,10 +136,10 @@ HRESULT CLevel_Train_Station::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 HRESULT CLevel_Train_Station::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 {
 	CGameObject* pTanjiro = nullptr;
-	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Tanjiro"), nullptr, &pTanjiro)))
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Tanjiro"), nullptr, &pTanjiro)))
 		return E_FAIL;
 
-	CGameObject* pObject = GI->Find_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, L"Main_Camera");
+	CGameObject* pObject = GI->Find_GameObject(LEVELID::LEVEL_TRAIN_STATION, LAYER_CAMERA, L"Main_Camera");
 	if (nullptr == pObject)
 		return E_FAIL;
 
@@ -189,24 +189,14 @@ HRESULT CLevel_Train_Station::Ready_Layer_BackGround(const LAYER_TYPE eLayerType
 
 HRESULT CLevel_Train_Station::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 {
-	/*for (_uint i = 0; i < 10; ++i)
-	{
-		CGameObject* pMonster = nullptr;
-		if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster"), nullptr, &pMonster)))
-			return E_FAIL;
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_0"), nullptr)))
+		return E_FAIL;
 
-		if (nullptr == pMonster)
-			return E_FAIL;
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_1"), nullptr)))
+		return E_FAIL;
 
-		CTransform* pTransform = pMonster->Get_Component<CTransform>(L"Com_Transform");
-		if (nullptr == pTransform)
-			return E_FAIL;
-
-		_vector vPosition = XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f);
-		pTransform->Set_State(CTransform::STATE_POSITION, vPosition);
-	}*/
-	
-	
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_2"), nullptr)))
+		return E_FAIL;
 
 	return S_OK;
 }

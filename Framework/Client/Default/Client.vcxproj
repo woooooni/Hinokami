@@ -197,7 +197,7 @@
     <ClInclude Include="..\Public\Enum.pb.h" />
     <ClInclude Include="..\Public\Ground.h" />
     <ClInclude Include="..\Public\ImGui_Manager.h" />
-    <ClInclude Include="..\Public\Level_GamePlay.h" />
+    <ClInclude Include="..\Public\Level_Train_Station.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\Level_Tool.h" />
@@ -206,6 +206,7 @@
     <ClInclude Include="..\Public\Monster.h" />
     <ClInclude Include="..\Public\Monster_Normal_1.h" />
     <ClInclude Include="..\Public\Monster_Normal_2.h" />
+    <ClInclude Include="..\Public\Npc.h" />
     <ClInclude Include="..\Public\Part.h" />
     <ClInclude Include="..\Public\Particle.h" />
     <ClInclude Include="..\Public\Particle_Manager.h" />
@@ -250,7 +251,6 @@
     <ClInclude Include="..\Public\Trail.h" />
     <ClInclude Include="..\Public\Level_Train_Boss.h" />
     <ClInclude Include="..\Public\Level_FinalBoss.h" />
-    <ClInclude Include="..\Public\Level_Train_Station.h" />
     <ClInclude Include="..\Public\VIBuffer_Trail.h" />
     <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\UI.h" />
@@ -298,7 +298,6 @@
     <ClCompile Include="..\Private\Level_Train.cpp" />
     <ClCompile Include="..\Private\Level_Train_Boss.cpp" />
     <ClCompile Include="..\Private\Level_FinalBoss.cpp" />
-    <ClCompile Include="..\Private\Level_Train_Station.cpp" />
     <ClCompile Include="..\Private\Monster_Normal_0.cpp" />
     <ClCompile Include="..\Private\Grass.cpp" />
     <ClCompile Include="..\Private\Camera_Free.cpp" />
@@ -314,7 +313,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\Ground.cpp" />
     <ClCompile Include="..\Private\ImGui_Manager.cpp" />
-    <ClCompile Include="..\Private\Level_GamePlay.cpp" />
+    <ClCompile Include="..\Private\Level_Train_Station.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_Tool.cpp" />
@@ -326,6 +325,7 @@
     <ClCompile Include="..\Private\Monster_Normal_1.cpp" />
     <ClCompile Include="..\Private\Monster_Normal_2.cpp" />
     <ClCompile Include="..\Private\Network_Manager.cpp" />
+    <ClCompile Include="..\Private\Npc.cpp" />
     <ClCompile Include="..\Private\Part.cpp" />
     <ClCompile Include="..\Private\Particle.cpp" />
     <ClCompile Include="..\Private\Particle_Manager.cpp" />

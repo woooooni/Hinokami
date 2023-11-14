@@ -51,7 +51,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_TOOL)))
+	if (FAILED(Open_Level(LEVEL_TRAIN_STATION)))
 		return E_FAIL;
 
 
@@ -177,7 +177,7 @@ HRESULT CMainApp::Initialize_Client()
 	vEye = XMVectorSet(0.f, 100.f, -100.f, 1.f);
 	vAt = XMVectorSet(60.f, -10.f, 115.f, 1.f);
 	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	if (FAILED(GI->Add_ShadowLight(LEVEL_GAMEPLAY, vEye, vAt, vUp)))
+	if (FAILED(GI->Add_ShadowLight(LEVEL_TRAIN_STATION, vEye, vAt, vUp)))
 		return E_FAIL;
 
 	

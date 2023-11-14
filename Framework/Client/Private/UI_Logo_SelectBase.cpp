@@ -94,7 +94,7 @@ void CUI_Logo_SelectBase::On_Mouse(_float fTimeDelta)
 	{
 		if (m_strText == L"GameStart")
 		{
-			LEVELID eLevelID = LEVELID::LEVEL_GAMEPLAY;
+			LEVELID eLevelID = LEVELID::LEVEL_TRAIN_STATION;
 			GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", &eLevelID);
 		}
 		else if (m_strText == L"Tool")

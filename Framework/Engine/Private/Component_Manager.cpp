@@ -47,6 +47,15 @@ CComponent* CComponent_Manager::Clone_Component(_uint iLevelIndex, const wstring
     return pComponent;
 }
 
+CComponent* CComponent_Manager::Find_Prototype_Component(_uint iLevelIndex, const wstring& strProtoTypeTag)
+{
+    CComponent* pPrototype = Find_Component(iLevelIndex, strProtoTypeTag);
+    if (nullptr == pPrototype)
+        return nullptr;
+
+    return pPrototype;
+}
+
 HRESULT CComponent_Manager::Check_Prototype(_uint iLevelIndex, const wstring& strProtoTypeTag)
 {
     CComponent* pPrototype = Find_Component(iLevelIndex, strProtoTypeTag);

@@ -50,7 +50,7 @@ HRESULT CState_Monster_Trace::Initialize(const list<wstring>& AnimationList)
 void CState_Monster_Trace::Enter_State(void* pArg)
 {
 	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-	list<CGameObject*> Objects = GI->Find_GameObjects(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_CHARACTER);
+	list<CGameObject*> Objects = GI->Find_GameObjects(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_CHARACTER);
 	for (auto& pGameObject : Objects)
 	{
 		CTransform* pTargetTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform");

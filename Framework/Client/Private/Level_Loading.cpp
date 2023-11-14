@@ -5,7 +5,11 @@
 #include "Loader.h"
 
 #include "Level_Logo.h"
-#include "Level_GamePlay.h"
+#include "Level_Train.h"
+#include "Level_Train_Station.h"
+#include "Level_Train_Boss.h"
+#include "Level_FinalBoss.h"
+
 #include "Level_Tool.h"
 #include "ImGui_Manager.h"
 #include "Network_Manager.h"
@@ -63,8 +67,9 @@ HRESULT CLevel_Loading::LateTick(_float fTimeDelta)
 			case LEVEL_LOGO:
 				pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
 				break;
-			case LEVEL_GAMEPLAY:
-				pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+
+			case LEVEL_TRAIN_STATION:
+				pNewLevel = CLevel_Train_Station::Create(m_pDevice, m_pContext);
 				break;
 
 			case LEVEL_TOOL:

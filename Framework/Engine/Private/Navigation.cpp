@@ -17,7 +17,7 @@ CNavigation::CNavigation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CNavigation::CNavigation(const CNavigation & rhs)
 	: CComponent(rhs)
-	, m_iCurrentIndex(rhs.m_iCurrentIndex)
+	, m_iCurrentIndex(-1)
 	, m_Cells(rhs.m_Cells)	
 #ifdef _DEBUG
 	, m_pShader(rhs.m_pShader)

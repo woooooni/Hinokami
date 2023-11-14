@@ -54,7 +54,7 @@ void CState_Monster_Idle::Tick_State(_float fTimeDelta)
 		m_bAttackable = true;
 	}
 	
-	list<CGameObject*> Objects =  GI->Find_GameObjects(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_CHARACTER);
+	list<CGameObject*> Objects =  GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_CHARACTER);
 
 	for (auto& pGameObject : Objects)
 	{

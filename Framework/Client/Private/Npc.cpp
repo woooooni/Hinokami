@@ -1,27 +1,26 @@
 #include "stdafx.h"
 #include "GameInstance.h"
-#include "Monster.h"
+#include "Npc.h"
 #include "HierarchyNode.h"
 #include "Part.h"
 
 
 USING(Client)
-CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const MONSTER_STAT& tStat)
-	: CGameObject(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_MONSTER)
+CNpc::CNpc(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
+	: CGameObject(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_NPC)
 {
-	m_tStat = tStat;
+	
 }
 
-CMonster::CMonster(const CMonster& rhs)
+CNpc::CNpc(const CNpc& rhs)
 	: CGameObject(rhs)
-	, m_tStat(rhs.m_tStat)
 	, m_fDissolveWeight(1.f)
 
 {	
 	
 }
 
-HRESULT CMonster::Initialize_Prototype()
+HRESULT CNpc::Initialize_Prototype()
 {
 	if(FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -31,7 +30,7 @@ HRESULT CMonster::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CMonster::Initialize(void* pArg)
+HRESULT CNpc::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -39,25 +38,8 @@ HRESULT CMonster::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CMonster::Tick(_float fTimeDelta)
+void CNpc::Tick(_float fTimeDelta)
 {
-	for (auto& pPart : m_Parts)
-		pPart->Tick(fTimeDelta);
-
-	if (m_bInfinite)
-	{
-		m_fAccInfinite += fTimeDelta;
-		if (m_fAccInfinite >= m_fInfiniteTime)
-		{
-			m_bInfinite = false;
-			m_fAccInfinite = 0.f;
-
-			Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, true);
-			Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, true);
-		}
-
-	}
-
 	if (m_bReserveDead)
 	{
 		m_fDissolveWeight += 0.2f * fTimeDelta;
@@ -66,22 +48,12 @@ void CMonster::Tick(_float fTimeDelta)
 	}
 }
 
-void CMonster::LateTick(_float fTimeDelta)
+void CNpc::LateTick(_float fTimeDelta)
 {
 	if (nullptr == m_pRendererCom)
 		return;
 
 	std::async(&CModel::Play_Animation, m_pModelCom, m_pTransformCom, fTimeDelta);
-
-	for (auto& pPart : m_Parts)
-		pPart->LateTick(fTimeDelta);
-
-
-	for (auto& pPart : m_Parts)
-	{
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, pPart);
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, pPart);
-	}
 		
 
 	__super::LateTick(fTimeDelta);
@@ -92,7 +64,7 @@ void CMonster::LateTick(_float fTimeDelta)
 	}
 }
 
-HRESULT CMonster::Render()
+HRESULT CNpc::Render()
 {
 	__super::Render();
 	 
@@ -137,7 +109,7 @@ HRESULT CMonster::Render()
 	return S_OK;
 }
 
-HRESULT CMonster::Render_ShadowDepth()
+HRESULT CNpc::Render_ShadowDepth()
 {
 
 	if (nullptr == m_pShaderCom || nullptr == m_pTransformCom)
@@ -170,12 +142,12 @@ HRESULT CMonster::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CMonster::Collision_Enter(const COLLISION_INFO& tInfo)
+void CNpc::Collision_Enter(const COLLISION_INFO& tInfo)
 {
 
 }
 
-void CMonster::Collision_Continue(const COLLISION_INFO& tInfo)
+void CNpc::Collision_Continue(const COLLISION_INFO& tInfo)
 {
 	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER || tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
 	{
@@ -204,7 +176,7 @@ void CMonster::Collision_Continue(const COLLISION_INFO& tInfo)
 	}
 }
 
-void CMonster::Collision_Exit(const COLLISION_INFO& tInfo)
+void CNpc::Collision_Exit(const COLLISION_INFO& tInfo)
 {
 	
 	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER
@@ -213,8 +185,6 @@ void CMonster::Collision_Exit(const COLLISION_INFO& tInfo)
 		if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
 			&& tInfo.pMyCollider->Get_DetectionType() == CCollider::BODY)
 		{
-			if (m_pStateCom->Get_CurrState() == CMonster::MONSTER_STATE::DAMAGED_BLOW)
-				return;
 
 			_float3 vVelocity = m_pRigidBodyCom->Get_Velocity();
 
@@ -227,26 +197,10 @@ void CMonster::Collision_Exit(const COLLISION_INFO& tInfo)
 }
 
 
-CHierarchyNode* CMonster::Get_Socket(const wstring& strSocketName)
-{
-	for (auto& pSocket : m_Sockets)
-	{
-		if (pSocket->Get_Name() == strSocketName)
-			return pSocket;
-	}
-	return nullptr;
-}
 
 
 
-
-void CMonster::Free()
+void CNpc::Free()
 {
 	__super::Free();
-
-	for (auto& pPart : m_Parts)
-		Safe_Release(pPart);
-
-	m_Parts.clear();
-
 }

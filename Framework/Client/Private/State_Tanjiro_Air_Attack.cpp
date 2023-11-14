@@ -201,7 +201,7 @@ void CState_Tanjiro_Air_Attack::Input(_float fTimeDelta)
 
 void CState_Tanjiro_Air_Attack::Follow_Near_Target()
 {
-	list<CGameObject*> Monsters = GI->Find_GameObjects(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER);
+	list<CGameObject*> Monsters = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_MONSTER);
 	_float fDistance = 99999999999.f;
 
 	CGameObject* pTarget = nullptr;

@@ -62,6 +62,7 @@ public: /* For.Object_Manager */
 
 public: /* For. Componenet_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const wstring & strProtoTypeTag, class CComponent* pPrototype);
+	class CComponent* Find_Prototype_Component(_uint iLevelIndex, const wstring & strProtoTypeTag);
 	class CComponent* Clone_Component(_uint iLevelIndex, const wstring & strProtoTypeTag, class CGameObject* pOwner = nullptr, void* pArg = nullptr);
 	HRESULT Check_Prototype(_uint iLevelIndex, const wstring & strProtoTypeTag);
 

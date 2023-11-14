@@ -281,6 +281,13 @@ HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring& strProtoT
 	return m_pComponent_Manager->Add_Prototype(iLevelIndex, strProtoTypeTag, pPrototype);
 }
 
+CComponent* CGameInstance::Find_Prototype_Component(_uint iLevelIndex, const wstring& strProtoTypeTag)
+{
+	if (nullptr == m_pComponent_Manager)
+		return nullptr;
+	return m_pComponent_Manager->Find_Prototype_Component(iLevelIndex, strProtoTypeTag);
+}
+
 CComponent* CGameInstance::Clone_Component(_uint iLevelIndex, const wstring& strProtoTypeTag, CGameObject* pOwner, void* pArg)
 {
 	if (nullptr == m_pComponent_Manager)

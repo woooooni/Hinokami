@@ -43,8 +43,12 @@ private:
 
 private:
 	HRESULT Loading_For_Level_Logo();
-	HRESULT Loading_For_Level_GamePlay();
+	HRESULT Loading_For_Level_Train_Station();
+	HRESULT Loading_For_Level_Train();
+	HRESULT Loading_For_Level_Train_Boss();
+	HRESULT Loading_For_Level_Final_Boss();
 	HRESULT Loading_For_Level_Tool();
+	HRESULT Load_Navi_Data(const wstring& strNaviFileName);
 	HRESULT Load_Map_Data(const wstring& strMapFileName);
 
 private:

@@ -92,8 +92,8 @@ _int CLoader::Loading()
 	case LEVEL_LOGO:
 		hr = Loading_For_Level_Logo();
 		break;
-	case LEVEL_GAMEPLAY:
-		hr = Loading_For_Level_GamePlay();
+	case LEVEL_TRAIN_STATION:
+		hr = Loading_For_Level_Train_Station();
 		break;
 	case LEVEL_TOOL:
 		hr = Loading_For_Level_Tool();
@@ -171,18 +171,22 @@ HRESULT CLoader::Loading_For_Level_Logo()
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_For_Level_GamePlay()
+
+HRESULT CLoader::Loading_For_Level_Train_Station()
 {
 	/* For.Texture */
 	m_strLoading = TEXT("텍스쳐를 로딩 중 입니다.");
-	
+
 
 	/* For.Mesh */
 	m_strLoading = TEXT("메시를 로딩 중 입니다.");
-	
+
 
 	/* For.Shader */
 	m_strLoading = TEXT("셰이더를 로딩 중 입니다.");
+
+
+
 
 
 	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
@@ -249,30 +253,48 @@ HRESULT CLoader::Loading_For_Level_GamePlay()
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Weapon/")))
 		return E_FAIL;
 
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Resources/Effect/Model/")))
+		return E_FAIL;
+
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Tanjiro/")))
 		return E_FAIL;
 
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Enemy/Monster/")))
 		return E_FAIL;
 
-	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Resources/Effect/Model/")))
-		return E_FAIL;
-
 
 	if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
 		return E_FAIL;
 
-	if(FAILED(Load_Map_Data(L"Temp")))
+	if (FAILED(Load_Navi_Data(L"Train")))
+		return E_FAIL;
+
+	if (FAILED(Load_Map_Data(L"Train")))
 		return E_FAIL;
 
 
 
 
-	
 
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
 
+	return S_OK;
+}
+
+
+HRESULT CLoader::Loading_For_Level_Train()
+{
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Level_Train_Boss()
+{
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Level_Final_Boss()
+{
 	return S_OK;
 }
 
@@ -325,6 +347,22 @@ HRESULT CLoader::Loading_For_Level_Tool()
 	return S_OK;
 }
 
+HRESULT CLoader::Load_Navi_Data(const wstring& strNaviFileName)
+{
+	const wstring strNaviFilePath = L"../Bin/DataFiles/Map/" + strNaviFileName + L"/" + strNaviFileName + L".nav";
+	CNavigation* pPrototypeNavigation = dynamic_cast<CNavigation*>(GI->Find_Prototype_Component(LEVEL_STATIC, L"Prototype_Component_Navigation"));
+
+	if (nullptr == pPrototypeNavigation)
+		return E_FAIL;
+
+	if (FAILED(pPrototypeNavigation->Load_NaviData(strNaviFilePath)))
+		return E_FAIL;
+
+
+
+	return S_OK;
+}
+
 HRESULT CLoader::Load_Map_Data(const wstring& strMapFileName)
 {
 	wstring strMapFilePath = L"../Bin/DataFiles/Map/" + strMapFileName + L"/" + strMapFileName + L".map";
@@ -355,7 +393,7 @@ HRESULT CLoader::Load_Map_Data(const wstring& strMapFileName)
 			wstring strObjectTag = CUtils::ToWString(File->Read<string>());
 
 			CGameObject* pObj = nullptr;
-			if (FAILED(GI->Add_GameObject(LEVEL_GAMEPLAY, i, strPrototypeTag, nullptr, &pObj)))
+			if (FAILED(GI->Add_GameObject(m_eNextLevel, i, strPrototypeTag, nullptr, &pObj)))
 			{
 				MSG_BOX("Load_Objects_Failed.");
 				return E_FAIL;
@@ -441,7 +479,7 @@ HRESULT CLoader::Load_Map_Data(const wstring& strMapFileName)
 		}
 	}
 
-	MSG_BOX("Map_Loaded.");
+	// MSG_BOX("Map_Loaded.");
 	return S_OK;
 }
 
