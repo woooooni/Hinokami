@@ -119,9 +119,6 @@ HRESULT CLevel_Train::Ready_Lights()
 
 HRESULT CLevel_Train::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 {
-	
-
-
 	CCamera::CAMERADESC			CameraDesc;
 
 	CameraDesc.vEye = _float4(0.f, 10.f, -10.f, 1.f);

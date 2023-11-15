@@ -2,6 +2,8 @@
 #include "UI_NextFog.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
+#include "Utils.h"
+
 CUI_NextFog::CUI_NextFog(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext, L"UI_Next_Fog")
 {
@@ -28,9 +30,12 @@ HRESULT CUI_NextFog::Initialize(void* pArg)
 
 	if (nullptr != pArg)
 	{
-		LEVELID* eLevelID = (LEVELID*)pArg;
-		m_eNextLevel = *eLevelID;
+		NEXT_INFO* pInfo = (NEXT_INFO*)pArg;
+		m_eNextLevel = pInfo->eNextLevel;
+		m_strDataFolderName = CUtils::ToWString(pInfo->strFolderName);
 	}
+	else
+		return E_FAIL;
 	
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&_float3(m_tInfo.fCX, m_tInfo.fCY, 1.f)));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION,
@@ -58,7 +63,7 @@ void CUI_NextFog::Tick(_float fTimeDelta)
 			// TODO Next.
 			if (LEVELID::LEVEL_END != m_eNextLevel)
 			{
-				if (FAILED(GI->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, m_eNextLevel))))
+				if (FAILED(GI->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, m_eNextLevel, m_strDataFolderName))))
 					MSG_BOX("Open Level Failde. : CUI_NextFog");
 			}
 			// m_bDead = true;

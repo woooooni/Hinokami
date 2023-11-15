@@ -94,21 +94,26 @@ void CUI_Logo_SelectBase::On_Mouse(_float fTimeDelta)
 	{
 		if (m_strText == L"GameStart")
 		{
-			LEVELID eLevelID = LEVELID::LEVEL_TRAIN_STATION;
-			GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", &eLevelID);
+			CUI_NextFog::NEXT_INFO NextInfo;
+			NextInfo.eNextLevel = LEVELID::LEVEL_TRAIN_STATION;
+			NextInfo.strFolderName = "Train_Station";
+			GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", &NextInfo);
 		}
 		else if (m_strText == L"Tool")
 		{
-			LEVELID eLevelID = LEVELID::LEVEL_TOOL;
-			GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", &eLevelID);
+			CUI_NextFog::NEXT_INFO NextInfo;
+			NextInfo.eNextLevel = LEVELID::LEVEL_TOOL;
+			NextInfo.strFolderName = "";
+
+			GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", &NextInfo);
 		}
 		else if (m_strText == L"Setting")
 		{
-			GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", nullptr);
+			// GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", nullptr);
 		}
 		else if (m_strText == L"Exit")
 		{
-			GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", nullptr);
+			// GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", nullptr);
 		}
 	}
 }

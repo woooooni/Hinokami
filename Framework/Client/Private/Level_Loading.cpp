@@ -21,7 +21,7 @@ CLevel_Loading::CLevel_Loading(ID3D11Device * pDevice, ID3D11DeviceContext * pCo
 }
 
 
-HRESULT CLevel_Loading::Initialize(LEVELID eNextLevel)
+HRESULT CLevel_Loading::Initialize(LEVELID eNextLevel, const wstring& strFolderName)
 {
 	m_eNextLevel = eNextLevel;
 
@@ -38,7 +38,7 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevel)
 		
 	/* m_eNextLevel 에 대한 로딩작업을 수행한다. */
 	/* 로딩을 겁나 하고있다. */
-	m_pLoader = CLoader::Create(m_pDevice, m_pContext, m_eNextLevel);
+	m_pLoader = CLoader::Create(m_pDevice, m_pContext, m_eNextLevel, strFolderName);
 	if (nullptr == m_pLoader)
 		return E_FAIL;
 
@@ -115,11 +115,11 @@ HRESULT CLevel_Loading::Ready_LoadingUI()
 	return S_OK;
 }
 
-CLevel_Loading * CLevel_Loading::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVELID eNextLevel)
+CLevel_Loading * CLevel_Loading::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVELID eNextLevel, const wstring& strFolderName)
 {
 	CLevel_Loading*	pInstance = new CLevel_Loading(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(eNextLevel)))
+	if (FAILED(pInstance->Initialize(eNextLevel, strFolderName)))
 	{
 		MSG_BOX("Failed to Created : CLevel_Loading");
 		Safe_Release(pInstance);

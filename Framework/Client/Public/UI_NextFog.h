@@ -7,6 +7,14 @@ BEGIN(Client)
 
 class CUI_NextFog final : public CUI
 {
+public:
+	typedef struct tagNextFogInfo
+	{
+		LEVELID eNextLevel;
+		string strFolderName;
+
+	} NEXT_INFO;
+	
 protected:
 	CUI_NextFog(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_NextFog(const CUI_NextFog& rhs);
@@ -27,6 +35,7 @@ private:
 
 private:
 	LEVELID m_eNextLevel = LEVELID::LEVEL_END;
+	wstring m_strDataFolderName = L"";
 	_float m_fAccTime = 0.f;
 	_float m_fNextTime = 0.05f;
 	_uint m_iTextureIndex = 0;

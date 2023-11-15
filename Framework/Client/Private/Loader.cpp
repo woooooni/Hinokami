@@ -65,12 +65,12 @@ _uint APIENTRY ThreadEntry(void* pArg)
 	return 0;
 }
 
-HRESULT CLoader::Initialize(LEVELID eNextLevel)
+HRESULT CLoader::Initialize(LEVELID eNextLevel, const wstring& strFolderName)
 {
 	InitializeCriticalSection(&m_Critical_Section);
 
 	m_eNextLevel = eNextLevel;
-
+	m_strFolderName = strFolderName;
 	/* 새로운 스레드를 만들자. */
 	/* 스레드 : 내 코드를 읽어주는 하나의 흐름? */
 	/* 3 : 생성한 스레드가 호출해야하는 함수의 주소 */
@@ -86,6 +86,7 @@ _int CLoader::Loading()
 	EnterCriticalSection(&m_Critical_Section);
 
 	HRESULT		hr = 0;
+	
 
 	switch (m_eNextLevel)
 	{
@@ -222,18 +223,7 @@ HRESULT CLoader::Loading_For_Level_Train_Station()
 		return E_FAIL;
 
 
-	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
-	//	CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-	//	return E_FAIL;
 
-
-	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sword_Zenitsu"),
-	//	CSword::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sword"), TEXT("Prototype_Component_Model_Sword_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-	//	return E_FAIL;
-
-	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sweath_Zenitsu"),
-	//	CSweath::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sweath"), TEXT("Prototype_Component_Model_Sweath_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-	//	return E_FAIL;
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Tanjiro"),
 		CTanjiro::Create(m_pDevice, m_pContext, TEXT("Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
@@ -248,7 +238,6 @@ HRESULT CLoader::Loading_For_Level_Train_Station()
 		CSweath::Create(m_pDevice, m_pContext, TEXT("Tanjiro_Sweath"), TEXT("Prototype_Component_Model_Sweath_Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
 		return E_FAIL;
 
-
 	m_strLoading = TEXT("모델을 로딩 중 입니다.");
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Weapon/")))
 		return E_FAIL;
@@ -262,19 +251,32 @@ HRESULT CLoader::Loading_For_Level_Train_Station()
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Enemy/Monster/")))
 		return E_FAIL;
 
+	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Map/")))
+	//	return E_FAIL;
 
 	if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
 		return E_FAIL;
 
-	if (FAILED(Load_Navi_Data(L"Train")))
+	if (FAILED(Load_Map_Data(m_strFolderName)))
 		return E_FAIL;
 
-	if (FAILED(Load_Map_Data(L"Train")))
+	if (FAILED(Load_Navi_Data(m_strFolderName)))
 		return E_FAIL;
 
+	 
+
+	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
+//	CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+//	return E_FAIL;
 
 
+//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sword_Zenitsu"),
+//	CSword::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sword"), TEXT("Prototype_Component_Model_Sword_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+//	return E_FAIL;
 
+//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sweath_Zenitsu"),
+//	CSweath::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sweath"), TEXT("Prototype_Component_Model_Sweath_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+//	return E_FAIL;
 
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
@@ -341,6 +343,7 @@ HRESULT CLoader::Loading_For_Level_Tool()
 		return E_FAIL;
 
 
+
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
 
@@ -357,8 +360,6 @@ HRESULT CLoader::Load_Navi_Data(const wstring& strNaviFileName)
 
 	if (FAILED(pPrototypeNavigation->Load_NaviData(strNaviFilePath)))
 		return E_FAIL;
-
-
 
 	return S_OK;
 }
@@ -561,11 +562,11 @@ HRESULT CLoader::Loading_Proto_AllObjects(const wstring& strPath)
 	return S_OK;
 }
 
-CLoader * CLoader::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVELID eNextLevel)
+CLoader * CLoader::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVELID eNextLevel, const wstring& strFolderName)
 {
 	CLoader*	pInstance = new CLoader(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(eNextLevel)))
+	if (FAILED(pInstance->Initialize(eNextLevel, strFolderName)))
 	{
 		MSG_BOX("Failed to Created : CLoader");
 		Safe_Release(pInstance);

@@ -19,6 +19,7 @@ public:
 	virtual HRESULT LateTick(_float fTimeDelta);
 	virtual HRESULT Render_Debug() { return S_OK; }
 
+
 public:
 	virtual HRESULT Enter_Level() PURE;
 	virtual HRESULT Exit_Level() PURE;

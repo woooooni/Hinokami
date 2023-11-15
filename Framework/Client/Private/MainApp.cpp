@@ -51,7 +51,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_TRAIN_STATION)))
+	if (FAILED(Open_Level(LEVEL_LOGO, L"")))
 		return E_FAIL;
 
 
@@ -92,14 +92,14 @@ HRESULT CMainApp::Render()
 	return S_OK;
 }
 
-HRESULT CMainApp::Open_Level(LEVELID eLevelID)
+HRESULT CMainApp::Open_Level(LEVELID eLevelID, const wstring& strFolderName)
 {
 	if (nullptr == m_pGame_Instance)
 		return E_FAIL;
 
 	/* 로고레베릉ㄹ 할당하고 싶었지만. 로고레벨을 위한 로딩레벨을 먼저 생성하여 로딩작업을 수행할꺼야. */
 	/* 로딩객체에게 eLevelID라는 내가 실제 할당ㅎ아고 싶었던 레벨열거체를 준거지?! 실제할당하고싶었던 레벨에 자원을 준비라하라고 */
-	if (FAILED(m_pGame_Instance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, eLevelID))))
+	if (FAILED(m_pGame_Instance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, eLevelID, strFolderName))))
 		return E_FAIL;
 
 	return S_OK;

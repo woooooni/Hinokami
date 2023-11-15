@@ -60,6 +60,7 @@ HRESULT CLevel_FinalBoss::Exit_Level()
 	return S_OK;
 }
 
+
 HRESULT CLevel_FinalBoss::Ready_Lights()
 {
 	

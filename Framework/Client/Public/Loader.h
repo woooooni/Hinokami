@@ -24,7 +24,7 @@ public:
 
 public:
 	/* eNextLevel에 대한 로딩을 하기위해 스레드를 생성한다. */
-	HRESULT Initialize(LEVELID eNextLevel);
+	HRESULT Initialize(LEVELID eNextLevel, const wstring& strFolderName);
 	_int	Loading();
 
 
@@ -32,6 +32,7 @@ private:
 	ID3D11Device*			m_pDevice = { nullptr };
 	ID3D11DeviceContext*	m_pContext = { nullptr };
 	LEVELID					m_eNextLevel = { LEVEL_END };
+	wstring					m_strFolderName = { L"" };
 	wstring					m_strLoading = { TEXT("") };
 	_bool					m_isFinished = { false };
 
@@ -56,7 +57,7 @@ private:
 	HRESULT Loading_Proto_AllObjects(const wstring& strPath);
 
 public:
-	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevel);
+	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevel, const wstring& strFolderName);
 	virtual void Free() override;
 };
 

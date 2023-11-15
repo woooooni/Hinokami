@@ -71,7 +71,7 @@ private:
 	_uint			m_iNumDraw = 0;
 
 private:
-	HRESULT Open_Level(LEVELID eLevelID);
+	HRESULT Open_Level(LEVELID eLevelID, const wstring& strFolderName);
 
 private:
 	HRESULT Initialize_Client();

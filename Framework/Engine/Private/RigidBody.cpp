@@ -130,6 +130,7 @@ void CRigidBody::Update_Velocity(_float fTimeDelta)
 			vLerp = XMVectorSetY(vLerp, m_fRefHeight);
 			_vector vPrefixPosition = m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION);
 			vPrefixPosition = XMVectorSetY(vPrefixPosition, m_fRefHeight);
+			vPrefixPosition = XMVectorSetW(vPrefixPosition, 1.f);
 			m_pTransformCom->Set_State(CTransform::STATE::STATE_POSITION, vPrefixPosition);
 		}
 			

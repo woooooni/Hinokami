@@ -60,6 +60,7 @@ HRESULT CLevel_Train_Boss::Exit_Level()
 	return S_OK;
 }
 
+
 HRESULT CLevel_Train_Boss::Ready_Lights()
 {
 	

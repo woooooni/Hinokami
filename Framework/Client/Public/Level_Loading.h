@@ -18,7 +18,7 @@ private:
 	virtual ~CLevel_Loading() = default;
 
 public:
-	virtual HRESULT Initialize(LEVELID eNextLevel);
+	virtual HRESULT Initialize(LEVELID eNextLevel, const wstring& strFolderName);
 	virtual HRESULT Tick(_float fTimeDelta) override;
 	virtual HRESULT LateTick(_float fTimeDelta) override;
 
@@ -39,7 +39,7 @@ private:
 	
 
 public:
-	static class CLevel_Loading* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevel);
+	static class CLevel_Loading* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eNextLevel, const wstring& strFolderName);
 	virtual void Free() override;
 };
 
