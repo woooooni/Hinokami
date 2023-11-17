@@ -22,7 +22,7 @@ public:
 	{
 		for (_uint i = 0; i < _iSize; ++i)
 		{
-			T* pObj = GI->Clone_GameObject(strPrototypeTag, eType)
+			T* pObj = dynamic_cast<T*>(GI->Clone_GameObject(strPrototypeTag, eType, pArg));
 			if (nullptr == pObj)
 				return E_FAIL;
 
@@ -41,17 +41,20 @@ public:
 		if (nullptr == pObj)
 			return nullptr;
 
+		pObj->Set_Dead(false);
+		pObj->Enter_Scene();
+
 		g_objQueue.pop();
 		return pObj;
 	}
 
-	static _bool Return_Obj(T* _pObj)
+	static _bool Return_Obj(T* pObj)
 	{
 		if (nullptr == pObj)
 			return nullptr;
 
-		g_objQueue.push(_pObj);
-
+		pObj->Return_Pool();
+		g_objQueue.push(pObj);
 		return true;
 	}
 

@@ -61,18 +61,20 @@ HRESULT CNavigation::Initialize(void * pArg)
 	/*  이 네비게이션을 이용하고자하는 객체가 어떤 셀에 있는지 저장한다. */
 	if (pNaviDesc->bInitialize_Index)
 	{
-		if (FAILED(Initialize_Index(XMLoadFloat3(&pNaviDesc->vStartWorldPosition))))
+		if (FAILED(Initialize_Index(XMLoadFloat4(&pNaviDesc->vStartWorldPosition))))
 		{
 			
 			_float3 vPointA = *m_Cells[0]->Get_PointWorld(CCell::POINTS::POINT_A);
 			_float3 vPointB = *m_Cells[0]->Get_PointWorld(CCell::POINTS::POINT_B);
 			_float3 vPointC = *m_Cells[0]->Get_PointWorld(CCell::POINTS::POINT_C);
 
-			_float3 vPosition; 
-			XMStoreFloat3(&vPosition, 
+			_float4 vPosition; 
+			XMStoreFloat4(&vPosition, 
 				(XMLoadFloat3(&vPointA)
-				+ XMLoadFloat3(&vPointB) 
+				+ XMLoadFloat3(&vPointB)
 				+ XMLoadFloat3(&vPointC)) / 3.f);
+			vPosition.w = 1.f;
+
 			m_NavigationDesc.vStartWorldPosition = vPosition;
 			m_iCurrentIndex = m_Cells[0]->Get_Index();
 			return S_OK;
@@ -99,11 +101,10 @@ void CNavigation::Update(_fmatrix WorldMatrix)
 	}
 }
 
-_bool CNavigation::Is_Movable(_fvector vPoint, __out _vector* vOutSlidingDir)
+_bool CNavigation::Is_Movable(_fvector vPoint, _vector vLook, __out _vector* vOutSlidingDir)
 {
 	_int		iNeighborIndex = 0;
-	_vector vOutLine;
-	if (true == m_Cells[m_iCurrentIndex]->isOut(vPoint, XMLoadFloat4x4(&m_WorldIdentity), &iNeighborIndex, &vOutLine))
+	if (true == m_Cells[m_iCurrentIndex]->isOut(vPoint, XMLoadFloat4x4(&m_WorldIdentity), &iNeighborIndex, vLook, vOutSlidingDir))
 	{
 		/* 나간 방향에 이웃셀이 있으면 움직여야해! */
 		if (-1 != iNeighborIndex)
@@ -113,7 +114,7 @@ _bool CNavigation::Is_Movable(_fvector vPoint, __out _vector* vOutSlidingDir)
 				if (-1 == iNeighborIndex)
 					return false;
 
-				if (false == m_Cells[iNeighborIndex]->isOut(vPoint, XMLoadFloat4x4(&m_WorldIdentity), &iNeighborIndex))
+				if (false == m_Cells[iNeighborIndex]->isOut(vPoint, XMLoadFloat4x4(&m_WorldIdentity), &iNeighborIndex, vLook, vOutSlidingDir))
 				{
 					m_iCurrentIndex = iNeighborIndex;
 					break;
@@ -123,10 +124,6 @@ _bool CNavigation::Is_Movable(_fvector vPoint, __out _vector* vOutSlidingDir)
 		}
 		else
 		{
-			 
-			if (vOutSlidingDir != nullptr)
-				*vOutSlidingDir = vOutLine;
-
 			return false;
 		}
 

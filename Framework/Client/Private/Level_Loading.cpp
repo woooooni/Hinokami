@@ -33,9 +33,6 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevel, const wstring& strFolderN
 	if(FAILED(Ready_LoadingUI()))
 		return E_FAIL;
 
-
-
-		
 	/* m_eNextLevel 에 대한 로딩작업을 수행한다. */
 	/* 로딩을 겁나 하고있다. */
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, m_eNextLevel, strFolderName);
@@ -70,6 +67,18 @@ HRESULT CLevel_Loading::LateTick(_float fTimeDelta)
 
 			case LEVEL_TRAIN_STATION:
 				pNewLevel = CLevel_Train_Station::Create(m_pDevice, m_pContext);
+				break;
+
+			case LEVEL_TRAIN:
+				pNewLevel = CLevel_Train::Create(m_pDevice, m_pContext);
+				break;
+
+			case LEVEL_TRAIN_BOSS:
+				pNewLevel = CLevel_Train_Boss::Create(m_pDevice, m_pContext);
+				break;
+
+			case LEVEL_FINAL_BOSS:
+				pNewLevel = CLevel_FinalBoss::Create(m_pDevice, m_pContext);
 				break;
 
 			case LEVEL_TOOL:

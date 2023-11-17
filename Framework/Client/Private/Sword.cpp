@@ -124,18 +124,18 @@ void CSword::Collision_Enter(const COLLISION_INFO& tInfo)
 			switch (m_eType)
 			{
 			case SWORD_TYPE::TANJIRO:
-				CParticle_Manager::GetInstance()->Generate_Particle(L"Tanjiro_Attack_Particle", WorldMatrix);
+				// CParticle_Manager::GetInstance()->Generate_Particle(L"Tanjiro_Attack_Particle", WorldMatrix);
 				break;
 			case SWORD_TYPE::ZENITSU:
-				CParticle_Manager::GetInstance()->Generate_Particle(L"Zenitsu_Attack_Particle", WorldMatrix);
+				// CParticle_Manager::GetInstance()->Generate_Particle(L"Zenitsu_Attack_Particle", WorldMatrix);
 				break;
 			case SWORD_TYPE::KYOJURO:
-				CParticle_Manager::GetInstance()->Generate_Particle(L"Kyojuro_Attack_Particle", WorldMatrix);
+				// CParticle_Manager::GetInstance()->Generate_Particle(L"Kyojuro_Attack_Particle", WorldMatrix);
 				break;
 			}
 
 			// TODO :: 데미지 공식적용해 수정할 것.
-			pMonster->On_Damaged(m_pOwner, tInfo.pMyCollider->Get_AttackType(), 0.f);
+			pMonster->On_Damaged(m_pOwner, tInfo.pMyCollider->Get_AttackType(), 3.f);
 		}
 	}
 }

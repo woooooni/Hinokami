@@ -53,12 +53,15 @@ void CNpc::LateTick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return;
 
-	std::async(&CModel::Play_Animation, m_pModelCom, m_pTransformCom, fTimeDelta);
+	
 		
-
 	__super::LateTick(fTimeDelta);
-	if (true == GI->Intersect_Frustum_World(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.f))
+	m_pRendererCom->Add_Debug(m_pNavigationCom);
+
+	GI->Add_CollisionGroup(COLLISION_GROUP::NPC, this);
+	if (true == GI->Intersect_Frustum_World(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f))
 	{
+		std::async(&CModel::Play_Animation, m_pModelCom, m_pTransformCom, fTimeDelta);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 	}
@@ -149,51 +152,13 @@ void CNpc::Collision_Enter(const COLLISION_INFO& tInfo)
 
 void CNpc::Collision_Continue(const COLLISION_INFO& tInfo)
 {
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER || tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
-	{
-		CTransform* pOtherTransform = tInfo.pOther->Get_Component<CTransform>(L"Com_Transform");
-		_vector vTargetDir = XMVector3Normalize(pOtherTransform->Get_State(CTransform::STATE::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION));
-
-		_float fTargetLen = XMVectorGetX(XMVector3Length(vTargetDir));
-		if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
-			&& tInfo.pMyCollider->Get_DetectionType() == CCollider::BODY)
-		{
-			if (fTargetLen <= 0.f)
-				vTargetDir = XMVectorSetX(vTargetDir, _float(rand() % 10 - 5));
-
-			vTargetDir = XMVectorSetY(vTargetDir, 0.f);
-			vTargetDir = XMVector3Normalize(vTargetDir);
-			vTargetDir *= -1.f;
-
-			_float fForce = (tInfo.pMyCollider->Get_Radius() + tInfo.pOtherCollider->Get_Radius()) - fTargetLen;
-
-			CRigidBody* pOtherRigidBody = tInfo.pOther->Get_Component<CRigidBody>(L"Com_RigidBody");
-			if (pOtherRigidBody)			
-				fForce += XMVectorGetX(XMVector3Length(XMLoadFloat3(&pOtherRigidBody->Get_Velocity())));
-
-			m_pRigidBodyCom->Add_Velocity_Acc(vTargetDir, fForce);
-		}
-	}
+	
 }
 
 void CNpc::Collision_Exit(const COLLISION_INFO& tInfo)
 {
 	
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER
-		|| tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
-	{
-		if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
-			&& tInfo.pMyCollider->Get_DetectionType() == CCollider::BODY)
-		{
 
-			_float3 vVelocity = m_pRigidBodyCom->Get_Velocity();
-
-			vVelocity.x = 0.f;
-			vVelocity.z = 0.f;
-
-			m_pRigidBodyCom->Set_Velocity(vVelocity);
-		}
-	}
 }
 
 

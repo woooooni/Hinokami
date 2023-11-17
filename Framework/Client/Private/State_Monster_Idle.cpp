@@ -53,9 +53,15 @@ void CState_Monster_Idle::Tick_State(_float fTimeDelta)
 		m_fAccAttackCoolTime = 0.f;
 		m_bAttackable = true;
 	}
-	
-	list<CGameObject*> Objects =  GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_CHARACTER);
 
+	if (GI->Get_CurrentLevel() == LEVEL_TRAIN && m_bAttackable)
+	{
+		m_pStateMachineCom->Change_State(CMonster::DEFENCE_TRACE);
+		return;
+	}
+		
+	
+	const list<CGameObject*>& Objects =  GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_CHARACTER);
 	for (auto& pGameObject : Objects)
 	{
 		CTransform* pTargetTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform");

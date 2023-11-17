@@ -126,17 +126,49 @@ void CState_Character_Battle_Move::Tick_State(_float fTimeDelta)
 
 	if (KEY_HOLD(KEY::A))
 	{
+		_matrix vCamWolrd = GI->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
+
+		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+		_vector vCamRight = vCamWolrd.r[CTransform::STATE_RIGHT];
+
+		vRight = XMVector3Normalize(vRight);
+		vCamRight = -1.f * XMVector3Normalize(vCamRight);
+
+		_float fRadian = XMVectorGetX(XMVector3Dot(vRight, vCamRight)) * 10.f * fTimeDelta;
+
+		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fRadian);
+
+		if (!bKeyHolding)
+		{
+			m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
+		}
+
 		bKeyHolding = true;
 
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 10.f, -1.f * fTimeDelta);
-		// m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
 	}
 
 
 	if (KEY_HOLD(KEY::D))
 	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 10.f, fTimeDelta);
-		// m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
+		// m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 10.f, -1.f * fTimeDelta);
+
+		_matrix vCamWolrd = GI->Get_TransformMatrixInverse(CPipeLine::TRANSFORMSTATE::D3DTS_VIEW);
+
+		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+		_vector vCamRight = vCamWolrd.r[CTransform::STATE_RIGHT];
+
+		vRight = XMVector3Normalize(vRight);
+		vCamRight = XMVector3Normalize(vCamRight);
+
+		_float fRadian = XMVectorGetX(XMVector3Dot(vRight, vCamRight)) * 10.f * fTimeDelta;
+
+
+		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fRadian);
+
+		if (!bKeyHolding)
+			m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
+
+		bKeyHolding = true;
 	}
 
 	if (KEY_TAP(KEY::LBTN))
@@ -151,7 +183,12 @@ void CState_Character_Battle_Move::Tick_State(_float fTimeDelta)
 		bKeyHolding = true;
 		m_pStateMachineCom->Change_State(CCharacter::BATTLE_JUMP);
 	}
-		
+	
+	if (KEY_TAP(KEY::RBTN))
+	{
+		bKeyHolding = true;
+		m_pStateMachineCom->Change_State(CCharacter::BATTLE_DASH);
+	}
 		
 		
 	if (!bKeyHolding)

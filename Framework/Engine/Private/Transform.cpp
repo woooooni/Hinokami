@@ -58,112 +58,73 @@ void CTransform::Go_Straight(_float fTimeDelta, CNavigation* pNavigation)
 	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
 	_vector		vLook = Get_State(CTransform::STATE_LOOK);
 
+	_vector vSlidingDir = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+
 	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * fTimeDelta;
 
 	if (pNavigation == nullptr)
 		Set_State(CTransform::STATE_POSITION, vPosition);
 	else
 	{
-		if (true == pNavigation->Is_Movable(vPosition))
+		if (true == pNavigation->Is_Movable(vPosition, XMVector3Normalize(vPosition - Get_State(CTransform::STATE_POSITION)), &vSlidingDir))
 			Set_State(CTransform::STATE_POSITION, vPosition);
 		else
 		{
-			// TODO :: 슬라이딩 벡터
+			if (XMVectorGetX(XMVector3Length(vSlidingDir)) > 0.f)
+			{
+				vSlidingDir = XMVector3Normalize(vSlidingDir);
+				_vector vNewPosition = Get_State(CTransform::STATE_POSITION) + vSlidingDir * m_TransformDesc.fSpeedPerSec * fTimeDelta;
+
+				if (true == pNavigation->Is_Movable(vNewPosition, XMVector3Normalize(vNewPosition - Get_State(CTransform::STATE_POSITION)), nullptr))
+				{
+					Set_State(CTransform::STATE_POSITION, vNewPosition);
+				}
+
+				else
+				{
+					vNewPosition = Get_State(CTransform::STATE_POSITION) + vSlidingDir * 1.f * fTimeDelta;
+					if (true == pNavigation->Is_Movable(vNewPosition, XMVector3Normalize(vNewPosition - Get_State(CTransform::STATE_POSITION)), nullptr))
+						Set_State(CTransform::STATE_POSITION, vNewPosition);
+				}
+			}
 		}
 	}
 }
 
-void CTransform::Go_Backward(_float fTimeDelta, CNavigation* pNavigation)
-{
-	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
-	_vector		vLook = Get_State(CTransform::STATE_LOOK);
-
-	vPosition -= XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * fTimeDelta;
-
-	if (pNavigation == nullptr)
-		Set_State(CTransform::STATE_POSITION, vPosition);
-	else
-	{
-		if (true == pNavigation->Is_Movable(vPosition))
-			Set_State(CTransform::STATE_POSITION, vPosition);
-	}
-}
-
-void CTransform::Go_Left(_float fTimeDelta, CNavigation* pNavigation)
-{
-	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
-	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
-
-	vPosition -= XMVector3Normalize(vRight) * m_TransformDesc.fSpeedPerSec * fTimeDelta;
-
-	if (pNavigation == nullptr)
-		Set_State(CTransform::STATE_POSITION, vPosition);
-	else
-	{
-		if (true == pNavigation->Is_Movable(vPosition))
-			Set_State(CTransform::STATE_POSITION, vPosition);
-	}
-}
-
-void CTransform::Go_Right(_float fTimeDelta, CNavigation* pNavigation)
-{
-	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
-	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
-
-	vPosition += XMVector3Normalize(vRight) * m_TransformDesc.fSpeedPerSec * fTimeDelta;
-
-	if (pNavigation == nullptr)
-		Set_State(CTransform::STATE_POSITION, vPosition);
-	else
-	{
-		if (true == pNavigation->Is_Movable(vPosition))
-			Set_State(CTransform::STATE_POSITION, vPosition);
-	}
-}
-
-void CTransform::Go_Up(_float fTimeDelta, CNavigation* pNavigation)
-{
-	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
-	_vector		vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-
-	vPosition += XMVector3Normalize(vUp) * m_TransformDesc.fSpeedPerSec * fTimeDelta;
-
-	if (pNavigation == nullptr)
-		Set_State(CTransform::STATE_POSITION, vPosition);
-	else
-	{
-		if (true == pNavigation->Is_Movable(vPosition))
-			Set_State(CTransform::STATE_POSITION, vPosition);
-	}
-}
-
-void CTransform::Go_Down(_float fTimeDelta, CNavigation* pNavigation)
-{
-	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
-	_vector		vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-
-	vPosition -= XMVector3Normalize(vUp) * m_TransformDesc.fSpeedPerSec * fTimeDelta;
-
-	if (pNavigation == nullptr)
-		Set_State(CTransform::STATE_POSITION, vPosition);
-	else
-	{
-		if (true == pNavigation->Is_Movable(vPosition))
-			Set_State(CTransform::STATE_POSITION, vPosition);
-	}
-}
 
 void CTransform::Go_Dir(_fvector vDir, _float fTimeDelta, CNavigation* pNavigation)
 {
 	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
+	_vector		vSlidingDir = XMVectorSet(0.f, 0.f, 0.f, 0.f);
 	vPosition += XMVector3Normalize(vDir) * m_TransformDesc.fSpeedPerSec * fTimeDelta;
+
 
 	if (pNavigation == nullptr)
 		Set_State(CTransform::STATE_POSITION, vPosition);
 	else
 	{
-		if (true == pNavigation->Is_Movable(vPosition))
+		if (true == pNavigation->Is_Movable(vPosition, XMVector3Normalize(vPosition - Get_State(CTransform::STATE_POSITION)), &vSlidingDir))
 			Set_State(CTransform::STATE_POSITION, vPosition);
+		else
+		{
+			if (XMVectorGetX(XMVector3Length(vSlidingDir)) > 0.f)
+			{
+				vSlidingDir = XMVector3Normalize(vSlidingDir);
+				_vector vNewPosition = Get_State(CTransform::STATE_POSITION) + vSlidingDir * m_TransformDesc.fSpeedPerSec * fTimeDelta;
+				if (true == pNavigation->Is_Movable(vNewPosition, XMVector3Normalize(vNewPosition - Get_State(CTransform::STATE_POSITION)), nullptr))
+				{
+					Set_State(CTransform::STATE_POSITION, vNewPosition);
+				}
+
+				else
+				{
+					vNewPosition = Get_State(CTransform::STATE_POSITION) + vSlidingDir * 1.f * fTimeDelta;
+					if (true == pNavigation->Is_Movable(vNewPosition, XMVector3Normalize(vNewPosition - Get_State(CTransform::STATE_POSITION)), nullptr))
+						Set_State(CTransform::STATE_POSITION, vNewPosition);
+				}
+				
+			}
+		}
 	}
 }
 
@@ -172,12 +133,32 @@ void CTransform::Go_Dir(_fvector vDir, _float fSpeed, _float fTimeDelta, CNaviga
 	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
 	vPosition += XMVector3Normalize(vDir) * fSpeed * fTimeDelta;
 
-	if(pNavigation == nullptr)
+	_vector vSlidingDir = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+	if (pNavigation == nullptr)
 		Set_State(CTransform::STATE_POSITION, vPosition);
 	else
 	{
-		if(true == pNavigation->Is_Movable(vPosition))
+		if (true == pNavigation->Is_Movable(vPosition, XMVector3Normalize(vPosition - Get_State(CTransform::STATE_POSITION)), &vSlidingDir))
 			Set_State(CTransform::STATE_POSITION, vPosition);
+		else
+		{
+			if (XMVectorGetX(XMVector3Length(vSlidingDir)) > 0.f)
+			{
+				vSlidingDir = XMVector3Normalize(vSlidingDir);
+				_vector vNewPosition = Get_State(CTransform::STATE_POSITION) + vSlidingDir * fSpeed * fTimeDelta;
+
+				if (true == pNavigation->Is_Movable(vNewPosition, XMVector3Normalize(vNewPosition - Get_State(CTransform::STATE_POSITION)), nullptr))
+				{
+					Set_State(CTransform::STATE_POSITION, vNewPosition);
+				}
+				else
+				{
+					vNewPosition = Get_State(CTransform::STATE_POSITION) + vSlidingDir * 1.f * fTimeDelta;
+					if(true == pNavigation->Is_Movable(vNewPosition, XMVector3Normalize(vNewPosition - Get_State(CTransform::STATE_POSITION)), nullptr))
+						Set_State(CTransform::STATE_POSITION, vNewPosition);
+				}
+			}
+		}
 	}
 }
 
@@ -265,20 +246,20 @@ void CTransform::Set_Rotation(_fvector vRadianEulerAngle)
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScalingFromVector(vScale) * RotationMatrix * XMMatrixTranslationFromVector(vPosition));
 }
 
-void CTransform::Set_Position(_fvector vPosition, _bool* bMovable, CNavigation* pNavigation)
+void CTransform::Set_Position(_vector vPosition, CNavigation* pNavigation, _bool* bMovable)
 {
-	XMVectorSetW(vPosition, 1.f);
+	vPosition = XMVectorSetW(vPosition, 1.f);
 	if (pNavigation == nullptr)
 	{
 		Set_State(CTransform::STATE_POSITION, vPosition);
-		*bMovable = true;
 	}
 	else
 	{
-		if (true == pNavigation->Is_Movable(vPosition))
+		if (true == pNavigation->Is_Movable(vPosition, Get_State(CTransform::STATE_LOOK)))
 		{
 			Set_State(CTransform::STATE_POSITION, vPosition);
-			*bMovable = true;
+			if (nullptr != bMovable)
+				*bMovable = true;
 		}
 		else
 		{
@@ -286,7 +267,8 @@ void CTransform::Set_Position(_fvector vPosition, _bool* bMovable, CNavigation* 
 			vTransformPosition = XMVectorSetY(vTransformPosition, XMVectorGetY(vPosition));
 			Set_State(CTransform::STATE_POSITION, vTransformPosition);
 
-			*bMovable = false;
+			if (nullptr != bMovable)
+				*bMovable = true;
 		}
 			
 	}

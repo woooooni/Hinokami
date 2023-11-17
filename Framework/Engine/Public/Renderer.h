@@ -13,6 +13,18 @@ public:
 	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOW, RENDER_NONLIGHT, RENDER_LIGHT, RENDER_NONBLEND, RENDER_ALPHABLEND, RENDER_EFFECT, RENDER_UI, RENDER_END };
 	enum SHADER_TYPE { MODEL, RECT, EFFECT_TEXTURE, EFFECT_MODEL, TYPE_END };
 
+public:
+	typedef struct tagTextDesc
+	{
+		wstring strText;
+		wstring strFontTag;
+		_float2 vPosition;
+		_float4 vColor = { 1.f, 1.f, 1.f, 1.f };
+		_float fAngle = 0.f;
+		_float2 vOrigin = { 0.f, 0.f };
+		_float2 vScale = { 1.f, 1.f };
+	} TEXT_DESC;
+
 private:
 	typedef struct tagInstancingDesc
 	{
@@ -36,6 +48,7 @@ public:
 	HRESULT Draw();
 
 
+#ifdef _DEBUG
 public:
 	HRESULT Add_Debug(class CComponent* pDebug) {
 		m_RenderDebug.push_back(pDebug);
@@ -43,7 +56,14 @@ public:
 		return S_OK;
 	}
 
+	HRESULT Add_Text(const TEXT_DESC& TextDesc) {
+		m_RenderTexts.push_back(TextDesc);
+		return S_OK;
+	}
 
+	void Set_PlayerPosition(_vector vPosition) { XMStoreFloat4(&m_vPlayerPosition, vPosition); }
+
+#endif
 
 private:
 	HRESULT Render_Priority();
@@ -62,6 +82,7 @@ private:
 	HRESULT Render_BlurUpSample();
 	HRESULT Render_MRT_Final();
 	HRESULT Render_UI();
+	HRESULT Render_Text();
 
 private:
 	HRESULT Render_Debug();
@@ -80,12 +101,13 @@ private:
 	list<class CGameObject*>			m_RenderObjects[RENDER_END];
 	list<class CComponent*>				m_RenderDebug;
 
-
+	list<TEXT_DESC>						m_RenderTexts;
 	// Instancing
 	class CVIBuffer_Instancing*			m_pVIBuffer_Instancing = nullptr;
 	class CShader*						m_pIntancingShaders[SHADER_TYPE::TYPE_END];
 	map<wstring, INSTANCING_DESC>		m_Render_Instancing_Objects[RENDER_END];
 
+	_float4								m_vPlayerPosition = {0.f, 0.f, 0.f, 1.f};
 
 	
 public:

@@ -32,6 +32,7 @@ public:
 		BATTLE_MOVE, 
 		BATTLE_JUMP, 
 		BATTLE_DASH,
+		BATTLE_AIRDASH,
 		ATTACK,
 		AIR_ATTACK,
 		SKILL_0,
@@ -134,11 +135,6 @@ protected:
 	_float m_fAccInfinite = 0.f;
 	_float m_fInfiniteTime = 5.f;
 	_bool m_bInfinite = false;
-	
-
-
-protected:
-	void Input(_float fTimeDelta);
 	
 
 public:

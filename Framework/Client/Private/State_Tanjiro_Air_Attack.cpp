@@ -201,7 +201,7 @@ void CState_Tanjiro_Air_Attack::Input(_float fTimeDelta)
 
 void CState_Tanjiro_Air_Attack::Follow_Near_Target()
 {
-	list<CGameObject*> Monsters = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_MONSTER);
+	list<CGameObject*>& Monsters = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_MONSTER);
 	_float fDistance = 99999999999.f;
 
 	CGameObject* pTarget = nullptr;
@@ -247,7 +247,7 @@ void CState_Tanjiro_Air_Attack::Follow_Near_Target()
 
 		_vector vFollowPosition = XMVectorSetY(XMVector3Normalize(vTargetLook), 0.f)  + XMVectorSetY(vTargetPosition, XMVectorGetY(vTargetPosition) - 0.5f);
 
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vFollowPosition);
+		m_pTransformCom->Set_Position(XMVectorSetW(vFollowPosition, 1.f), m_pCharacter->Get_Component<CNavigation>(L"Com_Navigation"));
 
 		CRigidBody* pTargetRigidBody = pTarget->Get_Component<CRigidBody>(L"Com_RigidBody");
 		pTargetRigidBody->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), 2.5f);

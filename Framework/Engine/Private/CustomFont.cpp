@@ -17,7 +17,7 @@ HRESULT CCustomFont::Initialize(const wstring& strFontFilePath)
 	return S_OK;
 }
 
-HRESULT CCustomFont::Render(const _tchar* strText, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
+HRESULT CCustomFont::Render(const wstring& strText, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
 {
 	if (nullptr == m_pFont ||
 		nullptr == m_pBatch)
@@ -25,27 +25,27 @@ HRESULT CCustomFont::Render(const _tchar* strText, _float2 vPosition, _fvector v
 
 	m_pBatch->Begin();
 
-	m_pFont->DrawString(m_pBatch, strText, vPosition, vColor, fAngle, vOrigin, vScale);
+	m_pFont->DrawString(m_pBatch, strText.c_str(), vPosition, vColor, fAngle, vOrigin, vScale);
 
 	m_pBatch->End();
 
 	return S_OK;
 }
 
-HRESULT CCustomFont::Render(const _tchar* strText, _float3 vPosition, _fvector vColor, _float fAngle, _float3 vOrigin, _float3 vScale)
+HRESULT CCustomFont::Render(const string& strText, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
 {
-	if (nullptr == m_pFont ||
-		nullptr == m_pBatch)
+	if (nullptr == m_pFont || nullptr == m_pBatch)
 		return E_FAIL;
 
 	m_pBatch->Begin();
 
-	m_pFont->DrawString(m_pBatch, strText, XMLoadFloat3(&vPosition), vColor, fAngle, XMLoadFloat3(&vOrigin), XMLoadFloat3(&vScale));
-	
+	m_pFont->DrawString(m_pBatch, strText.c_str(), vPosition, vColor, fAngle, vOrigin, vScale);
+
 	m_pBatch->End();
 
 	return S_OK;
 }
+
 
 CCustomFont * CCustomFont::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strFontFilePath)
 {

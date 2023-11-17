@@ -6,10 +6,14 @@
 #include "Level_Loading.h"
 #include "Network_Manager.h"
 #include "SocketUtils.h"
+
+
 #include "ImGui_Manager.h"
 #include "Picking_Manager.h"
 #include "Effect_Manager.h"
 #include "Particle_Manager.h"
+#include "UI_Manager.h"
+
 #include "Light.h"
 
 #include "UI_Loading_Anim.h"
@@ -44,14 +48,14 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(m_pGame_Instance->Initialize_Engine(LEVEL_END, _uint(LAYER_TYPE::LAYER_END), GraphicDesc, &m_pDevice, &m_pContext, g_hWnd, g_hInstance)))
 		return E_FAIL;
 
-	if (FAILED(Initialize_Client()))
-		return E_FAIL;
-
 	if (FAILED(Ready_Prototype_Component()))
 		return E_FAIL;
 
+	if (FAILED(Initialize_Client()))
+		return E_FAIL;
+
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_LOGO, L"")))
+	if (FAILED(Open_Level(LEVEL_TRAIN, L"Train")))
 		return E_FAIL;
 
 
@@ -63,6 +67,12 @@ HRESULT CMainApp::Initialize()
 void CMainApp::Tick(_float fTimeDelta)
 {
 	m_pGame_Instance->Tick(fTimeDelta);
+	CUI_Manager::GetInstance()->Tick(fTimeDelta);
+	
+	m_pGame_Instance->LateTick(fTimeDelta);
+	CUI_Manager::GetInstance()->LateTick(fTimeDelta);
+	
+	
 	m_fTimeAcc += fTimeDelta;
 	
 }
@@ -80,14 +90,18 @@ HRESULT CMainApp::Render()
 
 	++m_iNumDraw;
 
-	if (m_fTimeAcc >= 1.f)
+	if (GI->Get_CurrentLevel() != LEVEL_LOADING)
 	{
-		wsprintf(m_szFPS, TEXT("fps : %d"), m_iNumDraw);
-		m_iNumDraw = 0;
-		m_fTimeAcc = 0.f;
-	}
+		if (m_fTimeAcc >= 1.f)
+		{
+			wsprintf(m_szFPS, TEXT("fps : %d"), m_iNumDraw);
+			m_iNumDraw = 0;
+			m_fTimeAcc = 0.f;
+		}
 
-	SetWindowText(g_hWnd, m_szFPS);
+		SetWindowText(g_hWnd, m_szFPS);
+	}
+	
 
 	return S_OK;
 }
@@ -107,7 +121,7 @@ HRESULT CMainApp::Open_Level(LEVELID eLevelID, const wstring& strFolderName)
 
 HRESULT CMainApp::Initialize_Client()
 {
-	if(FAILED(GI->Add_Fonts(m_pDevice, m_pContext, L"Batang", L"../Bin/Resources/Font/Batang.spritefont")))
+	if(FAILED(GI->Add_Fonts(m_pDevice, m_pContext, L"Basic", L"../Bin/Resources/Font/JejuGhothic.spritefont")))
 		return E_FAIL;
 	if(FAILED(GI->Add_Fonts(m_pDevice, m_pContext, L"Maple", L"../Bin/Resources/Font/Maplestory.spritefont")))
 		return E_FAIL;
@@ -150,6 +164,10 @@ HRESULT CMainApp::Initialize_Client()
 	if(FAILED(CParticle_Manager::GetInstance()->Reserve_Manager(m_pDevice, m_pContext, L"../Bin/Export/Particle/")))
 		return E_FAIL;
 
+	
+	if (FAILED(CUI_Manager::GetInstance()->Reserve_Manager(m_pDevice, m_pContext)))
+		return E_FAIL;
+
 	LIGHTDESC LightDesc;
 	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
 	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
@@ -178,6 +196,12 @@ HRESULT CMainApp::Initialize_Client()
 	vAt = XMVectorSet(60.f, -10.f, 115.f, 1.f);
 	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	if (FAILED(GI->Add_ShadowLight(LEVEL_TRAIN_STATION, vEye, vAt, vUp)))
+		return E_FAIL;
+
+	vEye = XMVectorSet(100.f, 100.f, 1500.f, 1.f);
+	vAt = XMVectorSet(-10.f, -10.f, -10.f, 1.f);
+	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	if (FAILED(GI->Add_ShadowLight(LEVEL_TRAIN, vEye, vAt, vUp)))
 		return E_FAIL;
 
 	
@@ -277,21 +301,56 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Effect/Dissolve/"), 0, true))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_NextFog*/
 	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_NextFog"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/NextFog/"), 0, true))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Loading_BackGround*/
 	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading_BackGround"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Loading/Loading_Background/"), 0, true))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Loading_Anim*/
 	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading_Anim"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Loading/Loading_Anim/"), 0, true))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Loading_Icon*/
 	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading_Icon"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Loading/Loading_Icon/"), 0, true))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Cursor */
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Cursor"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Cursor/"), 0, true))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_GaugeBar */
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_GaugeBar"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Gauge_Bar/Gauge/"), 0, true))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Gauge_BackGround */
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Gauge_BackGround"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Gauge_Bar/BackGround/"), 0, true))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Character_Icon */
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Character_Icon"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Character_Icon/"), 0, true))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_BattleStart */
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_BattleStart"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Battle_Start/"), 0, true))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_BattleEnd */
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_BattleEnd"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Battle_End/"), 0, true))))
+		return E_FAIL;
+	
 
 
 

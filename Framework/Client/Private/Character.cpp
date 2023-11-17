@@ -76,6 +76,8 @@ void CCharacter::Tick(_float fTimeDelta)
 
 void CCharacter::LateTick(_float fTimeDelta)
 {
+	__super::LateTick(fTimeDelta);
+
 	if (nullptr == m_pRendererCom)
 		return;
 
@@ -86,6 +88,7 @@ void CCharacter::LateTick(_float fTimeDelta)
 	for (auto& pPart : m_Parts)
 		pPart->LateTick(fTimeDelta);
 
+	GI->Add_CollisionGroup(COLLISION_GROUP::CHARACTER, this);
 
 	for (auto& pPart : m_Parts)
 	{
@@ -93,12 +96,11 @@ void CCharacter::LateTick(_float fTimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, pPart);
 	}
 		
-
-	__super::LateTick(fTimeDelta);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
+	m_pRendererCom->Add_Debug(m_pNavigationCom);
 
-
+	m_pRendererCom->Set_PlayerPosition(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	for (_uint i = 0; i < SOCEKT_END; ++i)
 	{
@@ -107,8 +109,6 @@ void CCharacter::LateTick(_float fTimeDelta)
 
 		m_pTrails[i]->LateTick(fTimeDelta);
 	}
-		
-
 }
 
 HRESULT CCharacter::Render()
@@ -150,8 +150,7 @@ HRESULT CCharacter::Render()
 HRESULT CCharacter::Render_ShadowDepth()
 {
 
-	if (nullptr == m_pShaderCom ||
-		nullptr == m_pTransformCom)
+	if (nullptr == m_pShaderCom || nullptr == m_pTransformCom)
 		return E_FAIL;
 
 
@@ -192,7 +191,7 @@ void CCharacter::Collision_Continue(const COLLISION_INFO& tInfo)
 
 void CCharacter::Collision_Exit(const COLLISION_INFO& tInfo)
 {
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER
+	/*if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER
 		|| tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
 	{
 		if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
@@ -209,7 +208,7 @@ void CCharacter::Collision_Exit(const COLLISION_INFO& tInfo)
 			m_pRigidBodyCom->Set_Velocity(vVelocity);
 
 		}
-	}
+	}*/
 }
 
 
@@ -272,41 +271,6 @@ void CCharacter::Set_Infinite(_float fInfiniteTime, _bool bInfinite)
 	m_fInfiniteTime = fInfiniteTime;
 	m_fAccInfinite = 0.f;
 
-}
-
-
-
-
-
-void CCharacter::Input(_float fTimeDelta)
-{
-	if (KEY_HOLD(KEY::DOWN_ARROW))
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta);
-	}
-
-	if (KEY_HOLD(KEY::LEFT_ARROW))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -1.f);
-	}
-
-	if (KEY_HOLD(KEY::RIGHT_ARROW))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
-	}
-	if (KEY_HOLD(KEY::UP_ARROW))
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
-	}
-
-	if (KEY_TAP(KEY::OPEN_SQUARE_BRACKET))
-	{
-		m_pModelCom->Set_AnimIndex(m_pModelCom->Get_CurrAnimationIndex() - 1);
-	}
-	if (KEY_TAP(KEY::CLOSE_SQUARE_BRACKET))
-	{
-		m_pModelCom->Set_AnimIndex(m_pModelCom->Get_CurrAnimationIndex() + 1);
-	}
 }
 
 

@@ -37,7 +37,7 @@ public:
 	HRESULT Initialize(const CELL_DESC& tDesc, vector<_float3>& Points);
 	void Update(_fmatrix WorldMatrix);
 	_bool Compare_Points(const _float3* pSourPoint, const _float3* pDestPoint);
-	_bool isOut(_fvector vPoint, _fmatrix WorldMatrix, _int* pNeighborIndex, __out _vector* pOutLine = nullptr);
+	_bool isOut(_fvector vPoint, _fmatrix WorldMatrix, _int* pNeighborIndex, _vector vLook, __out _vector* pOutLine = nullptr);
 
 public:
 	void Set_Movable(_bool _bMovable) { m_bMovable = _bMovable; }

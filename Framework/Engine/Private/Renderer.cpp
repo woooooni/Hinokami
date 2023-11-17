@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "Target_Manager.h"
 #include "Light_Manager.h"
-
+#include "Utils.h"
 #include "GameInstance.h"
 
 CRenderer::CRenderer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -286,6 +286,9 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 
 	if(FAILED(Render_UI()))
+		return E_FAIL;
+
+	if (FAILED(Render_Text()))
 		return E_FAIL;
 
 	if (FAILED(Render_Debug()))
@@ -637,35 +640,66 @@ HRESULT CRenderer::Render_UI()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_Text()
+{
+	for (auto& iter : m_RenderTexts)
+	{
+		if (FAILED(GI->Render_Fonts(iter.strFontTag, iter.strText,
+			iter.vPosition,
+			XMLoadFloat4(&iter.vColor),
+			iter.fAngle,
+			iter.vOrigin,
+			iter.vScale)))
+			return E_FAIL;
+	}
+	m_RenderTexts.clear();
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_Debug()
 {
-	//for (auto& pDebugCom : m_RenderDebug)
-	//{
-	//	pDebugCom->Render();
-	//	Safe_Release(pDebugCom);
-	//}
-	//m_RenderDebug.clear();
+	for (auto& pDebugCom : m_RenderDebug)
+	{
+		pDebugCom->Render();
+		Safe_Release(pDebugCom);
+	}
+	m_RenderDebug.clear();
+	
+	wstring strPlayerPosition = L"";
+	strPlayerPosition += L"X : ";
+	strPlayerPosition += to_wstring(m_vPlayerPosition.x);
+	strPlayerPosition += L'\n';
+	strPlayerPosition += L"Y : ";
+	strPlayerPosition += to_wstring(m_vPlayerPosition.y);
+	strPlayerPosition += L'\n';
+	strPlayerPosition += L"Z : ";
+	strPlayerPosition += to_wstring(m_vPlayerPosition.z);
+	strPlayerPosition += L'\n';
+	strPlayerPosition += L"W : ";
+	strPlayerPosition += to_wstring(m_vPlayerPosition.w);
 
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return E_FAIL;
+	GI->Render_Fonts(L"Basic", strPlayerPosition.c_str(), _float2(1600.f / 2.f, 0.f));
 
-	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+	//	return E_FAIL;
+	//if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Lights"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
+
+	//if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
 
-	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Blur"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Blur"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_BlurXY"), m_pShader, m_pVIBuffer)))
-		return E_FAIL;
+	//if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_BlurXY"), m_pShader, m_pVIBuffer)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

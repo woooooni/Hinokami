@@ -62,7 +62,9 @@ void CMonster::Tick(_float fTimeDelta)
 	{
 		m_fDissolveWeight += 0.2f * fTimeDelta;
 		if (m_fDissolveWeight >= 1.f)
+		{
 			Set_Dead(true);
+		}
 	}
 }
 
@@ -71,7 +73,7 @@ void CMonster::LateTick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return;
 
-	std::async(&CModel::Play_Animation, m_pModelCom, m_pTransformCom, fTimeDelta);
+	
 
 	for (auto& pPart : m_Parts)
 		pPart->LateTick(fTimeDelta);
@@ -85,8 +87,9 @@ void CMonster::LateTick(_float fTimeDelta)
 		
 
 	__super::LateTick(fTimeDelta);
-	if (true == GI->Intersect_Frustum_World(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.f))
+	if (true == GI->Intersect_Frustum_World(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3.f))
 	{
+		std::async(&CModel::Play_Animation, m_pModelCom, m_pTransformCom, fTimeDelta);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 	}

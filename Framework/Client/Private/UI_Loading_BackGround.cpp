@@ -34,8 +34,9 @@ HRESULT CUI_Loading_BackGround::Initialize(void* pArg)
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.f));
 
-	srand(rand() * rand() * rand());
-	m_iTextureIndex = rand() % m_pTextureCom->Get_TextureCount();
+	srand(time(NULL) * rand() * rand() * rand());
+	m_iTextureIndex = (rand() + rand() + rand()) % m_pTextureCom->Get_TextureCount();
+
 	return S_OK;
 }
 

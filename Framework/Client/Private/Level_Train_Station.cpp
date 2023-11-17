@@ -127,7 +127,6 @@ HRESULT CLevel_Train_Station::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	/*if (FAILED(GI->Add_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
 		return E_FAIL;*/
 	
-	GI->Lock_Mouse();
 	
 
 	return S_OK;

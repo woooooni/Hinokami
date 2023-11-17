@@ -9,7 +9,7 @@ class ENGINE_DLL CNavigation final : public CComponent
 public:
 	typedef struct tagNavigationDesc
 	{
-		_float3	vStartWorldPosition = {};
+		_float4	vStartWorldPosition = {};
 		_bool bInitialize_Index;
 	} NAVIGATION_DESC;
 
@@ -23,7 +23,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;	
 	void Update(_fmatrix WorldMatrix);
 
-	_bool Is_Movable(_fvector vPoint, __out _vector* vOutSlidingDir = nullptr);
+	_bool Is_Movable(_fvector vPoint, _vector vLook, __out _vector* vOutSlidingDir = nullptr);
 	_float Compute_Height(_vector vPosition);
 
 public:

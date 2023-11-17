@@ -52,7 +52,7 @@ protected:
 
 
 protected:
-	void Debug_Input(_float fTimeDelta);
+	virtual void Debug_Input(_float fTimeDelta);
 
 protected:
 	CShader* m_pShaderCom = nullptr;

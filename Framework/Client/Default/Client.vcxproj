@@ -207,6 +207,8 @@
     <ClInclude Include="..\Public\Monster_Normal_1.h" />
     <ClInclude Include="..\Public\Monster_Normal_2.h" />
     <ClInclude Include="..\Public\Npc.h" />
+    <ClInclude Include="..\Public\Npc_Defence_Zenitsu.h" />
+    <ClInclude Include="..\Public\Npc_General_0.h" />
     <ClInclude Include="..\Public\Part.h" />
     <ClInclude Include="..\Public\Particle.h" />
     <ClInclude Include="..\Public\Particle_Manager.h" />
@@ -219,6 +221,8 @@
     <ClInclude Include="..\Public\Network_Manager.h" />
     <ClInclude Include="..\Public\Skill.h" />
     <ClInclude Include="..\Public\Skill_Manager.h" />
+    <ClInclude Include="..\Public\State_Character_Battle_AirDash.h" />
+    <ClInclude Include="..\Public\State_Character_Battle_Dash.h" />
     <ClInclude Include="..\Public\State_Monster_Damaged_AirStay.h" />
     <ClInclude Include="..\Public\State_Character_Damaged_Bound.h" />
     <ClInclude Include="..\Public\State_Monster_Attack.h" />
@@ -226,6 +230,7 @@
     <ClInclude Include="..\Public\State_Monster_Damaged_Basic.h" />
     <ClInclude Include="..\Public\State_Monster_Damaged_Blow.h" />
     <ClInclude Include="..\Public\State_Monster_Damaged_Bound.h" />
+    <ClInclude Include="..\Public\State_Monster_Defence_Trace.h" />
     <ClInclude Include="..\Public\State_Monster_Idle.h" />
     <ClInclude Include="..\Public\State_Monster_Jump.h" />
     <ClInclude Include="..\Public\State_Monster_Trace.h" />
@@ -251,6 +256,11 @@
     <ClInclude Include="..\Public\Trail.h" />
     <ClInclude Include="..\Public\Level_Train_Boss.h" />
     <ClInclude Include="..\Public\Level_FinalBoss.h" />
+    <ClInclude Include="..\Public\UI_BattleEnd.h" />
+    <ClInclude Include="..\Public\UI_BattleStart.h" />
+    <ClInclude Include="..\Public\UI_Cursor.h" />
+    <ClInclude Include="..\Public\UI_GaugeBar.h" />
+    <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\VIBuffer_Trail.h" />
     <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\UI.h" />
@@ -326,6 +336,8 @@
     <ClCompile Include="..\Private\Monster_Normal_2.cpp" />
     <ClCompile Include="..\Private\Network_Manager.cpp" />
     <ClCompile Include="..\Private\Npc.cpp" />
+    <ClCompile Include="..\Private\Npc_Defence_Zenitsu.cpp" />
+    <ClCompile Include="..\Private\Npc_General_0.cpp" />
     <ClCompile Include="..\Private\Part.cpp" />
     <ClCompile Include="..\Private\Particle.cpp" />
     <ClCompile Include="..\Private\Particle_Manager.cpp" />
@@ -342,11 +354,14 @@
     </ClCompile>
     <ClCompile Include="..\Private\Skill.cpp" />
     <ClCompile Include="..\Private\Skill_Manager.cpp" />
+    <ClCompile Include="..\Private\State_Character_Battle_AirDash.cpp" />
+    <ClCompile Include="..\Private\State_Character_Battle_Dash.cpp" />
     <ClCompile Include="..\Private\State_Monster_Damaged_AirStay.cpp" />
     <ClCompile Include="..\Private\State_Monster_Attack.cpp" />
     <ClCompile Include="..\Private\State_Monster_Damaged_AirBorn.cpp" />
     <ClCompile Include="..\Private\State_Monster_Damaged_Blow.cpp" />
     <ClCompile Include="..\Private\State_Monster_Damaged_Bound.cpp" />
+    <ClCompile Include="..\Private\State_Monster_Defence_Trace.cpp" />
     <ClCompile Include="..\Private\State_Monster_Regen.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Air_Attack.cpp" />
     <ClCompile Include="..\Private\State_Tanjiro_Attack.cpp" />
@@ -382,6 +397,10 @@
     <ClCompile Include="..\Private\Trail.cpp" />
     <ClCompile Include="..\Private\Tree.cpp" />
     <ClCompile Include="..\Private\UI.cpp" />
+    <ClCompile Include="..\Private\UI_BattleEnd.cpp" />
+    <ClCompile Include="..\Private\UI_BattleStart.cpp" />
+    <ClCompile Include="..\Private\UI_Cursor.cpp" />
+    <ClCompile Include="..\Private\UI_GaugeBar.cpp" />
     <ClCompile Include="..\Private\UI_Loading_Anim.cpp" />
     <ClCompile Include="..\Private\UI_Loading_BackGround.cpp" />
     <ClCompile Include="..\Private\UI_Loading_Icon.cpp" />
@@ -389,6 +408,7 @@
     <ClCompile Include="..\Private\UI_Logo_SelectBase.cpp" />
     <ClCompile Include="..\Private\UI_Logo_Title.cpp" />
     <ClCompile Include="..\Private\Sword.cpp" />
+    <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\UI_NextFog.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Trail.cpp" />
     <ClCompile Include="..\Private\Zenitsu.cpp" />

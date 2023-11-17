@@ -66,15 +66,10 @@ public:
 
 public:
 	void Go_Straight(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
-	void Go_Backward(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
-	void Go_Left(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
-	void Go_Right(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
-	void Go_Up(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
-	void Go_Down(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
 	void Go_Dir(_fvector vDir, _float fTimeDelta, class CNavigation* pNavigation = nullptr);
 	void Go_Dir(_fvector vDir, _float fSpeed, _float fTimeDelta, class CNavigation* pNavigation = nullptr);
 
-	void Set_Position(_fvector vPosition, _bool* bMovable, class CNavigation* pNavigation = nullptr);
+	void Set_Position(_vector vPosition, class CNavigation* pNavigation = nullptr, _bool* bMovable = nullptr);
 	void Set_Scale(_fvector vScaleInfo);
 	void Set_Sclae(_float3 vScale);
 	_float3 Get_Scale();
@@ -98,6 +93,7 @@ public:
 
 private:
 	_float4x4				m_WorldMatrix;
+	_float3					m_vPrevSlidingDir = { 1.f, 0.f, 0.f };
 	TRANSFORMDESC			m_TransformDesc;
 
 private:

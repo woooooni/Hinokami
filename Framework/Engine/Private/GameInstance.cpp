@@ -89,6 +89,9 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, _uint iNumLayerType,
 	if (FAILED(m_pTarget_Manager->Ready_Shadow_DSV(*ppDevice, GraphicDesc.iWinSizeX, GraphicDesc.iWinSizeY)))
 		return E_FAIL;
 
+	if (FAILED(m_pFrustum->Initialize()))
+		return E_FAIL;
+
 	
 
 	return S_OK;
@@ -104,9 +107,12 @@ void CGameInstance::Tick(_float fTimeDelta)
   	m_pPipeLine->Tick();
 	m_pFrustum->Tick();
 
+}
+
+void CGameInstance::LateTick(_float fTimeDelta)
+{
 	m_pObject_Manager->LateTick(fTimeDelta);
 	m_pCollision_Manager->LateTick(fTimeDelta);
-
 	m_pLevel_Manager->LateTick(fTimeDelta);
 }
 
@@ -451,16 +457,10 @@ HRESULT CGameInstance::Add_Fonts(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return m_pFont_Manager->Add_Fonts(pDevice, pContext, strFontTag, strFontFilePath);
 }
 
-HRESULT CGameInstance::Render_Fonts(const wstring& strFontTag, const _tchar* strText, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
+HRESULT CGameInstance::Render_Fonts(const wstring& strFontTag, const wstring& strText, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
 {
 	return m_pFont_Manager->Render_Fonts(strFontTag, strText, vPosition, vColor, fAngle, vOrigin, vScale);
 }
-
-HRESULT CGameInstance::Render_Fonts(const wstring& strFontTag, const _tchar* strText, _float3 vPosition, _fvector vColor, _float fAngle, _float3 vOrigin, _float3 vScale)
-{
-	return m_pFont_Manager->Render_Fonts(strFontTag, strText, vPosition, vColor, fAngle, vOrigin, vScale);
-}
-
 
 HRESULT CGameInstance::Add_CollisionGroup(COLLISION_GROUP eCollisionGroup, CGameObject* pGameObject)
 {

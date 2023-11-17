@@ -50,7 +50,7 @@ HRESULT CState_Monster_Trace::Initialize(const list<wstring>& AnimationList)
 void CState_Monster_Trace::Enter_State(void* pArg)
 {
 	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-	list<CGameObject*> Objects = GI->Find_GameObjects(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_CHARACTER);
+	const list<CGameObject*>& Objects = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_CHARACTER);
 	for (auto& pGameObject : Objects)
 	{
 		CTransform* pTargetTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform");
@@ -105,7 +105,7 @@ void CState_Monster_Trace::Tick_State(_float fTimeDelta)
 	}
 
 	m_pTransformCom->LookAt_ForLandObject(vTargetPosition);
-	m_pTransformCom->Go_Dir(vDir, fTimeDelta, m_pStateMachineCom->Get_Owner()->Get_Component<CNavigation>(L"Com_Navigation"));
+	m_pTransformCom->Go_Straight(fTimeDelta, m_pStateMachineCom->Get_Owner()->Get_Component<CNavigation>(L"Com_Navigation"));
 }
 
 void CState_Monster_Trace::Exit_State()

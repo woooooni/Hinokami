@@ -17,6 +17,9 @@
 #include "Monster_Normal_1.h"
 #include "Monster_Normal_2.h"
 
+
+#include "Npc_Defence_Zenitsu.h"
+
 #include "Dummy.h"
 #include "Terrain.h"
 #include <filesystem>
@@ -96,6 +99,11 @@ _int CLoader::Loading()
 	case LEVEL_TRAIN_STATION:
 		hr = Loading_For_Level_Train_Station();
 		break;
+
+	case LEVEL_TRAIN:
+		hr = Loading_For_Level_Train();
+		break;
+
 	case LEVEL_TOOL:
 		hr = Loading_For_Level_Tool();
 		break;
@@ -287,6 +295,112 @@ HRESULT CLoader::Loading_For_Level_Train_Station()
 
 HRESULT CLoader::Loading_For_Level_Train()
 {
+	/* For.Texture */
+	m_strLoading = TEXT("텍스쳐를 로딩 중 입니다.");
+
+
+	/* For.Mesh */
+	m_strLoading = TEXT("메시를 로딩 중 입니다.");
+
+
+	/* For.Shader */
+	m_strLoading = TEXT("셰이더를 로딩 중 입니다.");
+
+
+
+
+
+	m_strLoading = TEXT("객체 원형을 로딩 중 입니다.");
+	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Logo_NextFog"), CUI_NextFog::Create(m_pDevice, m_pContext,
+		{ g_iWinSizeX / 2.f, g_iWinSizeY / 2.f, g_iWinSizeX, g_iWinSizeY }), LAYER_TYPE::LAYER_UI)))
+		return E_FAIL;
+
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
+		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Free_Camera")), LAYER_TYPE::LAYER_CAMERA)))
+		return E_FAIL;
+
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Main"),
+		CCamera_Main::Create(m_pDevice, m_pContext, TEXT("Main_Camera")), LAYER_TYPE::LAYER_CAMERA)))
+		return E_FAIL;
+
+
+	CMonster::MONSTER_STAT tMonsterStat = {};
+	tMonsterStat.fHp = 10.f;
+	tMonsterStat.fStamina = 10.f;
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_NormalMonster_0"),
+		CMonster_Normal_0::Create(m_pDevice, m_pContext, TEXT("NormalMonster0"), tMonsterStat), LAYER_TYPE::LAYER_MONSTER)))
+		return E_FAIL;
+
+
+	tMonsterStat.fHp = 20.f;
+	tMonsterStat.fStamina = 10.f;
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_NormalMonster_1"),
+		CMonster_Normal_1::Create(m_pDevice, m_pContext, TEXT("NormalMonster1"), tMonsterStat), LAYER_TYPE::LAYER_MONSTER)))
+		return E_FAIL;
+
+	tMonsterStat.fHp = 30.f;
+	tMonsterStat.fStamina = 0.f;
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_NormalMonster_2"),
+		CMonster_Normal_2::Create(m_pDevice, m_pContext, TEXT("NormalMonster2"), tMonsterStat), LAYER_TYPE::LAYER_MONSTER)))
+		return E_FAIL;
+
+
+
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Tanjiro"),
+		CTanjiro::Create(m_pDevice, m_pContext, TEXT("Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Npc_Defence_Zenitsu"),
+		CNpc_Defence_Zenitsu::Create(m_pDevice, m_pContext, TEXT("Npc_Defence_Zenitsu")), LAYER_TYPE::LAYER_NPC)))
+		return E_FAIL;
+
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sword_Tanjiro"),
+		CSword::Create(m_pDevice, m_pContext, TEXT("Tanjiro_Sword"), TEXT("Prototype_Component_Model_Sword_Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sweath_Tanjiro"),
+		CSweath::Create(m_pDevice, m_pContext, TEXT("Tanjiro_Sweath"), TEXT("Prototype_Component_Model_Sweath_Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
+
+	m_strLoading = TEXT("모델을 로딩 중 입니다.");
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Weapon/")))
+		return E_FAIL;
+
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Resources/Effect/Model/")))
+		return E_FAIL;
+
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Tanjiro/")))
+		return E_FAIL;
+
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Zenitsu/")))
+		return E_FAIL;
+
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Enemy/Monster/")))
+		return E_FAIL;
+
+	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Map/")))
+	//	return E_FAIL;
+
+	if (FAILED(Loading_Proto_AllObjects(L"../Bin/Export/Map/")))
+		return E_FAIL;
+
+	if (FAILED(Load_Map_Data(m_strFolderName)))
+		return E_FAIL;
+
+	if (FAILED(Load_Navi_Data(m_strFolderName)))
+		return E_FAIL;
+
+	CPool<CMonster_Normal_0>::Ready_Pool(m_pDevice, m_pContext, L"Prototype_GameObject_NormalMonster_0", LAYER_TYPE::LAYER_MONSTER, nullptr, 20);
+	CPool<CMonster_Normal_1>::Ready_Pool(m_pDevice, m_pContext, L"Prototype_GameObject_NormalMonster_1", LAYER_TYPE::LAYER_MONSTER, nullptr, 20);
+	CPool<CMonster_Normal_2>::Ready_Pool(m_pDevice, m_pContext, L"Prototype_GameObject_NormalMonster_2", LAYER_TYPE::LAYER_MONSTER, nullptr, 20);
+
+	m_strLoading = TEXT("로딩 끝.");
+	m_isFinished = true;
+
 	return S_OK;
 }
 
@@ -381,7 +495,8 @@ HRESULT CLoader::Load_Map_Data(const wstring& strMapFileName)
 			|| i == LAYER_TYPE::LAYER_PLAYER
 			|| i == LAYER_TYPE::LAYER_PROJECTILE
 			|| i == LAYER_TYPE::LAYER_EFFECT
-			|| i == LAYER_TYPE::LAYER_TRAIL)
+			|| i == LAYER_TYPE::LAYER_TRAIL
+			|| i == LAYER_TYPE::LAYER_NPC)
 			continue;
 
 		// 2. ObjectCount

@@ -4,6 +4,9 @@
 #include "Camera.h"
 #include "Camera_Main.h"
 #include "Character.h"
+#include "GameObject.h"
+
+
 
 CLevel_Train::CLevel_Train(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -12,6 +15,8 @@ CLevel_Train::CLevel_Train(ID3D11Device * pDevice, ID3D11DeviceContext * pContex
 
 HRESULT CLevel_Train::Initialize()
 {
+	GI->Lock_Mouse();
+
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
@@ -22,6 +27,9 @@ HRESULT CLevel_Train::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_BackGround(LAYER_TYPE::LAYER_BACKGROUND)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Npc(LAYER_TYPE::LAYER_NPC)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Player(LAYER_TYPE::LAYER_PLAYER)))
@@ -44,18 +52,20 @@ HRESULT CLevel_Train::Initialize()
 	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_MOUNTAIN);
 	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_GROUND);
 
-	m_fScrollSpeed = 30.f;
-	m_fLimitScroll = -500.f;
+	m_fScrollSpeed = 50.f;
+	m_fLimitScroll = -1500.f;
 	return S_OK;
 }
 
 HRESULT CLevel_Train::Tick(_float fTimeDelta)
 {
 	m_fAccScroll -= m_fScrollSpeed * fTimeDelta;
-	if (m_fAccScroll >= m_fLimitScroll)
+	if (m_fAccScroll <= m_fLimitScroll)
 		Reset_Scroll();
 
 	Scroll(fTimeDelta);
+
+	
 	
 	return S_OK;
 }
@@ -112,8 +122,6 @@ HRESULT CLevel_Train::Ready_Lights()
 	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;
 
-	;
-
 	return S_OK;
 }
 
@@ -126,7 +134,7 @@ HRESULT CLevel_Train::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
 	CameraDesc.fNear = 0.2f;
-	CameraDesc.fFar = 300.0f;
+	CameraDesc.fFar = 1000.f;
 
 	CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
 	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
@@ -137,7 +145,6 @@ HRESULT CLevel_Train::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	/*if (FAILED(GI->Add_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
 		return E_FAIL;*/
 	
-	GI->Lock_Mouse();
 	
 
 	return S_OK;
@@ -193,31 +200,19 @@ HRESULT CLevel_Train::Ready_Layer_Character(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_Train::Ready_Layer_BackGround(const LAYER_TYPE eLayerType)
 {
+	return S_OK;
+}
+
+HRESULT CLevel_Train::Ready_Layer_Npc(const LAYER_TYPE eLayerType)
+{
+ 	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Defence_Zenitsu"))))
+		return E_FAIL;
 
 	return S_OK;
 }
 
 HRESULT CLevel_Train::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 {
-	/*for (_uint i = 0; i < 10; ++i)
-	{
-		CGameObject* pMonster = nullptr;
-		if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster"), nullptr, &pMonster)))
-			return E_FAIL;
-
-		if (nullptr == pMonster)
-			return E_FAIL;
-
-		CTransform* pTransform = pMonster->Get_Component<CTransform>(L"Com_Transform");
-		if (nullptr == pTransform)
-			return E_FAIL;
-
-		_vector vPosition = XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f);
-		pTransform->Set_State(CTransform::STATE_POSITION, vPosition);
-	}*/
-	
-	
-
 	return S_OK;
 }
 
@@ -235,14 +230,18 @@ HRESULT CLevel_Train::Ready_Layer_Effect(const LAYER_TYPE eLayerType)
 	return S_OK;
 }
 
+
 void CLevel_Train::Reset_Scroll()
 {
 	for (auto& Layer : m_ScrollObjectLayer)
 	{
-		list<class CGameObject*> GameObjects = GI->Find_GameObjects(GI->Get_CurrentLevel(), Layer);
+		const list<class CGameObject*>& GameObjects = GI->Find_GameObjects(GI->Get_CurrentLevel(), Layer);
 
 		for (auto& Object : GameObjects)
 		{
+			if (Object->Get_ObjectTag().find(L"Locomotive") != wstring::npos)
+				continue;
+
 			CTransform* pTransform = Object->Get_Component<CTransform>(L"Com_Transform");
 			if (nullptr == pTransform)
 				continue;
@@ -260,14 +259,18 @@ void CLevel_Train::Scroll(_float fTimeDelta)
 {
 	for (auto& Layer : m_ScrollObjectLayer)
 	{
-		list<class CGameObject*> GameObjects = GI->Find_GameObjects(GI->Get_CurrentLevel(), Layer);
+		const list<class CGameObject*>& GameObjects = GI->Find_GameObjects(GI->Get_CurrentLevel(), Layer);
 
 		for (auto& Object : GameObjects)
 		{
+			if (Object->Get_ObjectTag().find(L"Locomotive") != wstring::npos)
+				continue;
+
 			CTransform* pTransform = Object->Get_Component<CTransform>(L"Com_Transform");
 			if (nullptr == pTransform)
 				continue;
 
+			
 			_vector vPosition = pTransform->Get_State(CTransform::STATE::STATE_POSITION);
 			vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - (m_fScrollSpeed * fTimeDelta));
 			pTransform->Set_State(CTransform::STATE::STATE_POSITION, vPosition);

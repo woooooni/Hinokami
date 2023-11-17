@@ -274,6 +274,45 @@
     <Filter Include="02.GameObjects\11. NPC">
       <UniqueIdentifier>{081ebe78-8a89-466a-a2d0-920724fd4e65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03. Character\00. State\Dash">
+      <UniqueIdentifier>{0b91a5c1-0d3c-4381-bca9-e9e37961add9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\State\Defence">
+      <UniqueIdentifier>{7e532af3-b451-4742-b2b7-f57d12a45754}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\03. Cursor">
+      <UniqueIdentifier>{dac29e7b-48dc-42ca-8f43-d60788322eed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\04. Gauge_Bar">
+      <UniqueIdentifier>{5ad32abc-5135-4aed-8b59-57c44ec84021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\05. Combo">
+      <UniqueIdentifier>{615008f1-99a6-448d-87b7-bee9f7d265f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\01. Defence_Zenitsu">
+      <UniqueIdentifier>{742de20c-0212-46d9-a3ac-a81a00d98dd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. General_Person">
+      <UniqueIdentifier>{2f79fcca-670d-424e-a261-c98dfef3175e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. General_Person\00">
+      <UniqueIdentifier>{2d481f1a-199e-459f-b002-43255ece3ed0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. General_Person\01">
+      <UniqueIdentifier>{cf3ef552-5332-4580-aaa0-b95207949d00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. General_Person\02">
+      <UniqueIdentifier>{6c949536-7cf6-49a7-a54d-061b6d56cf94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\00. Common\Battle">
+      <UniqueIdentifier>{bd089743-ee31-4439-a20b-696489d67146}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\00. Common\Battle\Start">
+      <UniqueIdentifier>{4d8fb955-ca27-4f51-a7a0-be72bf463455}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\00. Common\Battle\End">
+      <UniqueIdentifier>{bc059024-a99c-4104-9d05-642991f30c1d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -540,12 +579,6 @@
     <ClInclude Include="..\Public\State_Character_Battle_Idle.h">
       <Filter>02.GameObjects\03. Character\00. State\Idle</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Monster_Normal_1.h">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster1</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Monster_Normal_2.h">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster2</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Skill_Manager.h">
       <Filter>96. Manager\Skill</Filter>
     </ClInclude>
@@ -563,6 +596,42 @@
     </ClInclude>
     <ClInclude Include="..\Public\Npc.h">
       <Filter>02.GameObjects\11. NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Character_Battle_AirDash.h">
+      <Filter>02.GameObjects\03. Character\00. State\Dash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Character_Battle_Dash.h">
+      <Filter>02.GameObjects\03. Character\00. State\Dash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Monster_Defence_Trace.h">
+      <Filter>02.GameObjects\05. Monster\State\Defence</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Cursor.h">
+      <Filter>02.GameObjects\98. UI\03. Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Manager.h">
+      <Filter>02.GameObjects\98. UI\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_GaugeBar.h">
+      <Filter>02.GameObjects\98. UI\04. Gauge_Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Npc_General_0.h">
+      <Filter>02.GameObjects\11. NPC\00. General_Person\00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Normal_1.h">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Normal_2.h">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Npc_Defence_Zenitsu.h">
+      <Filter>02.GameObjects\11. NPC\01. Defence_Zenitsu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_BattleStart.h">
+      <Filter>02.GameObjects\98. UI\00. Common\Battle\Start</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_BattleEnd.h">
+      <Filter>02.GameObjects\98. UI\00. Common\Battle\End</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -815,12 +884,6 @@
     <ClCompile Include="..\Private\State_Character_Battle_Idle.cpp">
       <Filter>02.GameObjects\03. Character\00. State\Idle</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Monster_Normal_1.cpp">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster1</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Monster_Normal_2.cpp">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster2</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Skill_Manager.cpp">
       <Filter>96. Manager\Skill</Filter>
     </ClCompile>
@@ -838,6 +901,42 @@
     </ClCompile>
     <ClCompile Include="..\Private\Npc.cpp">
       <Filter>02.GameObjects\11. NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Character_Battle_AirDash.cpp">
+      <Filter>02.GameObjects\03. Character\00. State\Dash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Character_Battle_Dash.cpp">
+      <Filter>02.GameObjects\03. Character\00. State\Dash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Monster_Defence_Trace.cpp">
+      <Filter>02.GameObjects\05. Monster\State\Defence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Cursor.cpp">
+      <Filter>02.GameObjects\98. UI\03. Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Manager.cpp">
+      <Filter>02.GameObjects\98. UI\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_GaugeBar.cpp">
+      <Filter>02.GameObjects\98. UI\04. Gauge_Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Npc_General_0.cpp">
+      <Filter>02.GameObjects\11. NPC\00. General_Person\00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Normal_1.cpp">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Normal_2.cpp">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Npc_Defence_Zenitsu.cpp">
+      <Filter>02.GameObjects\11. NPC\01. Defence_Zenitsu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_BattleEnd.cpp">
+      <Filter>02.GameObjects\98. UI\00. Common\Battle\End</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_BattleStart.cpp">
+      <Filter>02.GameObjects\98. UI\00. Common\Battle\Start</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

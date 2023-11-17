@@ -60,8 +60,6 @@ HRESULT CUI_Logo_SelectBase::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-
-
 	m_pShaderCom->Begin(0);
 
 	m_pVIBufferCom->Render();
@@ -69,12 +67,12 @@ HRESULT CUI_Logo_SelectBase::Render()
 	if (m_eMouseState == CUI::MOUSE_END)
 	{
 		_float2 vFontPosition = _float2(m_tInfo.fX - 50.f, m_tInfo.fY - 10.f);
-		GI->Render_Fonts(L"Maple", m_strText.c_str(), vFontPosition, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+		GI->Render_Fonts(L"Basic", m_strText, vFontPosition, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	}
 	else
 	{
 		_float2 vFontPosition = _float2(m_tInfo.fX - 50.f, m_tInfo.fY - 10.f);
-		GI->Render_Fonts(L"Maple", m_strText.c_str(), vFontPosition, XMVectorSet(1.f, 1.f, 1.f, 1.f));
+		GI->Render_Fonts(L"Basic", m_strText, vFontPosition, XMVectorSet(1.f, 1.f, 1.f, 1.f));
 	}
 	
 
@@ -92,14 +90,14 @@ void CUI_Logo_SelectBase::On_Mouse(_float fTimeDelta)
 {
 	if (KEY_TAP(KEY::LBTN))
 	{
-		if (m_strText == L"GameStart")
+		if (m_strText == L"게임시작")
 		{
 			CUI_NextFog::NEXT_INFO NextInfo;
 			NextInfo.eNextLevel = LEVELID::LEVEL_TRAIN_STATION;
 			NextInfo.strFolderName = "Train_Station";
 			GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", &NextInfo);
 		}
-		else if (m_strText == L"Tool")
+		else if (m_strText == L"툴")
 		{
 			CUI_NextFog::NEXT_INFO NextInfo;
 			NextInfo.eNextLevel = LEVELID::LEVEL_TOOL;
@@ -107,11 +105,11 @@ void CUI_Logo_SelectBase::On_Mouse(_float fTimeDelta)
 
 			GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", &NextInfo);
 		}
-		else if (m_strText == L"Setting")
+		else if (m_strText == L"설정")
 		{
 			// GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", nullptr);
 		}
-		else if (m_strText == L"Exit")
+		else if (m_strText == L"나가기")
 		{
 			// GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", nullptr);
 		}
@@ -131,7 +129,7 @@ HRESULT CUI_Logo_SelectBase::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_UI"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 

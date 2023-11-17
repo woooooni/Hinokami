@@ -69,11 +69,13 @@ void CState_Character_Battle_Jump::Enter_State(void* pArg)
 	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.1f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
-	m_pRigidBody->Add_Velocity(XMVector3Normalize(vJumpDir), 10.f);
+	m_pRigidBody->Add_Velocity(XMVector3Normalize(vJumpDir), 8.f);
 }
 
 void CState_Character_Battle_Jump::Tick_State(_float fTimeDelta)
 {
+	Input();
+
 	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[0]) || m_pModelCom->Is_Animation_Finished(m_AnimationIndices[1]))
 	{
 		m_iCurrAnimIndex++;
@@ -88,7 +90,25 @@ void CState_Character_Battle_Jump::Tick_State(_float fTimeDelta)
 
 void CState_Character_Battle_Jump::Exit_State()
 {
+	m_iCurrAnimIndex = 0;
+}
 
+void CState_Character_Battle_Jump::Input()
+{
+	if (KEY_TAP(KEY::RBTN) && KEY_HOLD(KEY::A))
+	{
+		m_pStateMachineCom->Change_State(CCharacter::BATTLE_AIRDASH);
+	}
+
+	if (KEY_TAP(KEY::RBTN) && KEY_HOLD(KEY::D))
+	{
+		m_pStateMachineCom->Change_State(CCharacter::BATTLE_AIRDASH);
+	}
+
+	if (KEY_HOLD(KEY::LBTN))
+	{
+		m_pStateMachineCom->Change_State(CCharacter::AIR_ATTACK);
+	}
 }
 
 CState_Character_Battle_Jump* CState_Character_Battle_Jump::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)

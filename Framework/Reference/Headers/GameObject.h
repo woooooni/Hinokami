@@ -31,6 +31,10 @@ public:
 	virtual HRESULT Render_Instance_Shadow(class CShader* pInstancingShader, class CVIBuffer_Instancing* pInstancingBuffer, const vector<_float4x4>& WorldMatrices) { return S_OK; }
 
 public:
+	virtual void Enter_Scene() { };
+	virtual void Return_Pool() { };
+
+public:
 	virtual void Collision_Enter(const COLLISION_INFO& tInfo) {};
 	virtual void Collision_Continue(const COLLISION_INFO& tInfo) {};
 	virtual void Collision_Exit(const COLLISION_INFO& tInfo) {};

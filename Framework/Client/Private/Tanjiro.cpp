@@ -21,7 +21,10 @@
 #include "State_Character_Battle_Idle.h"
 #include "State_Character_Battle_Move.h"
 #include "State_Character_Battle_Jump.h"
+#include "State_Character_Battle_Dash.h"
+#include "State_Character_Battle_AirDash.h"
 #include "State_Character_Dead.h"
+
 
 #include "State_Character_Damaged_Basic.h"
 #include "State_Character_Damaged_Blow.h"
@@ -80,6 +83,7 @@ void CTanjiro::Tick(_float fTimeDelta)
 	{
 		CParticle_Manager::GetInstance()->Generate_Particle(L"Kyojuro_Attack_Particle", m_pTransformCom->Get_WorldMatrix());
 	}
+
 	m_pStateCom->Tick_State(fTimeDelta);
 	m_pRigidBodyCom->Tick_RigidBody(fTimeDelta);
 	__super::Tick(fTimeDelta);
@@ -88,30 +92,12 @@ void CTanjiro::Tick(_float fTimeDelta)
 void CTanjiro::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
-	GI->Add_CollisionGroup(COLLISION_GROUP::CHARACTER, this);
 }
 
 HRESULT CTanjiro::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
-
-	m_pNavigationCom->Render();
-
-	
-	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	wstring strDebugPosition = L"Position X : "; 
-	strDebugPosition += to_wstring(XMVectorGetX(vPosition));
-
-	strDebugPosition += L"\n";
-	strDebugPosition += L"Position Y : ";
-	strDebugPosition += to_wstring(XMVectorGetY(vPosition));
-
-	strDebugPosition += L"\n";
-	strDebugPosition += L"Position Z : ";
-	strDebugPosition += to_wstring(XMVectorGetZ(vPosition));
-
-	GI->Render_Fonts(L"Batang", strDebugPosition.c_str(), _float2(g_iWinSizeX / 2.f, 0.f));
 
 	return S_OK;
 }
@@ -143,8 +129,6 @@ void CTanjiro::On_Damaged(CGameObject* pAttacker)
 {
 	if (m_bInfinite)
 		return;
-
-	
 }
 
 
@@ -181,14 +165,14 @@ HRESULT CTanjiro::Ready_Components()
 	CNavigation::NAVIGATION_DESC NavigationDesc;
 	ZeroMemory(&NavigationDesc, sizeof NavigationDesc);
 
-	NavigationDesc.vStartWorldPosition = _float3(0.f, 3.5f, 32.f);
+	NavigationDesc.vStartWorldPosition = _float4(0.f, 3.5f, 32.f, 1.f);
 	NavigationDesc.bInitialize_Index = true;
 
 	/* For.Com_Navigation */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_pNavigationCom, &NavigationDesc)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_pNavigationCom->Get_NaviDesc().vStartWorldPosition), 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_pNavigationCom->Get_NaviDesc().vStartWorldPosition));
 
 	CRigidBody::RIGID_BODY_DESC RigidDesc;
 	ZeroMemory(&RigidDesc, sizeof RigidDesc);
@@ -251,6 +235,33 @@ HRESULT CTanjiro::Ready_States()
 			m_pContext,
 			m_pStateCom,
 			strAnimationName));
+
+
+	strAnimationName.clear();
+	// Left
+	// Right
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseStepL01");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseStepL02");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseStepR01");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseStepR02");
+
+	m_pStateCom->Add_State(CCharacter::BATTLE_DASH,
+		CState_Character_Battle_Dash::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+	// Left
+	// Right
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseStepAL01");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseStepAR01");
+	m_pStateCom->Add_State(CCharacter::BATTLE_AIRDASH,
+		CState_Character_Battle_AirDash::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+	
 
 
 

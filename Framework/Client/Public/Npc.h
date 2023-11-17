@@ -49,10 +49,11 @@ public:
 	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Continue(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Exit(const COLLISION_INFO& tInfo) override;
+	virtual void Talk() {};
 
 protected:
-	virtual HRESULT Ready_Components() PURE;
-	virtual HRESULT Ready_States() PURE;
+	virtual HRESULT Ready_Components()	 PURE;
+	virtual HRESULT Ready_States()		PURE;
 	virtual HRESULT Ready_Colliders() PURE;
 
 

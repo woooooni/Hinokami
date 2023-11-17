@@ -19,6 +19,10 @@ public:
 	virtual HRESULT Render() override;
 
 public:
+	virtual void Enter_Scene() override;
+	virtual void Return_Pool() override;
+
+public:
 	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Continue(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Exit(const COLLISION_INFO& tInfo) override;

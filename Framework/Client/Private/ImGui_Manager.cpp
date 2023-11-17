@@ -66,7 +66,7 @@ HRESULT CImGui_Manager::Reserve_Manager(HWND hWnd, ID3D11Device* pDevice, ID3D11
     }
 
     style.Alpha = m_fWindowAlpha;
-    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\batang.ttc", 12.f, NULL, io.Fonts->GetGlyphRangesKorean());
+    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Basic.ttc", 12.f, NULL, io.Fonts->GetGlyphRangesKorean());
 
     ImGui::StyleColorsDark();
 
@@ -1785,7 +1785,8 @@ HRESULT CImGui_Manager::Load_Map_Data(const wstring& strMapFileName)
             || i == LAYER_TYPE::LAYER_PLAYER
             || i == LAYER_TYPE::LAYER_PROJECTILE
             || i == LAYER_TYPE::LAYER_EFFECT
-            || i == LAYER_TYPE::LAYER_TRAIL)
+            || i == LAYER_TYPE::LAYER_TRAIL
+            || i == LAYER_TYPE::LAYER_NPC)
             continue;
 
         GI->Clear_Layer(LEVEL_TOOL, i);
@@ -1911,7 +1912,8 @@ HRESULT CImGui_Manager::Save_Map_Data(const wstring& strMapFileName)
             || i == LAYER_TYPE::LAYER_PLAYER
             || i == LAYER_TYPE::LAYER_PROJECTILE
             || i == LAYER_TYPE::LAYER_EFFECT
-            || i == LAYER_TYPE::LAYER_TRAIL)
+            || i == LAYER_TYPE::LAYER_TRAIL
+            || i == LAYER_TYPE::LAYER_NPC)
             continue;
 
         // 2. ObjectCount

@@ -19,6 +19,7 @@
 #include "State_Monster_Trace.h"
 #include "State_Monster_Regen.h"
 #include "State_Monter_Dead.h"
+#include "State_Monster_Defence_Trace.h"
 
 USING(Client)
 CMonster_Normal_2::CMonster_Normal_2(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const MONSTER_STAT& tStat)
@@ -69,6 +70,9 @@ void CMonster_Normal_2::Tick(_float fTimeDelta)
 	m_pStateCom->Tick_State(fTimeDelta);
 	m_pRigidBodyCom->Tick_RigidBody(fTimeDelta);
 	__super::Tick(fTimeDelta);
+
+	if (m_bDead)
+		CPool<CMonster_Normal_2>::Return_Obj(this);
 }
 
 void CMonster_Normal_2::LateTick(_float fTimeDelta)
@@ -85,6 +89,14 @@ HRESULT CMonster_Normal_2::Render()
 	m_pNavigationCom->Render();
 
 	return S_OK;
+}
+
+void CMonster_Normal_2::Enter_Scene()
+{
+}
+
+void CMonster_Normal_2::Return_Pool()
+{
 }
 
 void CMonster_Normal_2::Collision_Enter(const COLLISION_INFO& tInfo)
@@ -116,6 +128,7 @@ void CMonster_Normal_2::On_Damaged(CGameObject* pAttacker, _uint eColliderDamage
 	if (m_tStat.fHp <= 0.f)
 	{
 		m_bReserveDead = true;
+		m_fDissolveWeight = 0.f;
 		m_pStateCom->Change_State(MONSTER_STATE::DIE);
 		return;
 	}
@@ -187,7 +200,7 @@ HRESULT CMonster_Normal_2::Ready_Components()
 	CNavigation::NAVIGATION_DESC NavigationDesc;
 	ZeroMemory(&NavigationDesc, sizeof NavigationDesc);
 
-	XMStoreFloat3(&NavigationDesc.vStartWorldPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	XMStoreFloat4(&NavigationDesc.vStartWorldPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	NavigationDesc.bInitialize_Index = true;
 
 	/* For.Com_Navigation */
@@ -195,7 +208,7 @@ HRESULT CMonster_Normal_2::Ready_Components()
 		return E_FAIL;
 
 	
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&m_pNavigationCom->Get_NaviDesc().vStartWorldPosition), 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat4(&m_pNavigationCom->Get_NaviDesc().vStartWorldPosition), 1.f));
 
 	CRigidBody::RIGID_BODY_DESC RigidDesc;
 	ZeroMemory(&RigidDesc, sizeof RigidDesc);
@@ -223,6 +236,10 @@ HRESULT CMonster_Normal_2::Ready_States()
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_E0001_V03_C00.ao|A_E0001_V03_C00_BaseRun01_1");
 	m_pStateCom->Add_State(CMonster::MONSTER_STATE::TRACE, CState_Monster_Trace::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_E0001_V03_C00.ao|A_E0001_V03_C00_BaseRun01_1");
+	m_pStateCom->Add_State(CMonster::MONSTER_STATE::DEFENCE_TRACE, CState_Monster_Defence_Trace::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 
 	strAnimationName.clear();

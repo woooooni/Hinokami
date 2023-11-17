@@ -112,7 +112,7 @@ HRESULT CZenitsu::Ready_Components()
 	CNavigation::NAVIGATION_DESC NavigationDesc;
 	ZeroMemory(&NavigationDesc, sizeof NavigationDesc);
 
-	XMStoreFloat3(&NavigationDesc.vStartWorldPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	XMStoreFloat4(&NavigationDesc.vStartWorldPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	NavigationDesc.bInitialize_Index = true;
 
 	/* For.Com_Navigation */

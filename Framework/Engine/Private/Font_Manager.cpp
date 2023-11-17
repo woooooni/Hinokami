@@ -21,7 +21,7 @@ HRESULT CFont_Manager::Add_Fonts(ID3D11Device * pDevice, ID3D11DeviceContext * p
 	return S_OK;
 }
 
-HRESULT CFont_Manager::Render_Fonts(const wstring& strFontTag, const _tchar* strText, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
+HRESULT CFont_Manager::Render_Fonts(const wstring& strFontTag, const wstring& strText, _float2 vPosition, _fvector vColor, _float fAngle, _float2 vOrigin, _float2 vScale)
 {
 	CCustomFont*		pFont = Find_Fonts(strFontTag);
 
@@ -31,15 +31,6 @@ HRESULT CFont_Manager::Render_Fonts(const wstring& strFontTag, const _tchar* str
 	return pFont->Render(strText, vPosition, vColor, fAngle, vOrigin, vScale);
 }
 
-HRESULT CFont_Manager::Render_Fonts(const wstring& strFontTag, const _tchar* strText, _float3 vPosition, _fvector vColor, _float fAngle, _float3 vOrigin, _float3 vScale)
-{
-	CCustomFont* pFont = Find_Fonts(strFontTag);
-
-	if (nullptr == pFont)
-		return E_FAIL;
-
-	return pFont->Render(strText, vPosition, vColor, fAngle, vOrigin, vScale);
-}
 
 CCustomFont * CFont_Manager::Find_Fonts(const wstring& strFontTag)
 {

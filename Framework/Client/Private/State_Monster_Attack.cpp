@@ -58,7 +58,7 @@ void CState_Monster_Attack::Tick_State(_float fTimeDelta)
 	vPosition += vLook * 1.f;
 
 	_bool bMovable = false;
-	m_pTransformCom->Set_Position(vLook, &bMovable, m_pNavigationCom);
+	m_pTransformCom->Set_Position(vLook, m_pNavigationCom, &bMovable);
 
 	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[m_iRandomIndex]))
 	{

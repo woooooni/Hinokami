@@ -27,6 +27,7 @@ public:
 		REGEN,
 		IDLE, 
 		TRACE,  
+		DEFENCE_TRACE,
 		JUMP,		
 		ATTACK,
 		SKILL,

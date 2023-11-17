@@ -46,27 +46,27 @@ void CCamera_Free::Tick(_float fTimeDelta)
 
 		if (KEY_HOLD(KEY::S))
 		{
-			m_pTransformCom->Go_Backward(fTimeDelta * 10.f);
+			m_pTransformCom->Go_Straight(fTimeDelta * -10.f);
 		}
 
 		if (KEY_HOLD(KEY::A))
 		{
-			m_pTransformCom->Go_Left(fTimeDelta * 10.f);
+			m_pTransformCom->Go_Dir(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT)), fTimeDelta * -10.f);
 		}
 
 		if (KEY_HOLD(KEY::D))
 		{
-			m_pTransformCom->Go_Right(fTimeDelta * 10.f);
+			m_pTransformCom->Go_Dir(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT)), fTimeDelta * 10.f);
 		}
 
 		if (KEY_HOLD(KEY::Q))
 		{
-			m_pTransformCom->Go_Up(fTimeDelta * 10.f);
+			m_pTransformCom->Go_Dir(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * 10.f);
 		}
 
 		if (KEY_HOLD(KEY::E))
 		{
-			m_pTransformCom->Go_Down(fTimeDelta * 10.f);
+			m_pTransformCom->Go_Dir(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -10.f);
 		}
 
 		if (KEY_TAP(KEY::R))

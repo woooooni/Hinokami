@@ -28,9 +28,12 @@ private:
 	HRESULT Ready_Layer_Player(const LAYER_TYPE eLayerType);
 	HRESULT Ready_Layer_Character(const LAYER_TYPE eLayerType);
 	HRESULT Ready_Layer_BackGround(const LAYER_TYPE eLayerType);
+	HRESULT Ready_Layer_Npc(const LAYER_TYPE eLayerType);
 	HRESULT Ready_Layer_Monster(const LAYER_TYPE eLayerType);
 	HRESULT Ready_Layer_UI(const LAYER_TYPE eLayerType);
 	HRESULT Ready_Layer_Effect(const LAYER_TYPE eLayerType);
+
+
 
 private:
 	list<LAYER_TYPE> m_ScrollObjectLayer;

@@ -27,6 +27,9 @@ public:
 	virtual void Exit_State() override;
 
 private:
+	void Input();
+
+private:
 	class CRigidBody* m_pRigidBody = nullptr;
 
 public:

@@ -185,7 +185,7 @@ HRESULT CModel::Initialize(void* pArg)
 	m_Animations = Animations;
 
 
-
+	m_Matrices.reserve(m_HierarchyNodes.size());
 	return S_OK;
 }
 
@@ -196,6 +196,7 @@ HRESULT CModel::Initialize_Bin(void* pArg)
 		_uint		iNumMeshes = 0;
 
 		vector<CMesh*>		MeshContainers;
+		MeshContainers.reserve(m_Meshes.size());
 
 		for (auto& pPrototype : m_Meshes)
 		{
@@ -220,6 +221,7 @@ HRESULT CModel::Initialize_Bin(void* pArg)
 	}
 
 	vector<CAnimation*>		Animations;
+	Animations.reserve(m_Animations.size());
 
 	for (auto& pPrototype : m_Animations)
 	{
@@ -236,6 +238,7 @@ HRESULT CModel::Initialize_Bin(void* pArg)
 
 	m_Animations = Animations;
 
+	m_Matrices.reserve(m_HierarchyNodes.size());
 	return S_OK;
 }
 

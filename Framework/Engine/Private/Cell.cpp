@@ -122,7 +122,7 @@ _bool CCell::Compare_Points(const _float3 * pSourPoint, const _float3 * pDestPoi
 	return false;
 }
 
-_bool CCell::isOut(_fvector vWorldPosition, _fmatrix WorldMatrix, _int* pNeighborIndex, __out _vector* pOutLine)
+_bool CCell::isOut(_fvector vWorldPosition, _fmatrix WorldMatrix, _int* pNeighborIndex, _vector vLook, __out _vector* pSliding)
 {
 	for (size_t i = 0; i < LINE_END; i++)
 	{
@@ -130,12 +130,20 @@ _bool CCell::isOut(_fvector vWorldPosition, _fmatrix WorldMatrix, _int* pNeighbo
 		_vector		vDest = XMVector3Normalize(XMLoadFloat3(&m_vNormals[i]));
 
 		_float fRadian = XMVectorGetX(XMVector3Dot(vSour, vDest));
-		if (0.001f < fRadian)
+		if (0.f < fRadian)
 		{
 			*pNeighborIndex = m_iNeighborIndices[i];
 
-			if (nullptr != pOutLine)
-				*pOutLine = vDest;
+			if (nullptr != pSliding)
+			{
+				_vector vSliding = XMVector3Normalize(XMVectorSet(m_vNormals[i].z, 0.f, m_vNormals[i].x * -1.f, 0.f));	
+				if(XMVectorGetX(XMVector3Dot(vSliding, vLook)) >= XMConvertToRadians(0.f) && XMVectorGetX(XMVector3Dot(vSliding, vLook)) <= XMConvertToRadians(90.f))
+					*pSliding = vSliding;
+				else
+					*pSliding = -1.f * vSliding;
+					
+			}
+				
 
 			return true;
 		}
@@ -216,14 +224,6 @@ HRESULT CCell::Render(CShader* pShader)
 		if (FAILED(pShader->Bind_RawValue("g_fHeight", &fHeight, sizeof(_float))))
 			return E_FAIL;
 	}
-
-	//
-	//_float3 vWeightPos = _float3((m_vPoints_InWorld[POINT_A].x + m_vPoints_InWorld[POINT_B].x + m_vPoints_InWorld[POINT_C].x) / 3.f,
-	//	(m_vPoints_InWorld[POINT_A].y + m_vPoints_InWorld[POINT_B].y + m_vPoints_InWorld[POINT_C].y) / 3.f,
-	//	(m_vPoints_InWorld[POINT_A].z + m_vPoints_InWorld[POINT_B].z + m_vPoints_InWorld[POINT_C].z) / 3.f);
-	//vWeightPos.y += 1.f;
-
-	//GI->Render_Fonts(L"Batang", to_wstring(m_iIndex).c_str(), vWeightPos);
 
 	pShader->Begin(0);
 	m_pVIBuffer->Render();
