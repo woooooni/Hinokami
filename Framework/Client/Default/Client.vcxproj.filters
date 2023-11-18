@@ -187,9 +187,6 @@
     <Filter Include="02.GameObjects\05. Monster\State\Damaged">
       <UniqueIdentifier>{47103a82-df60-46c6-81cc-6b6516c23676}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\05. Monster\State\Attack">
-      <UniqueIdentifier>{a0589821-2884-4d1d-a44d-629da37cc91d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\05. Monster\State\Dead">
       <UniqueIdentifier>{eb1d777f-6d63-49e0-9da8-4b2ec19a5824}</UniqueIdentifier>
     </Filter>
@@ -312,6 +309,15 @@
     </Filter>
     <Filter Include="02.GameObjects\98. UI\00. Common\Battle\End">
       <UniqueIdentifier>{bc059024-a99c-4104-9d05-642991f30c1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Normal_Monster0\State">
+      <UniqueIdentifier>{a0589821-2884-4d1d-a44d-629da37cc91d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Normal_Monster1\State">
+      <UniqueIdentifier>{83f51572-b99b-4b4e-af43-c04affc166e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Normal_Monster2\State">
+      <UniqueIdentifier>{5eb3fb3b-faf9-4c86-a6e0-5915e7ca555a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -507,8 +513,8 @@
     <ClInclude Include="..\Public\State_Monster_Damaged_Basic.h">
       <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_Monster_Attack.h">
-      <Filter>02.GameObjects\05. Monster\State\Attack</Filter>
+    <ClInclude Include="..\Public\State_NormalMonster0_Attack.h">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster0\State</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_Monter_Dead.h">
       <Filter>02.GameObjects\05. Monster\State\Dead</Filter>
@@ -632,6 +638,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_BattleEnd.h">
       <Filter>02.GameObjects\98. UI\00. Common\Battle\End</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_NormalMonster1_Attack.h">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster1\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_NormalMonster2_Attack.h">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster2\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Character_Damaged_AirStay.h">
+      <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -815,8 +830,8 @@
     <ClCompile Include="..\Private\State_Monster_Damaged_Basic.cpp">
       <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\State_Monster_Attack.cpp">
-      <Filter>02.GameObjects\05. Monster\State\Attack</Filter>
+    <ClCompile Include="..\Private\State_NormalMonster0_Attack.cpp">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster0\State</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Monter_Dead.cpp">
       <Filter>02.GameObjects\05. Monster\State\Dead</Filter>
@@ -937,6 +952,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_BattleStart.cpp">
       <Filter>02.GameObjects\98. UI\00. Common\Battle\Start</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_NormalMonster1_Attack.cpp">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster1\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_NormalMonster2_Attack.cpp">
+      <Filter>02.GameObjects\05. Monster\Normal_Monster2\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Character_Damaged_AirStay.cpp">
+      <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

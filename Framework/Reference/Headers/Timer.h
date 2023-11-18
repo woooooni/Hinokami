@@ -14,6 +14,12 @@ private:
 public:
 	HRESULT	Ready_Timer();
 	_float	Compute_TimeDelta();
+
+public:
+	void Set_TimeScale(_float fTimeScale) { m_fTimeScale = fTimeScale; }
+	_float Get_TimeScale() { return m_fTimeScale; }
+
+	_float Get_TimeDelta() { return m_fTimeDelta; }
 	
 private:
 	LARGE_INTEGER			m_FrameTime;
@@ -22,6 +28,8 @@ private:
 	LARGE_INTEGER			m_CpuTick;
 
 	_float					m_fTimeDelta;
+
+	_float					m_fTimeScale = 1.f;
 
 public:
 	static CTimer*		Create(void);

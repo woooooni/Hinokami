@@ -8,11 +8,11 @@ END
 
 BEGIN(Client)
 
-class CState_Monster_Damaged_Blow final : public CState
+class CState_Character_Damaged_AirStay final : public CState
 {
 private:
-	CState_Monster_Damaged_Blow(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
-	virtual ~CState_Monster_Damaged_Blow() = default;
+	CState_Character_Damaged_AirStay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
+	virtual ~CState_Character_Damaged_AirStay() = default;
 
 public:
 	virtual HRESULT Initialize(const list<wstring>& AnimationList) override;
@@ -23,14 +23,15 @@ public:
 	virtual void Exit_State() override;
 
 private:
-	class CMonster* m_pOwnerMonster = nullptr;
+	class CCharacter* m_pOwnerCharacter = nullptr;
 
 	_bool m_bFirstGround = false;
 	_float m_fAccRecovery = 0.f;
 	_float m_fRecoveryTime = 3.f;
+	
 
 public:
-	static CState_Monster_Damaged_Blow* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
+	static CState_Character_Damaged_AirStay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;
 };
 

@@ -27,7 +27,9 @@ public:
 	virtual void Exit_State() override;
 
 private:
-	class CRigidBody* m_pRigidBody = nullptr;
+	class CCharacter* m_pCharacter = nullptr;
+	class CSword* m_pSword = nullptr;
+
 
 public:
 	static CState_Tanjiro_Basic_Jump* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

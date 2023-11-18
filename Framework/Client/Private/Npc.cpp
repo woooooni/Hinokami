@@ -40,6 +40,7 @@ HRESULT CNpc::Initialize(void* pArg)
 
 void CNpc::Tick(_float fTimeDelta)
 {
+	GI->Add_CollisionGroup(COLLISION_GROUP::NPC, this);
 	if (m_bReserveDead)
 	{
 		m_fDissolveWeight += 0.2f * fTimeDelta;
@@ -58,7 +59,6 @@ void CNpc::LateTick(_float fTimeDelta)
 	__super::LateTick(fTimeDelta);
 	m_pRendererCom->Add_Debug(m_pNavigationCom);
 
-	GI->Add_CollisionGroup(COLLISION_GROUP::NPC, this);
 	if (true == GI->Intersect_Frustum_World(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f))
 	{
 		std::async(&CModel::Play_Animation, m_pModelCom, m_pTransformCom, fTimeDelta);

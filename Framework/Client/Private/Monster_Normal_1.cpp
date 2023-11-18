@@ -8,7 +8,7 @@
 #include "Particle_Manager.h"
 
 
-#include "State_Monster_Attack.h"
+#include "State_NormalMonster1_Attack.h"
 #include "State_Monster_Damaged_Basic.h"
 #include "State_Monster_Damaged_AirBorn.h"
 #include "State_Monster_Damaged_AirStay.h"
@@ -67,19 +67,25 @@ HRESULT CMonster_Normal_1::Initialize(void* pArg)
 
 void CMonster_Normal_1::Tick(_float fTimeDelta)
 {
+	if (m_bDead)
+	{
+		CPool<CMonster_Normal_1>::Return_Obj(this);
+		return;
+	}
+		
+	GI->Add_CollisionGroup(COLLISION_GROUP::MONSTER, this);
+
 	m_pStateCom->Tick_State(fTimeDelta);
-	m_pRigidBodyCom->Tick_RigidBody(fTimeDelta);
-	
 	__super::Tick(fTimeDelta);
 
-	if (m_bDead)
-		CPool<CMonster_Normal_1>::Return_Obj(this);
+	
 }
 
 void CMonster_Normal_1::LateTick(_float fTimeDelta)
 {
+	m_pRigidBodyCom->LateTick_RigidBody(fTimeDelta);
 	__super::LateTick(fTimeDelta);
-	GI->Add_CollisionGroup(COLLISION_GROUP::MONSTER, this);
+	
 }
 
 HRESULT CMonster_Normal_1::Render()
@@ -102,7 +108,7 @@ void CMonster_Normal_1::Return_Pool()
 
 void CMonster_Normal_1::Collision_Enter(const COLLISION_INFO& tInfo)
 {
-
+	__super::Collision_Enter(tInfo);
 }
 
 void CMonster_Normal_1::Collision_Continue(const COLLISION_INFO& tInfo)
@@ -115,53 +121,9 @@ void CMonster_Normal_1::Collision_Exit(const COLLISION_INFO& tInfo)
 	__super::Collision_Exit(tInfo);
 }
 
-void CMonster_Normal_1::On_Damaged(CGameObject* pAttacker, _uint eColliderDamageType, _float fDamage)
+void CMonster_Normal_1::On_Damaged(const COLLISION_INFO& tInfo)
 {
-	if (m_bInfinite || m_bReserveDead)
-		return;
-
-	__super::On_Damaged(pAttacker, eColliderDamageType, fDamage);
-	CTransform* pAttackerTransform = pAttacker->Get_Component<CTransform>(L"Com_Transform");
-
-	m_pTransformCom->LookAt_ForLandObject(pAttackerTransform->Get_State(CTransform::STATE_POSITION));
-
-	m_tStat.fHp -= fDamage;
-	if (m_tStat.fHp <= 0.f)
-	{
-		m_bReserveDead = true;
-		m_fDissolveWeight = 0.f;
-		m_pStateCom->Change_State(MONSTER_STATE::DIE);
-		return;
-	}
-
-	switch (eColliderDamageType)
-	{
-	case CCollider::ATTACK_TYPE::BASIC:
-		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BASIC);
-		break;
-
-	case CCollider::ATTACK_TYPE::AIR_BORN:
-		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_AIRBORN);
-		Set_Infinite(0.1f, true);
-		break;
-
-	case CCollider::ATTACK_TYPE::AIR_STAY:
-		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_AIRSTAY);
-		Set_Infinite(0.1f, true);
-		break;
-
-	case CCollider::ATTACK_TYPE::BLOW:
-		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BLOW);
-		m_pRigidBodyCom->Add_Velocity(XMVectorSetY(XMVector3Normalize(-1.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 0.f), 10.f);
-		Set_Infinite(0.5f, true);
-		break;
-
-	case CCollider::ATTACK_TYPE::BOUND:
-		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BOUND);
-		Set_Infinite(0.5f, true);
-		break;
-	}
-
+	__super::On_Damaged(tInfo);
 }
 
 
@@ -256,12 +218,10 @@ HRESULT CMonster_Normal_1::Ready_States()
 	m_pStateCom->Add_State(CMonster::MONSTER_STATE::REGEN, CState_Monster_Regen::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 	strAnimationName.clear();
-	
-    
-	strAnimationName.push_back(L"SK_E0001_V01_C00.ao|A_E0001_V01_C00_AtkSkl03_Atk");
+	strAnimationName.push_back(L"SK_E0001_V01_C00.ao|A_E0001_V01_C00_AtkSkl01_2");
+	strAnimationName.push_back(L"SK_E0001_V01_C00.ao|A_E0001_V01_C00_AtkSkl06_1");
 	strAnimationName.push_back(L"SK_E0001_V01_C00.ao|A_E0001_V01_C00_AtkSkl06_Atk");
-	strAnimationName.push_back(L"SK_E0001_V01_C00.ao|A_E0001_V01_C00_AtkSkl01_1");
-	m_pStateCom->Add_State(CMonster::ATTACK, CState_Monster_Attack::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
+	m_pStateCom->Add_State(CMonster::ATTACK, CState_NormalMonster1_Attack::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 
 	strAnimationName.clear();
@@ -327,14 +287,6 @@ HRESULT CMonster_Normal_1::Ready_Colliders()
 	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::BOUNDARY, &ColliderDesc)))
 		return E_FAIL;
 
-
-	ColliderDesc.tSphere.Radius = .2f;
-	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"C_TongueA_2");
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
-
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::HEAD, &ColliderDesc)))
-		return E_FAIL;
-
 	ColliderDesc.tSphere.Radius = .6f;
 	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"Root");
 	ColliderDesc.vOffsetPosition = _float3(0.f, 0.5f, 0.f);
@@ -345,13 +297,13 @@ HRESULT CMonster_Normal_1::Ready_Colliders()
 
 
 	ColliderDesc.tSphere.Radius = 0.3f;
-	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"L_Hand_1_E0001_V00_C00_Lct");
+	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"L_Hand_1_E0001_V01_C00_Lct");
 	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
 	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
 		return E_FAIL;
 
 
-	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"R_Hand_1_E0001_V00_C00_Lct");
+	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"R_Hand_1_E0001_V01_C00_Lct");
 	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
 	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
 		return E_FAIL;
@@ -383,10 +335,11 @@ HRESULT CMonster_Normal_1::Ready_Sockets()
 
 	m_Sockets.resize(SOCKET_TYPE::SOCKET_END);
 
-	m_Sockets[SOCKET_TYPE::SOCKET_LEFT_FIST] = m_pModelCom->Get_HierarchyNode(L"R_HandCommon_1_Lct");
-	m_Sockets[SOCKET_TYPE::SOCKET_LEFT_FOOT] = m_pModelCom->Get_HierarchyNode(L"R_Hand_1");
-	m_Sockets[SOCKET_TYPE::SOCKET_LEFT_FIST] = m_pModelCom->Get_HierarchyNode(L"L_Weapon_1_Lct");
-	m_Sockets[SOCKET_TYPE::SOCKET_RIGHT_FIST] = m_pModelCom->Get_HierarchyNode(L"L_Weapon_1_Lct");
+	m_Sockets[SOCKET_TYPE::SOCKET_LEFT_FIST] = m_pModelCom->Get_HierarchyNode(L"L_Hand_1");
+	m_Sockets[SOCKET_TYPE::SOCKET_LEFT_FOOT] = m_pModelCom->Get_HierarchyNode(L"L_Foot_End");
+
+	m_Sockets[SOCKET_TYPE::SOCKET_RIGHT_FIST] = m_pModelCom->Get_HierarchyNode(L"R_Hand_1");
+	m_Sockets[SOCKET_TYPE::SOCKET_RIGHT_FOOT] = m_pModelCom->Get_HierarchyNode(L"R_Foot_End");
 
 	return S_OK;
 }

@@ -13,43 +13,15 @@ CState_Monster_Dead::CState_Monster_Dead(ID3D11Device* pDevice, ID3D11DeviceCont
 
 HRESULT CState_Monster_Dead::Initialize(const list<wstring>& AnimationList)
 {
-	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
-	if (nullptr == m_pModelCom)
+	if (FAILED(__super::Initialize(AnimationList)))
 		return E_FAIL;
-
-
-	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
-	if (nullptr == m_pTransformCom)
-		return E_FAIL;
-
-	m_pOwnerMonster = dynamic_cast<CMonster*>(m_pStateMachineCom->Get_Owner());
-	if (nullptr == m_pOwnerMonster)
-		return E_FAIL;
-
-	Safe_AddRef(m_pModelCom);
-	Safe_AddRef(m_pTransformCom);
-	Safe_AddRef(m_pOwnerMonster);
-
-	for (auto strAnimName : AnimationList)
-	{
-		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
-		if (-1 != iAnimIndex)
-			m_AnimationIndices.push_back(iAnimIndex);
-		else		
-			return E_FAIL;
-	}
 	
 	return S_OK;
 }
 
 void CState_Monster_Dead::Enter_State(void* pArg)
 {
-	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
-	m_pOwnerMonster->Set_Infinite(9999.f, true);
-	//m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, false);
-	//m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, false);
-	//m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, false);
-	//m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+	m_pModelCom->Set_AnimIndex(m_AnimIndices[0]);
 }
 
 void CState_Monster_Dead::Tick_State(_float fTimeDelta)
@@ -78,5 +50,4 @@ CState_Monster_Dead* CState_Monster_Dead::Create(ID3D11Device* pDevice, ID3D11De
 void CState_Monster_Dead::Free()
 {
 	__super::Free();
-	Safe_Release(m_pOwnerMonster);
 }

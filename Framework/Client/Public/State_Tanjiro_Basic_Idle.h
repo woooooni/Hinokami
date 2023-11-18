@@ -17,6 +17,10 @@ private:
 public:
 	HRESULT Initialize(const list<wstring>& AnimationList);
 
+private:
+	class CCharacter* m_pCharacter = nullptr;
+	class CSword* m_pSword = nullptr;
+
 public:
 	virtual void Enter_State(void* pArg = nullptr) override;
 	virtual void Tick_State(_float fTimeDelta) override;

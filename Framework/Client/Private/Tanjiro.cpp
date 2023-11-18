@@ -23,6 +23,7 @@
 #include "State_Character_Battle_Jump.h"
 #include "State_Character_Battle_Dash.h"
 #include "State_Character_Battle_AirDash.h"
+
 #include "State_Character_Dead.h"
 
 
@@ -30,6 +31,7 @@
 #include "State_Character_Damaged_Blow.h"
 #include "State_Character_Damaged_Bound.h"
 #include "State_Character_Damaged_AirBorn.h"
+#include "State_Character_Damaged_AirStay.h"
 
 USING(Client)
 
@@ -85,13 +87,13 @@ void CTanjiro::Tick(_float fTimeDelta)
 	}
 
 	m_pStateCom->Tick_State(fTimeDelta);
-	m_pRigidBodyCom->Tick_RigidBody(fTimeDelta);
 	__super::Tick(fTimeDelta);
 }
 
 void CTanjiro::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
+	m_pRigidBodyCom->LateTick_RigidBody(fTimeDelta);
 }
 
 HRESULT CTanjiro::Render()
@@ -104,15 +106,7 @@ HRESULT CTanjiro::Render()
 
 void CTanjiro::Collision_Enter(const COLLISION_INFO& tInfo)
 {
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER)
-	{
-		if ((tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::BODY 
-			|| tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::HEAD)
-			&& tInfo.pOtherCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::ATTACK)
-		{
-			On_Damaged(tInfo.pOther);
-		}
-	}
+	__super::Collision_Enter(tInfo);
 }
 
 void CTanjiro::Collision_Continue(const COLLISION_INFO& tInfo)
@@ -125,11 +119,12 @@ void CTanjiro::Collision_Exit(const COLLISION_INFO& tInfo)
 	__super::Collision_Exit(tInfo);
 }
 
-void CTanjiro::On_Damaged(CGameObject* pAttacker)
+void CTanjiro::On_Damaged(const COLLISION_INFO& tInfo)
 {
-	if (m_bInfinite)
-		return;
+	__super::On_Damaged(tInfo);
 }
+
+
 
 
 
@@ -310,6 +305,16 @@ HRESULT CTanjiro::Ready_States()
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_2");
 	m_pStateCom->Add_State(CCharacter::DAMAGED_AIRBORN,
 		CState_Character_Damaged_AirBorn::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_0");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_1");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_2");
+	m_pStateCom->Add_State(CCharacter::DAMAGED_AIRSTAY,
+		CState_Character_Damaged_AirStay::Create(m_pDevice,
 			m_pContext,
 			m_pStateCom,
 			strAnimationName));

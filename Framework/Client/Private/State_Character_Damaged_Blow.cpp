@@ -13,56 +13,28 @@ CState_Character_Damaged_Blow::CState_Character_Damaged_Blow(ID3D11Device* pDevi
 
 HRESULT CState_Character_Damaged_Blow::Initialize(const list<wstring>& AnimationList)
 {
-	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
-	if (nullptr == m_pModelCom)
+	if (FAILED(__super::Initialize(AnimationList)))
 		return E_FAIL;
+	
 
-
-	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
-	if (nullptr == m_pTransformCom)
-		return E_FAIL;
-
-	m_pRigidBodyCom = m_pStateMachineCom->Get_Owner()->Get_Component<CRigidBody>(L"Com_RigidBody");
-	if (nullptr == m_pRigidBodyCom)
-		return E_FAIL;
-
-
-	m_pOwnerCharacter = dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner());
+	m_pOwnerCharacter = dynamic_cast<CCharacter*>(m_pOwner);
 	if (nullptr == m_pOwnerCharacter)
 		return E_FAIL;
 
-	Safe_AddRef(m_pRigidBodyCom);
-	Safe_AddRef(m_pModelCom);
-	Safe_AddRef(m_pTransformCom);
-	Safe_AddRef(m_pOwnerCharacter);
-
-	for (auto strAnimName : AnimationList)
-	{
-		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
-		if (-1 != iAnimIndex)
-			m_AnimationIndices.push_back(iAnimIndex);
-		else		
-			return E_FAIL;
-	}
-	
 	return S_OK;
 }
 
 void CState_Character_Damaged_Blow::Enter_State(void* pArg)
 {
-	_vector vBlowDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1);
-	XMVectorSetY(vBlowDir, 0.f);
-	m_pRigidBodyCom->Add_Velocity_Acc(vBlowDir, 10.f);
-	m_fAccRecovery = 0.f;
-	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
-	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+	m_pOwnerCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+	m_pOwnerCharacter->Set_Infinite(999.f, true);
 }
 
 void CState_Character_Damaged_Blow::Tick_State(_float fTimeDelta)
 {
-	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[0]))
+	if (m_pModelCom->Is_Animation_Finished(m_AnimIndices[0]))
 	{
-		m_pModelCom->Set_AnimIndex(m_AnimationIndices[1]);
+		m_pModelCom->Set_AnimIndex(m_AnimIndices[1]);
 	}
 
 	if (0.5f > XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_pRigidBodyCom->Get_Velocity()))))
@@ -70,7 +42,7 @@ void CState_Character_Damaged_Blow::Tick_State(_float fTimeDelta)
 		if (!m_bFirstGround)
 		{
 			m_bFirstGround = true;
-			m_pModelCom->Set_AnimIndex(m_AnimationIndices[2]);
+			m_pModelCom->Set_AnimIndex(m_AnimIndices[2]);
 		}
 
 		m_fAccRecovery += fTimeDelta;
@@ -88,7 +60,7 @@ void CState_Character_Damaged_Blow::Exit_State()
 	m_bFirstGround = false;
 	m_fAccRecovery = 0.f;
 
-	m_pOwnerCharacter->Set_Infinite(0.5f, false);
+	m_pOwnerCharacter->Set_Infinite(1.f, true);
 	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 

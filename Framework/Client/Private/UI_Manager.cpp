@@ -124,13 +124,16 @@ HRESULT CUI_Manager::Battle_Start()
 		return E_FAIL;
 
 	// TODO:: Play Sound
+	return S_OK;
 }
 
 HRESULT CUI_Manager::Battle_End()
 {
 	if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_UI, L"UI_BattleEnd")))
 		return E_FAIL;
+	
 	// TODO:: Play Sound
+	return S_OK;
 }
 
 

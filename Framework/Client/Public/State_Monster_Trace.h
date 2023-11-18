@@ -16,18 +16,23 @@ private:
 	virtual ~CState_Monster_Trace() = default;
 
 public:
-	HRESULT Initialize(const list<wstring>& AnimationList);
+	virtual HRESULT Initialize(const list<wstring>& AnimationList) override;
 
 public:
 	virtual void Enter_State(void* pArg = nullptr) override;
 	virtual void Tick_State(_float fTimeDelta) override;
 	virtual void Exit_State() override;
 
-public:
-	class CNavigation* m_pNavigation = nullptr;
-	_float m_fDistance = 10.f;
-	class CGameObject* m_pTarget = nullptr;
+	
 
+private:
+	class CGameObject* m_pTarget = nullptr;
+	_float m_fDistance = 10.f;
+
+	_float m_fAccAttackCoolTime = 0.f;
+	_float m_fAttackCoolTime = 1.f;
+
+	_bool m_bAttackable = false;
 
 public:
 	static CState_Monster_Trace* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

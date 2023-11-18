@@ -104,6 +104,14 @@ _int CLoader::Loading()
 		hr = Loading_For_Level_Train();
 		break;
 
+	case LEVEL_TRAIN_BOSS:
+		hr = Loading_For_Level_Train_Boss();
+		break;
+
+	case LEVEL_FINAL_BOSS:
+		hr = Loading_For_Level_Final_Boss();
+		break;
+
 	case LEVEL_TOOL:
 		hr = Loading_For_Level_Tool();
 		break;
@@ -212,20 +220,20 @@ HRESULT CLoader::Loading_For_Level_Train_Station()
 
 	CMonster::MONSTER_STAT tMonsterStat = {};
 	tMonsterStat.fHp = 10.f;
-	tMonsterStat.fStamina = 10.f;
+	tMonsterStat.fMp = 10.f;
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_NormalMonster_0"),
 		CMonster_Normal_0::Create(m_pDevice, m_pContext, TEXT("NormalMonster0"), tMonsterStat), LAYER_TYPE::LAYER_MONSTER)))
 		return E_FAIL;
 
 
 	tMonsterStat.fHp = 20.f;
-	tMonsterStat.fStamina = 10.f;
+	tMonsterStat.fMp = 10.f;
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_NormalMonster_1"),
 		CMonster_Normal_1::Create(m_pDevice, m_pContext, TEXT("NormalMonster1"), tMonsterStat), LAYER_TYPE::LAYER_MONSTER)))
 		return E_FAIL;
 
 	tMonsterStat.fHp = 30.f;
-	tMonsterStat.fStamina = 0.f;
+	tMonsterStat.fMp = 0.f;
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_NormalMonster_2"),
 		CMonster_Normal_2::Create(m_pDevice, m_pContext, TEXT("NormalMonster2"), tMonsterStat), LAYER_TYPE::LAYER_MONSTER)))
 		return E_FAIL;
@@ -328,20 +336,20 @@ HRESULT CLoader::Loading_For_Level_Train()
 
 	CMonster::MONSTER_STAT tMonsterStat = {};
 	tMonsterStat.fHp = 10.f;
-	tMonsterStat.fStamina = 10.f;
+	tMonsterStat.fMp = 10.f;
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_NormalMonster_0"),
 		CMonster_Normal_0::Create(m_pDevice, m_pContext, TEXT("NormalMonster0"), tMonsterStat), LAYER_TYPE::LAYER_MONSTER)))
 		return E_FAIL;
 
 
 	tMonsterStat.fHp = 20.f;
-	tMonsterStat.fStamina = 10.f;
+	tMonsterStat.fMp = 10.f;
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_NormalMonster_1"),
 		CMonster_Normal_1::Create(m_pDevice, m_pContext, TEXT("NormalMonster1"), tMonsterStat), LAYER_TYPE::LAYER_MONSTER)))
 		return E_FAIL;
 
 	tMonsterStat.fHp = 30.f;
-	tMonsterStat.fStamina = 0.f;
+	tMonsterStat.fMp = 0.f;
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_NormalMonster_2"),
 		CMonster_Normal_2::Create(m_pDevice, m_pContext, TEXT("NormalMonster2"), tMonsterStat), LAYER_TYPE::LAYER_MONSTER)))
 		return E_FAIL;
@@ -406,6 +414,9 @@ HRESULT CLoader::Loading_For_Level_Train()
 
 HRESULT CLoader::Loading_For_Level_Train_Boss()
 {
+
+	m_strLoading = TEXT("·Îµù ³¡.");
+	m_isFinished = true;
 	return S_OK;
 }
 

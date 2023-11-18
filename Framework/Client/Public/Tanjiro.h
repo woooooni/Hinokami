@@ -24,7 +24,7 @@ public:
 
 
 public:
-	virtual void On_Damaged(CGameObject* pAttacker) override;
+	virtual void On_Damaged(const COLLISION_INFO& tInfo) override;
 	
 
 protected:

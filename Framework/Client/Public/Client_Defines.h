@@ -51,12 +51,17 @@ namespace Client
 		OBJ_NPC,
 		OBJ_END
 	};
-	
 
 	enum LEVELID { LEVEL_STATIC, LEVEL_LOGO, LEVEL_TRAIN_STATION, LEVEL_TRAIN, LEVEL_TRAIN_BOSS, LEVEL_FINAL_BOSS, LEVEL_TOOL, LEVEL_LOADING, LEVEL_DUMMY, LEVEL_END };
 
 	const unsigned int		g_iWinSizeX = 1600;
 	const unsigned int		g_iWinSizeY = 900;
+
+	typedef struct tagAttackStateInfo
+	{
+		_uint iAnimIndex;
+		_uint iAttackMode;
+	}ATTACK_INFO;
 }
 
 extern HWND g_hWnd;

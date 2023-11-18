@@ -66,7 +66,7 @@ HRESULT CImGui_Manager::Reserve_Manager(HWND hWnd, ID3D11Device* pDevice, ID3D11
     }
 
     style.Alpha = m_fWindowAlpha;
-    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Basic.ttc", 12.f, NULL, io.Fonts->GetGlyphRangesKorean());
+    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Batang.ttc", 12.f, NULL, io.Fonts->GetGlyphRangesKorean());
 
     ImGui::StyleColorsDark();
 
@@ -920,9 +920,21 @@ void CImGui_Manager::Tick_Animation_Tool(_float fTimeDelta)
             pCurrAnimation->Set_AnimationPlayTime(m_pDummy->Get_TransformCom(), fPlayTime, fTimeDelta);
         }
 
+        _float fAnimationProgress = pCurrAnimation->Get_AnimationProgress();
+
+        ImGui::Text("Progress : ");
+        IMGUI_SAME_LINE;
+        
+        ImGui::Text(to_string(fAnimationProgress).c_str());
 
         if (ImGui::ArrowButton("##Play_AnimationButton", ImGuiDir_Right))
+        {
+            if(fAnimationProgress >= 1.f)
+                pModelCom->Set_AnimIndex(pModelCom->Get_CurrAnimationIndex());
+
             pCurrAnimation->Set_Pause(false);
+        }
+            
 
         IMGUI_SAME_LINE;
 

@@ -42,13 +42,13 @@ public:
 	};
 
 #pragma endregion
-	enum SOCKET_TYPE { SOCKET_LEFT_FIST, SOCKET_RIGHT_FIST, SOCKET_LEFT_FOOT, SOCKET_RIGTH_FOOT, SOCKET_END };
+	enum SOCKET_TYPE { SOCKET_LEFT_FIST, SOCKET_RIGHT_FIST, SOCKET_LEFT_FOOT, SOCKET_RIGHT_FOOT, SOCKET_END };
 
 public:
 	typedef struct tagMonsterStat
 	{
 		_float fHp = 0.f;
-		_float fStamina = 0.f;
+		_float fMp = 0.f;
 	} MONSTER_STAT;
 
 protected:
@@ -79,13 +79,6 @@ public:
 	}
 	_bool Is_Infinite() { return m_bInfinite; }
 
-public:
-	CShader* Get_ShaderCom() { return m_pShaderCom; }
-	CTransform* Get_TransformCom() { return m_pTransformCom; }
-	CModel* Get_ModelCom() { return m_pModelCom; }
-	CStateMachine* Get_StateCom() { return m_pStateCom; }
-	CRigidBody* Get_RigidBodyCom() { return m_pRigidBodyCom; }
-
 	
 
 
@@ -99,7 +92,7 @@ protected:
 
 
 public:
-	virtual void On_Damaged(CGameObject* pAttacker, _uint eDamageType, _float fDamage) {};
+	virtual void On_Damaged(const COLLISION_INFO& tInfo);
 	
 
 

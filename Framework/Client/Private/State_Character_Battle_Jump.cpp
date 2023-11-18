@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Model.h"
 #include "Character.h"
+#include "Sword.h"
 #include "Animation.h"
 #include "RigidBody.h"
 #include "StateMachine.h"
@@ -17,74 +18,66 @@ CState_Character_Battle_Jump::CState_Character_Battle_Jump(ID3D11Device* pDevice
 
 HRESULT CState_Character_Battle_Jump::Initialize(const list<wstring>& AnimationList)
 {
-	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
-	if (nullptr == m_pModelCom)
+
+	if(FAILED(__super::Initialize(AnimationList)))
 		return E_FAIL;
 
 
-	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
-	if (nullptr == m_pTransformCom)
+	m_pCharacter = dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner());
+	if (nullptr == m_pCharacter)
 		return E_FAIL;
 
-
-	Safe_AddRef(m_pModelCom);
-	Safe_AddRef(m_pTransformCom);
-
-	for (auto strAnimName : AnimationList)
-	{
-		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
-		if (-1 != iAnimIndex)
-			m_AnimationIndices.push_back(iAnimIndex);
-		else		
-			return E_FAIL;
-	}
+	m_pSword = m_pCharacter->Get_Part<CSword>(CCharacter::PART_SWORD);
+	if (nullptr == m_pSword)
+		return E_FAIL;
 	
 	return S_OK;
 }
 
 void CState_Character_Battle_Jump::Enter_State(void* pArg)
 {
-	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
-	if (nullptr != pOwner)
-	{
-		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
-		if (pCharacter != nullptr)
-			pCharacter->DrawSword();
+	m_iCurrAnimIndex = 0;
+	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 
-		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-	}
-
-	if (m_pRigidBody == nullptr)
-		m_pRigidBody = m_pStateMachineCom->Get_Owner()->Get_Component<Engine::CRigidBody>(L"Com_RigidBody");
-
-	if (nullptr == m_pRigidBody)
-		return;
+	m_pCharacter->DrawSword();
+	m_pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
 	m_iCurrAnimIndex = 0;
-	m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
+	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
+	
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	
+	float fDirX = XMVectorGetX(vLook);
+	fDirX = max(fDirX, -1.f);
+	fDirX = min(fDirX, 1.f);
+
+	float fDirZ = XMVectorGetZ(vLook);
+	fDirZ = max(fDirZ, -1.f);
+	fDirZ = min(fDirZ, 1.f);
 
 
-	_vector vJumpDir = XMVectorSet(XMVectorGetX(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 1.f, XMVectorGetZ(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 0.f);
+	_vector vJumpDir = XMVectorSet(fDirX, 0.8f, fDirZ, 0.f);
+
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.1f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
-	m_pRigidBody->Add_Velocity(XMVector3Normalize(vJumpDir), 8.f);
+	m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 10.f);
 }
 
 void CState_Character_Battle_Jump::Tick_State(_float fTimeDelta)
 {
 	Input();
 
-	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[0]) || m_pModelCom->Is_Animation_Finished(m_AnimationIndices[1]))
+	if (m_pModelCom->Is_Animation_Finished(m_AnimIndices[0]) || m_pModelCom->Is_Animation_Finished(m_AnimIndices[1]))
 	{
 		m_iCurrAnimIndex++;
-		m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
+		m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 	}
 
 
 	// if(m_pRigidBody->)
-	if (m_pRigidBody->Is_Ground())
+	if (m_pRigidBodyCom->Is_Ground())
 		m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
 }
 

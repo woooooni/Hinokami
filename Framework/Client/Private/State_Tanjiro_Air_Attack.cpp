@@ -17,16 +17,7 @@ CState_Tanjiro_Air_Attack::CState_Tanjiro_Air_Attack(ID3D11Device* pDevice, ID3D
 
 HRESULT CState_Tanjiro_Air_Attack::Initialize(const list<wstring>& AnimationList)
 {
-	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
-	if (nullptr == m_pModelCom)
-		return E_FAIL;
-
-	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
-	if (nullptr == m_pTransformCom)
-		return E_FAIL;
-
-	m_pRigidBodyCom = m_pStateMachineCom->Get_Owner()->Get_Component<CRigidBody>(L"Com_RigidBody");
-	if (nullptr == m_pRigidBodyCom)
+	if(FAILED(__super::Initialize(AnimationList)))
 		return E_FAIL;
 
 	m_pCharacter = dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner());
@@ -36,21 +27,6 @@ HRESULT CState_Tanjiro_Air_Attack::Initialize(const list<wstring>& AnimationList
 	m_pSword = m_pCharacter->Get_Part<CSword>(CCharacter::PART_SWORD);
 	if (nullptr == m_pSword)
 		return E_FAIL;
-
-	Safe_AddRef(m_pRigidBodyCom);
-	Safe_AddRef(m_pCharacter);
-	Safe_AddRef(m_pModelCom);
-	Safe_AddRef(m_pTransformCom);
-
-
-	for (auto strAnimName : AnimationList)
-	{
-		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
-		if (-1 != iAnimIndex)
-			m_AnimationIndices.push_back(iAnimIndex);
-		else		
-			return E_FAIL;
-	}
 	
 	return S_OK;
 }
@@ -58,25 +34,22 @@ HRESULT CState_Tanjiro_Air_Attack::Initialize(const list<wstring>& AnimationList
 void CState_Tanjiro_Air_Attack::Enter_State(void* pArg)
 {
 	m_iCurrAnimIndex = 0;
-
-	Follow_Near_Target();
+	m_bFirstFindNearTarget = false;
 	m_pCharacter->DrawSword();
-
 	
-	// m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, false);
-	m_pCharacter->Set_Infinite(0.5f, true);
-
-
-	m_pSword->Set_Damage(1.f);
-	// m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
-
-	m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
+	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 }
 
 void CState_Tanjiro_Air_Attack::Tick_State(_float fTimeDelta)
 {
+	if (!m_bFirstFindNearTarget)
+	{
+		m_bFirstFindNearTarget = true;
+		Follow_Near_Target(fTimeDelta);
+	}
+
 	Input(fTimeDelta);
-	_float fProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
+	_float fProgress = m_pModelCom->Get_Animations()[m_AnimIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
 
 	if (m_iCurrAnimIndex == 0)
 	{
@@ -97,9 +70,9 @@ void CState_Tanjiro_Air_Attack::Tick_State(_float fTimeDelta)
 
 		if (fProgress >= 0.8f)
 		{
-			if (bFirstGravity)
+			if (m_bFirstGravity)
 			{
-				bFirstGravity = false;
+				m_bFirstGravity = false;
 				m_pRigidBodyCom->Set_Gravity(true);
 			}
 				
@@ -118,15 +91,17 @@ void CState_Tanjiro_Air_Attack::Tick_State(_float fTimeDelta)
 		if (fProgress >= 0.8f)
 		{
 			m_pSword->Stop_Trail();
-			if (bFirstGravity)
+			if (m_bFirstGravity)
 			{
-				bFirstGravity = false;
+				m_bFirstGravity = false;
 				m_pRigidBodyCom->Set_Gravity(true);
 			}
+
+			m_pSword->Stop_Trail();
 		}
 	}
 	
-	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[m_iCurrAnimIndex]) && m_pRigidBodyCom->Is_Ground())
+	if (m_pModelCom->Is_Animation_Finished(m_AnimIndices[m_iCurrAnimIndex]) && m_pRigidBodyCom->Is_Ground())
 	{
 		m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
 	}
@@ -135,6 +110,8 @@ void CState_Tanjiro_Air_Attack::Tick_State(_float fTimeDelta)
 void CState_Tanjiro_Air_Attack::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
+	m_bFirstFindNearTarget = false;
+	m_bFirstGravity = true;
 
 	m_pSword->Stop_Trail();
 	m_pSword->Set_ActiveColliders(CCollider::BODY, true);
@@ -143,38 +120,37 @@ void CState_Tanjiro_Air_Attack::Exit_State()
 	m_pRigidBodyCom->Set_Gravity(true);
 	m_pRigidBodyCom->Set_Ground(false);
 
-	m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::BASIC);
+	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 }
 
 
 void CState_Tanjiro_Air_Attack::Input(_float fTimeDelta)
 {
 	_float fLookVelocity = 3.f;
-	_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
+	_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
 	if (fAnimationProgress >= 0.5f)
 	{
 		if (KEY_TAP(KEY::LBTN))
 		{
-			m_iCurrAnimIndex = min(m_iCurrAnimIndex + 1, m_AnimationIndices.size());
-			if (m_iCurrAnimIndex == m_AnimationIndices.size())
+			m_iCurrAnimIndex = min(m_iCurrAnimIndex + 1, m_AnimIndices.size());
+			if (m_iCurrAnimIndex == m_AnimIndices.size())
 			{
 				m_iCurrAnimIndex -= 1;
 				return;
 			}
 
-			if (m_iCurrAnimIndex != m_AnimationIndices.size())
-				m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
+			if (m_iCurrAnimIndex != m_AnimIndices.size())
+				m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 
 			
 			switch (m_iCurrAnimIndex)
 			{
 			case 1:
-				Follow_Near_Target();
-				bFirstGravity = true;
-				m_pSword->Set_Damage(1.f);
+				Follow_Near_Target(fTimeDelta);
+				m_bFirstGravity = true;
 				m_pSword->Generate_Trail(L"T_e_cmn_Slash007.png", L"T_e_cmn_Slash006.png", _float4(0.561f, 0.945f, 1.f, 1.f), 22);
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
-				m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::AIR_STAY);
+				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_STAY, 0.f, 0.f, 1.f);
 
 				m_pRigidBodyCom->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), 2.f);
 				m_pRigidBodyCom->Set_Gravity(false);
@@ -183,14 +159,13 @@ void CState_Tanjiro_Air_Attack::Input(_float fTimeDelta)
 
 			case 2:
 				// Follow_Near_Target();
-				m_pSword->Set_Damage(1.f);
-				bFirstGravity = true;
+				m_bFirstGravity = true;
 				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
-				m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::BLOW);
+				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 5.f, 1.f);
 
 				m_pRigidBodyCom->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), 2.f);
-				m_pRigidBodyCom->Set_Gravity(true);
+				m_pRigidBodyCom->Set_Gravity(false);
 				m_pRigidBodyCom->Set_Ground(false);
 				break;
 
@@ -199,7 +174,7 @@ void CState_Tanjiro_Air_Attack::Input(_float fTimeDelta)
 	}
 }
 
-void CState_Tanjiro_Air_Attack::Follow_Near_Target()
+void CState_Tanjiro_Air_Attack::Follow_Near_Target(_float fTimeDelta)
 {
 	list<CGameObject*>& Monsters = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_MONSTER);
 	_float fDistance = 99999999999.f;
@@ -247,7 +222,7 @@ void CState_Tanjiro_Air_Attack::Follow_Near_Target()
 
 		_vector vFollowPosition = XMVectorSetY(XMVector3Normalize(vTargetLook), 0.f)  + XMVectorSetY(vTargetPosition, XMVectorGetY(vTargetPosition) - 0.5f);
 
-		m_pTransformCom->Set_Position(XMVectorSetW(vFollowPosition, 1.f), m_pCharacter->Get_Component<CNavigation>(L"Com_Navigation"));
+		m_pTransformCom->Set_Position(XMVectorSetW(vFollowPosition, 1.f), 0.0016f, m_pCharacter->Get_Component<CNavigation>(L"Com_Navigation"));
 
 		CRigidBody* pTargetRigidBody = pTarget->Get_Component<CRigidBody>(L"Com_RigidBody");
 		pTargetRigidBody->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), 2.5f);
@@ -275,7 +250,4 @@ CState_Tanjiro_Air_Attack* CState_Tanjiro_Air_Attack::Create(ID3D11Device* pDevi
 void CState_Tanjiro_Air_Attack::Free()
 {
 	__super::Free();
-	Safe_Release(m_pRigidBodyCom);
-	Safe_Release(m_pCharacter);
-
 }

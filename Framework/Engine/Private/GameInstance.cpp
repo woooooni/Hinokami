@@ -111,8 +111,8 @@ void CGameInstance::Tick(_float fTimeDelta)
 
 void CGameInstance::LateTick(_float fTimeDelta)
 {
-	m_pObject_Manager->LateTick(fTimeDelta);
 	m_pCollision_Manager->LateTick(fTimeDelta);
+	m_pObject_Manager->LateTick(fTimeDelta);
 	m_pLevel_Manager->LateTick(fTimeDelta);
 }
 
@@ -124,6 +124,14 @@ void CGameInstance::Clear(_uint iLevelIndex)
 		return;
 
 	m_pObject_Manager->Clear(iLevelIndex);
+}
+
+CTimer* CGameInstance::Find_Timer(const wstring& strTimerTag)
+{
+	if (nullptr == m_pTimer_Manager)
+		return nullptr;
+
+	return m_pTimer_Manager->Find_Timer(strTimerTag);
 }
 
 _float CGameInstance::Compute_TimeDelta(const wstring & strTimerTag)
@@ -140,6 +148,31 @@ HRESULT CGameInstance::Add_Timer(const wstring & strTimerTag)
 		return E_FAIL;
 
 	return m_pTimer_Manager->Add_Timer(strTimerTag);
+}
+
+_float CGameInstance::Get_TimeDelta(const wstring& strTimerTag)
+{
+
+	if (nullptr == m_pTimer_Manager)
+		return E_FAIL;
+
+	return m_pTimer_Manager->Get_TimeDelta(strTimerTag);
+}
+
+HRESULT CGameInstance::Set_TimeScale(const wstring& strTimerTag, _float fTimeScale)
+{
+	if (nullptr == m_pTimer_Manager)
+		return E_FAIL;
+
+	return m_pTimer_Manager->Set_TimeScale(strTimerTag, fTimeScale);
+}
+
+_float CGameInstance::Get_TimeScale(const wstring& strTimerTag)
+{
+	if (nullptr == m_pTimer_Manager)
+		return 0.f;
+
+	return m_pTimer_Manager->Get_TimeScale(strTimerTag);
 }
 
 ID3D11Device* CGameInstance::Get_Device()

@@ -266,6 +266,8 @@ HRESULT CNpc_General_0::Ready_Components()
 	/* For.Com_RigidBody */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_RigidBody"), TEXT("Com_RigidBody"), (CComponent**)&m_pRigidBodyCom, &RigidDesc)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CNpc_General_0::Ready_States()

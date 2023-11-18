@@ -23,9 +23,12 @@ public:
 	virtual void Tick_State(_float fTimeDelta) override;
 	virtual void Exit_State() override;
 
-public:
+private:
+	class CCharacter* m_pCharacter = nullptr;
+	class CSword* m_pSword = nullptr;
+
+
 	_float m_fMoveSpeed = 0.f;
-	class CNavigation* m_pNavigation = nullptr;
 
 
 public:

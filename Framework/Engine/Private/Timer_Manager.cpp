@@ -18,6 +18,36 @@ _float CTimer_Manager::Compute_TimeDelta(const wstring & strTimerTag)
 	return pTimer->Compute_TimeDelta();	
 }
 
+HRESULT CTimer_Manager::Set_TimeScale(const wstring& strTimerTag, _float fTimeScale)
+{
+	CTimer* pTimer = Find_Timer(strTimerTag);
+
+	if (nullptr == pTimer)
+		return E_FAIL;
+
+	pTimer->Set_TimeScale(fTimeScale);
+}
+
+_float CTimer_Manager::Get_TimeScale(const wstring& strTimerTag)
+{
+	CTimer* pTimer = Find_Timer(strTimerTag);
+
+	if (nullptr == pTimer)
+		return 0;
+
+	return pTimer->Get_TimeScale();
+}
+
+_float CTimer_Manager::Get_TimeDelta(const wstring& strTimerTag)
+{
+	CTimer* pTimer = Find_Timer(strTimerTag);
+
+	if (nullptr == pTimer)
+		return 0.f;
+
+	return pTimer->Get_TimeDelta();
+}
+
 HRESULT CTimer_Manager::Add_Timer(const wstring& strTimerTag)
 {
 	/* map은 중복된 키를 허용하지 않느다.*/
@@ -35,7 +65,7 @@ HRESULT CTimer_Manager::Add_Timer(const wstring& strTimerTag)
 
 
 
-CTimer * CTimer_Manager::Find_Timer(const wstring& strTimerTag) const
+CTimer * CTimer_Manager::Find_Timer(const wstring& strTimerTag)
 {
 	/* 맵에서 제공해주는 Find함수는 이진탐색을 수행한다. */
 	auto	iter = m_Timers.find(strTimerTag);

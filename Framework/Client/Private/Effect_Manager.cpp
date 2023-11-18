@@ -49,7 +49,7 @@ HRESULT CEffect_Manager::Generate_Effect(const wstring& strEffectName, _matrix O
 
 
 	CEffect::EFFECT_DESC EffectDesc = pEffect->Get_EffectDesc();
-	XMStoreFloat4x4(&EffectDesc.OffsetMatrix, OffsetMatrix);
+	XMStoreFloat4x4(&EffectDesc.OffsetMatrix, XMLoadFloat4x4(&EffectDesc.OffsetMatrix) * OffsetMatrix);
 	pEffect->Set_EffectDesc(EffectDesc);
 
 

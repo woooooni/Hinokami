@@ -32,6 +32,7 @@ HRESULT CCollider_AABB::Initialize(void* pArg)
 	if (nullptr == pArg)
 		return E_FAIL;
 
+
 	AABB_COLLIDER_DESC* pDesc = static_cast<AABB_COLLIDER_DESC*>(pArg);
 	m_tBoundingBox = pDesc->tBox;
 

@@ -147,7 +147,7 @@ HRESULT CMainApp::Initialize_Client()
 	if (FAILED(GAME_INSTANCE->Add_Prototype(TEXT("Prototype_GameObject_UI_Loading_Anim"), CUI_Loading_Anim::Create(m_pDevice, m_pContext, tInfo), LAYER_TYPE::LAYER_UI)))
 		return E_FAIL;
 
-	tInfo.fX = g_iWinSizeX - 400.f;
+	tInfo.fX = g_iWinSizeX - 300.f;
 	tInfo.fY = g_iWinSizeY - 50.f;
 	tInfo.fCX = 120.f;
 	tInfo.fCY = 120.f;

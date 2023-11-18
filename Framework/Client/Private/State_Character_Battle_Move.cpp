@@ -4,7 +4,8 @@
 #include "Tanjiro.h"
 #include "PipeLine.h"
 #include "StateMachine.h"
-#include "Navigation.h"
+
+
 
 USING(Client)
 CState_Character_Battle_Move::CState_Character_Battle_Move(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
@@ -15,51 +16,29 @@ CState_Character_Battle_Move::CState_Character_Battle_Move(ID3D11Device* pDevice
 
 HRESULT CState_Character_Battle_Move::Initialize(const list<wstring>& AnimationList)
 {
-	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
-	if (nullptr == m_pModelCom)
-		return E_FAIL;
-
-
-	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
-	if (nullptr == m_pTransformCom)
-		return E_FAIL;
-
-
-	Safe_AddRef(m_pModelCom);
-	Safe_AddRef(m_pTransformCom);
-
-	for (auto strAnimName : AnimationList)
-	{
-		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
-		if (-1 != iAnimIndex)
-			m_AnimationIndices.push_back(iAnimIndex);
-		else		
-			return E_FAIL;
-	}
-
-	m_pNavigation = m_pStateMachineCom->Get_Owner()->Get_Component<CNavigation>(L"Com_Navigation");
-	if (nullptr == m_pNavigation)
-		return E_FAIL;
 	
-	Safe_AddRef(m_pNavigation);
-	
+	if (FAILED(__super::Initialize(AnimationList)))
+		return E_FAIL;
+
+	m_pCharacter = dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner());
+	if (nullptr == m_pCharacter)
+		return E_FAIL;
+
+	m_pSword = m_pCharacter->Get_Part<CSword>(CCharacter::PART_SWORD);
+	if (nullptr == m_pSword)
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void CState_Character_Battle_Move::Enter_State(void* pArg)
 {
-	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
-	if (nullptr != pOwner)
-	{
-		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
-		if (pCharacter != nullptr)
-			pCharacter->DrawSword();
+	m_pCharacter->DrawSword();
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
-		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-	}
 
-	m_iCurrAnimIndex = m_AnimationIndices[0];
-	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
+	m_iCurrAnimIndex = m_AnimIndices[0];
+	m_pModelCom->Set_AnimIndex(m_AnimIndices[0]);
 	m_fMoveSpeed = m_pTransformCom->Get_TickPerSecond();
 }
 
@@ -69,15 +48,15 @@ void CState_Character_Battle_Move::Tick_State(_float fTimeDelta)
 
 	if (KEY_TAP(KEY::SHIFT))
 	{
-		m_iCurrAnimIndex = m_AnimationIndices[1];
-		m_pModelCom->Set_AnimIndex(m_AnimationIndices[1]);
+		m_iCurrAnimIndex = m_AnimIndices[1];
+		m_pModelCom->Set_AnimIndex(m_AnimIndices[1]);
 		m_pTransformCom->Set_TickPerSecond(m_fMoveSpeed + 10.f);
 	}
 
 	if (KEY_AWAY(KEY::SHIFT))
 	{
-		m_iCurrAnimIndex = m_AnimationIndices[0];
-		m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
+		m_iCurrAnimIndex = m_AnimIndices[0];
+		m_pModelCom->Set_AnimIndex(m_AnimIndices[0]);
 		m_pTransformCom->Set_TickPerSecond(m_pTransformCom->Get_TickPerSecond() - 10.f);
 	}
 	
@@ -99,7 +78,7 @@ void CState_Character_Battle_Move::Tick_State(_float fTimeDelta)
 
 
 		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fRadian);
-		m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
+		m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigationCom);
 	}
 
 
@@ -120,7 +99,7 @@ void CState_Character_Battle_Move::Tick_State(_float fTimeDelta)
 
 
 		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fRadian);
-		m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
+		m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigationCom);
 	}
 
 
@@ -140,7 +119,7 @@ void CState_Character_Battle_Move::Tick_State(_float fTimeDelta)
 
 		if (!bKeyHolding)
 		{
-			m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
+			m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigationCom);
 		}
 
 		bKeyHolding = true;
@@ -166,7 +145,7 @@ void CState_Character_Battle_Move::Tick_State(_float fTimeDelta)
 		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fRadian);
 
 		if (!bKeyHolding)
-			m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
+			m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigationCom);
 
 		bKeyHolding = true;
 	}
@@ -221,5 +200,4 @@ CState_Character_Battle_Move* CState_Character_Battle_Move::Create(ID3D11Device*
 void CState_Character_Battle_Move::Free()
 {
 	__super::Free();
-	Safe_Release(m_pNavigation);
 }

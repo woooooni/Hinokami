@@ -35,9 +35,6 @@ public:
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
 
-public:
-	void Set_Damage(_float fDamage) { m_fDamage = fDamage; }
-	_float Get_Damage() { return m_fDamage; }
 
 public:
 	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;

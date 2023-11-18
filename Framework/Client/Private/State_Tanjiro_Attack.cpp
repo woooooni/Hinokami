@@ -16,17 +16,7 @@ CState_Tanjiro_Attack::CState_Tanjiro_Attack(ID3D11Device* pDevice, ID3D11Device
 
 HRESULT CState_Tanjiro_Attack::Initialize(const list<wstring>& AnimationList)
 {
-	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
-	if (nullptr == m_pModelCom)
-		return E_FAIL;
-
-
-	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
-	if (nullptr == m_pTransformCom)
-		return E_FAIL;
-
-	m_pRigidBodyCom = m_pStateMachineCom->Get_Owner()->Get_Component<CRigidBody>(L"Com_RigidBody");
-	if (nullptr == m_pRigidBodyCom)
+	if (FAILED(__super::Initialize(AnimationList)))
 		return E_FAIL;
 
 	m_pCharacter = dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner());
@@ -36,21 +26,6 @@ HRESULT CState_Tanjiro_Attack::Initialize(const list<wstring>& AnimationList)
 	m_pSword = m_pCharacter->Get_Part<CSword>(CCharacter::PART_SWORD);
 	if (nullptr == m_pSword)
 		return E_FAIL;
-
-	Safe_AddRef(m_pRigidBodyCom);
-	Safe_AddRef(m_pCharacter);
-	Safe_AddRef(m_pModelCom);
-	Safe_AddRef(m_pTransformCom);
-
-
-	for (auto strAnimName : AnimationList)
-	{
-		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
-		if (-1 != iAnimIndex)
-			m_AnimationIndices.push_back(iAnimIndex);
-		else		
-			return E_FAIL;
-	}
 	
 	return S_OK;
 }
@@ -63,9 +38,9 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 	m_pCharacter->DrawSword();
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 
-	m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
-	/*if (FAILED(CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixIdentity(), m_pSword->Get_FinalWorldMatrix(), 1.f, m_pSword)))
-		return;*/
+	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
+
+	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 
 	m_pSword->SetUp_Trail_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, -1.5f, 1.f));
 	m_pSword->Stop_Trail();
@@ -78,9 +53,9 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 	
 	Input(fTimeDelta);
 	
-	_float fProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
+	_float fProgress = m_pModelCom->Get_Animations()[m_AnimIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
 
-	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[m_iCurrAnimIndex]))
+	if (m_pModelCom->Is_Animation_Finished(m_AnimIndices[m_iCurrAnimIndex]))
 	{
 		m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
 	}
@@ -94,7 +69,7 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 			m_pSword->Stop_Trail();
 		}
 			
-		m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::BASIC);
+		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 		break;
 
 	case 1:
@@ -104,7 +79,7 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 			m_pSword->Stop_Trail();
 		}
 
-		m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::BASIC);
+		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 		break;
 
 	case 2:
@@ -113,16 +88,17 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 			m_pSword->Stop_Trail();
 		}
-		m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::BASIC);
+		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 		break;
 
 	case 3:
 		if (fProgress >= 0.2f && fProgress <= 0.6f)
 		{
 			if (fProgress <= 0.4f)
-				m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::AIR_BORN);
-			else
-				m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::BOUND);
+				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 7.f, 0.1f, 1.f);
+			else			
+				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BOUND, -5.f, 1.5f, 1.f);
+				
 
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		}
@@ -135,7 +111,7 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 	case 4:
 		if (fProgress >= 0.2f && fProgress <= 0.55f)
 		{
-			m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::BLOW);
+			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 5.f, 1.f);
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		}
 		else
@@ -160,20 +136,21 @@ void CState_Tanjiro_Attack::Exit_State()
 
 	m_pSword->Stop_Trail();
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
-	m_pSword->Set_Collider_AttackMode(CCollider::DETECTION_TYPE::ATTACK, CCollider::ATTACK_TYPE::BASIC);
+	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 }
 
 
 void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 {
-	_float fLookVelocity = 3.f;
-	_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimationIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
+	_float fLookVelocity = 4.f;
+
+	_float fAnimationProgress = m_pModelCom->Get_Animations()[m_AnimIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
 	if (fAnimationProgress >= 0.3f)
 	{
 		if (KEY_TAP(KEY::LBTN))
 		{
-			m_iCurrAnimIndex = min(m_iCurrAnimIndex + 1, m_AnimationIndices.size());
-			if (m_iCurrAnimIndex == m_AnimationIndices.size())
+			m_iCurrAnimIndex = min(m_iCurrAnimIndex + 1, m_AnimIndices.size());
+			if (m_iCurrAnimIndex == m_AnimIndices.size())
 			{
 				m_iCurrAnimIndex -= 1;
 				return;
@@ -181,31 +158,28 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 
 				
 
-			if (m_iCurrAnimIndex != m_AnimationIndices.size())
-				m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
+			if (m_iCurrAnimIndex != m_AnimIndices.size())
+				m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 
 			
 			switch (m_iCurrAnimIndex)
 			{
 			case 1:
 				Find_Near_Target();
-				m_pSword->Set_Damage(1.f);
 				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
-				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
+				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 0.f);
 				break;
 
 			case 2:
 				Find_Near_Target();
-				m_pSword->Set_Damage(1.f);
 				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 66);
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
-				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
+				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity + 2.f);
 				break;
 
 			case 3:
 				Find_Near_Target();
-				m_pSword->Set_Damage(3.f);
 				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity + 5.f);
@@ -213,7 +187,6 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 
 			case 4:
 				Find_Near_Target();
-				m_pSword->Set_Damage(3.f);
 				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
 				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
 				m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
@@ -284,7 +257,4 @@ CState_Tanjiro_Attack* CState_Tanjiro_Attack::Create(ID3D11Device* pDevice, ID3D
 void CState_Tanjiro_Attack::Free()
 {
 	__super::Free();
-	Safe_Release(m_pRigidBodyCom);
-	Safe_Release(m_pCharacter);
-
 }

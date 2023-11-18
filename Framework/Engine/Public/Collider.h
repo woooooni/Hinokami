@@ -52,6 +52,16 @@ public:
     ATTACK_TYPE Get_AttackType() { return m_eAttackType; }
     void Set_AttackType(ATTACK_TYPE eType) { m_eAttackType = eType; }
 
+    void Set_AirBorn_Power(_float fPower) { m_fAirBornPower = fPower; }
+    _float Get_AirBorn_Power() { return m_fAirBornPower; }
+
+    void Set_PushPower(_float fPower) { m_fPushPower = fPower; }
+    _float Get_PushPower() { return m_fPushPower; }
+
+    void Set_Damage(_float fDamage) { m_fDamage = fDamage; }
+    _float Get_Damage() { return m_fDamage; }
+
+
     virtual _vector Get_Position() { return XMVectorSet(0.f, 0.f, 0.f, 0.f); }
     virtual _float Get_Radius() { return 0.f; }
     virtual _float3 Get_Extents() { return _float3(0.f, 0.f, 0.f); }
@@ -77,6 +87,12 @@ protected:
 
     _float3 m_vOffsetPosition = { 0.f, 0.f, 0.f };
     _bool m_bActive = true;
+
+
+protected:
+    _float m_fDamage = 0.f;
+    _float m_fAirBornPower = 0.f;
+    _float m_fPushPower = 0.f;
 
 protected:
     _float4x4 m_FinalMatrix = {};

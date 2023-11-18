@@ -17,14 +17,23 @@ public:
 	/* 타임델타를 계산한다. */
 	_float Compute_TimeDelta(const wstring& strTimerTag);
 
+
+public:
+	HRESULT Set_TimeScale(const wstring& strTimerTag, _float fTimeScale);
+	_float Get_TimeScale(const wstring& strTimerTag);
+
+	_float Get_TimeDelta(const wstring& strTimerTag);
+
 public:
 	HRESULT			Add_Timer(const wstring& strTimerTag);
+	class CTimer* Find_Timer(const wstring& strTimerTag);
+
+
 
 private:
 	map<const wstring, class CTimer*>		m_Timers;
 
-private:
-	class CTimer* Find_Timer(const wstring& strTimerTag) const;
+
 
 public:
 	virtual void	Free(void);

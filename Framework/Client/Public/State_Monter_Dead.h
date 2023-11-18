@@ -15,15 +15,12 @@ private:
 	virtual ~CState_Monster_Dead() = default;
 
 public:
-	HRESULT Initialize(const list<wstring>& AnimationList);
+	virtual HRESULT Initialize(const list<wstring>& AnimationList) override;
 
 public:
 	virtual void Enter_State(void* pArg = nullptr) override;
 	virtual void Tick_State(_float fTimeDelta) override;
 	virtual void Exit_State() override;
-
-private:
-	class CMonster* m_pOwnerMonster = nullptr;
 
 
 public:

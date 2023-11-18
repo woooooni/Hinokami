@@ -42,6 +42,7 @@ public:
 		DAMAGED_BOUND,
 		DAMAGED_BLOW,
 		DAMAGED_AIRBORN,
+		DAMAGED_AIRSTAY,
 		KNOCKDOWN, 
 		DIE,
 		STATE_END
@@ -51,6 +52,13 @@ public:
 
 	enum PARTTYPE { PART_SWEATH, PART_SWORD, PART_END };
 	enum SOCKET_TYPE { SOCKET_SWORD, SOCKET_SWEATH, SOCKET_RIGHT_HAND, SOCKET_LEFT_FOOT, SOCKET_RIGHT_FOOT, SOCEKT_END };
+
+public:
+	typedef struct tagCharacterStat
+	{
+		_float fHp = 1000.f;
+		_float fMp = 100.f;
+	}CHARACTER_STAT;
 
 protected:
 	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
@@ -70,15 +78,6 @@ public:
 	virtual void Collision_Continue(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Exit(const COLLISION_INFO& tInfo) override;
 
-
-	
-
-public:
-	CShader* Get_ShaderCom() { return m_pShaderCom; }
-	CTransform* Get_TransformCom() { return m_pTransformCom; }
-	CModel* Get_ModelCom() { return m_pModelCom; }
-	CStateMachine* Get_StateCom() { return m_pStateCom; }
-	CRigidBody* Get_RigidBodyCom() { return m_pRigidBodyCom; }
 
 public:
 	CHierarchyNode* Get_Socket(PARTTYPE eType);
@@ -101,6 +100,9 @@ public:
 	virtual void Set_Infinite(_float fInfiniteTime, _bool bInfinite);
 	_bool Is_Infinite() { return m_bInfinite; }
 
+public:
+	const CHARACTER_STAT& Get_Stat() { return m_tStat; }
+	void Set_Stat(const CHARACTER_STAT& StatDesc) { m_tStat = StatDesc; }
 
 
 
@@ -110,7 +112,7 @@ protected:
 	virtual HRESULT Ready_Colliders() PURE;
 
 
-	virtual void On_Damaged(CGameObject* pAttacker) {};
+	virtual void On_Damaged(const COLLISION_INFO& tInfo);
 
 protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CShader* m_pShaderCom = nullptr;
@@ -135,6 +137,8 @@ protected:
 	_float m_fAccInfinite = 0.f;
 	_float m_fInfiniteTime = 5.f;
 	_bool m_bInfinite = false;
+
+	CHARACTER_STAT m_tStat = {};
 	
 
 public:

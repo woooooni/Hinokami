@@ -17,19 +17,22 @@ private:
 	virtual ~CState_Monster_Defence_Trace() = default;
 
 public:
-	HRESULT Initialize(const list<wstring>& AnimationList);
+	virtual HRESULT Initialize(const list<wstring>& AnimationList) override;
 
 public:
 	virtual void Enter_State(void* pArg = nullptr) override;
 	virtual void Tick_State(_float fTimeDelta) override;
 	virtual void Exit_State() override;
 
-public:
-	class CNavigation* m_pNavigation = nullptr;	
-	class CGameObject* m_pTarget = nullptr;
-
 private:
 	void Find_NearTarget();
+
+private:
+	class CGameObject* m_pTarget = nullptr;
+	_float m_fAccAttackCoolTime = 0.f;
+	_float m_fAttackCoolTime = 1.f;
+
+	_bool m_bAttackable = false;
 
 
 public:

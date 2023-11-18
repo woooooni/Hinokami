@@ -24,7 +24,6 @@ public:
 
 private:
 	class CCharacter* m_pOwnerCharacter = nullptr;
-	class CRigidBody* m_pRigidBodyCom = nullptr;
 
 	_bool m_bFirstGround = false;
 	_float m_fAccRecovery = 0.f;

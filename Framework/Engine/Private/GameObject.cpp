@@ -167,17 +167,25 @@ HRESULT CGameObject::Set_ActiveColliders(_uint eDetectionType, _bool bActive)
 	return S_OK;
 }
 
-HRESULT CGameObject::Set_Collider_AttackMode(_uint eDetectionType, _uint eAttackMode)
+HRESULT CGameObject::Set_Collider_AttackMode(_uint eAttackMode, _float fAirBornPower, _float fPushPower, _float fDamage)
 {
-	auto iter = m_Colliders.find(eDetectionType);
+	auto iter = m_Colliders.find(CCollider::DETECTION_TYPE::ATTACK);
 	if (iter == m_Colliders.end())
 		return E_FAIL;
 
 	for (auto& pCollider : iter->second)
+	{
 		pCollider->Set_AttackType(CCollider::ATTACK_TYPE(eAttackMode));
+		pCollider->Set_AirBorn_Power(fAirBornPower);
+		pCollider->Set_PushPower(fPushPower);
+		pCollider->Set_Damage(fDamage);
+	}
+		
 
 	return S_OK;
 }
+
+
 
 void CGameObject::LateUpdate_Collider(_float fTimedelta)
 {

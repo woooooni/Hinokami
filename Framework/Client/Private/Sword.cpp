@@ -60,6 +60,7 @@ HRESULT CSword::Initialize(void* pArg)
 
 void CSword::Tick(_float fTimeDelta)
 {
+	GI->Add_CollisionGroup(COLLISION_GROUP::CHARACTER, this);
 	_matrix		WorldMatrix = m_pSocketBone->Get_CombinedTransformation() * XMLoadFloat4x4(&m_SocketPivotMatrix);
 
 	WorldMatrix.r[0] = XMVector3Normalize(WorldMatrix.r[0]);
@@ -76,8 +77,6 @@ void CSword::LateTick(_float fTimeDelta)
 {
 	m_pTrailObject->LateTick(fTimeDelta);
 	__super::LateTick(fTimeDelta);
-
-	GI->Add_CollisionGroup(COLLISION_GROUP::CHARACTER, this);
 }
 
 HRESULT CSword::Render()
@@ -110,7 +109,6 @@ void CSword::Collision_Enter(const COLLISION_INFO& tInfo)
 {
 	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER)
 	{
-		
 		if ((tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::ATTACK) && (tInfo.pOtherCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::BODY))
 		{
 			CMonster* pMonster = dynamic_cast<CMonster*>(tInfo.pOther);
@@ -134,8 +132,12 @@ void CSword::Collision_Enter(const COLLISION_INFO& tInfo)
 				break;
 			}
 
-			// TODO :: 데미지 공식적용해 수정할 것.
-			pMonster->On_Damaged(m_pOwner, tInfo.pMyCollider->Get_AttackType(), 3.f);
+			COLLISION_INFO tNewInfo;
+			tNewInfo.pMyCollider = tInfo.pOtherCollider;
+			tNewInfo.pOtherCollider = tInfo.pMyCollider;
+			tNewInfo.pOther = this;
+
+			pMonster->On_Damaged(tNewInfo);
 		}
 	}
 }

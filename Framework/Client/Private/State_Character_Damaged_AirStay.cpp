@@ -1,32 +1,34 @@
 #include "stdafx.h"
-#include "State_Monster_Damaged_AirStay.h"
+#include "State_Character_Damaged_AirStay.h"
 #include "GameInstance.h"
 #include "Model.h"
 #include "Monster.h"
 #include "RigidBody.h"
+#include "Character.h"
 #include "Animation.h"
 
-CState_Monster_Damaged_AirStay::CState_Monster_Damaged_AirStay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
+CState_Character_Damaged_AirStay::CState_Character_Damaged_AirStay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
 {
 
 }
 
-HRESULT CState_Monster_Damaged_AirStay::Initialize(const list<wstring>& AnimationList)
+HRESULT CState_Character_Damaged_AirStay::Initialize(const list<wstring>& AnimationList)
 {
 	if (FAILED(__super::Initialize(AnimationList)))
 		return E_FAIL;
 
-	m_pOwnerMonster = dynamic_cast<CMonster*>(m_pOwner);
-	if (nullptr == m_pOwnerMonster)
+
+	m_pOwnerCharacter = dynamic_cast<CCharacter*>(m_pOwner);
+	if (nullptr == m_pOwnerCharacter)
 		return E_FAIL;
 	
 	return S_OK;
 }
 
-void CState_Monster_Damaged_AirStay::Enter_State(void* pArg)
+void CState_Character_Damaged_AirStay::Enter_State(void* pArg)
 {
-	m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
 	m_iCurrAnimIndex = 0;
 	m_fAccRecovery = 0.f;
@@ -35,7 +37,7 @@ void CState_Monster_Damaged_AirStay::Enter_State(void* pArg)
 	m_pRigidBodyCom->Set_Gravity(false);
 }
 
-void CState_Monster_Damaged_AirStay::Tick_State(_float fTimeDelta)
+void CState_Character_Damaged_AirStay::Tick_State(_float fTimeDelta)
 {
 	_float fProgress = m_pModelCom->Get_Animations()[m_AnimIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
 	if (fProgress >= 0.7f && m_iCurrAnimIndex == 1)
@@ -73,9 +75,9 @@ void CState_Monster_Damaged_AirStay::Tick_State(_float fTimeDelta)
 	}
 }
 
-void CState_Monster_Damaged_AirStay::Exit_State()
+void CState_Character_Damaged_AirStay::Exit_State()
 {
-	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+	m_pOwnerCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
 	m_iCurrAnimIndex = 0;
 	m_fAccRecovery = 0.f;
@@ -84,20 +86,20 @@ void CState_Monster_Damaged_AirStay::Exit_State()
 	m_pRigidBodyCom->Set_Gravity(true);
 }
 
-CState_Monster_Damaged_AirStay* CState_Monster_Damaged_AirStay::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
+CState_Character_Damaged_AirStay* CState_Character_Damaged_AirStay::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
 {
-	CState_Monster_Damaged_AirStay* pInstance =  new CState_Monster_Damaged_AirStay(pDevice, pContext, pStateMachine);
+	CState_Character_Damaged_AirStay* pInstance =  new CState_Character_Damaged_AirStay(pDevice, pContext, pStateMachine);
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);
-		MSG_BOX("Failed Create : CState_Monster_Damaged_AirStay");
+		MSG_BOX("Failed Create : CState_Character_Damaged_AirStay");
 		return nullptr;
 	}
 		
 	return pInstance;
 }
 
-void CState_Monster_Damaged_AirStay::Free()
+void CState_Character_Damaged_AirStay::Free()
 {
 	__super::Free();
 }

@@ -150,7 +150,9 @@ HRESULT CLevel_Train_Station::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 	if (nullptr == pCharacter)
 		return E_FAIL;
 
-	if(FAILED(pCamera->Set_TargetTransform(pCharacter->Get_TransformCom())))
+
+
+	if(FAILED(pCamera->Set_TargetTransform(pCharacter->Get_Component<CTransform>(L"Com_Transform"))))
 		return E_FAIL;
 
 	//CGameObject* pZenitsu = nullptr;

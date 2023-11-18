@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Model.h"
 #include "Character.h"
+#include "Sword.h"
 
 
 CState_Character_Dead::CState_Character_Dead(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
@@ -13,61 +14,51 @@ CState_Character_Dead::CState_Character_Dead(ID3D11Device* pDevice, ID3D11Device
 
 HRESULT CState_Character_Dead::Initialize(const list<wstring>& AnimationList)
 {
-	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
-	if (nullptr == m_pModelCom)
+	if (FAILED(__super::Initialize(AnimationList)))
 		return E_FAIL;
 
-
-	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
-	if (nullptr == m_pTransformCom)
+	m_pCharacter = dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner());
+	if (nullptr == m_pCharacter)
 		return E_FAIL;
 
+	m_pSword = m_pCharacter->Get_Part<CSword>(CCharacter::PART_SWORD);
+	if (nullptr == m_pSword)
+		return E_FAIL;
 
-	Safe_AddRef(m_pModelCom);
-	Safe_AddRef(m_pTransformCom);
-
-	for (auto strAnimName : AnimationList)
-	{
-		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
-		if (-1 != iAnimIndex)
-			m_AnimationIndices.push_back(iAnimIndex);
-		else		
-			return E_FAIL;
-	}
+	return S_OK;
 	
 	return S_OK;
 }
 
 void CState_Character_Dead::Enter_State(void* pArg)
 {
-	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
-	if (nullptr != pOwner)
-	{
-		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
-		if (pCharacter != nullptr)
-			pCharacter->DrawSword();
+	m_pCharacter->DrawSword();
 
-		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, false);
-		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, false);
-		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, false);
-		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-	}
 
-	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
+	m_pCharacter->Set_Infinite(999.f, true);
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, false);
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, false);
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, false);
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+
+	m_pModelCom->Set_AnimIndex(m_AnimIndices[0]);
 }
 
 void CState_Character_Dead::Tick_State(_float fTimeDelta)
 {
-	
+	if (KEY_TAP(KEY::R))
+	{
+
+	}
 }
 
 void CState_Character_Dead::Exit_State()
 {
-	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
-	pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, true);
-	pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, true);
-	pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, true);
-	pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+	m_pCharacter->Set_Infinite(10.f, true);
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, true);
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, true);
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, true);
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 }
 
 CState_Character_Dead* CState_Character_Dead::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)

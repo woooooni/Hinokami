@@ -15,7 +15,7 @@ private:
 	virtual ~CState_Monster_Idle() = default;
 
 public:
-	HRESULT Initialize(const list<wstring>& AnimationList);
+	virtual HRESULT Initialize(const list<wstring>& AnimationList) override;
 
 public:
 	virtual void Enter_State(void* pArg = nullptr) override;
@@ -29,6 +29,7 @@ private:
 	_float m_fAttackCoolTime = 1.f;
 	
 	_bool m_bAttackable = false;
+
 public:
 	static CState_Monster_Idle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;

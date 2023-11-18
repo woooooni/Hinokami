@@ -81,7 +81,7 @@ public:
 	virtual HRESULT Set_ActiveColliders(_uint eDetectionType, _bool bActive);
 
 
-	virtual HRESULT Set_Collider_AttackMode(_uint eDetectionType, _uint eAttackMode);
+	virtual HRESULT Set_Collider_AttackMode(_uint eAttackMode, _float fAirBornPower, _float fPushPower, _float fDamage);
 
 protected:
 	void LateUpdate_Collider(_float fTimedelta);

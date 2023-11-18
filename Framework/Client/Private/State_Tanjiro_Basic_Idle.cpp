@@ -13,26 +13,16 @@ CState_Tanjiro_Basic_Idle::CState_Tanjiro_Basic_Idle(ID3D11Device* pDevice, ID3D
 
 HRESULT CState_Tanjiro_Basic_Idle::Initialize(const list<wstring>& AnimationList)
 {
-	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
-	if (nullptr == m_pModelCom)
-		return E_FAIL;
-	
-
-	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
-	if (nullptr == m_pTransformCom)
+	if (FAILED(__super::Initialize(AnimationList)))
 		return E_FAIL;
 
-	Safe_AddRef(m_pModelCom);
-	Safe_AddRef(m_pTransformCom);
+	m_pCharacter = dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner());
+	if (nullptr == m_pCharacter)
+		return E_FAIL;
 
-	for (auto strAnimName : AnimationList)
-	{
-		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
-		if (-1 != iAnimIndex)
-			m_AnimationIndices.push_back(iAnimIndex);
-		else		
-			return E_FAIL;
-	}
+	m_pSword = m_pCharacter->Get_Part<CSword>(CCharacter::PART_SWORD);
+	if (nullptr == m_pSword)
+		return E_FAIL;
 	
 	return S_OK;
 }
@@ -40,21 +30,13 @@ HRESULT CState_Tanjiro_Basic_Idle::Initialize(const list<wstring>& AnimationList
 void CState_Tanjiro_Basic_Idle::Enter_State(void* pArg)
 {
 
-	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
+	m_pCharacter->SweathSword();
+	m_pSword->Stop_Trail();
 
-	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
-	if (nullptr != pOwner)
-	{
-		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
-		if (pCharacter != nullptr)		
-			pCharacter->SweathSword();
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
-		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-	}
-
-
-	dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner())->SweathSword();
-	dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner())->Get_Part<CSword>(CCharacter::PARTTYPE::PART_SWORD)->Stop_Trail();
+	m_iCurrAnimIndex = 0;
+	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 
 	if (KEY_HOLD(KEY::W) || KEY_HOLD(KEY::S) || KEY_HOLD(KEY::A) || KEY_HOLD(KEY::D))
 	{
@@ -78,7 +60,7 @@ void CState_Tanjiro_Basic_Idle::Tick_State(_float fTimeDelta)
 
 void CState_Tanjiro_Basic_Idle::Exit_State()
 {
-
+	m_iCurrAnimIndex = 0;
 }
 
 CState_Tanjiro_Basic_Idle* CState_Tanjiro_Basic_Idle::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine, const list<wstring>& AnimationList)

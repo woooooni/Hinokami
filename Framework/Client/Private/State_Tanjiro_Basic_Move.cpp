@@ -16,45 +16,31 @@ CState_Tanjiro_Basic_Move::CState_Tanjiro_Basic_Move(ID3D11Device* pDevice, ID3D
 
 HRESULT CState_Tanjiro_Basic_Move::Initialize(const list<wstring>& AnimationList)
 {
-	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
-	if (nullptr == m_pModelCom)
-		return E_FAIL;
-
-
-	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
-	if (nullptr == m_pTransformCom)
-		return E_FAIL;
-
-
-	Safe_AddRef(m_pModelCom);
-	Safe_AddRef(m_pTransformCom);
-
-	for (auto strAnimName : AnimationList)
-	{
-		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
-		if (-1 != iAnimIndex)
-			m_AnimationIndices.push_back(iAnimIndex);
-		else		
-			return E_FAIL;
-	}
-
-	m_pNavigation = m_pStateMachineCom->Get_Owner()->Get_Component<CNavigation>(L"Com_Navigation");
-	if (nullptr == m_pNavigation)
-		return E_FAIL;
-	Safe_AddRef(m_pNavigation);
 	
+	if (FAILED(__super::Initialize(AnimationList)))
+		return E_FAIL;
+
+	m_pCharacter = dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner());
+	if (nullptr == m_pCharacter)
+		return E_FAIL;
+
+	m_pSword = m_pCharacter->Get_Part<CSword>(CCharacter::PART_SWORD);
+	if (nullptr == m_pSword)
+		return E_FAIL;
 	
 	return S_OK;
 }
 
 void CState_Tanjiro_Basic_Move::Enter_State(void* pArg)
 {
-	dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner())->SweathSword();
-	dynamic_cast<CCharacter*>(m_pStateMachineCom->Get_Owner())->Get_Part<CSword>(CCharacter::PARTTYPE::PART_SWORD)->Stop_Trail();
-	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+	m_pCharacter->SweathSword();
+	m_pSword->Stop_Trail();
 
-	m_iCurrAnimIndex = m_AnimationIndices[0];
-	m_pModelCom->Set_AnimIndex(m_AnimationIndices[0]);
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+
+	m_iCurrAnimIndex = 0;
+	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
+
 	m_fMoveSpeed = m_pTransformCom->Get_TickPerSecond();
 }
 
@@ -64,14 +50,14 @@ void CState_Tanjiro_Basic_Move::Tick_State(_float fTimeDelta)
 
 	if (KEY_TAP(KEY::SHIFT))
 	{
-		m_iCurrAnimIndex = m_AnimationIndices[1];
-		m_pModelCom->Set_AnimIndex(m_AnimationIndices[1]);
+		m_iCurrAnimIndex = m_AnimIndices[1];
+		m_pModelCom->Set_AnimIndex(m_AnimIndices[1]);
 		m_pTransformCom->Set_TickPerSecond(m_fMoveSpeed + 5.f);
 	}
 
 	if (KEY_AWAY(KEY::SHIFT))
 	{
-		m_iCurrAnimIndex = m_AnimationIndices[0];
+		m_iCurrAnimIndex = m_AnimIndices[0];
 		m_pModelCom->Set_AnimIndex(m_iCurrAnimIndex);
 		m_pTransformCom->Set_TickPerSecond(m_pTransformCom->Get_TickPerSecond() - 5.f);
 	}
@@ -93,7 +79,7 @@ void CState_Tanjiro_Basic_Move::Tick_State(_float fTimeDelta)
 
 
 		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fRadian);
-		m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
+		m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigationCom);
 	}
 		
 
@@ -114,7 +100,7 @@ void CState_Tanjiro_Basic_Move::Tick_State(_float fTimeDelta)
 
 
 		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fRadian);
-		m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
+		m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigationCom);
 	}
 		
 
@@ -134,7 +120,7 @@ void CState_Tanjiro_Basic_Move::Tick_State(_float fTimeDelta)
 
 		if (!bKeyHolding)
 		{
-			m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);
+			m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigationCom);
 		}
 		
 		bKeyHolding = true;
@@ -160,7 +146,7 @@ void CState_Tanjiro_Basic_Move::Tick_State(_float fTimeDelta)
 		m_pTransformCom->Rotation_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), fRadian);
 
 		if(!bKeyHolding)
-			m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigation);                                   
+			m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigationCom);
 
 		bKeyHolding = true;
 	}
@@ -210,6 +196,5 @@ CState_Tanjiro_Basic_Move* CState_Tanjiro_Basic_Move::Create(ID3D11Device* pDevi
 
 void CState_Tanjiro_Basic_Move::Free()
 {
-	Safe_Release(m_pNavigation);
 	__super::Free();
 }

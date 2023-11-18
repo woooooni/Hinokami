@@ -8,13 +8,15 @@
 #include "Particle_Manager.h"
 
 
-#include "State_Monster_Attack.h"
+
 
 #include "State_Monster_Idle.h"
 #include "State_Monster_Jump.h"
 #include "State_Monster_Trace.h"
 #include "State_Monster_Regen.h"
 #include "State_Monter_Dead.h"
+
+#include "State_NormalMonster0_Attack.h"
 
 #include "State_Monster_Damaged_Basic.h"
 #include "State_Monster_Damaged_AirBorn.h"
@@ -70,7 +72,6 @@ HRESULT CMonster_Normal_0::Initialize(void* pArg)
 void CMonster_Normal_0::Tick(_float fTimeDelta)
 {
 	m_pStateCom->Tick_State(fTimeDelta);
-	m_pRigidBodyCom->Tick_RigidBody(fTimeDelta);
 	__super::Tick(fTimeDelta);
 
 	if (m_bDead)
@@ -80,7 +81,7 @@ void CMonster_Normal_0::Tick(_float fTimeDelta)
 void CMonster_Normal_0::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
-	GI->Add_CollisionGroup(COLLISION_GROUP::MONSTER, this);
+	m_pRigidBodyCom->LateTick_RigidBody(fTimeDelta);
 }
 
 HRESULT CMonster_Normal_0::Render()
@@ -104,7 +105,7 @@ void CMonster_Normal_0::Return_Pool()
 
 void CMonster_Normal_0::Collision_Enter(const COLLISION_INFO& tInfo)
 {
-
+	__super::Collision_Enter(tInfo);
 }
 
 void CMonster_Normal_0::Collision_Continue(const COLLISION_INFO& tInfo)
@@ -117,55 +118,11 @@ void CMonster_Normal_0::Collision_Exit(const COLLISION_INFO& tInfo)
 	__super::Collision_Exit(tInfo);
 }
 
-void CMonster_Normal_0::On_Damaged(CGameObject* pAttacker, _uint eColliderDamageType, _float fDamage)
+void CMonster_Normal_0::On_Damaged(const COLLISION_INFO& tInfo)
 {
-	if (m_bInfinite || m_bReserveDead)
-		return;
-
-	__super::On_Damaged(pAttacker, eColliderDamageType, fDamage);
-	CTransform* pAttackerTransform = pAttacker->Get_Component<CTransform>(L"Com_Transform");
-
-	m_pTransformCom->LookAt_ForLandObject(pAttackerTransform->Get_State(CTransform::STATE_POSITION));
-
-	m_tStat.fHp -= fDamage;
-	if (m_tStat.fHp <= 0.f)
-	{
-		m_bReserveDead = true;
-		m_fDissolveWeight = 0.f;
-		m_pStateCom->Change_State(MONSTER_STATE::DIE);
-		return;
-	}
-
-	switch (eColliderDamageType)
-	{
-	case CCollider::ATTACK_TYPE::BASIC:
-		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BASIC);
-		break;
-
-	case CCollider::ATTACK_TYPE::AIR_BORN:
-		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_AIRBORN);
-		Set_Infinite(0.1f, true);
-		break;
-	case CCollider::ATTACK_TYPE::AIR_STAY:
-		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_AIRSTAY);
-		Set_Infinite(0.1f, true);
-		break;
-
-	case CCollider::ATTACK_TYPE::BLOW:
-		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BLOW);
-		m_pRigidBodyCom->Add_Velocity(XMVectorSetY(XMVector3Normalize(-1.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 0.f), 10.f);
-		Set_Infinite(0.5f, true);
-		break;
-
-	case CCollider::ATTACK_TYPE::BOUND:
-		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BOUND);
-		Set_Infinite(0.5f, true);
-		break;
-
-		
-	}
-
+	__super::On_Damaged(tInfo);
 }
+
 
 
 HRESULT CMonster_Normal_0::Ready_Components()
@@ -258,13 +215,12 @@ HRESULT CMonster_Normal_0::Ready_States()
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_E0001_V00_C00_AtkBurst01");
 	m_pStateCom->Add_State(CMonster::MONSTER_STATE::REGEN, CState_Monster_Regen::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
+
 	strAnimationName.clear();
-	
-    
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_E0001_V00_C00_AtkCmbW01");
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_E0001_V00_C00_AtkCmbW02");
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_E0001_V00_C00_AtkSkl01");
-	m_pStateCom->Add_State(CMonster::ATTACK, CState_Monster_Attack::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
+	m_pStateCom->Add_State(CMonster::ATTACK, CState_NormalMonster0_Attack::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 
 	strAnimationName.clear();
@@ -333,14 +289,6 @@ HRESULT CMonster_Normal_0::Ready_Colliders()
 	ColliderDesc.vOffsetPosition = _float3(0.f, 1.f, 0.f);
 	
 	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::BOUNDARY, &ColliderDesc)))
-		return E_FAIL;
-
-
-	ColliderDesc.tSphere.Radius = .2f;
-	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"C_TongueA_2");
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
-
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::HEAD, &ColliderDesc)))
 		return E_FAIL;
 
 	ColliderDesc.tSphere.Radius = .6f;

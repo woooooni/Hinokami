@@ -23,8 +23,7 @@ public:
 	virtual void Exit_State() override;
 
 private:
-	class CCharacter* m_pCharacter = nullptr;
-	_uint m_iRandomIndex = 0;
+	class CCharacter* m_pOwnerCharacter = nullptr;
 
 public:
 	static CState_Character_Damaged_Basic* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

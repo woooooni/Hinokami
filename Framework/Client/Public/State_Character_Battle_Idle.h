@@ -24,6 +24,9 @@ public:
 
 
 private:
+	class CCharacter* m_pCharacter = nullptr;
+	class CSword* m_pSword = nullptr;
+
 	_float m_fBaseNutTime = 5.f;
 	_float m_fAccBaseNut = 0.f;
 	

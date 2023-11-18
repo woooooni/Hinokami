@@ -15,7 +15,7 @@ private:
 	virtual ~CState_Monster_Regen() = default;
 
 public:
-	HRESULT Initialize(const list<wstring>& AnimationList);
+	virtual HRESULT Initialize(const list<wstring>& AnimationList) override;
 
 public:
 	virtual void Enter_State(void* pArg = nullptr) override;

@@ -14,67 +14,30 @@ CState_Monster_Damaged_AirBorn::CState_Monster_Damaged_AirBorn(ID3D11Device* pDe
 
 HRESULT CState_Monster_Damaged_AirBorn::Initialize(const list<wstring>& AnimationList)
 {
-	m_pModelCom = m_pStateMachineCom->Get_Owner()->Get_Component<CModel>(L"Com_Model");
-	if (nullptr == m_pModelCom)
+	if (FAILED(__super::Initialize(AnimationList)))
 		return E_FAIL;
 
-
-	m_pTransformCom = m_pStateMachineCom->Get_Owner()->Get_Component<CTransform>(L"Com_Transform");
-	if (nullptr == m_pTransformCom)
-		return E_FAIL;
-
-	m_pRigidBodyCom = m_pStateMachineCom->Get_Owner()->Get_Component<CRigidBody>(L"Com_RigidBody");
-	if (nullptr == m_pRigidBodyCom)
-		return E_FAIL;
-
-	m_pOwnerMonster = dynamic_cast<CMonster*>(m_pStateMachineCom->Get_Owner());
+	m_pOwnerMonster = dynamic_cast<CMonster*>(m_pOwner);
 	if (nullptr == m_pOwnerMonster)
 		return E_FAIL;
-
-	Safe_AddRef(m_pOwnerMonster);
-	Safe_AddRef(m_pRigidBodyCom);
-	Safe_AddRef(m_pModelCom);
-	Safe_AddRef(m_pTransformCom);
-
-	for (auto strAnimName : AnimationList)
-	{
-		_int iAnimIndex = m_pModelCom->Find_AnimationIndex(strAnimName);
-		if (-1 != iAnimIndex)
-			m_AnimationIndices.push_back(iAnimIndex);
-		else		
-			return E_FAIL;
-	}
 	
 	return S_OK;
 }
 
 void CState_Monster_Damaged_AirBorn::Enter_State(void* pArg)
 {
+	m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	m_iCurrAnimIndex = 0;
+	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
+
 	m_fAccRecovery = 0.f;
-	m_pModelCom->Set_AnimIndex(m_AnimationIndices[m_iCurrAnimIndex]);
-	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-	
-	_vector vPosition = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) + .5f);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-	
-
-	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	_vector vAirBornDir = (vUp);
-
-
-	m_pRigidBodyCom->Set_Ground(false);
-	m_pRigidBodyCom->Set_Gravity(true);
-
-	
-	m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vAirBornDir), 5.5f);
 }
 
 void CState_Monster_Damaged_AirBorn::Tick_State(_float fTimeDelta)
 {
-	if (m_pModelCom->Is_Animation_Finished(m_AnimationIndices[0]))
+	if (m_pModelCom->Is_Animation_Finished(m_AnimIndices[0]))
 	{
-		m_pModelCom->Set_AnimIndex(m_AnimationIndices[1]);
+		m_pModelCom->Set_AnimIndex(m_AnimIndices[1]);
 	}
 
 	if (m_pRigidBodyCom->Is_Ground())
@@ -82,7 +45,7 @@ void CState_Monster_Damaged_AirBorn::Tick_State(_float fTimeDelta)
 		if (!m_bFirstGround)
 		{
 			m_bFirstGround = true;
-			m_pModelCom->Set_AnimIndex(m_AnimationIndices[2]);
+			m_pModelCom->Set_AnimIndex(m_AnimIndices[2]);
 		}
 			
 		m_fAccRecovery += fTimeDelta;
@@ -97,12 +60,14 @@ void CState_Monster_Damaged_AirBorn::Tick_State(_float fTimeDelta)
 
 void CState_Monster_Damaged_AirBorn::Exit_State()
 {
+	m_pOwnerMonster->Set_Infinite(1.f, true);
+	m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+
 	m_iCurrAnimIndex = 0;
 	m_fAccRecovery = 0.f;
-	m_bFirstGround = false;
 
-	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-	m_pOwnerMonster->Set_Infinite(0.5f, false);
+	
+	m_bFirstGround = false;
 }
 
 CState_Monster_Damaged_AirBorn* CState_Monster_Damaged_AirBorn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
@@ -121,6 +86,4 @@ CState_Monster_Damaged_AirBorn* CState_Monster_Damaged_AirBorn::Create(ID3D11Dev
 void CState_Monster_Damaged_AirBorn::Free()
 {
 	__super::Free();
-	Safe_Release(m_pRigidBodyCom);
-	Safe_Release(m_pOwnerMonster);
 }

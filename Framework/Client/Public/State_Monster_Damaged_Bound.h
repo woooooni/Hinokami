@@ -15,7 +15,7 @@ private:
 	virtual ~CState_Monster_Damaged_Bound() = default;
 
 public:
-	HRESULT Initialize(const list<wstring>& AnimationList);
+	virtual HRESULT Initialize(const list<wstring>& AnimationList) override;
 
 public:
 	virtual void Enter_State(void* pArg = nullptr) override;
@@ -24,7 +24,6 @@ public:
 
 private:
 	class CMonster* m_pOwnerMonster = nullptr;
-	class CRigidBody* m_pRigidBodyCom = nullptr;
 
 	_bool m_bFirstGround = false;
 	_bool m_bFirstChange = false;

@@ -80,9 +80,6 @@ void CEffect::Tick(_float fTimeDelta)
 	m_fAccUVFlow.y += m_tEffectDesc.vUVFlow.y * fTimeDelta;
 	if(m_tEffectDesc.fAlpha > 0.f)
 		m_tEffectDesc.fAlpha -= m_tEffectDesc.fDestAlphaSpeed * fTimeDelta;
-
-	
-	m_pRigidBodyCom->Tick_RigidBody(fTimeDelta);
 	
 	_vector vMoveDir = XMVector3Normalize(XMLoadFloat3(&m_tEffectDesc.vMoveDir));
 	_vector vTurnDir = XMVector3Normalize(XMLoadFloat3(&m_tEffectDesc.vTurnDir));
@@ -132,6 +129,7 @@ void CEffect::LateTick(_float fTimeDelta)
 	
 
 
+	m_pRigidBodyCom->LateTick_RigidBody(fTimeDelta);
 
 	if (m_eType == EFFECT_TYPE::EFFECT_MESH)
 		m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDER_EFFECT, CRenderer::SHADER_TYPE::EFFECT_MODEL, this, WolrdMatrix);

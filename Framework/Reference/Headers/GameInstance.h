@@ -28,8 +28,15 @@ public: /* For.GameInstance */
 	void Clear(_uint iLevelIndex);
 
 public: /* For.Timer_Manager */
+	class CTimer* Find_Timer(const wstring & strTimerTag);
 	_float Compute_TimeDelta(const wstring& strTimerTag);
 	HRESULT	Add_Timer(const wstring& strTimerTag);
+
+	_float Get_TimeDelta(const wstring & strTimerTag);
+
+	HRESULT Set_TimeScale(const wstring & strTimerTag, _float fTimeScale);
+	_float Get_TimeScale(const wstring & strTimerTag);
+
 
 public: /* For.Graphic_Device */
 	ID3D11Device* Get_Device();

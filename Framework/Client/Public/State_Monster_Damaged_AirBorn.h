@@ -15,7 +15,7 @@ private:
 	virtual ~CState_Monster_Damaged_AirBorn() = default;
 
 public:
-	HRESULT Initialize(const list<wstring>& AnimationList);
+	virtual HRESULT Initialize(const list<wstring>& AnimationList) override;
 
 public:
 	virtual void Enter_State(void* pArg = nullptr) override;
@@ -23,12 +23,10 @@ public:
 	virtual void Exit_State() override;
 
 private:
-	class CRigidBody* m_pRigidBodyCom = nullptr;
+	class CMonster* m_pOwnerMonster = nullptr;
 	_bool m_bFirstGround = false;
 	_float m_fAccRecovery = 0.f;
 	_float m_fRecoveryTime = 3.f;
-
-	class CMonster* m_pOwnerMonster = nullptr;
 
 public:
 	static CState_Monster_Damaged_AirBorn* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

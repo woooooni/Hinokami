@@ -2,9 +2,6 @@
 
 #include "Client_Defines.h"
 #include "State.h"
-BEGIN(Engine)
-class CRigidBody;
-END
 
 BEGIN(Client)
 
@@ -25,13 +22,15 @@ public:
 
 private:
 	class CCharacter* m_pCharacter = nullptr;
-	class CRigidBody* m_pRigidBodyCom = nullptr;
 	class CSword* m_pSword = nullptr;
-	_bool bFirstGravity = true;
+
+
+	_bool m_bFirstGravity = true;
+	_bool m_bFirstFindNearTarget = false;
 
 private:
 	void Input(_float fTimeDelta);
-	void Follow_Near_Target();
+	void Follow_Near_Target(_float fTimeDelta);
 
 public:
 	static CState_Tanjiro_Air_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

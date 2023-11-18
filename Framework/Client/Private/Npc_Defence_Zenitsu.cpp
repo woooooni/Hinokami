@@ -94,8 +94,6 @@ void CNpc_Defence_Zenitsu::LateTick(_float fTimeDelta)
 HRESULT CNpc_Defence_Zenitsu::Render()
 {
 	__super::Render();
-	 
-
 	return S_OK;
 }
 
@@ -208,6 +206,8 @@ HRESULT CNpc_Defence_Zenitsu::Ready_Components()
 	/* For.Com_RigidBody */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_RigidBody"), TEXT("Com_RigidBody"), (CComponent**)&m_pRigidBodyCom, &RigidDesc)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CNpc_Defence_Zenitsu::Ready_States()
@@ -236,7 +236,7 @@ HRESULT CNpc_Defence_Zenitsu::Ready_States()
 	m_iRandomAnim_Indices.push_back(m_pModelCom->Find_AnimationIndex(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AdvRxn13_0"));
 	m_iRandomAnim_Indices.push_back(m_pModelCom->Find_AnimationIndex(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AdvRxn13_1"));
 
-	m_pModelCom->Set_Animation(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AdvNut01_1");
+	m_pModelCom->Set_Animation(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AdvNut03_1");
 
 	return S_OK;
 }
@@ -318,8 +318,8 @@ void CNpc_Defence_Zenitsu::Talking(_float fTimeDelta)
 			++m_iTalkIdx;
 			if (m_iTalkIdx >= m_EndScripts.size())
 			{
-				m_iTalkIdx = 0;
 				m_bTalking = false;
+				m_bClearDefence = false;
 				m_bReserveNextScene = true;
 				return;
 			}

@@ -25,7 +25,9 @@ public:
 
 public:
 	_float m_fMoveSpeed = 0.f;
-	class CNavigation* m_pNavigation = nullptr;
+	
+	class CCharacter* m_pCharacter = nullptr;
+	class CSword* m_pSword = nullptr;
 
 
 public:
