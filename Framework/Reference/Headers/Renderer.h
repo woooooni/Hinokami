@@ -34,7 +34,7 @@ private:
 	}INSTANCING_DESC;
 
 private:
-	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);	
+	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CRenderer(const CRenderer& rhs) = delete;
 	virtual ~CRenderer() = default;
 
@@ -56,7 +56,7 @@ public:
 		return S_OK;
 	}
 
-	HRESULT Add_Text(const TEXT_DESC& TextDesc) {
+	HRESULT Add_Text(const TEXT_DESC & TextDesc) {
 		m_RenderTexts.push_back(TextDesc);
 		return S_OK;
 	}
@@ -65,6 +65,10 @@ public:
 
 #endif
 
+public:
+	void Set_FogColor(_float4 vFogColor) { m_vFogColor = vFogColor; }
+	void Set_FogStartEnd(_float2 vFogStartEnd) { m_vFogStartEnd = vFogStartEnd; }
+	void Set_ShadowBias(_float fBias) { m_fBias = fBias; }
 private:
 	HRESULT Render_Priority();
 	HRESULT Render_Shadow();
@@ -96,6 +100,11 @@ private:
 
 	_float4x4					m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
 
+
+private:
+	_float4						m_vFogColor = {.5f, .5f, .5f, 1.f };
+	_float2						m_vFogStartEnd = { 100.f, 100.f };
+	_float						m_fBias = { 0.001f };
 
 private:
 	list<class CGameObject*>			m_RenderObjects[RENDER_END];

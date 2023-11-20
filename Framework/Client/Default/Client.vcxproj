@@ -182,6 +182,7 @@
     <ClInclude Include="..\..\ThirdParty\imstb_textedit.h" />
     <ClInclude Include="..\..\ThirdParty\imstb_truetype.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\Public\Boss_Enmu.h" />
     <ClInclude Include="..\Public\Building.h" />
     <ClInclude Include="..\Public\Camera_Main.h" />
     <ClInclude Include="..\Public\Effect_Manager.h" />
@@ -221,9 +222,11 @@
     <ClInclude Include="..\Public\Network_Manager.h" />
     <ClInclude Include="..\Public\Skill.h" />
     <ClInclude Include="..\Public\Skill_Manager.h" />
+    <ClInclude Include="..\Public\State_Boss_Battle_Dash.h" />
     <ClInclude Include="..\Public\State_Character_Battle_AirDash.h" />
     <ClInclude Include="..\Public\State_Character_Battle_Dash.h" />
     <ClInclude Include="..\Public\State_Character_Damaged_AirStay.h" />
+    <ClInclude Include="..\Public\State_Enmu_Attack.h" />
     <ClInclude Include="..\Public\State_Monster_Damaged_AirStay.h" />
     <ClInclude Include="..\Public\State_Character_Damaged_Bound.h" />
     <ClInclude Include="..\Public\State_NormalMonster0_Attack.h" />
@@ -305,6 +308,7 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Boss_Enmu.cpp" />
     <ClCompile Include="..\Private\Building.cpp" />
     <ClCompile Include="..\Private\Camera_Main.cpp" />
     <ClCompile Include="..\Private\Effect_Manager.cpp" />
@@ -357,9 +361,11 @@
     </ClCompile>
     <ClCompile Include="..\Private\Skill.cpp" />
     <ClCompile Include="..\Private\Skill_Manager.cpp" />
+    <ClCompile Include="..\Private\State_Boss_Battle_Dash.cpp" />
     <ClCompile Include="..\Private\State_Character_Battle_AirDash.cpp" />
     <ClCompile Include="..\Private\State_Character_Battle_Dash.cpp" />
     <ClCompile Include="..\Private\State_Character_Damaged_AirStay.cpp" />
+    <ClCompile Include="..\Private\State_Enmu_Attack.cpp" />
     <ClCompile Include="..\Private\State_Monster_Damaged_AirStay.cpp" />
     <ClCompile Include="..\Private\State_NormalMonster0_Attack.cpp" />
     <ClCompile Include="..\Private\State_Monster_Damaged_AirBorn.cpp" />

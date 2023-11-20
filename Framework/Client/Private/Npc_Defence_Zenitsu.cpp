@@ -271,14 +271,14 @@ HRESULT CNpc_Defence_Zenitsu::Ready_Colliders()
 HRESULT CNpc_Defence_Zenitsu::Ready_Defence()
 {
 	m_RegenPositions.reserve(8);
-	m_RegenPositions.push_back({ -2.5f, 3.5f, 100.f, 1.f });
-	m_RegenPositions.push_back({ 2.5f, 3.5f, 100.f, 1.f });
-	m_RegenPositions.push_back({ 0.f, 3.5f, 108.f, 1.f });
-	m_RegenPositions.push_back({ -2.5f, 3.5f, 112.f, 1.f });
-	m_RegenPositions.push_back({ 2.5f, 3.5f, 112.f, 1.f });
-	m_RegenPositions.push_back({ 0.f, 3.5f, 116.f, 1.f });
-	m_RegenPositions.push_back({ -2.5f, 3.5f, 120.f, 1.f });
-	m_RegenPositions.push_back({ 2.5f, 3.5f, 120.f, 1.f });
+	m_RegenPositions.push_back({ -2.5f, 3.5f, 40.f, 1.f });
+	m_RegenPositions.push_back({ 2.5f, 3.5f, 40.f, 1.f });
+	m_RegenPositions.push_back({ 0.f, 3.5f, 48.f, 1.f });
+	m_RegenPositions.push_back({ -2.5f, 3.5f, 52.f, 1.f });
+	m_RegenPositions.push_back({ 2.5f, 3.5f, 52.f, 1.f });
+	m_RegenPositions.push_back({ 0.f, 3.5f, 56.f, 1.f });
+	m_RegenPositions.push_back({ -2.5f, 3.5f, 60.f, 1.f });
+	m_RegenPositions.push_back({ 2.5f, 3.5f, 60.f, 1.f });
 
 
 
@@ -405,7 +405,7 @@ void CNpc_Defence_Zenitsu::Tick_Defence(_float fTimeDelta)
 		if (0 == Monsters.size())
 		{
 			m_iDefenceDifficulty++;
-			if (m_iDefenceDifficulty > 5)
+			if (m_iDefenceDifficulty >= 3)
 			{
 				m_bStartDefence = false;
 				m_bClearDefence = true;

@@ -60,7 +60,7 @@ void CState_Monster_Damaged_AirBorn::Tick_State(_float fTimeDelta)
 
 void CState_Monster_Damaged_AirBorn::Exit_State()
 {
-	m_pOwnerMonster->Set_Infinite(1.f, true);
+	m_pOwnerMonster->Set_Infinite(0.2f, true);
 	m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
 	m_iCurrAnimIndex = 0;

@@ -54,14 +54,13 @@ void CGround::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
-	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 }
 
 HRESULT CGround::Render()
 {
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCameraPosition", &GI->Get_CamPosition(), sizeof(_float4))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &GI->Get_CamPosition(), sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TransPose(), sizeof(_float4x4))))
@@ -97,7 +96,7 @@ HRESULT CGround::Render_ShadowDepth()
 		return E_FAIL;
 
 	_float4 vCamPosition = GI->Get_CamPosition();
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCameraPosition", &vCamPosition, sizeof(_float4))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &vCamPosition, sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TransPose(), sizeof(_float4x4))))

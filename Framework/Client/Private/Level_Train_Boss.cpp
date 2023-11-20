@@ -12,6 +12,15 @@ CLevel_Train_Boss::CLevel_Train_Boss(ID3D11Device * pDevice, ID3D11DeviceContext
 
 HRESULT CLevel_Train_Boss::Initialize()
 {
+	GI->Lock_Mouse();
+
+	m_pRendererCom = dynamic_cast<CRenderer*>(GI->Clone_Component(LEVEL_STATIC, L"Prototype_Component_Renderer"));
+	if (nullptr == m_pRendererCom)
+		return E_FAIL;
+	
+	m_pRendererCom->Set_FogColor(m_vFogColor);
+	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
@@ -36,11 +45,129 @@ HRESULT CLevel_Train_Boss::Initialize()
 	if (FAILED(Ready_Layer_UI(LAYER_TYPE::LAYER_UI)))
 		return E_FAIL;
 
+	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_TREE);
+	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_PROP);
+	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_GRASS);
+	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_BUILDING);
+	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_MOUNTAIN);
+	m_ScrollObjectLayer.push_back(LAYER_TYPE::LAYER_GROUND);
+
+	m_fScrollSpeed = 100.f;
+	m_fLimitScroll = -1500.f;
+
 	return S_OK;
 }
 
 HRESULT CLevel_Train_Boss::Tick(_float fTimeDelta)
 {
+	if (KEY_TAP(KEY::B))
+	{
+		if (KEY_HOLD(KEY::SHIFT))
+		{
+			m_fBias += 0.000001f;
+		}
+		else
+		{
+			m_fBias += 0.00001f;
+		}
+		m_fBias = max(m_fBias, 0.f);
+		m_pRendererCom->Set_ShadowBias(m_fBias);
+	}
+	if (KEY_TAP(KEY::N))
+	{
+		if (KEY_HOLD(KEY::SHIFT))
+		{
+			m_fBias -= 0.000000001f;
+		}
+		else
+		{
+			m_fBias -= 0.00001f;
+		}
+		
+		m_fBias = max(m_fBias, 0.f);
+		m_pRendererCom->Set_ShadowBias(m_fBias);
+	}
+	//if (KEY_TAP(KEY::U))
+	//{
+	//	m_vFogStartEnd.x -= 1.f;
+	//	m_vFogStartEnd.x = max(0.f, m_vFogStartEnd.x);
+	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	//}
+
+	//if (KEY_TAP(KEY::I))
+	//{
+	//	m_vFogStartEnd.x += 1.f;
+	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	//}
+
+	//if (KEY_TAP(KEY::O))
+	//{
+	//	m_vFogStartEnd.y -= 1.f;
+	//	m_vFogStartEnd.y = max(0.f, m_vFogStartEnd.y);
+	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	//}
+
+	//if (KEY_TAP(KEY::P))
+	//{
+
+	//	m_vFogStartEnd.y += 1.f;
+	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	//}
+
+
+	//if (KEY_TAP(KEY::R))
+	//{
+	//	if (KEY_HOLD(KEY::SHIFT))
+	//	{
+	//		m_vFogColor.x -= 0.1f;
+	//		m_vFogColor.x = max(0.f, m_vFogColor.x);
+	//	}
+	//	else
+	//	{
+	//		m_vFogColor.x += 0.1f;
+	//		m_vFogColor.x = min(m_vFogColor.x, 1.f);
+	//	}
+	//	m_pRendererCom->Set_FogColor(m_vFogColor);
+	//}
+
+	//if (KEY_TAP(KEY::G))
+	//{
+	//	if (KEY_HOLD(KEY::SHIFT))
+	//	{
+	//		m_vFogColor.y -= 0.1f;
+	//		m_vFogColor.y = max(0.f, m_vFogColor.y);
+	//	}
+	//	else
+	//	{
+	//		m_vFogColor.y += 0.1f;
+	//		m_vFogColor.y = min(m_vFogColor.y, 1.f);
+	//	}
+	//	m_pRendererCom->Set_FogColor(m_vFogColor);
+	//}
+
+	//if (KEY_TAP(KEY::B))
+	//{
+	//	if (KEY_HOLD(KEY::SHIFT))
+	//	{
+	//		m_vFogColor.z -= 0.1f;
+	//		m_vFogColor.z = max(0.f, m_vFogColor.z);
+	//	}
+	//	else
+	//	{
+	//		m_vFogColor.z += 0.1f;
+	//		m_vFogColor.z = min(m_vFogColor.z, 1.f);
+	//	}
+	//	m_pRendererCom->Set_FogColor(m_vFogColor);
+	//}
+
+
+
+	m_fAccScroll -= m_fScrollSpeed * fTimeDelta;
+	if (m_fAccScroll <= m_fLimitScroll)
+		Reset_Scroll();
+
+	Scroll(fTimeDelta);
+
 	return S_OK;
 }
 
@@ -63,44 +190,6 @@ HRESULT CLevel_Train_Boss::Exit_Level()
 
 HRESULT CLevel_Train_Boss::Ready_Lights()
 {
-	
-
-
-	LIGHTDESC			LightDesc;
-
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(15.0f, 5.0f, 15.0f, 1.f);
-	LightDesc.fRange = 10.f;
-	LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
-
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
-
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(25.0f, 5.0f, 15.0f, 1.f);
-	LightDesc.fRange = 10.f;
-	LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
-
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
-
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.5, 0.5, 0.5, 1.f);
-	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
-
-	;
 
 	return S_OK;
 }
@@ -117,7 +206,7 @@ HRESULT CLevel_Train_Boss::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
 	CameraDesc.fNear = 0.2f;
-	CameraDesc.fFar = 300.0f;
+	CameraDesc.fFar = 1000.f;
 
 	CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
 	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
@@ -154,25 +243,6 @@ HRESULT CLevel_Train_Boss::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 	if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_Component<CTransform>(L"Com_Transform"))))
 		return E_FAIL;
 
-	//CGameObject* pZenitsu = nullptr;
-	//if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Zenitsu"), nullptr, &pZenitsu)))
-	//	return E_FAIL;
-
-	//CGameObject* pObject = GI->Find_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, L"Main_Camera");
-	//if (nullptr == pObject)
-	//	return E_FAIL;
-
-	//CCamera_Main* pCamera = dynamic_cast<CCamera_Main*>(pObject);
-	//if (nullptr == pCamera)
-	//	return E_FAIL;
-
-	//CCharacter* pCharacter = dynamic_cast<CCharacter*>(pZenitsu);
-	//if (nullptr == pCharacter)
-	//	return E_FAIL;
-
-	//if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_TransformCom())))
-	//	return E_FAIL;
-
 	return S_OK;
 }
 
@@ -189,23 +259,29 @@ HRESULT CLevel_Train_Boss::Ready_Layer_BackGround(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_Train_Boss::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 {
-	/*for (_uint i = 0; i < 10; ++i)
-	{
-		CGameObject* pMonster = nullptr;
-		if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster"), nullptr, &pMonster)))
-			return E_FAIL;
+	CGameObject* pBoss = GI->Clone_GameObject(TEXT("Prototype_GameObject_Enmu"), LAYER_MONSTER);
 
-		if (nullptr == pMonster)
-			return E_FAIL;
 
-		CTransform* pTransform = pMonster->Get_Component<CTransform>(L"Com_Transform");
-		if (nullptr == pTransform)
-			return E_FAIL;
+	CTransform* pTransform = pBoss->Get_Component<CTransform>(L"Com_Transform");
+	CNavigation* pNavigation = pBoss->Get_Component<CNavigation>(L"Com_Navigation");
+	if (nullptr == pNavigation || nullptr == pTransform)
+		return E_FAIL;
 
-		_vector vPosition = XMVectorSet(rand() % 10, 0.f, rand() % 10, 1.f);
-		pTransform->Set_State(CTransform::STATE_POSITION, vPosition);
-	}*/
+	pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 10.6f, 185.f, 1.f));
+
+	CNavigation::NAVIGATION_DESC NaviDesc;
+	NaviDesc.bInitialize_Index = true;
+	XMStoreFloat4(&NaviDesc.vStartWorldPosition, pTransform->Get_State(CTransform::STATE_POSITION));
+
+	if (FAILED(pNavigation->Initialize(&NaviDesc)))
+		MSG_BOX("Gen TrainBoss FAILED.");
+	else
+		pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&NaviDesc.vStartWorldPosition));
+
 	
+	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_BOSS, LAYER_TYPE::LAYER_MONSTER, pBoss)))
+		return E_FAIL;	
+
 	
 
 	return S_OK;
@@ -223,6 +299,53 @@ HRESULT CLevel_Train_Boss::Ready_Layer_Effect(const LAYER_TYPE eLayerType)
 {
 
 	return S_OK;
+}
+
+void CLevel_Train_Boss::Reset_Scroll()
+{
+	for (auto& Layer : m_ScrollObjectLayer)
+	{
+		const list<class CGameObject*>& GameObjects = GI->Find_GameObjects(GI->Get_CurrentLevel(), Layer);
+
+		for (auto& Object : GameObjects)
+		{
+			if (Object->Get_ObjectTag().find(L"Locomotive") != wstring::npos)
+				continue;
+
+			CTransform* pTransform = Object->Get_Component<CTransform>(L"Com_Transform");
+			if (nullptr == pTransform)
+				continue;
+
+			_vector vPosition = pTransform->Get_State(CTransform::STATE::STATE_POSITION);
+			vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) + fabs(m_fAccScroll));
+			pTransform->Set_State(CTransform::STATE::STATE_POSITION, vPosition);
+		}
+	}
+
+	m_fAccScroll = 0.f;
+}
+
+void CLevel_Train_Boss::Scroll(_float fTimeDelta)
+{
+	for (auto& Layer : m_ScrollObjectLayer)
+	{
+		const list<class CGameObject*>& GameObjects = GI->Find_GameObjects(GI->Get_CurrentLevel(), Layer);
+
+		for (auto& Object : GameObjects)
+		{
+			if (Object->Get_ObjectTag().find(L"Locomotive") != wstring::npos)
+				continue;
+
+			CTransform* pTransform = Object->Get_Component<CTransform>(L"Com_Transform");
+			if (nullptr == pTransform)
+				continue;
+
+
+			_vector vPosition = pTransform->Get_State(CTransform::STATE::STATE_POSITION);
+			vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) - (m_fScrollSpeed * fTimeDelta));
+			pTransform->Set_State(CTransform::STATE::STATE_POSITION, vPosition);
+		}
+	}
 }
 
 CLevel_Train_Boss * CLevel_Train_Boss::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

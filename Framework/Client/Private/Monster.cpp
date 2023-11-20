@@ -132,7 +132,7 @@ HRESULT CMonster::Render()
 		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
 			return E_FAIL;
 
-		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_NormalTexture")))
+		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_NORMALS, "g_NormalTexture")))
 			iPassIndex = 0;
 		else
 			iPassIndex++;
@@ -189,6 +189,14 @@ HRESULT CMonster::Render_ShadowDepth()
 
 void CMonster::Collision_Enter(const COLLISION_INFO& tInfo)
 {
+	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER || tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_WEAPON)
+	{
+		if (tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::BODY && tInfo.pOtherCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::ATTACK)
+		{
+			On_Damaged(tInfo);
+		}
+	}
+
 }
 
 void CMonster::Collision_Continue(const COLLISION_INFO& tInfo)
@@ -269,9 +277,11 @@ void CMonster::On_Damaged(const COLLISION_INFO& tInfo)
 	}
 
 
+	LookAt_DamagedObject(tInfo.pOther);
 	switch (tInfo.pOtherCollider->Get_AttackType())
 	{
 	case CCollider::ATTACK_TYPE::BASIC:
+		m_pRigidBodyCom->Add_Velocity(-1.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), tInfo.pOtherCollider->Get_PushPower());
 		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BASIC);
 		break;
 
@@ -309,6 +319,15 @@ void CMonster::On_Damaged(const COLLISION_INFO& tInfo)
 
 
 
+
+void CMonster::LookAt_DamagedObject(CGameObject* pAttacker)
+{
+	CTransform* pOtherTransform = pAttacker->Get_Component<CTransform>(L"Com_Transform");
+	if (nullptr == pOtherTransform)
+		return;
+
+	m_pTransformCom->LookAt_ForLandObject(pOtherTransform->Get_State(CTransform::STATE_POSITION));
+}
 
 void CMonster::Free()
 {

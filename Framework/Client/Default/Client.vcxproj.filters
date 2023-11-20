@@ -169,9 +169,6 @@
     <Filter Include="02.GameObjects\03. Character\00. Tanjiro\State\Battle">
       <UniqueIdentifier>{00bd1f86-b35d-4c7b-a4fa-eeda785e4f19}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\05. Monster\Normal_Monster0">
-      <UniqueIdentifier>{6765949d-a3e9-43c9-86e4-fb04aec55a40}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\05. Monster\State">
       <UniqueIdentifier>{b8386616-1c9e-47da-8786-88995eefec71}</UniqueIdentifier>
     </Filter>
@@ -244,12 +241,6 @@
     <Filter Include="02.GameObjects\03. Character\00. State\Jump">
       <UniqueIdentifier>{bccafb2c-4998-405c-b1e5-a7bb8fcb0203}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\05. Monster\Normal_Monster2">
-      <UniqueIdentifier>{aaabf629-7779-43d6-8a96-cae73f4f0bc4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\05. Monster\Normal_Monster1">
-      <UniqueIdentifier>{f51eafe0-5276-43f0-ac73-552f8ff0a0cb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97. ShaderFiles\Instancing">
       <UniqueIdentifier>{9dc92367-cff9-46a1-9a4d-f72d7df5ad80}</UniqueIdentifier>
     </Filter>
@@ -261,9 +252,6 @@
     </Filter>
     <Filter Include="96. Manager\Skill">
       <UniqueIdentifier>{8f644f2f-b503-4fff-9b21-d9eb127921af}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Character\97. AttackCollider">
-      <UniqueIdentifier>{502b566f-2bda-4ce8-af8f-40f928f491b0}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Levels\01. Train_Station">
       <UniqueIdentifier>{001c8170-e0a0-429b-96c3-38ac67fa7a9c}</UniqueIdentifier>
@@ -310,14 +298,38 @@
     <Filter Include="02.GameObjects\98. UI\00. Common\Battle\End">
       <UniqueIdentifier>{bc059024-a99c-4104-9d05-642991f30c1d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\05. Monster\Normal_Monster0\State">
+    <Filter Include="02.GameObjects\05. Monster\Normal">
+      <UniqueIdentifier>{09db14e7-75ac-417e-873f-d6fd20bd8552}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Normal\Normal_Monster0">
+      <UniqueIdentifier>{6765949d-a3e9-43c9-86e4-fb04aec55a40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Normal\Normal_Monster0\State">
       <UniqueIdentifier>{a0589821-2884-4d1d-a44d-629da37cc91d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\05. Monster\Normal_Monster1\State">
+    <Filter Include="02.GameObjects\05. Monster\Normal\Normal_Monster1">
+      <UniqueIdentifier>{f51eafe0-5276-43f0-ac73-552f8ff0a0cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Normal\Normal_Monster1\State">
       <UniqueIdentifier>{83f51572-b99b-4b4e-af43-c04affc166e5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\05. Monster\Normal_Monster2\State">
+    <Filter Include="02.GameObjects\05. Monster\Normal\Normal_Monster2">
+      <UniqueIdentifier>{aaabf629-7779-43d6-8a96-cae73f4f0bc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Normal\Normal_Monster2\State">
       <UniqueIdentifier>{5eb3fb3b-faf9-4c86-a6e0-5915e7ca555a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss">
+      <UniqueIdentifier>{a363d43d-f0dc-4729-b248-bd15c0557a59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Enmu">
+      <UniqueIdentifier>{489d3b7c-1012-40b9-8fc6-39af0717ad14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Enmu\State">
+      <UniqueIdentifier>{7a406051-7ccc-4429-843c-0236ccf2ee75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\State">
+      <UniqueIdentifier>{9fcc9936-f737-43cc-acef-3a900772a6e4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -499,7 +511,7 @@
       <Filter>02.GameObjects\05. Monster</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster_Normal_0.h">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster0</Filter>
+      <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster0</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_Monster_Idle.h">
       <Filter>02.GameObjects\05. Monster\State\Idle</Filter>
@@ -514,7 +526,7 @@
       <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_NormalMonster0_Attack.h">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster0\State</Filter>
+      <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster0\State</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_Monter_Dead.h">
       <Filter>02.GameObjects\05. Monster\State\Dead</Filter>
@@ -625,10 +637,10 @@
       <Filter>02.GameObjects\11. NPC\00. General_Person\00</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster_Normal_1.h">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster1</Filter>
+      <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster1</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster_Normal_2.h">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster2</Filter>
+      <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster2</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Npc_Defence_Zenitsu.h">
       <Filter>02.GameObjects\11. NPC\01. Defence_Zenitsu</Filter>
@@ -640,13 +652,22 @@
       <Filter>02.GameObjects\98. UI\00. Common\Battle\End</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_NormalMonster1_Attack.h">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster1\State</Filter>
+      <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster1\State</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_NormalMonster2_Attack.h">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster2\State</Filter>
+      <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster2\State</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_Character_Damaged_AirStay.h">
       <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Boss_Enmu.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Enmu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Enmu_Attack.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Enmu\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Boss_Battle_Dash.h">
+      <Filter>02.GameObjects\05. Monster\Boss\State</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -816,7 +837,7 @@
       <Filter>02.GameObjects\05. Monster</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Normal_0.cpp">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster0</Filter>
+      <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster0</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Monster_Idle.cpp">
       <Filter>02.GameObjects\05. Monster\State\Idle</Filter>
@@ -831,7 +852,7 @@
       <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_NormalMonster0_Attack.cpp">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster0\State</Filter>
+      <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster0\State</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Monter_Dead.cpp">
       <Filter>02.GameObjects\05. Monster\State\Dead</Filter>
@@ -939,10 +960,10 @@
       <Filter>02.GameObjects\11. NPC\00. General_Person\00</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Normal_1.cpp">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster1</Filter>
+      <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster1</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Normal_2.cpp">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster2</Filter>
+      <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster2</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Npc_Defence_Zenitsu.cpp">
       <Filter>02.GameObjects\11. NPC\01. Defence_Zenitsu</Filter>
@@ -954,13 +975,22 @@
       <Filter>02.GameObjects\98. UI\00. Common\Battle\Start</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_NormalMonster1_Attack.cpp">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster1\State</Filter>
+      <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster1\State</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_NormalMonster2_Attack.cpp">
-      <Filter>02.GameObjects\05. Monster\Normal_Monster2\State</Filter>
+      <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster2\State</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Character_Damaged_AirStay.cpp">
       <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss_Enmu.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Enmu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Enmu_Attack.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Enmu\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Boss_Battle_Dash.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

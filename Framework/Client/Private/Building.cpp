@@ -60,7 +60,7 @@ void CBuilding::LateTick(_float fTimeDelta)
 	__super::LateTick(fTimeDelta);
 
 	m_strPrototypeTag;
-	if (true == GI->Intersect_Frustum_World(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3.f))
+	if (true == GI->Intersect_Frustum_World(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 20.f))
 	{
 		m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDERGROUP::RENDER_SHADOW, CRenderer::SHADER_TYPE::MODEL, this, m_pTransformCom->Get_WorldFloat4x4());
 		m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDERGROUP::RENDER_NONBLEND, CRenderer::SHADER_TYPE::MODEL, this, m_pTransformCom->Get_WorldFloat4x4());
@@ -76,7 +76,7 @@ HRESULT CBuilding::Render_Instance(CShader* pInstancingShader, CVIBuffer_Instanc
 	if (nullptr == m_pModelCom || nullptr == pInstancingShader)
 		return E_FAIL;
 
-	if (FAILED(pInstancingShader->Bind_RawValue("g_vCameraPosition", &GI->Get_CamPosition(), sizeof(_float4))))
+	if (FAILED(pInstancingShader->Bind_RawValue("g_vCamPosition", &GI->Get_CamPosition(), sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(pInstancingShader->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TransPose(), sizeof(_float4x4))))
@@ -112,7 +112,7 @@ HRESULT CBuilding::Render_Instance_Shadow(CShader* pInstancingShader, CVIBuffer_
 		return E_FAIL;
 
 	_float4 vCamPosition = GI->Get_CamPosition();
-	if (FAILED(pInstancingShader->Bind_RawValue("g_vCameraPosition", &vCamPosition, sizeof(_float4))))
+	if (FAILED(pInstancingShader->Bind_RawValue("g_vCamPosition", &vCamPosition, sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(pInstancingShader->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TransPose(), sizeof(_float4x4))))

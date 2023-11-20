@@ -70,7 +70,7 @@ HRESULT CTree::Render_Instance(CShader* pInstancingShader, CVIBuffer_Instancing*
 	if (nullptr == m_pModelCom || nullptr == pInstancingShader)
 		return E_FAIL;
 
-	if (FAILED(pInstancingShader->Bind_RawValue("g_vCameraPosition", &GI->Get_CamPosition(), sizeof(_float4))))
+	if (FAILED(pInstancingShader->Bind_RawValue("g_vCamPosition", &GI->Get_CamPosition(), sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(pInstancingShader->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TransPose(), sizeof(_float4x4))))
@@ -106,7 +106,7 @@ HRESULT CTree::Render_Instance_Shadow(CShader* pInstancingShader, CVIBuffer_Inst
 		return E_FAIL;
 
 	_float4 vCamPosition = GI->Get_CamPosition();
-	if (FAILED(pInstancingShader->Bind_RawValue("g_vCameraPosition", &vCamPosition, sizeof(_float4))))
+	if (FAILED(pInstancingShader->Bind_RawValue("g_vCamPosition", &vCamPosition, sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(pInstancingShader->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TransPose(), sizeof(_float4x4))))

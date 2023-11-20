@@ -328,16 +328,16 @@ HRESULT CRenderer::Render_Shadow()
 
 	for (auto& iter : m_RenderObjects[RENDER_SHADOW])
 	{
-		/*if (FAILED(iter->Render_ShadowDepth()))
-			return E_FAIL;*/
+		if (FAILED(iter->Render_ShadowDepth()))
+			return E_FAIL;
 		Safe_Release(iter);
 	}
 	m_RenderObjects[RENDER_SHADOW].clear();
 
 	for (auto& Pair : m_Render_Instancing_Objects[RENDER_SHADOW])
 	{
-		/*if (FAILED(Pair.second.pGameObject->Render_Instance_Shadow(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
-			return E_FAIL;*/
+		if (FAILED(Pair.second.pGameObject->Render_Instance_Shadow(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
+			return E_FAIL;
 
 		Safe_Release(Pair.second.pGameObject);
 		Pair.second.WorldMatrices.clear();
@@ -455,19 +455,30 @@ HRESULT CRenderer::Render_Lights()
 
 HRESULT CRenderer::Render_Deferred()
 {
+	
 	/* 디퓨즈 타겟과 셰이드 타겟을 서로 곱하여 백버퍼에 최종적으로 찍어낸다. */
 	_float4 vCamPosition = GI->Get_CamPosition();
-	
-	
-
 	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", &vCamPosition, sizeof(_float4))))
 		return E_FAIL;
+
+
+	if (FAILED(m_pShader->Bind_RawValue("g_vFogColor", &m_vFogColor, sizeof(_float4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_vFogStartEnd", &m_vFogStartEnd, sizeof(_float2))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_fBias", &m_fBias, sizeof(_float))))
+		return E_FAIL;
+
+
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
+	
 
 	_float4x4 ViewMatrixInv;
 	ViewMatrixInv = GI->Get_TransformMatrixInverse_Float4x4(CPipeLine::D3DTS_VIEW);

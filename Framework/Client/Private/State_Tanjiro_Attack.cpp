@@ -36,6 +36,8 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 
 	Find_Near_Target();
 	m_pCharacter->DrawSword();
+
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
@@ -65,29 +67,38 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 	case 0:
 		if (fProgress > 0.5f)
 		{
+			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 			m_pSword->Stop_Trail();
 		}
-			
+		
+		m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 		break;
 
 	case 1:
 		if (fProgress > 0.5f)
 		{
-			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 			m_pSword->Stop_Trail();
+
+			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+			
 		}
 
+		m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 		break;
 
 	case 2:
 		if (fProgress > 0.5f)
 		{
-			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 			m_pSword->Stop_Trail();
+
+			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 		}
+		m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 		break;
 
@@ -95,15 +106,23 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 		if (fProgress >= 0.2f && fProgress <= 0.6f)
 		{
 			if (fProgress <= 0.4f)
+			{
+				m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 7.f, 0.1f, 1.f);
 				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 7.f, 0.1f, 1.f);
-			else			
+			}
+			else
+			{
+				m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BOUND, -5.f, 1.5f, 1.f);
 				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BOUND, -5.f, 1.5f, 1.f);
+			}
 				
-
+				
+			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		}
 		else
 		{
+			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 		}
 		break;
@@ -111,7 +130,10 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 	case 4:
 		if (fProgress >= 0.2f && fProgress <= 0.55f)
 		{
+			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 5.f, 1.f);
 			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 5.f, 1.f);
+
+			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		}
 		else
@@ -120,6 +142,7 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 			{
 				m_pSword->Stop_Trail();
 			}
+			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 		}
 			
@@ -135,7 +158,11 @@ void CState_Tanjiro_Attack::Exit_State()
 	Find_Near_Target();
 
 	m_pSword->Stop_Trail();
+
+	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
+
+	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 }
 

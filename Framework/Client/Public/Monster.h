@@ -26,11 +26,10 @@ public:
 	enum MONSTER_STATE { 
 		REGEN,
 		IDLE, 
-		TRACE,  
-		DEFENCE_TRACE,
-		JUMP,		
+		JUMP,
 		ATTACK,
 		SKILL,
+		DASH,
 		DAMAGED_BASIC, 
 		DAMAGED_BLOW,
 		DAMAGED_AIRBORN,
@@ -38,6 +37,9 @@ public:
 		DAMAGED_BOUND,
 		KNOCKDOWN,
 		DIE,
+
+		TRACE,
+		DEFENCE_TRACE,
 		STATE_END
 	};
 
@@ -85,16 +87,17 @@ public:
 public:
 	CHierarchyNode* Get_Socket(const wstring& strSocketName);
 
-protected:
-	virtual HRESULT Ready_Components() PURE;
-	virtual HRESULT Ready_States() PURE;
-	virtual HRESULT Ready_Colliders() PURE;
 
 
 public:
 	virtual void On_Damaged(const COLLISION_INFO& tInfo);
 	
 
+
+protected:
+	virtual HRESULT Ready_Components() PURE;
+	virtual HRESULT Ready_States() PURE;
+	virtual HRESULT Ready_Colliders() PURE;
 
 protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CShader* m_pShaderCom = nullptr;
@@ -123,6 +126,11 @@ protected:
 
 protected:
 	_float m_fDissolveWeight = 0.f;
+
+
+private:
+	void LookAt_DamagedObject(CGameObject* pAttacker);
+
 
 
 public:

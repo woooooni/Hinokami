@@ -50,8 +50,8 @@ void CState_Monster_Defence_Trace::Tick_State(_float fTimeDelta)
 		
 
 	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>(L"Com_Transform");
-	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vTargetPosition = pTargetTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vPosition = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f);
+	_vector vTargetPosition = XMVectorSetY(pTargetTransform->Get_State(CTransform::STATE_POSITION), 0.f);
 
 	_vector vDir = vTargetPosition - vPosition;
 	XMVectorSetY(vDir, 0.f);

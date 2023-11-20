@@ -82,6 +82,7 @@ void CAnimation::Reset_Animation()
 	m_bPause = false;
 	m_bFinished = false;
 
+
 	for (auto& pChannel : m_Channels)
 	{
 		for (auto& iCurrentKeyFrame : m_ChannelKeyFrames)

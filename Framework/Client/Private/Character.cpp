@@ -8,6 +8,7 @@
 #include "Sweath.h"
 #include <future>
 #include "Trail.h"
+#include "Monster.h"
 
 
 USING(Client)
@@ -200,9 +201,7 @@ void CCharacter::Collision_Enter(const COLLISION_INFO& tInfo)
 {
 	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER)
 	{
-		if ((tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::BODY
-			|| tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::HEAD)
-			&& tInfo.pOtherCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::ATTACK)
+		if (tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::BODY && tInfo.pOtherCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::ATTACK)
 		{
 			On_Damaged(tInfo);
 		}
@@ -322,6 +321,9 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 	if (m_bInfinite || m_bReserveDead)
 		return;
 
+	if (CCharacter::STATE::ATTACK == m_pStateCom->Get_CurrState())
+		return;
+
 	CTransform* pAttackerTransform = tInfo.pOther->Get_Component<CTransform>(L"Com_Transform");
 	m_pTransformCom->LookAt_ForLandObject(pAttackerTransform->Get_State(CTransform::STATE_POSITION));
 
@@ -336,6 +338,7 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 	switch (tInfo.pOtherCollider->Get_AttackType())
 	{
 	case CCollider::ATTACK_TYPE::BASIC:
+		m_pRigidBodyCom->Add_Velocity(-1.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), tInfo.pOtherCollider->Get_PushPower());
 		m_pStateCom->Change_State(STATE::DAMAGED_BASIC);
 		break;
 

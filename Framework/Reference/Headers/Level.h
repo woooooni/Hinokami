@@ -28,6 +28,11 @@ protected:
 	ID3D11Device*				m_pDevice = { nullptr };
 	ID3D11DeviceContext*		m_pContext = { nullptr };
 
+protected:
+	_float4 m_vFogColor = { .1f, .2f, 1.f, 1.f };
+	_float2 m_vFogStartEnd = { 0.f, 70.f };
+	class CRenderer* m_pRendererCom = nullptr;
+
 public:
 	virtual void Free() override;
 };

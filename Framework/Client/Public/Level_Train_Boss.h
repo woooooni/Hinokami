@@ -2,6 +2,10 @@
 
 #include "Client_Defines.h"
 #include "Level.h"
+BEGIN(Engine)
+class CRenderer;
+END
+
 
 BEGIN(Client)
 
@@ -20,6 +24,17 @@ public:
 	virtual HRESULT Enter_Level() override;
 	virtual HRESULT Exit_Level() override;
 
+private:
+	list<LAYER_TYPE> m_ScrollObjectLayer;
+	_float m_fScrollSpeed = 100.f;
+
+	_float m_fAccScroll = 0.f;
+	_float m_fLimitScroll = 300.f;
+
+	// TODO : Delete
+	_float m_fBias = 0.0001f;
+
+
 
 private:
 	HRESULT Ready_Lights();
@@ -30,6 +45,11 @@ private:
 	HRESULT Ready_Layer_Monster(const LAYER_TYPE eLayerType);
 	HRESULT Ready_Layer_UI(const LAYER_TYPE eLayerType);
 	HRESULT Ready_Layer_Effect(const LAYER_TYPE eLayerType);
+
+
+private:
+	void Scroll(_float fTimeDelta);
+	void Reset_Scroll();
 
 public:
 	static class CLevel_Train_Boss* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

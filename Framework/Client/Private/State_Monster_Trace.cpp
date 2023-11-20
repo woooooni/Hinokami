@@ -81,7 +81,6 @@ void CState_Monster_Trace::Tick_State(_float fTimeDelta)
 	m_fDistance = 20.f;
 
 	
-
 	if (m_fDistance < XMVectorGetX(XMVector3Length(vDir)))
 	{
 		m_pStateMachineCom->Change_State(CMonster::IDLE);
@@ -94,9 +93,13 @@ void CState_Monster_Trace::Tick_State(_float fTimeDelta)
 			m_pStateMachineCom->Change_State(CMonster::ATTACK);
 		return;
 	}
+	else
+	{
+		m_pTransformCom->LookAt_ForLandObject(vTargetPosition);
+		m_pTransformCom->Go_Straight(fTimeDelta, m_pStateMachineCom->Get_Owner()->Get_Component<CNavigation>(L"Com_Navigation"));
+	}
 
-	m_pTransformCom->LookAt_ForLandObject(vTargetPosition);
-	m_pTransformCom->Go_Straight(fTimeDelta, m_pStateMachineCom->Get_Owner()->Get_Component<CNavigation>(L"Com_Navigation"));
+	
 }
 
 void CState_Monster_Trace::Exit_State()

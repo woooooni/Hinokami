@@ -17,6 +17,14 @@ HRESULT CLevel_Train::Initialize()
 {
 	GI->Lock_Mouse();
 
+	m_pRendererCom = dynamic_cast<CRenderer*>(GI->Clone_Component(LEVEL_STATIC, L"Prototype_Component_Renderer"));
+	if (nullptr == m_pRendererCom)
+		return E_FAIL;
+
+	m_vFogColor = { .4f, .3f, .2f, 1.f };
+	m_pRendererCom->Set_FogColor(m_vFogColor);
+	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
@@ -65,6 +73,53 @@ HRESULT CLevel_Train::Tick(_float fTimeDelta)
 
 	Scroll(fTimeDelta);
 
+
+
+	/*if (KEY_TAP(KEY::R))
+	{
+		if (KEY_HOLD(KEY::SHIFT))
+		{
+			m_vFogColor.x -= 0.1f;
+			m_vFogColor.x = max(0.f, m_vFogColor.x);
+		}
+		else
+		{
+			m_vFogColor.x += 0.1f;
+			m_vFogColor.x = min(m_vFogColor.x, 1.f);
+		}
+		m_pRendererCom->Set_FogColor(m_vFogColor);
+	}
+
+	if (KEY_TAP(KEY::G))
+	{
+		if (KEY_HOLD(KEY::SHIFT))
+		{
+			m_vFogColor.y -= 0.1f;
+			m_vFogColor.y = max(0.f, m_vFogColor.y);
+		}
+		else
+		{
+			m_vFogColor.y += 0.1f;
+			m_vFogColor.y = min(m_vFogColor.y, 1.f);
+		}
+		m_pRendererCom->Set_FogColor(m_vFogColor);
+	}
+
+	if (KEY_TAP(KEY::B))
+	{
+		if (KEY_HOLD(KEY::SHIFT))
+		{
+			m_vFogColor.z -= 0.1f;
+			m_vFogColor.z = max(0.f, m_vFogColor.z);
+		}
+		else
+		{
+			m_vFogColor.z += 0.1f;
+			m_vFogColor.z = min(m_vFogColor.z, 1.f);
+		}
+		m_pRendererCom->Set_FogColor(m_vFogColor);
+	}*/
+
 	
 	
 	return S_OK;
@@ -88,39 +143,7 @@ HRESULT CLevel_Train::Exit_Level()
 
 HRESULT CLevel_Train::Ready_Lights()
 {
-	LIGHTDESC			LightDesc;
 
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(15.0f, 5.0f, 15.0f, 1.f);
-	LightDesc.fRange = 10.f;
-	LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
-
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
-
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(25.0f, 5.0f, 15.0f, 1.f);
-	LightDesc.fRange = 10.f;
-	LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
-
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
-
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.5, 0.5, 0.5, 1.f);
-	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
 
 	return S_OK;
 }

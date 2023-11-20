@@ -26,6 +26,7 @@ HRESULT CState_Monster_Damaged_Basic::Initialize(const list<wstring>& AnimationL
 
 void CState_Monster_Damaged_Basic::Enter_State(void* pArg)
 {
+	m_pOwnerMonster->Set_Infinite(999.f, true);
 	m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
 	m_iCurrAnimIndex = (rand() + rand() + rand()) % m_AnimIndices.size();
@@ -37,12 +38,15 @@ void CState_Monster_Damaged_Basic::Tick_State(_float fTimeDelta)
 	
 	if (m_pModelCom->Is_Animation_Finished(m_AnimIndices[m_iCurrAnimIndex]))
 		m_pStateMachineCom->Change_State(CMonster::MONSTER_STATE::IDLE);
+
+	
 		
 }
 
 void CState_Monster_Damaged_Basic::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
+	m_pOwnerMonster->Set_Infinite(.1f, false);
 	m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 

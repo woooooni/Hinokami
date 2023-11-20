@@ -111,11 +111,6 @@ void CSword::Collision_Enter(const COLLISION_INFO& tInfo)
 	{
 		if ((tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::ATTACK) && (tInfo.pOtherCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::BODY))
 		{
-			CMonster* pMonster = dynamic_cast<CMonster*>(tInfo.pOther);
-			if (nullptr == pMonster)
-				return;
-
-
 			_matrix WorldMatrix = XMMatrixIdentity();
 			WorldMatrix.r[CTransform::STATE::STATE_POSITION] = XMVectorSetW(tInfo.pOtherCollider->Get_Position(), 1.f);
 
@@ -131,13 +126,6 @@ void CSword::Collision_Enter(const COLLISION_INFO& tInfo)
 				// CParticle_Manager::GetInstance()->Generate_Particle(L"Kyojuro_Attack_Particle", WorldMatrix);
 				break;
 			}
-
-			COLLISION_INFO tNewInfo;
-			tNewInfo.pMyCollider = tInfo.pOtherCollider;
-			tNewInfo.pOtherCollider = tInfo.pMyCollider;
-			tNewInfo.pOther = this;
-
-			pMonster->On_Damaged(tNewInfo);
 		}
 	}
 }

@@ -26,6 +26,7 @@ HRESULT CTimer_Manager::Set_TimeScale(const wstring& strTimerTag, _float fTimeSc
 		return E_FAIL;
 
 	pTimer->Set_TimeScale(fTimeScale);
+	return S_OK;
 }
 
 _float CTimer_Manager::Get_TimeScale(const wstring& strTimerTag)
