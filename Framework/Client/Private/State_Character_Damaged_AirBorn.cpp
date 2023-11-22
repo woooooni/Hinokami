@@ -29,7 +29,6 @@ void CState_Character_Damaged_AirBorn::Enter_State(void* pArg)
 	m_iCurrAnimIndex = 0;
 	m_fAccRecovery = 0.f;
 
-	m_pOwnerCharacter->Set_Infinite(0.5f, true);
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 

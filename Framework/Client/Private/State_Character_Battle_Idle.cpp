@@ -35,16 +35,12 @@ void CState_Character_Battle_Idle::Enter_State(void* pArg)
 		return;
 	}
 
-	CGameObject* pOwner = m_pStateMachineCom->Get_Owner();
-	if (nullptr != pOwner)
-	{
-		CCharacter* pCharacter = dynamic_cast<CCharacter*>(pOwner);
-		if (pCharacter != nullptr)
-			pCharacter->DrawSword();
+	if (CSword::ZENITSU != m_pSword->Get_SwordType())
+		m_pCharacter->DrawSword();
+	else
+		m_pCharacter->SweathSword();
 
-		pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-	}
-
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[0]);
 	m_fAccBaseNut = 0.f;
 }

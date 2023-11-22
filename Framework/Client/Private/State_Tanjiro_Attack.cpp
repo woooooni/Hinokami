@@ -45,13 +45,14 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 
 	m_pSword->SetUp_Trail_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, -1.5f, 1.f));
-	m_pSword->Stop_Trail();
-	m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
 
 }
 
 void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 {
+	if (m_pTarget->Is_ReserveDead() || m_pTarget->Is_Dead())
+		m_pTarget = nullptr;
+
 	
 	Input(fTimeDelta);
 	
@@ -193,29 +194,25 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 			{
 			case 1:
 				Find_Near_Target();
-				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
+				Trace_Near_Target();
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
-				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 0.f);
 				break;
 
 			case 2:
 				Find_Near_Target();
-				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 66);
+				Trace_Near_Target();
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
-				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity + 2.f);
 				break;
 
 			case 3:
 				Find_Near_Target();
-				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
+				Trace_Near_Target();
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
-				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity + 5.f);
 				break;
 
 			case 4:
 				Find_Near_Target();
-				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006_Reverse.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
-				m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), fLookVelocity);
+				Trace_Near_Target();
 				m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 				break;
 
@@ -248,6 +245,9 @@ void CState_Tanjiro_Attack::Find_Near_Target()
 		if (pTransform == nullptr)
 			continue;
 
+		if (pTarget->Is_ReserveDead() || pTarget->Is_Dead())
+			continue;
+
 		_vector vTargetPosition = pTransform->Get_State(CTransform::STATE_POSITION);
 		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
@@ -265,6 +265,32 @@ void CState_Tanjiro_Attack::Find_Near_Target()
 	if (pTarget != nullptr && fDistance <= 10.f)
 	{
 		m_pTransformCom->LookAt_ForLandObject(vNearTargetPosition);
+	}
+}
+
+void CState_Tanjiro_Attack::Trace_Near_Target()
+{
+	if (nullptr == m_pTarget)
+	{
+		m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_Look()), 4.f);
+		return;
+	}
+	else
+	{
+		CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>(L"Com_Transform");
+
+		if (nullptr == pTargetTransform)
+		{
+			m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_Look()), 4.f);
+			return;
+		}
+
+		_float fDistance = Vec3::Distance(pTargetTransform->Get_Position(), m_pTransformCom->Get_Position());
+		if (fDistance <= 5.f)
+		{
+			m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_Look()), fDistance * 3.f);
+		}
+
 	}
 }
 

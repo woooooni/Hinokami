@@ -14,7 +14,7 @@ class CState_Enmu_Attack final : public CState
 {
 
 public:
-	enum ENMU_ATTACK_TYPE { NEAR_ATTACK_0, NEAR_ATTACK_1, FAR_ATTACK_0, FAR_ATTACK_1, FAR_ATTACK_2, ATTACK_END };
+	enum ENMU_ATTACK_TYPE { NEAR_ATTACK_0, FAR_ATTACK_0, FAR_ATTACK_1, FAR_ATTACK_2, ATTACK_END };
 
 private:
 	CState_Enmu_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
@@ -30,20 +30,19 @@ public:
 
 
 private:
-	void Tick_Attack_0(_float fTimeDelta);
-	void Tick_Attack_1(_float fTimeDelta);
+	void Tick_Near_Attack_0(_float fTimeDelta);
 	void Tick_Far_Attack_0(_float fTimeDelta);
 	void Tick_Far_Attack_1(_float fTimeDelta);
 	void Tick_Far_Attack_2(_float fTimeDelta);
 
 private:
-	vector<_uint> m_AnimationsIndex[ATTACK_END];
+	vector<_uint> m_AnimationsIndex[ENMU_ATTACK_TYPE::ATTACK_END];
 	_uint m_iRandomAttackIndex = 0;
-
-	CMonster* m_pOwnerMonster = nullptr;
+	class CMonster* m_pOwnerMonster = nullptr;
 
 private:
-	_bool Find_NearTarget();
+	_float Find_NearTarget_Distance(_float fTimeDelta);
+	void Follow_NearTarget(_float fTimeDelta);
 	
 public:
 	static CState_Enmu_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const vector<list<wstring>>& AnimationList);

@@ -58,10 +58,14 @@ public:
 
 	_bool Is_Animation_Finished(_uint iAnimationIndex);
 
+	
+
 public:
 	vector<class CAnimation*>& Get_Animations() { return m_Animations; }
 	_int Find_AnimationIndex(const wstring& strAnimationTag);
 	_uint Get_CurrAnimationIndex() { return m_iCurrentAnimIndex; }
+
+	class CAnimation* Get_CurrAnimation() { return m_Animations[m_iCurrentAnimIndex]; }
 
 
 

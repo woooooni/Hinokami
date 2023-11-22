@@ -43,6 +43,7 @@ public:
 
 
 public:
+	SWORD_TYPE Get_SwordType() { return m_eType; }
 	_matrix Get_FinalWorldMatrix();
 		
 

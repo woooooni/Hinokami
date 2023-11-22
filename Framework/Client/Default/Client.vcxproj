@@ -223,11 +223,10 @@
     <ClInclude Include="..\Public\Skill.h" />
     <ClInclude Include="..\Public\Skill_Manager.h" />
     <ClInclude Include="..\Public\State_Boss_Battle_Dash.h" />
+    <ClInclude Include="..\Public\State_Boss_Idle.h" />
     <ClInclude Include="..\Public\State_Character_Battle_AirDash.h" />
     <ClInclude Include="..\Public\State_Character_Battle_Dash.h" />
-    <ClInclude Include="..\Public\State_Character_Damaged_AirStay.h" />
     <ClInclude Include="..\Public\State_Enmu_Attack.h" />
-    <ClInclude Include="..\Public\State_Monster_Damaged_AirStay.h" />
     <ClInclude Include="..\Public\State_Character_Damaged_Bound.h" />
     <ClInclude Include="..\Public\State_NormalMonster0_Attack.h" />
     <ClInclude Include="..\Public\State_Monster_Damaged_AirBorn.h" />
@@ -254,6 +253,8 @@
     <ClInclude Include="..\Public\State_Character_Dead.h" />
     <ClInclude Include="..\Public\State_Character_Battle_Idle.h" />
     <ClInclude Include="..\Public\State_Character_Battle_Move.h" />
+    <ClInclude Include="..\Public\State_Zenitsu_Air_Attack.h" />
+    <ClInclude Include="..\Public\State_Zenitsu_Attack.h" />
     <ClInclude Include="..\Public\Struct.pb.h" />
     <ClInclude Include="..\Public\Sweath.h" />
     <ClInclude Include="..\Public\Tanjiro.h" />
@@ -362,11 +363,10 @@
     <ClCompile Include="..\Private\Skill.cpp" />
     <ClCompile Include="..\Private\Skill_Manager.cpp" />
     <ClCompile Include="..\Private\State_Boss_Battle_Dash.cpp" />
+    <ClCompile Include="..\Private\State_Boss_Idle.cpp" />
     <ClCompile Include="..\Private\State_Character_Battle_AirDash.cpp" />
     <ClCompile Include="..\Private\State_Character_Battle_Dash.cpp" />
-    <ClCompile Include="..\Private\State_Character_Damaged_AirStay.cpp" />
     <ClCompile Include="..\Private\State_Enmu_Attack.cpp" />
-    <ClCompile Include="..\Private\State_Monster_Damaged_AirStay.cpp" />
     <ClCompile Include="..\Private\State_NormalMonster0_Attack.cpp" />
     <ClCompile Include="..\Private\State_Monster_Damaged_AirBorn.cpp" />
     <ClCompile Include="..\Private\State_Monster_Damaged_Blow.cpp" />
@@ -393,6 +393,8 @@
     <ClCompile Include="..\Private\State_Character_Battle_Idle.cpp" />
     <ClCompile Include="..\Private\State_Character_Battle_Jump.cpp" />
     <ClCompile Include="..\Private\State_Character_Battle_Move.cpp" />
+    <ClCompile Include="..\Private\State_Zenitsu_Air_Attack.cpp" />
+    <ClCompile Include="..\Private\State_Zenitsu_Attack.cpp" />
     <ClCompile Include="..\Private\Struct.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>

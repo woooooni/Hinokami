@@ -88,7 +88,7 @@ CState_Monster_Idle* CState_Monster_Idle::Create(ID3D11Device* pDevice, ID3D11De
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);
-		MSG_BOX("Failed Create : CState_Monster_Idle");
+		MSG_BOX("Failed Create : CState_Boss_Idle");
 		return nullptr;
 	}
 		

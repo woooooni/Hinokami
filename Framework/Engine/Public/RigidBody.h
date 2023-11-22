@@ -29,7 +29,15 @@ public:
 
 public:
     void Set_Gravity(_float fGravity) { m_fGravity = fGravity; }
-    void Set_Gravity(_bool bGravity) { m_vVelocity = _float3(0.f, 0.f, 0.f); m_bIsGravity = bGravity; }
+    void Set_Gravity(_bool bGravity) 
+    { 
+        if (true == bGravity)
+            m_fGravity = 9.8f;
+        else
+            m_fGravity = 0.f;
+
+        m_bIsGravity = bGravity; 
+    }
 
     _bool Is_Gravity() { return m_bIsGravity; }
 

@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "State_Character_Battle_Move.h"
 #include "GameInstance.h"
-#include "Tanjiro.h"
 #include "PipeLine.h"
 #include "StateMachine.h"
+#include "Character.h"
+#include "Sword.h"
 
 
 
@@ -33,7 +34,9 @@ HRESULT CState_Character_Battle_Move::Initialize(const list<wstring>& AnimationL
 
 void CState_Character_Battle_Move::Enter_State(void* pArg)
 {
-	m_pCharacter->DrawSword();
+	if (CSword::ZENITSU != m_pSword->Get_SwordType())
+		m_pCharacter->DrawSword();
+
 	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
 
@@ -46,19 +49,19 @@ void CState_Character_Battle_Move::Tick_State(_float fTimeDelta)
 {
 	_bool bKeyHolding = false;
 
-	if (KEY_TAP(KEY::SHIFT))
-	{
-		m_iCurrAnimIndex = m_AnimIndices[1];
-		m_pModelCom->Set_AnimIndex(m_AnimIndices[1]);
-		m_pTransformCom->Set_TickPerSecond(m_fMoveSpeed + 10.f);
-	}
+	//if (KEY_TAP(KEY::SHIFT))
+	//{
+	//	m_iCurrAnimIndex = m_AnimIndices[1];
+	//	m_pModelCom->Set_AnimIndex(m_AnimIndices[1]);
+	//	m_pTransformCom->Set_TickPerSecond(m_fMoveSpeed + 10.f);
+	//}
 
-	if (KEY_AWAY(KEY::SHIFT))
-	{
-		m_iCurrAnimIndex = m_AnimIndices[0];
-		m_pModelCom->Set_AnimIndex(m_AnimIndices[0]);
-		m_pTransformCom->Set_TickPerSecond(m_pTransformCom->Get_TickPerSecond() - 10.f);
-	}
+	//if (KEY_AWAY(KEY::SHIFT))
+	//{
+	//	m_iCurrAnimIndex = m_AnimIndices[0];
+	//	m_pModelCom->Set_AnimIndex(m_AnimIndices[0]);
+	//	m_pTransformCom->Set_TickPerSecond(m_pTransformCom->Get_TickPerSecond() - 10.f);
+	//}
 	
 
 	if (KEY_HOLD(KEY::W))
@@ -173,7 +176,7 @@ void CState_Character_Battle_Move::Tick_State(_float fTimeDelta)
 	if (!bKeyHolding)
 	{
 		if (KEY_NONE(KEY::W) && KEY_NONE(KEY::A) && KEY_NONE(KEY::S) && KEY_NONE(KEY::D))		
-			m_pStateMachineCom->Change_State(CTanjiro::BATTLE_IDLE);
+			m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
 	}
 	
 }

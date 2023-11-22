@@ -171,7 +171,7 @@ HRESULT CMainApp::Initialize_Client()
 	LIGHTDESC LightDesc;
 	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
 	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(-1.f, -1.f, -1.f, 0.f);
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(0.5, 0.5, 0.5, 1.f);
 	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
@@ -204,13 +204,11 @@ HRESULT CMainApp::Initialize_Client()
 	if (FAILED(GI->Add_ShadowLight(LEVEL_TRAIN, vEye, vAt, vUp)))
 		return E_FAIL;
 
-	vEye = XMVectorSet(-100.f, 100.f, 0.f, 1.f);
-	vAt = XMVectorSet(10.f, -1.f, 200.f, 1.f);
+	vEye = XMVectorSet(10.f, 200.f, -45.f, 1.f);
+	vAt = XMVectorSet(200.f, -10.f, 200.f, 1.f);
 	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	if (FAILED(GI->Add_ShadowLight(LEVEL_TRAIN_BOSS, vEye, vAt, vUp)))
 		return E_FAIL;
-
-	
 
 	return S_OK;
 }

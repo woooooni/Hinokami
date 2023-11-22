@@ -42,8 +42,8 @@ public:
 
 		_float2			vBlurPower = { 0.f, 0.f };
 		
-
-		_float3			vAdditiveDiffuseColor = _float3(0.f, 0.f, 0.f);
+		_float4			vDiffuseColor = _float4(0.f, 0.f, 0.f, 0.f);
+		_float4			vAdditiveDiffuseColor = _float4(0.f, 0.f, 0.f, 0.f);
 
 
 		// Translation
@@ -82,7 +82,7 @@ public:
 
 			vBlurPower = rhs.vBlurPower;
 
-
+			vDiffuseColor = rhs.vDiffuseColor;
 			vAdditiveDiffuseColor = rhs.vAdditiveDiffuseColor;
 
 

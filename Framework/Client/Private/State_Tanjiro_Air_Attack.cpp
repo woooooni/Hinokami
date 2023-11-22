@@ -148,9 +148,7 @@ void CState_Tanjiro_Air_Attack::Input(_float fTimeDelta)
 			case 1:
 				Follow_Near_Target(fTimeDelta);
 				m_bFirstGravity = true;
-				m_pSword->Generate_Trail(L"T_e_cmn_Slash007.png", L"T_e_cmn_Slash006.png", _float4(0.561f, 0.945f, 1.f, 1.f), 22);
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
-				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_STAY, 0.f, 0.f, 1.f);
 
 				m_pRigidBodyCom->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), 2.f);
 				m_pRigidBodyCom->Set_Gravity(false);
@@ -160,7 +158,6 @@ void CState_Tanjiro_Air_Attack::Input(_float fTimeDelta)
 			case 2:
 				// Follow_Near_Target();
 				m_bFirstGravity = true;
-				m_pSword->Generate_Trail(L"T_e_Skl_In_Slash_Line003.png", L"T_e_cmn_Slash006.png", _float4(0.561f, 0.945f, 1.f, 1.f), 44);
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 5.f, 1.f);
 

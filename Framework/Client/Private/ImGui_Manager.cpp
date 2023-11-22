@@ -95,7 +95,22 @@ void CImGui_Manager::Tick(_float fTimeDelta)
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
+    ImGui::Begin("CameraPosition");
+    _float4 vCamPosition = GI->Get_CamPosition();
+    ImGui::Text("x : ");
+    IMGUI_SAME_LINE;
+    ImGui::Text(to_string(vCamPosition.x).c_str());
 
+    ImGui::Text("y : ");
+    IMGUI_SAME_LINE;
+    ImGui::Text(to_string(vCamPosition.y).c_str());
+
+    ImGui::Text("z : ");
+    IMGUI_SAME_LINE;
+    ImGui::Text(to_string(vCamPosition.z).c_str());
+
+
+    ImGui::End();
     Tick_Basic_Tool(fTimeDelta);
     Tick_Hierachy(fTimeDelta);
     Tick_Inspector(fTimeDelta);
@@ -2037,7 +2052,8 @@ HRESULT CImGui_Manager::Save_Effect(const wstring& strFullPath)
     File->Write<_float3>(EffectDesc.vTurnDir);
 
     
-    File->Write<_float3>(EffectDesc.vAdditiveDiffuseColor);
+    File->Write<_float4>(EffectDesc.vDiffuseColor);
+    File->Write<_float4>(EffectDesc.vAdditiveDiffuseColor);
     File->Write<_float4x4>(EffectDesc.OffsetMatrix);
     
 
@@ -2092,8 +2108,8 @@ HRESULT CImGui_Manager::Load_Effect(const wstring& strFullPath)
     EffectDesc.vMoveDir = File->Read<_float3>();
     EffectDesc.vTurnDir = File->Read<_float3>();
 
-
-    EffectDesc.vAdditiveDiffuseColor = File->Read<_float3>();
+    EffectDesc.vDiffuseColor = File->Read<_float4>();
+    EffectDesc.vAdditiveDiffuseColor = File->Read<_float4>();
     EffectDesc.OffsetMatrix = File->Read<_float4x4>();
 
     _bool bLoop, bIncrement, bGravity;

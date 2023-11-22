@@ -1,6 +1,8 @@
 #include "..\Public\Transform.h"
 #include "Shader.h"
 #include "Navigation.h"
+#include "GameObject.h"
+#include "RigidBody.h"
 
 
 USING(Engine)
@@ -26,6 +28,8 @@ void CTransform::Set_State(STATE eState, _fvector vState)
 
 	XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix);
 }
+
+
 
 HRESULT CTransform::Initialize_Prototype()
 {
@@ -228,6 +232,8 @@ void CTransform::Set_Rotation(_fvector vRadianEulerAngle)
 
 void CTransform::Set_Position(_vector vPosition,_float fTimeDelta, CNavigation* pNavigation, _bool* bMovable)
 {
+	if(nullptr != bMovable)
+		*bMovable = false;
 	vPosition = XMVectorSetW(vPosition, 1.f);
 	_vector vSlidingDir = XMVectorSet(0.f, 0.f, 0.f, 0.f);
 	if (pNavigation == nullptr)
@@ -246,13 +252,37 @@ void CTransform::Set_Position(_vector vPosition,_float fTimeDelta, CNavigation* 
 		}
 		else
 		{
-			vSlidingDir = XMVector3Normalize(vSlidingDir);
-			_vector vNewPosition = Get_State(CTransform::STATE_POSITION) + vSlidingDir * 1.f * fTimeDelta;
-
-			if (true == pNavigation->Is_Movable(vNewPosition, XMVector3Normalize(vNewPosition - Get_State(CTransform::STATE_POSITION)), nullptr))
+			CRigidBody* pOwnerRigidBody = m_pOwner->Get_Component<CRigidBody>(L"Com_RigidBody");
+			if (nullptr != pOwnerRigidBody)
 			{
-				Set_State(CTransform::STATE_POSITION, vNewPosition);
+				_float3 vVelocity = pOwnerRigidBody->Get_Velocity();
+				vSlidingDir = XMVector3Normalize(XMVectorSetY(vSlidingDir, vVelocity.y));
+				
+				_vector vNewPosition = Get_State(CTransform::STATE_POSITION) + vSlidingDir * XMVectorGetX(XMVector3Length(XMVectorSetY(XMLoadFloat3(&vVelocity), 0.f))) * fTimeDelta;
+				if (XMVectorGetY(vNewPosition) <= pOwnerRigidBody->Get_RefHeight())
+				{
+					vNewPosition = XMVectorSetY(vNewPosition, pOwnerRigidBody->Get_RefHeight());
+				}
+
+				if (true == pNavigation->Is_Movable(vNewPosition, XMVector3Normalize(vNewPosition - Get_State(CTransform::STATE_POSITION)), nullptr))
+				{
+					Set_State(CTransform::STATE_POSITION, vNewPosition);
+					if (nullptr != bMovable)
+						*bMovable = true;
+				}
 			}
+			else
+			{
+				vSlidingDir = XMVector3Normalize(vSlidingDir);
+				_vector vNewPosition = Get_State(CTransform::STATE_POSITION) + vSlidingDir * 1.f * fTimeDelta;
+				if (true == pNavigation->Is_Movable(vNewPosition, XMVector3Normalize(vNewPosition - Get_State(CTransform::STATE_POSITION)), nullptr))
+				{
+					Set_State(CTransform::STATE_POSITION, vNewPosition);
+					if (nullptr != bMovable)
+						*bMovable = true;
+				}
+			}
+			
 		}
 	}
 

@@ -20,8 +20,8 @@ HRESULT CTarget_Manager::Ready_Shadow_DSV(ID3D11Device* pDevice, _uint iWinSizeX
 	D3D11_TEXTURE2D_DESC	TextureDesc;
 	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
-	TextureDesc.Width = iWinSizeX;
-	TextureDesc.Height = iWinSizeY;
+	TextureDesc.Width = iWinSizeX * 10.f;
+	TextureDesc.Height = iWinSizeY * 10.f;
 	TextureDesc.MipLevels = 1;
 	TextureDesc.ArraySize = 1;
 	TextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -138,16 +138,16 @@ HRESULT CTarget_Manager::Begin_Shadow_MRT(ID3D11DeviceContext* pContext, const w
 	pContext->ClearDepthStencilView(m_pShadowDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 	pContext->OMSetRenderTargets(iNumRTVs, pRenderTargets, m_pShadowDSV);
 
-	/*D3D11_VIEWPORT			ViewPortDesc;
+	D3D11_VIEWPORT			ViewPortDesc;
 	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
 	ViewPortDesc.TopLeftX = 0;
 	ViewPortDesc.TopLeftY = 0;
-	ViewPortDesc.Width = 1600.f * 2.f;
-	ViewPortDesc.Height = 900.f * 2.f;
+	ViewPortDesc.Width = 1600.f * 10.f;
+	ViewPortDesc.Height = 900.f * 10.f;
 	ViewPortDesc.MinDepth = 0.f;
 	ViewPortDesc.MaxDepth = 1.f;
 
-	pContext->RSSetViewports(1, &ViewPortDesc);*/
+	pContext->RSSetViewports(1, &ViewPortDesc);
 
 	return	S_OK;
 }
@@ -162,16 +162,16 @@ HRESULT CTarget_Manager::End_MRT(ID3D11DeviceContext* pContext)
 
 	Safe_Release(m_pDSV);
 
-	//D3D11_VIEWPORT			ViewPortDesc;
-	//ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	//ViewPortDesc.TopLeftX = 0;
-	//ViewPortDesc.TopLeftY = 0;
-	//ViewPortDesc.Width = 1600.f;
-	//ViewPortDesc.Height = 900.f;
-	//ViewPortDesc.MinDepth = 0.f;
-	//ViewPortDesc.MaxDepth = 1.f;
+	D3D11_VIEWPORT			ViewPortDesc;
+	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
+	ViewPortDesc.TopLeftX = 0;
+	ViewPortDesc.TopLeftY = 0;
+	ViewPortDesc.Width = 1600.f;
+	ViewPortDesc.Height = 900.f;
+	ViewPortDesc.MinDepth = 0.f;
+	ViewPortDesc.MaxDepth = 1.f;
 
-	//pContext->RSSetViewports(1, &ViewPortDesc);
+	pContext->RSSetViewports(1, &ViewPortDesc);
 
 	return	S_OK;
 }

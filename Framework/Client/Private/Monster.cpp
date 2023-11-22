@@ -220,25 +220,8 @@ void CMonster::Collision_Continue(const COLLISION_INFO& tInfo)
 			if (fForce > 0.f)
 			{
 				_float fTimeDelta = GI->Get_TimeDelta(L"Timer_GamePlay");
-				_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION);
 				m_pRigidBodyCom->Set_PushVelocity(vTargetDir * fForce, fTimeDelta);
 			}
-
-			if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
-			{
-				CRigidBody* pOtherRigidBody = tInfo.pOther->Get_Component<CRigidBody>(L"Com_RigidBody");
-				if (nullptr != pOtherRigidBody)
-				{
-					if (m_pStateCom->Get_CurrState() != MONSTER_STATE::DAMAGED_AIRBORN && m_pStateCom->Get_CurrState() != MONSTER_STATE::DAMAGED_BLOW)
-					{
-						m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(XMVectorSetY(XMLoadFloat3(&pOtherRigidBody->Get_Velocity()), 0.f)));
-					}
-						
-				}
-					
-			}
-			
-			
 		}
 	}
 }
@@ -281,27 +264,24 @@ void CMonster::On_Damaged(const COLLISION_INFO& tInfo)
 	switch (tInfo.pOtherCollider->Get_AttackType())
 	{
 	case CCollider::ATTACK_TYPE::BASIC:
-		m_pRigidBodyCom->Add_Velocity(-1.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), tInfo.pOtherCollider->Get_PushPower());
+		m_pRigidBodyCom->Add_Velocity_Acc(
+			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
+			tInfo.pOtherCollider->Get_PushPower());
 		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BASIC);
 		break;
 
 	case CCollider::ATTACK_TYPE::AIR_BORN:
 		m_pRigidBodyCom->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), tInfo.pOtherCollider->Get_AirBorn_Power());
 		m_pRigidBodyCom->Add_Velocity_Acc(
-			-1.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)),
+			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
 			tInfo.pOtherCollider->Get_PushPower());
-
 		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_AIRBORN);
-		break;
-
-	case CCollider::ATTACK_TYPE::AIR_STAY:
-		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_AIRSTAY);
 		break;
 
 	case CCollider::ATTACK_TYPE::BLOW:
 		m_pRigidBodyCom->Add_Velocity_Acc(
-			-1.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)),
-			tInfo.pOtherCollider->Get_PushPower());
+			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
+			tInfo.pOtherCollider->Get_PushPower());;
 
 		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BLOW);
 		break;
@@ -309,7 +289,7 @@ void CMonster::On_Damaged(const COLLISION_INFO& tInfo)
 	case CCollider::ATTACK_TYPE::BOUND:
 		m_pRigidBodyCom->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), tInfo.pOtherCollider->Get_AirBorn_Power());
 		m_pRigidBodyCom->Add_Velocity_Acc(
-			-1.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)),
+			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
 			tInfo.pOtherCollider->Get_PushPower());
 
 		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_BOUND);

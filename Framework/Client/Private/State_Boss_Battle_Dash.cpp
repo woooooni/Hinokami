@@ -57,6 +57,7 @@ void CState_Boss_Battle_Dash::Tick_State(_float fTimeDelta)
 {
 	// Input();
 	m_fAccDashTime += fTimeDelta;
+	m_fDashCoolTime = 0.5f;
 	if (m_fAccDashTime >= m_fDashCoolTime)
 	{
 		m_fAccDashTime = 0.f;

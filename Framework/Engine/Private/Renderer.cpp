@@ -74,7 +74,7 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	/* For.Target_ShadowDepth */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowDepth"),
-		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
+		ViewportDesc.Width * 10.f, ViewportDesc.Height * 10.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
 	//Diffuse & Normal
@@ -493,6 +493,7 @@ HRESULT CRenderer::Render_Deferred()
 
 
 	_float4x4 CamProjMatrix = GI->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ);
+
 	if (FAILED(m_pShader->Bind_Matrix("g_CamProjMatrix", &CamProjMatrix)))
 		return E_FAIL;
 

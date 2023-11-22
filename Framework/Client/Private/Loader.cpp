@@ -243,7 +243,7 @@ HRESULT CLoader::Loading_For_Level_Train_Station()
 
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Tanjiro"),
-		CTanjiro::Create(m_pDevice, m_pContext, TEXT("Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+		CTanjiro::Create(m_pDevice, m_pContext, TEXT("Tanjiro"), CCharacter::CHARACTER_TYPE::ZENITSU), LAYER_TYPE::LAYER_CHARACTER)))
 		return E_FAIL;
 
 
@@ -255,6 +255,8 @@ HRESULT CLoader::Loading_For_Level_Train_Station()
 		CSweath::Create(m_pDevice, m_pContext, TEXT("Tanjiro_Sweath"), TEXT("Prototype_Component_Model_Sweath_Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
 		return E_FAIL;
 
+
+
 	m_strLoading = TEXT("모델을 로딩 중 입니다.");
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Weapon/")))
 		return E_FAIL;
@@ -263,6 +265,9 @@ HRESULT CLoader::Loading_For_Level_Train_Station()
 		return E_FAIL;
 
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Tanjiro/")))
+		return E_FAIL;
+
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Zenitsu/")))
 		return E_FAIL;
 
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Enemy/Monster/")))
@@ -282,18 +287,18 @@ HRESULT CLoader::Loading_For_Level_Train_Station()
 
 	 
 
-	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
-//	CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-//	return E_FAIL;
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
+		CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu"), CCharacter::CHARACTER_TYPE::ZENITSU), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
 
 
-//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sword_Zenitsu"),
-//	CSword::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sword"), TEXT("Prototype_Component_Model_Sword_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-//	return E_FAIL;
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sword_Zenitsu"),
+		CSword::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sword"), TEXT("Prototype_Component_Model_Sword_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
 
-//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sweath_Zenitsu"),
-//	CSweath::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sweath"), TEXT("Prototype_Component_Model_Sweath_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
-//	return E_FAIL;
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sweath_Zenitsu"),
+		CSweath::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sweath"), TEXT("Prototype_Component_Model_Sweath_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
+		return E_FAIL;
 
 	m_strLoading = TEXT("로딩 끝.");
 	m_isFinished = true;
@@ -359,7 +364,7 @@ HRESULT CLoader::Loading_For_Level_Train()
 
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Tanjiro"),
-		CTanjiro::Create(m_pDevice, m_pContext, TEXT("Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+		CTanjiro::Create(m_pDevice, m_pContext, TEXT("Tanjiro"), CCharacter::CHARACTER_TYPE::TANJIRO), LAYER_TYPE::LAYER_CHARACTER)))
 		return E_FAIL;
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Npc_Defence_Zenitsu"),
@@ -373,6 +378,8 @@ HRESULT CLoader::Loading_For_Level_Train()
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sweath_Tanjiro"),
 		CSweath::Create(m_pDevice, m_pContext, TEXT("Tanjiro_Sweath"), TEXT("Prototype_Component_Model_Sweath_Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+
+
 		return E_FAIL;
 
 	m_strLoading = TEXT("모델을 로딩 중 입니다.");
@@ -477,28 +484,44 @@ HRESULT CLoader::Loading_For_Level_Train_Boss()
 
 
 
-	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Tanjiro"),
-		CTanjiro::Create(m_pDevice, m_pContext, TEXT("Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Tanjiro"),
+	//	CTanjiro::Create(m_pDevice, m_pContext, TEXT("Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+	//	return E_FAIL;
+
+	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Zenitsu/")))
+	//	return E_FAIL;
+
+
+	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sword_Tanjiro"),
+	//	CSword::Create(m_pDevice, m_pContext, TEXT("Tanjiro_Sword"), TEXT("Prototype_Component_Model_Sword_Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+	//	return E_FAIL;
+
+	//if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sweath_Tanjiro"),
+	//	CSweath::Create(m_pDevice, m_pContext, TEXT("Tanjiro_Sweath"), TEXT("Prototype_Component_Model_Sweath_Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+	//	return E_FAIL;
+
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Zenitsu"),
+		CZenitsu::Create(m_pDevice, m_pContext, TEXT("Zenitsu"), CCharacter::CHARACTER_TYPE::ZENITSU), LAYER_TYPE::LAYER_CHARACTER)))
 		return E_FAIL;
 
-
-	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sword_Tanjiro"),
-		CSword::Create(m_pDevice, m_pContext, TEXT("Tanjiro_Sword"), TEXT("Prototype_Component_Model_Sword_Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sword_Zenitsu"),
+		CSword::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sword"), TEXT("Prototype_Component_Model_Sword_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
 		return E_FAIL;
 
-	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sweath_Tanjiro"),
-		CSweath::Create(m_pDevice, m_pContext, TEXT("Tanjiro_Sweath"), TEXT("Prototype_Component_Model_Sweath_Tanjiro")), LAYER_TYPE::LAYER_CHARACTER)))
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sweath_Zenitsu"),
+		CSweath::Create(m_pDevice, m_pContext, TEXT("Zenitsu_Sweath"), TEXT("Prototype_Component_Model_Sweath_Zenitsu")), LAYER_TYPE::LAYER_CHARACTER)))
 		return E_FAIL;
 
 	m_strLoading = TEXT("모델을 로딩 중 입니다.");
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Weapon/")))
 		return E_FAIL;
 
-	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Resources/Effect/Model/")))
-		return E_FAIL;
+	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Resources/Effect/Model/")))
+	//	return E_FAIL;
 
-	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Tanjiro/")))
-		return E_FAIL;
+	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Tanjiro/")))
+	//	return E_FAIL;
 
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Zenitsu/")))
 		return E_FAIL;
@@ -506,8 +529,8 @@ HRESULT CLoader::Loading_For_Level_Train_Boss()
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Enemy/Boss/Enmu/")))
 		return E_FAIL;
 
-	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Enemy/Monster/")))
-		return E_FAIL;
+	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Enemy/Monster/")))
+	//	return E_FAIL;
 
 	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Map/")))
 	//	return E_FAIL;

@@ -20,7 +20,6 @@
 
 #include "State_Monster_Damaged_Basic.h"
 #include "State_Monster_Damaged_AirBorn.h"
-#include "State_Monster_Damaged_AirStay.h"
 #include "State_Monster_Damaged_Blow.h"
 #include "State_Monster_Damaged_Bound.h"
 #include "State_Monster_Defence_Trace.h"
@@ -238,24 +237,13 @@ HRESULT CMonster_Normal_0::Ready_States()
 
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_0");
-	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_1");
-	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
-	m_pStateCom->Add_State(CMonster::DAMAGED_AIRSTAY, CState_Monster_Damaged_AirStay::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
-
-
-	
-
-
-	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgStrikeF01_0");
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgStrikeF01_1");
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgDown01_1");
 	m_pStateCom->Add_State(CMonster::DAMAGED_BLOW, CState_Monster_Damaged_Blow::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
+
 	strAnimationName.clear();
-	
-   
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgBound01_0");
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgBound02_2");
 	strAnimationName.push_back(L"SK_E0001_V00_C00.ao|A_P0000_V00_C00_DmgDown01_2");

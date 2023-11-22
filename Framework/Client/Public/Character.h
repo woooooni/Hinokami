@@ -42,7 +42,6 @@ public:
 		DAMAGED_BOUND,
 		DAMAGED_BLOW,
 		DAMAGED_AIRBORN,
-		DAMAGED_AIRSTAY,
 		KNOCKDOWN, 
 		DIE,
 		STATE_END
@@ -52,7 +51,7 @@ public:
 
 	enum PARTTYPE { PART_SWEATH, PART_SWORD, PART_END };
 	enum SOCKET_TYPE { SOCKET_SWORD, SOCKET_SWEATH, SOCKET_RIGHT_HAND, SOCKET_LEFT_FOOT, SOCKET_RIGHT_FOOT, SOCEKT_END };
-
+	enum CHARACTER_TYPE { TANJIRO, ZENITSU, KYOJURO, CHARACTER_END };
 public:
 	typedef struct tagCharacterStat
 	{
@@ -61,7 +60,7 @@ public:
 	}CHARACTER_STAT;
 
 protected:
-	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, CHARACTER_TYPE eCharacterType);
 	CCharacter(const CCharacter& rhs);
 	virtual ~CCharacter() = default;
 
@@ -139,7 +138,7 @@ protected:
 	_bool m_bInfinite = false;
 
 	CHARACTER_STAT m_tStat = {};
-	
+	CHARACTER_TYPE m_eCharacterType = CHARACTER_TYPE::CHARACTER_END;
 
 public:
 	virtual void Free() override;

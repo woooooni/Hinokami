@@ -6,7 +6,7 @@ class CZenitsu final : public CCharacter
 {
 
 private:
-	CZenitsu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	CZenitsu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, CCharacter::CHARACTER_TYPE eCharacterType);
 	CZenitsu(const CZenitsu& rhs);
 	virtual ~CZenitsu() = default;
 
@@ -17,11 +17,14 @@ public:
 	virtual void LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-
 public:
 	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Continue(const COLLISION_INFO& tInfo) override;
 	virtual void Collision_Exit(const COLLISION_INFO& tInfo) override;
+
+
+public:
+	virtual void On_Damaged(const COLLISION_INFO& tInfo) override;
 
 
 protected:
@@ -33,8 +36,9 @@ private:
 	HRESULT Ready_Sockets();
 	HRESULT Ready_Parts();
 
+
 public:
-	static CZenitsu* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	static CZenitsu* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, CCharacter::CHARACTER_TYPE eCharacterType);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

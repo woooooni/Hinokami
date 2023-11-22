@@ -32,6 +32,8 @@ void CState_Monster_Damaged_Bound::Enter_State(void* pArg)
 	
 	m_fAccRecovery = 0.f;
 	m_pRigidBodyCom->Set_Ground(false);
+
+	m_pOwnerMonster->Set_Infinite(999.f, true);
 }
 
 void CState_Monster_Damaged_Bound::Tick_State(_float fTimeDelta)
@@ -89,6 +91,7 @@ void CState_Monster_Damaged_Bound::Exit_State()
 	m_fAccRecovery = 0.f;
 	m_bFirstGround = false;
 
+	m_pOwnerMonster->Set_Infinite(0.f, false);
 	m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 

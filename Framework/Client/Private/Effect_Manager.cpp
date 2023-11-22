@@ -121,8 +121,8 @@ HRESULT CEffect_Manager::Ready_Proto_Effects(const wstring& strEffectPath)
 			EffectDesc.vMoveDir = File->Read<_float3>();
 			EffectDesc.vTurnDir = File->Read<_float3>();
 
-
-			EffectDesc.vAdditiveDiffuseColor = File->Read<_float3>();
+			EffectDesc.vDiffuseColor = File->Read<_float4>();
+			EffectDesc.vAdditiveDiffuseColor = File->Read<_float4>();
 			EffectDesc.OffsetMatrix = File->Read<_float4x4>();
 
 

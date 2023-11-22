@@ -29,6 +29,18 @@ public:
 	_vector Get_State(STATE eState) {
 		return XMLoadFloat4((_float4*)&m_WorldMatrix.m[eState][0]);
 	}
+	_vector Get_Look() {
+		return XMLoadFloat4((_float4*)&m_WorldMatrix.m[STATE_LOOK][0]);
+	}
+	_vector Get_Right() {
+		return XMLoadFloat4((_float4*)&m_WorldMatrix.m[STATE_RIGHT][0]);
+	}
+	_vector Get_Up() {
+		return XMLoadFloat4((_float4*)&m_WorldMatrix.m[STATE_UP][0]);
+	}
+	_vector Get_Position() {
+		return XMLoadFloat4((_float4*)&m_WorldMatrix.m[STATE_POSITION][0]);
+	}
 
 	_matrix Get_WorldMatrix() const {
 		return XMLoadFloat4x4(&m_WorldMatrix);
@@ -52,6 +64,7 @@ public:
 		return XMMatrixInverse(nullptr, Get_WorldMatrix());
 	}
 
+public:
 	void Set_State(STATE eState, _fvector vState);
 
 	_float Get_TickPerSecond() { return m_TransformDesc.fSpeedPerSec; }

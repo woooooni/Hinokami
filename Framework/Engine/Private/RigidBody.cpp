@@ -26,8 +26,6 @@ HRESULT CRigidBody::Initialize(void* pArg)
 	m_pNavigationCom = pDesc->pNavigation;
 	m_pTransformCom = pDesc->pTransform;
 
-	if (nullptr == m_pNavigationCom)
-		return E_FAIL;
 
 	if (nullptr == m_pTransformCom)
 		return E_FAIL;
@@ -119,7 +117,7 @@ void CRigidBody::Update_Velocity(_float fTimeDelta)
 		if (Is_Ground())
 			vFriction = vFrictionDir * m_fFrictionScale * fTimeDelta;
 		else
-			vFriction = vFrictionDir * fTimeDelta;
+			vFriction = vFrictionDir * 5.f * fTimeDelta;
 
 		if (fVelocityScale <= XMVectorGetX(XMVector3Length(vFriction)))		
 			XMStoreFloat3(&m_vVelocity, XMVectorSet(0.f, 0.f, 0.f, 0.f));
@@ -143,18 +141,16 @@ void CRigidBody::Update_Velocity(_float fTimeDelta)
 		_vector vDir = XMVector3Normalize(XMLoadFloat3(&m_vVelocity));
 
 		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION);
-		_vector vNewPosition = vPosition + XMLoadFloat3(&m_vVelocity);
+		vPosition += XMLoadFloat3(&m_vVelocity) * fTimeDelta;
 
-		_vector vLerp = XMVectorLerp(vPosition, vNewPosition, fTimeDelta);
-		if (XMVectorGetY(vLerp) <= m_fRefHeight)
+		if (XMVectorGetY(vPosition) <= m_fRefHeight)
 		{
-			vLerp = XMVectorSetY(vLerp, m_fRefHeight);
-			vLerp = XMVectorSetW(vLerp, 1.f);
-			m_pTransformCom->Set_State(CTransform::STATE::STATE_POSITION, vLerp);
+			vPosition = XMVectorSetY(vPosition, m_fRefHeight);
+			vPosition = XMVectorSetW(vPosition, 1.f);
 		}
 
 		_bool bMovable = false;
-		m_pTransformCom->Set_Position(vLerp, fTimeDelta, m_pNavigationCom, &bMovable);
+		m_pTransformCom->Set_Position(vPosition, fTimeDelta, m_pNavigationCom, &bMovable);
 		if (false == bMovable)
 		{
 			m_vVelocity.x = 0.f;

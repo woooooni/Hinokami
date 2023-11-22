@@ -55,6 +55,8 @@ HRESULT CSword::Initialize(void* pArg)
 	if (FAILED(Ready_Colliders()))
 		return E_FAIL;
 
+	Stop_Trail();
+
 	return S_OK;
 }
 
@@ -195,7 +197,7 @@ HRESULT CSword::Ready_Components()
 		return E_FAIL;
 
 	CTrail::TRAIL_DESC TrailDesc = { };
-	TrailDesc.bTrail = true;
+	TrailDesc.bTrail = false;
 	TrailDesc.fAccGenTrail = 0.f;
 	TrailDesc.fGenTrailTime = 1.f;
 	TrailDesc.vDiffuseColor = { 1.f, 0.f, 0.f, 0.5f };

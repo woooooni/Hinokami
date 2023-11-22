@@ -130,7 +130,7 @@ _bool CCell::isOut(_fvector vWorldPosition, _fmatrix WorldMatrix, _int* pNeighbo
 		_vector		vDest = XMVector3Normalize(XMLoadFloat3(&m_vNormals[i]));
 
 		_float fRadian = XMVectorGetX(XMVector3Dot(vSour, vDest));
-		if (0.f < fRadian)
+		if (0.f <= fRadian)
 		{
 			*pNeighborIndex = m_iNeighborIndices[i];
 
@@ -141,7 +141,6 @@ _bool CCell::isOut(_fvector vWorldPosition, _fmatrix WorldMatrix, _int* pNeighbo
 					*pSliding = vSliding;
 				else
 					*pSliding = -1.f * vSliding;
-					
 			}
 				
 

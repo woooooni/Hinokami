@@ -103,7 +103,7 @@ private:
 
 private:
 	_float4						m_vFogColor = {.5f, .5f, .5f, 1.f };
-	_float2						m_vFogStartEnd = { 100.f, 100.f };
+	_float2						m_vFogStartEnd = { 1000000.f, 1000000.f };
 	_float						m_fBias = { 0.001f };
 
 private:

@@ -152,7 +152,8 @@ _float CNavigation::Compute_Height(_vector vPosition)
 	_float fc = XMVectorGetZ(vPlane);
 	_float fd = XMVectorGetW(vPlane);
 
-	return (-fa * fx - fc * fz - fd) / fb;
+	_float fResult = (-fa * fx - fc * fz - fd) / fb;
+	return fResult;
 }
 
 HRESULT CNavigation::Create_Cell(const _float3* vLocalPoints)

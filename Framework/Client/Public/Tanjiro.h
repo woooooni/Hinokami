@@ -6,7 +6,7 @@ class CTanjiro final : public CCharacter
 {
 
 private:
-	CTanjiro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	CTanjiro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, CCharacter::CHARACTER_TYPE eCharacterType);
 	CTanjiro(const CTanjiro& rhs);
 	virtual ~CTanjiro() = default;
 
@@ -38,7 +38,7 @@ private:
 	
 
 public:
-	static CTanjiro* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	static CTanjiro* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, CCharacter::CHARACTER_TYPE eCharacterType);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

@@ -10,7 +10,7 @@
 
 
 
-#include "State_Monster_Idle.h"
+#include "State_Boss_Idle.h"
 #include "State_Monster_Jump.h"
 #include "State_Monster_Trace.h"
 #include "State_Monster_Regen.h"
@@ -21,7 +21,6 @@
 
 #include "State_Monster_Damaged_Basic.h"
 #include "State_Monster_Damaged_AirBorn.h"
-#include "State_Monster_Damaged_AirStay.h"
 #include "State_Monster_Damaged_Blow.h"
 #include "State_Monster_Damaged_Bound.h"
 #include "State_Monster_Defence_Trace.h"
@@ -192,11 +191,7 @@ HRESULT CBoss_Enmu::Ready_States()
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P1011_V00_C00_BaseNut01_1");
-	m_pStateCom->Add_State(CMonster::MONSTER_STATE::IDLE, CState_Monster_Idle::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
-
-	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P1011_V00_C00_BaseRun01_2");
-	m_pStateCom->Add_State(CMonster::MONSTER_STATE::TRACE, CState_Monster_Trace::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
+	m_pStateCom->Add_State(CMonster::MONSTER_STATE::IDLE, CState_Boss_Idle::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 
 	strAnimationName.clear();
@@ -216,6 +211,7 @@ HRESULT CBoss_Enmu::Ready_States()
 
 
 	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P1011_V00_C00_BaseRun01_1");
 	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P1011_V00_C00_AtkCmbW01");
 	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P1011_V00_C00_AtkCmbW02");
 	AttackAnimations.push_back(strAnimationName);
@@ -230,11 +226,7 @@ HRESULT CBoss_Enmu::Ready_States()
 	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P1011_V00_C00_AtkSkl03_1");
 	AttackAnimations.push_back(strAnimationName);
 
-	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P1011_V00_C00_AtkSkl04_0");
-	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P1011_V00_C00_AtkSkl04_1");
-	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P1011_V00_C00_AtkSkl04_2");
-	AttackAnimations.push_back(strAnimationName);
+
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P1011_V00_C00_AtkSkl06_0");
@@ -273,12 +265,6 @@ HRESULT CBoss_Enmu::Ready_States()
 	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
 	m_pStateCom->Add_State(CMonster::DAMAGED_AIRBORN, CState_Monster_Damaged_AirBorn::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
-
-	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_0");
-	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_1");
-	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
-	m_pStateCom->Add_State(CMonster::DAMAGED_AIRSTAY, CState_Monster_Damaged_AirStay::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 
 	

@@ -36,8 +36,8 @@
 USING(Client)
 
 
-CTanjiro::CTanjiro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
-	: CCharacter(pDevice, pContext, strObjectTag)
+CTanjiro::CTanjiro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, CCharacter::CHARACTER_TYPE eCharacterType)
+	: CCharacter(pDevice, pContext, strObjectTag, eCharacterType)
 {
 }
 
@@ -309,16 +309,6 @@ HRESULT CTanjiro::Ready_States()
 			m_pStateCom,
 			strAnimationName));
 
-	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_0");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_1");
-	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_2");
-	m_pStateCom->Add_State(CCharacter::DAMAGED_AIRSTAY,
-		CState_Character_Damaged_AirStay::Create(m_pDevice,
-			m_pContext,
-			m_pStateCom,
-			strAnimationName));
-
 
 
 	strAnimationName.clear();
@@ -352,6 +342,8 @@ HRESULT CTanjiro::Ready_States()
 	m_pStateCom->Change_State(CCharacter::BASIC_IDLE);
 	return S_OK;
 }
+
+
 
 HRESULT CTanjiro::Ready_Colliders()
 {
@@ -427,7 +419,7 @@ HRESULT CTanjiro::Ready_Sockets()
 	TrailDesc.bTrail = true;
 	TrailDesc.fAccGenTrail = 0.f;
 	TrailDesc.fGenTrailTime = 0.01f;
-	TrailDesc.vDiffuseColor = { 1.f, 0.f, 0.f, 0.5f };
+	TrailDesc.vDiffuseColor = { 0.f, 0.5f, 1.f, 0.5f };
 
 
 	// LeftFoot
@@ -511,9 +503,9 @@ HRESULT CTanjiro::Ready_Parts()
 }
 
 
-CTanjiro* CTanjiro::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
+CTanjiro* CTanjiro::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, CCharacter::CHARACTER_TYPE eCharacterType)
 {
-	CTanjiro* pInstance = new CTanjiro(pDevice, pContext, strObjectTag);
+	CTanjiro* pInstance = new CTanjiro(pDevice, pContext, strObjectTag, eCharacterType);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("Create Failed : CTanjiro");

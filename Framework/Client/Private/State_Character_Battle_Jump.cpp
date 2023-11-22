@@ -39,7 +39,11 @@ void CState_Character_Battle_Jump::Enter_State(void* pArg)
 	m_iCurrAnimIndex = 0;
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 
-	m_pCharacter->DrawSword();
+	if (CSword::ZENITSU != m_pSword->Get_SwordType())
+		m_pCharacter->DrawSword();
+	else
+		m_pCharacter->SweathSword();
+
 	m_pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
 	m_iCurrAnimIndex = 0;
@@ -67,8 +71,6 @@ void CState_Character_Battle_Jump::Enter_State(void* pArg)
 
 void CState_Character_Battle_Jump::Tick_State(_float fTimeDelta)
 {
-	Input();
-
 	if (m_pModelCom->Is_Animation_Finished(m_AnimIndices[0]) || m_pModelCom->Is_Animation_Finished(m_AnimIndices[1]))
 	{
 		m_iCurrAnimIndex++;
@@ -79,6 +81,8 @@ void CState_Character_Battle_Jump::Tick_State(_float fTimeDelta)
 	// if(m_pRigidBody->)
 	if (m_pRigidBodyCom->Is_Ground())
 		m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
+
+	Input();
 }
 
 void CState_Character_Battle_Jump::Exit_State()
@@ -91,16 +95,19 @@ void CState_Character_Battle_Jump::Input()
 	if (KEY_TAP(KEY::RBTN) && KEY_HOLD(KEY::A))
 	{
 		m_pStateMachineCom->Change_State(CCharacter::BATTLE_AIRDASH);
+		return;
 	}
 
 	if (KEY_TAP(KEY::RBTN) && KEY_HOLD(KEY::D))
 	{
 		m_pStateMachineCom->Change_State(CCharacter::BATTLE_AIRDASH);
+		return;
 	}
 
 	if (KEY_HOLD(KEY::LBTN))
 	{
 		m_pStateMachineCom->Change_State(CCharacter::AIR_ATTACK);
+		return;
 	}
 }
 

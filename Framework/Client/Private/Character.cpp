@@ -12,14 +12,15 @@
 
 
 USING(Client)
-CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag)
+CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, CHARACTER_TYPE eCharacterType)
 	: CGameObject(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_CHARACTER)
 {
-	
+	m_eCharacterType = eCharacterType;
 }
 
 CCharacter::CCharacter(const CCharacter& rhs)
 	: CGameObject(rhs)
+	, m_eCharacterType(rhs.m_eCharacterType)
 {	
 
 }
@@ -136,7 +137,18 @@ HRESULT CCharacter::Render()
 
 	_float4 vRimColor = { 0.f, 0.f, 0.f, 0.f };
 	if (m_bInfinite)
-		vRimColor = { .2f, .2f, 1.f, 1.f };
+	{
+		switch (m_eCharacterType)
+		{
+		case CHARACTER_TYPE::TANJIRO:
+			vRimColor = { 0.f, 0.5f, 1.f, 1.f };
+			break;
+		case CHARACTER_TYPE::ZENITSU:
+			vRimColor = { .8f, .8f, .2f, 1.f };
+			break;
+		}
+	}
+		
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vRimColor", &vRimColor, sizeof(_float4))))
 		return E_FAIL;
@@ -338,26 +350,24 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 	switch (tInfo.pOtherCollider->Get_AttackType())
 	{
 	case CCollider::ATTACK_TYPE::BASIC:
-		m_pRigidBodyCom->Add_Velocity(-1.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), tInfo.pOtherCollider->Get_PushPower());
+		m_pRigidBodyCom->Add_Velocity(
+			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
+			tInfo.pOtherCollider->Get_PushPower());
 		m_pStateCom->Change_State(STATE::DAMAGED_BASIC);
 		break;
 
 	case CCollider::ATTACK_TYPE::AIR_BORN:
 		m_pRigidBodyCom->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), tInfo.pOtherCollider->Get_AirBorn_Power());
 		m_pRigidBodyCom->Add_Velocity_Acc(
-			-1.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), 
+			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
 			tInfo.pOtherCollider->Get_PushPower());
 
 		m_pStateCom->Change_State(STATE::DAMAGED_AIRBORN);
 		break;
 
-	case CCollider::ATTACK_TYPE::AIR_STAY :
-		m_pStateCom->Change_State(STATE::DAMAGED_AIRSTAY);
-		break;
-
 	case CCollider::ATTACK_TYPE::BLOW:
 		m_pRigidBodyCom->Add_Velocity_Acc(
-			-1.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)),
+			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
 			tInfo.pOtherCollider->Get_PushPower());
 
 		m_pStateCom->Change_State(STATE::DAMAGED_BLOW);
@@ -366,7 +376,7 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 	case CCollider::ATTACK_TYPE::BOUND:
 		m_pRigidBodyCom->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), tInfo.pOtherCollider->Get_AirBorn_Power());
 		m_pRigidBodyCom->Add_Velocity_Acc(
-			-1.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)),
+			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
 			tInfo.pOtherCollider->Get_PushPower());
 		m_pStateCom->Change_State(STATE::DAMAGED_BOUND);
 		break;

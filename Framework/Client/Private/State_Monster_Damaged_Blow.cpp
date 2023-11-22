@@ -38,7 +38,7 @@ void CState_Monster_Damaged_Blow::Tick_State(_float fTimeDelta)
 		m_pModelCom->Set_AnimIndex(m_AnimIndices[1]);
 	}
 
-	if (0.5f > XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_pRigidBodyCom->Get_Velocity()))))
+	if (m_pRigidBodyCom->Is_Ground() && 0.5f > XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_pRigidBodyCom->Get_Velocity()))))
 	{
 		if (!m_bFirstGround)
 		{

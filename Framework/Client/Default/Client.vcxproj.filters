@@ -331,6 +331,24 @@
     <Filter Include="02.GameObjects\05. Monster\Boss\State">
       <UniqueIdentifier>{9fcc9936-f737-43cc-acef-3a900772a6e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Enmu\State\Attack">
+      <UniqueIdentifier>{2ad6d4eb-54e9-4932-9ff2-3805803ac05a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\State\Dash">
+      <UniqueIdentifier>{d73d5e9d-7c98-4da8-9a2b-bc050fb54ba1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\State\Idle">
+      <UniqueIdentifier>{a0b24cd3-9832-47bd-8945-52041717f81a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\01. Zenitsu\State\Attack">
+      <UniqueIdentifier>{d482932c-5fa3-42df-b622-9a1709cae7b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Enmu\Projectile">
+      <UniqueIdentifier>{220f176e-d73c-42ae-90ef-34583deb4fdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\12. Sky">
+      <UniqueIdentifier>{72a20cbd-dee1-4a37-b1c4-5558815ef731}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -609,9 +627,6 @@
     <ClInclude Include="..\Public\State_Monster_Damaged_Bound.h">
       <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_Monster_Damaged_AirStay.h">
-      <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Npc.h">
       <Filter>02.GameObjects\11. NPC</Filter>
     </ClInclude>
@@ -657,17 +672,23 @@
     <ClInclude Include="..\Public\State_NormalMonster2_Attack.h">
       <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster2\State</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\State_Character_Damaged_AirStay.h">
-      <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Boss_Enmu.h">
       <Filter>02.GameObjects\05. Monster\Boss\Enmu</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_Enmu_Attack.h">
-      <Filter>02.GameObjects\05. Monster\Boss\Enmu\State</Filter>
+      <Filter>02.GameObjects\05. Monster\Boss\Enmu\State\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Boss_Idle.h">
+      <Filter>02.GameObjects\05. Monster\Boss\State\Idle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\State_Boss_Battle_Dash.h">
-      <Filter>02.GameObjects\05. Monster\Boss\State</Filter>
+      <Filter>02.GameObjects\05. Monster\Boss\State\Dash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Zenitsu_Air_Attack.h">
+      <Filter>02.GameObjects\03. Character\01. Zenitsu\State\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Zenitsu_Attack.h">
+      <Filter>02.GameObjects\03. Character\01. Zenitsu\State\Attack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -932,9 +953,6 @@
     <ClCompile Include="..\Private\State_Monster_Damaged_Bound.cpp">
       <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\State_Monster_Damaged_AirStay.cpp">
-      <Filter>02.GameObjects\05. Monster\State\Damaged</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Npc.cpp">
       <Filter>02.GameObjects\11. NPC</Filter>
     </ClCompile>
@@ -980,17 +998,23 @@
     <ClCompile Include="..\Private\State_NormalMonster2_Attack.cpp">
       <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster2\State</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\State_Character_Damaged_AirStay.cpp">
-      <Filter>02.GameObjects\03. Character\00. State\Damaged</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Boss_Enmu.cpp">
       <Filter>02.GameObjects\05. Monster\Boss\Enmu</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Enmu_Attack.cpp">
-      <Filter>02.GameObjects\05. Monster\Boss\Enmu\State</Filter>
+      <Filter>02.GameObjects\05. Monster\Boss\Enmu\State\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Boss_Idle.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\State\Idle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\State_Boss_Battle_Dash.cpp">
-      <Filter>02.GameObjects\05. Monster\Boss\State</Filter>
+      <Filter>02.GameObjects\05. Monster\Boss\State\Dash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Zenitsu_Air_Attack.cpp">
+      <Filter>02.GameObjects\03. Character\01. Zenitsu\State\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Zenitsu_Attack.cpp">
+      <Filter>02.GameObjects\03. Character\01. Zenitsu\State\Attack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
