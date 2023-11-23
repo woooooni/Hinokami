@@ -690,6 +690,9 @@
     <ClInclude Include="..\Public\State_Zenitsu_Attack.h">
       <Filter>02.GameObjects\03. Character\01. Zenitsu\State\Attack</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Sky.h">
+      <Filter>02.GameObjects\12. Sky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1015,6 +1018,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Zenitsu_Attack.cpp">
       <Filter>02.GameObjects\03. Character\01. Zenitsu\State\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Public\Sky.cpp">
+      <Filter>02.GameObjects\12. Sky</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

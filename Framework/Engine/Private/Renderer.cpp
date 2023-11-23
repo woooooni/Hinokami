@@ -5,6 +5,7 @@
 #include "Utils.h"
 #include "GameInstance.h"
 #include "Shader.h"
+#include "..\..\Client\Public\Effect.h"
 
 CRenderer::CRenderer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
@@ -45,37 +46,72 @@ HRESULT CRenderer::Initialize_Prototype()
 		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
+
 	/* For.Target_Specular */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Specular"),
 		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	/* For.Target_Blur_DownSampling */
+
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Blend"),
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+
+
+	/* For.Target_Effect */
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Effect"),
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/* For.Target_Bloom */
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Bloom"),
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+
+
+	
+
+
+	/* For.Target_ShadowDepth */
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowDepth"),
+		ViewportDesc.Width * 10.f, ViewportDesc.Height * 10.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+
+
+	/* For.Target_Blur */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Blur"),
-		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/* For.Target_Blur_Effect */
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Blur_Effect"),
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/* For.Target_Blur_Bloom */
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Blur_Bloom"),
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 
 	/* For.Target_Blur_DownSampling */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Blur_DownSampling"),
-		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	/* For.Target_Blur_XY */
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Blur_XY"),
-		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	/* For.Target_BlurGaussian */
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurGaussian"),
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/* For.Target_Blur_UpSampling */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Blur_UpSampling"),
-		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-
-	/* For.Target_ShadowDepth */
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowDepth"),
-		ViewportDesc.Width * 10.f, ViewportDesc.Height * 10.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
-		return E_FAIL;
 
 	//Diffuse & Normal
 	{
@@ -97,25 +133,53 @@ HRESULT CRenderer::Initialize_Prototype()
 		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Lights"), TEXT("Target_Specular"))))
 			return E_FAIL;
 	}
+
+	// Blend
+	{
+		if (FAILED(m_pTarget_Manager->Add_MRT(L"MRT_Blend", L"Target_Blend")))
+			return E_FAIL;
+	}
 	
 
+	// Effect
+	{
+		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Effect"), TEXT("Target_Effect"))))
+			return E_FAIL;
 
+		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Effect"), TEXT("Target_Bloom"))))
+			return E_FAIL;
+	}
+
+	
 	//Blur
 	{
-		/* For.MRT_BlurHorizontal */
+		/* For.MRT_Blur_Effect */
+		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Blur_Effect"), TEXT("Target_Blur_Effect"))))
+			return E_FAIL;
+
+		/* For.MRT_Blur_Bloom */
+		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Blur_Bloom"), TEXT("Target_Blur_Bloom"))))
+			return E_FAIL;
+
+
+
+
+
+
+		/* For.MRT_Blur */
 		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Blur"), TEXT("Target_Blur"))))
-
 			return E_FAIL;
+
 		/* For.MRT_BlurDownSampling */
-		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_BlurDownSampling"), TEXT("Target_Blur_DownSampling"))))
+		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Blur_DownSampling"), TEXT("Target_Blur_DownSampling"))))
 			return E_FAIL;
 
-		/* For.MRT_BlurHorizontal */
-		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_BlurXY"), TEXT("Target_Blur_XY"))))
+		/* For.MRT_BlurGaussian */
+		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_BlurGaussian"), TEXT("Target_BlurGaussian"))))
 			return E_FAIL;
 
 		/* For.MRT_BlurUpSampling */
-		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_BlurUpSampling"), TEXT("Target_Blur_UpSampling"))))
+		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Blur_UpSampling"), TEXT("Target_Blur_UpSampling"))))
 			return E_FAIL;
 	}
 	
@@ -147,14 +211,21 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_ShadowDepth"), 300.f, 500.f, 200.f, 200.f)))
 		return E_FAIL;
 
+	
 
-
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur"), 100.f, 700.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Effect"), 100.f, 700.f, 200.f, 200.f)))
 		return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur_XY"), 300.f, 700.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur_Effect"), 300.f, 700.f, 200.f, 200.f)))
 		return E_FAIL;
 
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Bloom"), 500.f, 700.f, 200.f, 200.f)))
+		return E_FAIL;
+
+
+	
+
+	
 
 
 
@@ -285,11 +356,16 @@ HRESULT CRenderer::Draw()
 	if (FAILED(Render_Effect()))
 		return E_FAIL;
 
+
+	if (FAILED(Render_Final()))
+		return E_FAIL;
+
 	if(FAILED(Render_UI()))
 		return E_FAIL;
 
 	if (FAILED(Render_Text()))
 		return E_FAIL;
+
 
 	if (FAILED(Render_Debug()))
 		return E_FAIL;
@@ -455,7 +531,10 @@ HRESULT CRenderer::Render_Lights()
 
 HRESULT CRenderer::Render_Deferred()
 {
-	
+
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Blend"))))
+		return E_FAIL;
+
 	/* 디퓨즈 타겟과 셰이드 타겟을 서로 곱하여 백버퍼에 최종적으로 찍어낸다. */
 	_float4 vCamPosition = GI->Get_CamPosition();
 	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", &vCamPosition, sizeof(_float4))))
@@ -466,9 +545,6 @@ HRESULT CRenderer::Render_Deferred()
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Bind_RawValue("g_vFogStartEnd", &m_vFogStartEnd, sizeof(_float2))))
-		return E_FAIL;
-
-	if (FAILED(m_pShader->Bind_RawValue("g_fBias", &m_fBias, sizeof(_float))))
 		return E_FAIL;
 
 
@@ -526,6 +602,9 @@ HRESULT CRenderer::Render_Deferred()
 	if (FAILED(m_pVIBuffer->Render()))
 		return E_FAIL;
 
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
+
 	
 
 	return S_OK;
@@ -562,10 +641,6 @@ HRESULT CRenderer::Render_AlphaBlend()
 
 HRESULT CRenderer::Render_Effect()
 {
-	//if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Blur"))))
-	//	return E_FAIL;
-
-	
 	for (auto& iter : m_RenderObjects[RENDERGROUP::RENDER_EFFECT])
 	{
 		if (FAILED(iter->Render()))
@@ -575,64 +650,196 @@ HRESULT CRenderer::Render_Effect()
 	m_RenderObjects[RENDER_EFFECT].clear();
 
 
+	_float fSigma = 0.01f;
 	for (auto& Pair : m_Render_Instancing_Objects[RENDER_EFFECT])
 	{
+		if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Effect"))))
+			return E_FAIL;
+
+		CEffect* pEffect = dynamic_cast<CEffect*>(Pair.second.pGameObject);
+		if (nullptr == pEffect)
+			return E_FAIL;
+
+		
+		const CEffect::EFFECT_DESC& EffectDesc = pEffect->Get_EffectDesc();
+		fSigma = EffectDesc.fBlurPower;
+
 		if (FAILED(Pair.second.pGameObject->Render_Instance(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
 			return E_FAIL;
 
 		Pair.second.WorldMatrices.clear();
 
 		Safe_Release(Pair.second.pGameObject);
+
+
+		if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+			return E_FAIL;
+
+		if (FAILED(m_pShader->Bind_RawValue("g_fSigma", &fSigma, sizeof(_float))))
+			return E_FAIL;
+
+
+		if (FAILED(Render_Blur(L"Target_Effect", L"MRT_Blur_Effect")))
+			return E_FAIL;
+
+		//if (FAILED(Render_Blur(L"Target_Bloom", L"MRT_Blur_Bloom")))
+		//	return E_FAIL;
+
+
 	}
 	m_Render_Instancing_Objects[RENDER_EFFECT].clear();
 
-	//if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_BlurXY"))))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Blur"), "g_BlurTarget")))
-	//	return E_FAIL;
-	//	
-	//m_pShader->Begin(4);
-	//m_pVIBuffer->Render();
-
-	//if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
-	//	return E_FAIL;
-
-
-
-	//// 백버퍼에 옮겨 그린다.
-	//if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Blur_XY"), "g_BlurTarget")))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pShader->Begin(5)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pVIBuffer->Render()))
-	//	return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_BlurDownSample()
+HRESULT CRenderer::Render_Blur(const wstring& strStartTargetTag , const wstring& strFinalTragetTag)
 {
+	if (FAILED(Render_BlurDownSample(strStartTargetTag)))
+		return E_FAIL;
+
+	if (FAILED(Render_BlurGaussian()))
+		return E_FAIL;
+
+	if (FAILED(Render_BlurUpSample(strFinalTragetTag)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_BlurXY()
+HRESULT CRenderer::Render_BlurDownSample(const wstring& strTargetTag)
 {
+	// 블러(DownSample)
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_Blur_DownSampling")))
+		return E_FAIL;
+
+	_float4x4 WorldMatrix = m_WorldMatrix;
+	WorldMatrix._11 = m_WorldMatrix._11 * 0.5f;
+	WorldMatrix._22 = m_WorldMatrix._22 * 0.5f;
+
+	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, strTargetTag, "g_BlurTarget")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &WorldMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Begin(5)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_BlurUpSample()
+HRESULT CRenderer::Render_BlurGaussian()
 {
+	// 블러(DownSample)
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_BlurGaussian")))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Blur_DownSampling"), "g_BlurTarget")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+
+	if (FAILED(m_pShader->Begin(6)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+
+
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
+	
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_MRT_Final()
+
+
+
+HRESULT CRenderer::Render_BlurUpSample(const wstring& strFinalMrtTag)
 {
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, strFinalMrtTag)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_BlurGaussian"), "g_BlurTarget")))
+		return E_FAIL;
+
+	_float4x4 WorldMatrix = m_WorldMatrix;
+	WorldMatrix._11 = m_WorldMatrix._11 * 2.f;
+	WorldMatrix._22 = m_WorldMatrix._22 * 2.f;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &WorldMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Begin(7)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
+
+
+
+	return S_OK;
+}
+
+
+HRESULT CRenderer::Render_Final()
+{
+	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, L"Target_Blend", "g_DiffuseTarget")))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Bloom"), "g_OriginBloomTarget")))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Blur_Effect"), "g_BlurEffectTarget")))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Blur_Bloom"), "g_BlurBloomTarget")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Begin(8)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -706,12 +913,15 @@ HRESULT CRenderer::Render_Debug()
 	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Shadow"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
 
-
-	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Blur"), m_pShader, m_pVIBuffer)))
+	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Blur_Effect"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_BlurXY"), m_pShader, m_pVIBuffer)))
+	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
+
+	
+
+	
 
 	return S_OK;
 }

@@ -35,6 +35,15 @@ void CState_Monster_Idle::Tick_State(_float fTimeDelta)
 		m_fAccAttackCoolTime = 0.f;
 		m_bAttackable = true;
 	}	
+
+	if (m_bAttackable)
+	{
+		if (GI->Get_CurrentLevel() == LEVEL_TRAIN)
+		{
+			m_pStateMachineCom->Change_State(CMonster::DEFENCE_TRACE);
+			return;
+		}
+	}
 	
 	const list<CGameObject*>& Objects =  GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_CHARACTER);
 	for (auto& pGameObject : Objects)
@@ -43,6 +52,8 @@ void CState_Monster_Idle::Tick_State(_float fTimeDelta)
 		if (pTargetTransform != nullptr)
 		{
 			m_pTransformCom->LookAt_ForLandObject(pTargetTransform->Get_State(CTransform::STATE_POSITION));
+			
+
 			
 
 			_vector vTargetPos = m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION);
@@ -57,18 +68,10 @@ void CState_Monster_Idle::Tick_State(_float fTimeDelta)
 			}
 
 			if (m_bAttackable && (m_fDistance >= XMVectorGetX(XMVector3Length(vDir))))
-			{
-				if (GI->Get_CurrentLevel() == LEVEL_TRAIN && m_bAttackable)
-				{
-					m_pStateMachineCom->Change_State(CMonster::DEFENCE_TRACE);
-					return;
-				}
-				else
-				{
-					m_pStateMachineCom->Change_State(CMonster::TRACE);
-					return;
-				}
+			{				
+				m_pStateMachineCom->Change_State(CMonster::TRACE);
 				return;
+				
 			}
 		}
 	}

@@ -154,6 +154,7 @@ Client::CEffect* CParticle::Generate_Effect()
 		pEffect->Get_RigidBodyCom()->Add_Velocity(XMVector3Normalize(XMLoadFloat3(&vForceDir)), m_tParticleDesc.fForce);
 	}	
 
+	EffectDesc.fBlurPower = m_tParticleDesc.fBlurPower;
 	EffectDesc.fDestAlphaSpeed = m_tParticleDesc.fDestAlphaSpeed;
 	pEffect->Set_EffectDesc(EffectDesc);	
 	

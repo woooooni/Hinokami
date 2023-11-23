@@ -30,7 +30,20 @@ _float CTimer::Compute_TimeDelta()
 		m_FixTime = m_FrameTime;
 	}
 
-	m_fTimeDelta = (float(m_FrameTime.QuadPart - m_LastTime.QuadPart) / m_CpuTick.QuadPart) * m_fTimeScale;
+	_float fTimeDelta = float(m_FrameTime.QuadPart - m_LastTime.QuadPart) / m_CpuTick.QuadPart;
+	if (m_bSlow)
+	{
+		m_fAccSlow += fTimeDelta;
+		if (m_fAccSlow >= m_fSlowRecovery)
+		{
+			m_fAccSlow = 0.f;
+			m_fTimeScale = 1.f;
+			m_bSlow = false;
+		}
+
+	}
+
+	m_fTimeDelta = fTimeDelta * m_fTimeScale;
 
 	m_LastTime = m_FrameTime;
 

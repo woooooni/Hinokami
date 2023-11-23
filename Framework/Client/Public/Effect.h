@@ -40,8 +40,9 @@ public:
 		_float			fIndexSpeed = 20.f;
 		_float2			vUVFlow = { 0.f, 0.f };
 
-		_float2			vBlurPower = { 0.f, 0.f };
+		_float			fBlurPower = 0.01f;
 		
+		_float3			vBloomPower = { 0.01f, 0.01f, 0.01f };
 		_float4			vDiffuseColor = _float4(0.f, 0.f, 0.f, 0.f);
 		_float4			vAdditiveDiffuseColor = _float4(0.f, 0.f, 0.f, 0.f);
 
@@ -80,7 +81,8 @@ public:
 			fIndexSpeed = rhs.fIndexSpeed;
 			vUVFlow = rhs.vUVFlow;
 
-			vBlurPower = rhs.vBlurPower;
+			fBlurPower = rhs.fBlurPower;
+			vBloomPower = rhs.vBloomPower;
 
 			vDiffuseColor = rhs.vDiffuseColor;
 			vAdditiveDiffuseColor = rhs.vAdditiveDiffuseColor;
@@ -120,8 +122,6 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void LateTick(_float fTimeDelta) override;
-	virtual HRESULT Render() override;
-
 	virtual HRESULT Render_Instance(CShader* pInstancingShader, CVIBuffer_Instancing* pInstancingBuffer, const vector<_float4x4>& WorldMatrices) override;
 
 public:

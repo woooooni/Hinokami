@@ -1062,7 +1062,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
             
         else
         {
-            m_pPrevEffect = CEffect::Create(m_pDevice, m_pContext, L"Prev_Effect", CEffect::EFFECT_TYPE(iSelecetedEffectType), L"", tEffectDesc, true, true, false);
+             m_pPrevEffect = CEffect::Create(m_pDevice, m_pContext, L"Prev_Effect", CEffect::EFFECT_TYPE(iSelecetedEffectType), L"", tEffectDesc, true, true, false);
             m_pPrevEffect->Set_PrototypeTag(L"Texture_Temp");
         }
             
@@ -1248,7 +1248,11 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
         ImGui::Text("Blur_Power");
         IMGUI_SAME_LINE;
-        ImGui::DragFloat2("##EffectBlurPower", (_float*)&tEffectDesc.vBlurPower, 0.01f, 0.f, 100.f);
+        ImGui::DragFloat("##EffectBlurPower", (_float*)&tEffectDesc.fBlurPower, 0.01f, 0.01f, 100.f);
+
+        ImGui::Text("Bloom_Power");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat3("##EffectBloomPower", (_float*)&tEffectDesc.vBloomPower, 0.01f, 0.01f, 100.f);
 
 
         IMGUI_NEW_LINE;
@@ -2045,7 +2049,7 @@ HRESULT CImGui_Manager::Save_Effect(const wstring& strFullPath)
     File->Write<_float>(EffectDesc.fMoveSpeed);
     File->Write<_float>(EffectDesc.fTurnSpeed);
 
-    File->Write<_float2>(EffectDesc.vBlurPower);
+    File->Write<_float>(EffectDesc.fBlurPower);
     File->Write<_float2>(EffectDesc.vUVFlow);
 
     File->Write<_float3>(EffectDesc.vMoveDir);
@@ -2102,7 +2106,7 @@ HRESULT CImGui_Manager::Load_Effect(const wstring& strFullPath)
     EffectDesc.fMoveSpeed = File->Read<_float>();
     EffectDesc.fTurnSpeed = File->Read<_float>();
 
-    EffectDesc.vBlurPower = File->Read<_float2>();
+    EffectDesc.fBlurPower = File->Read<_float>();
     EffectDesc.vUVFlow = File->Read<_float2>();
 
     EffectDesc.vMoveDir = File->Read<_float3>();
@@ -2588,12 +2592,18 @@ void CImGui_Manager::Tick_Particle_Tool(_float fTimeDelta)
         ImGui::DragFloat("##Particle_Speed", &ParticleDesc.fSpeed, 0.01f, 0.f, 1000.f);
 
         IMGUI_NEW_LINE;
+
+        ImGui::Text("Particle BlurPower");
+        ImGui::DragFloat("##Particle_BlurPower", &ParticleDesc.fBlurPower, 0.01f, 0.01f, 1000.f);
+        
+        IMGUI_NEW_LINE;
         
 
-        ImGui::Text("andom Dir");
+        ImGui::Text("Random Dir");
         IMGUI_SAME_LINE;
         ImGui::Checkbox("##Particle_Random_Dir", &ParticleDesc.bRandomDir);
 
+        IMGUI_NEW_LINE;
         ImGui::Text("Direction");
         ImGui::DragFloat3("##Particle_Dir", (_float*)&ParticleDesc.vDir, 0.01f, 0.f, 1000.f);
 
@@ -2603,6 +2613,7 @@ void CImGui_Manager::Tick_Particle_Tool(_float fTimeDelta)
         ImGui::Text("== RigidBody ==");
         ImGui::Checkbox("Gravity", &ParticleDesc.bRigidActive);
 
+        IMGUI_NEW_LINE;
         if (ParticleDesc.bRigidActive == true)
         {
             ImGui::DragFloat3("##RigidBodyDir", (_float*)&ParticleDesc.vDir, 0.01f, 0.f, 1000.f);

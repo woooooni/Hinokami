@@ -169,6 +169,9 @@ HRESULT CLevel_Train::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 		return E_FAIL;*/
 	
 	
+	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN, LAYER_BACKGROUND, TEXT("Prototype_GameObject_Sky"))))
+		return E_FAIL;
+	
 
 	return S_OK;
 }

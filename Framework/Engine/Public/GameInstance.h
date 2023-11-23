@@ -37,6 +37,8 @@ public: /* For.Timer_Manager */
 	HRESULT Set_TimeScale(const wstring & strTimerTag, _float fTimeScale);
 	_float Get_TimeScale(const wstring & strTimerTag);
 
+	HRESULT Set_Slow(const wstring & strTimerTag, _float fSlowTime, _float fTimeScale);
+
 
 public: /* For.Graphic_Device */
 	ID3D11Device* Get_Device();

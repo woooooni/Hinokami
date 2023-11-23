@@ -55,7 +55,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_TRAIN_BOSS, L"Train_Boss")))
+	if (FAILED(Open_Level(LEVEL_TOOL, L"Train_Boss")))
 		return E_FAIL;
 
 
@@ -204,8 +204,8 @@ HRESULT CMainApp::Initialize_Client()
 	if (FAILED(GI->Add_ShadowLight(LEVEL_TRAIN, vEye, vAt, vUp)))
 		return E_FAIL;
 
-	vEye = XMVectorSet(10.f, 200.f, -45.f, 1.f);
-	vAt = XMVectorSet(200.f, -10.f, 200.f, 1.f);
+	vEye = XMVectorSet(-100.f, 50.f, 400.f, 1.f);
+	vAt = XMVectorSet(100.f, -10.f, 0.f, 1.f);
 	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	if (FAILED(GI->Add_ShadowLight(LEVEL_TRAIN_BOSS, vEye, vAt, vUp)))
 		return E_FAIL;
@@ -247,9 +247,19 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext, 220))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_VIBuffer_Cube*/
+	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Cube"),
+		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Shader_UI*/
 	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_UI"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_UI.hlsl"), VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxCube */
+	if (FAILED(m_pGame_Instance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxCube"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCubeTex.hlsl"), VTXCUBETEX_DECLARATION::Elements, VTXCUBETEX_DECLARATION::iNumElements))))
 		return E_FAIL;
 
 
@@ -353,6 +363,11 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	/* For.Prototype_Component_Texture_BattleEnd */
 	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_BattleEnd"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Battle_End/"), 0, true))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Sky */
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Sky/"), 0, true))))
 		return E_FAIL;
 	
 

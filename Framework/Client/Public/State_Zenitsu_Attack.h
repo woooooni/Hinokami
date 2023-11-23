@@ -27,6 +27,7 @@ private:
 	class CCharacter* m_pCharacter = nullptr;
 	class CSword* m_pSword = nullptr;
 	class CGameObject* m_pTarget = nullptr;
+
 private:
 	void Input(_float fTimeDelta);
 	void Find_Near_Target();

@@ -23,6 +23,7 @@ public:
 	_float Get_TimeScale(const wstring& strTimerTag);
 
 	_float Get_TimeDelta(const wstring& strTimerTag);
+	HRESULT Set_Slow(const wstring& strTimerTag, _float fSlowTime, _float fTimeScale);
 
 public:
 	HRESULT			Add_Timer(const wstring& strTimerTag);

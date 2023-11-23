@@ -12,7 +12,7 @@ class ENGINE_DLL CRenderer final : public CComponent
 public:
 	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOW, RENDER_NONLIGHT, RENDER_LIGHT, RENDER_NONBLEND, RENDER_ALPHABLEND, RENDER_EFFECT, RENDER_UI, RENDER_END };
 	enum SHADER_TYPE { MODEL, RECT, EFFECT_TEXTURE, EFFECT_MODEL, TYPE_END };
-
+	
 public:
 	typedef struct tagTextDesc
 	{
@@ -68,7 +68,7 @@ public:
 public:
 	void Set_FogColor(_float4 vFogColor) { m_vFogColor = vFogColor; }
 	void Set_FogStartEnd(_float2 vFogStartEnd) { m_vFogStartEnd = vFogStartEnd; }
-	void Set_ShadowBias(_float fBias) { m_fBias = fBias; }
+
 private:
 	HRESULT Render_Priority();
 	HRESULT Render_Shadow();
@@ -81,10 +81,23 @@ private:
 	HRESULT Render_AlphaBlend();
 	HRESULT Render_Effect();
 
-	HRESULT Render_BlurDownSample();
-	HRESULT Render_BlurXY();
-	HRESULT Render_BlurUpSample();
-	HRESULT Render_MRT_Final();
+
+	
+
+
+	///////////////////// Blur
+	HRESULT Render_BlurDownSample(const wstring& strStartTargetTag);
+	HRESULT Render_BlurGaussian();
+	HRESULT Render_BlurUpSample(const wstring& strFinalMrtTag);
+
+	HRESULT Render_Blur(const wstring& strStartTargetTag, const wstring& strFinalMrtTag);
+	//////////////////////
+
+	///////////////////// Bloom
+	// HRESULT Render_Bloom();
+	/////////////////////
+
+	HRESULT Render_Final();
 	HRESULT Render_UI();
 	HRESULT Render_Text();
 
@@ -104,7 +117,6 @@ private:
 private:
 	_float4						m_vFogColor = {.5f, .5f, .5f, 1.f };
 	_float2						m_vFogStartEnd = { 1000000.f, 1000000.f };
-	_float						m_fBias = { 0.001f };
 
 private:
 	list<class CGameObject*>			m_RenderObjects[RENDER_END];

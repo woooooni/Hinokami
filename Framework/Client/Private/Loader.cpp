@@ -7,6 +7,7 @@
 #include "Camera_Main.h"
 #include "FileUtils.h"
 
+#include "Sky.h"
 
 #include "Tanjiro.h"
 #include "Zenitsu.h"
@@ -329,6 +330,9 @@ HRESULT CLoader::Loading_For_Level_Train()
 		{ g_iWinSizeX / 2.f, g_iWinSizeY / 2.f, g_iWinSizeX, g_iWinSizeY }), LAYER_TYPE::LAYER_UI)))
 		return E_FAIL;
 
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sky"),
+		CSky::Create(m_pDevice, m_pContext), LAYER_TYPE::LAYER_BACKGROUND)))
+		return E_FAIL;
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
 		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Free_Camera")), LAYER_TYPE::LAYER_CAMERA)))
@@ -389,6 +393,9 @@ HRESULT CLoader::Loading_For_Level_Train()
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Resources/Effect/Model/")))
 		return E_FAIL;
 
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Resources/Sky/")))
+		return E_FAIL;
+
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Tanjiro/")))
 		return E_FAIL;
 
@@ -397,6 +404,8 @@ HRESULT CLoader::Loading_For_Level_Train()
 
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Enemy/Monster/")))
 		return E_FAIL;
+
+
 
 	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Map/")))
 	//	return E_FAIL;
@@ -447,6 +456,12 @@ HRESULT CLoader::Loading_For_Level_Train_Boss()
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
 		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Free_Camera")), LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
+
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Sky"),
+		CSky::Create(m_pDevice, m_pContext), LAYER_TYPE::LAYER_BACKGROUND)))
+		return E_FAIL;
+	
 
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Main"),
@@ -517,8 +532,11 @@ HRESULT CLoader::Loading_For_Level_Train_Boss()
 	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Weapon/")))
 		return E_FAIL;
 
-	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Resources/Effect/Model/")))
-	//	return E_FAIL;
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Resources/Effect/Model/")))
+		return E_FAIL;
+
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Export/Sky/")))
+		return E_FAIL;
 
 	//if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_ANIM, L"../Bin/Export/Character/Tanjiro/")))
 	//	return E_FAIL;

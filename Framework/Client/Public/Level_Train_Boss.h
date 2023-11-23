@@ -31,9 +31,6 @@ private:
 	_float m_fAccScroll = 0.f;
 	_float m_fLimitScroll = 300.f;
 
-	// TODO : Delete
-	_float m_fBias = 0.0001f;
-
 
 
 private:

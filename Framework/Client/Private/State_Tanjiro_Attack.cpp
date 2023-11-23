@@ -50,8 +50,12 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 
 void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 {
-	if (m_pTarget->Is_ReserveDead() || m_pTarget->Is_Dead())
-		m_pTarget = nullptr;
+	if (nullptr != m_pTarget)
+	{
+		if (m_pTarget->Is_ReserveDead() || m_pTarget->Is_Dead())
+			m_pTarget = nullptr;
+	}
+	
 
 	
 	Input(fTimeDelta);
@@ -245,8 +249,9 @@ void CState_Tanjiro_Attack::Find_Near_Target()
 		if (pTransform == nullptr)
 			continue;
 
-		if (pTarget->Is_ReserveDead() || pTarget->Is_Dead())
+		if (pMonster->Is_ReserveDead() || pMonster->Is_Dead())
 			continue;
+		
 
 		_vector vTargetPosition = pTransform->Get_State(CTransform::STATE_POSITION);
 		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);

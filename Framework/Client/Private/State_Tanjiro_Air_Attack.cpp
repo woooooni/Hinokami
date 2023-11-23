@@ -34,20 +34,14 @@ HRESULT CState_Tanjiro_Air_Attack::Initialize(const list<wstring>& AnimationList
 void CState_Tanjiro_Air_Attack::Enter_State(void* pArg)
 {
 	m_iCurrAnimIndex = 0;
-	m_bFirstFindNearTarget = false;
 	m_pCharacter->DrawSword();
 	
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
+	Follow_Near_Target(GI->Get_TimeDelta(L"Timer_GamePlay"));
 }
 
 void CState_Tanjiro_Air_Attack::Tick_State(_float fTimeDelta)
 {
-	if (!m_bFirstFindNearTarget)
-	{
-		m_bFirstFindNearTarget = true;
-		Follow_Near_Target(fTimeDelta);
-	}
-
 	Input(fTimeDelta);
 	_float fProgress = m_pModelCom->Get_Animations()[m_AnimIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
 
@@ -70,13 +64,7 @@ void CState_Tanjiro_Air_Attack::Tick_State(_float fTimeDelta)
 
 		if (fProgress >= 0.8f)
 		{
-			if (m_bFirstGravity)
-			{
-				m_bFirstGravity = false;
-				m_pRigidBodyCom->Set_Gravity(true);
-			}
-				
-			m_pSword->Stop_Trail();
+			m_pRigidBodyCom->Set_Gravity(true);
 		}
 			
 
@@ -90,14 +78,7 @@ void CState_Tanjiro_Air_Attack::Tick_State(_float fTimeDelta)
 
 		if (fProgress >= 0.8f)
 		{
-			m_pSword->Stop_Trail();
-			if (m_bFirstGravity)
-			{
-				m_bFirstGravity = false;
-				m_pRigidBodyCom->Set_Gravity(true);
-			}
-
-			m_pSword->Stop_Trail();
+			m_pRigidBodyCom->Set_Gravity(true);
 		}
 	}
 	
@@ -110,8 +91,6 @@ void CState_Tanjiro_Air_Attack::Tick_State(_float fTimeDelta)
 void CState_Tanjiro_Air_Attack::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
-	m_bFirstFindNearTarget = false;
-	m_bFirstGravity = true;
 
 	m_pSword->Stop_Trail();
 	m_pSword->Set_ActiveColliders(CCollider::BODY, true);
@@ -147,21 +126,16 @@ void CState_Tanjiro_Air_Attack::Input(_float fTimeDelta)
 			{
 			case 1:
 				Follow_Near_Target(fTimeDelta);
-				m_bFirstGravity = true;
+				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 5.f, 0.f, 1.f);
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
-
-				m_pRigidBodyCom->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), 2.f);
 				m_pRigidBodyCom->Set_Gravity(false);
 				m_pRigidBodyCom->Set_Ground(false);
 				break;
 
 			case 2:
 				// Follow_Near_Target();
-				m_bFirstGravity = true;
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 5.f, 1.f);
-
-				m_pRigidBodyCom->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), 2.f);
 				m_pRigidBodyCom->Set_Gravity(false);
 				m_pRigidBodyCom->Set_Ground(false);
 				break;
@@ -219,14 +193,7 @@ void CState_Tanjiro_Air_Attack::Follow_Near_Target(_float fTimeDelta)
 
 		_vector vFollowPosition = XMVectorSetY(XMVector3Normalize(vTargetLook), 0.f)  + XMVectorSetY(vTargetPosition, XMVectorGetY(vTargetPosition) - 0.5f);
 
-		m_pTransformCom->Set_Position(XMVectorSetW(vFollowPosition, 1.f), 0.0016f, m_pCharacter->Get_Component<CNavigation>(L"Com_Navigation"));
-
-		CRigidBody* pTargetRigidBody = pTarget->Get_Component<CRigidBody>(L"Com_RigidBody");
-		pTargetRigidBody->Add_Velocity(XMVectorSet(0.f, 1.f, 0.f, 0.f), 2.5f);
-
-		// m_pRigidBodyCom->Add_Velocity_Acc(XMVectorSet(0.f, 1.f, 0.f, 0.f), 5.f);
-		m_pRigidBodyCom->Set_Gravity(false);
-		m_pRigidBodyCom->Set_Ground(false);
+		m_pTransformCom->Set_Position(XMVectorSetW(vFollowPosition, 1.f), GI->Get_TimeDelta(L"Timer_GamePlay"), m_pCharacter->Get_Component<CNavigation>(L"Com_Navigation"));
 	}
 
 }

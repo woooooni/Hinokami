@@ -137,28 +137,6 @@ void CEffect::LateTick(_float fTimeDelta)
 		m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDER_EFFECT, CRenderer::SHADER_TYPE::EFFECT_TEXTURE, this, WolrdMatrix);
 }
 
-HRESULT CEffect::Render()
-{
-	__super::Render();
-
-	if (FAILED(Bind_ShaderResource()))
-		return E_FAIL;
-
-	if (m_eType == EFFECT_TYPE::EFFECT_MESH)
-	{
-		_uint iNumMesh = m_pModelCom->Get_NumMeshes();
-
-		for (_uint i = 0; i < iNumMesh; ++i)
-			m_pModelCom->Render(m_pShaderCom, i, m_iPassIndex);
-	}
-	else
-	{
-		m_pShaderCom->Begin(m_iPassIndex);
-		m_pVIBufferCom->Render();
-	}
-
-	return S_OK;
-}
 
 HRESULT CEffect::Render_Instance(CShader* pInstancingShader, CVIBuffer_Instancing* pInstancingBuffer, const vector<_float4x4>& WorldMatrices)
 {
@@ -247,113 +225,6 @@ void CEffect::Decrement(_float fTimeDelta)
 	}
 }
 
-HRESULT CEffect::Bind_ShaderResource()
-{
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fMaxCountX", &m_tEffectDesc.fMaxCountX, sizeof(_float))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fMaxCountY", &m_tEffectDesc.fMaxCountY, sizeof(_float))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlpha", &m_tEffectDesc.fAlpha, sizeof(_float))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fUVIndex", &m_vUVIndex, sizeof(_float2))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAdditiveDiffuseColor", &m_tEffectDesc.vAdditiveDiffuseColor, sizeof(_float3))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_BlurPower", &m_tEffectDesc.vBlurPower, sizeof(_float2))))
-		return E_FAIL;
-
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fUVFlow", &m_fAccUVFlow, sizeof(_float2))))
-		return E_FAIL;
-	
-
-	{
-
-		if (-1 < m_iDiffuseTextureIdx)
-		{
-			if (FAILED(m_pDiffuseTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", m_iDiffuseTextureIdx)))
-				return E_FAIL;
-		}
-
-
-		if (-1 < m_iAlphaTextureIdx)
-		{
-			if (FAILED(m_pAlphaTextureCom->Bind_ShaderResource(m_pShaderCom, "g_AlphaTexture", m_iAlphaTextureIdx)))
-				return E_FAIL;
-		}
-
-
-		// 둘다 없다면.
-		if (-1 == m_iDiffuseTextureIdx && -1 == m_iAlphaTextureIdx)
-			m_iPassIndex = 0;
-
-		// 디퓨즈 텍스쳐만 있다면.
-		if (-1 != m_iDiffuseTextureIdx && -1 == m_iAlphaTextureIdx)
-			m_iPassIndex = 1;
-
-		// 알파 텍스쳐만 있다면.
-		if (-1 == m_iDiffuseTextureIdx && -1 != m_iAlphaTextureIdx)
-			m_iPassIndex = 2;
-
-		if (-1 != m_iDiffuseTextureIdx && -1 != m_iAlphaTextureIdx)
-			m_iPassIndex = 3;
-	}
-
-	_float4x4 WorldMatrix;
-
-	_matrix LocalMatrix = XMLoadFloat4x4(&m_tEffectDesc.OffsetMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(&m_ParentMatrix);
-
-
-	if (m_tEffectDesc.bBillboard)
-	{
-		// 빌보드를 적용한다.
-		_vector vPosition = LocalMatrix.r[CTransform::STATE_POSITION];
-		_vector vCamPosition = XMLoadFloat4(&GI->Get_CamPosition());
-
-		_float fLookScale = XMVectorGetX(XMVector3Length(LocalMatrix.r[CTransform::STATE_LOOK]));
-		_vector vLook = XMVectorSetW(XMVector3Normalize(vPosition - vCamPosition), 0.f) * fLookScale;
-
-		_float fRightScale = XMVectorGetX(XMVector3Length(LocalMatrix.r[CTransform::STATE_RIGHT]));
-		_vector vRight = XMVectorSetW(XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)), 0.f) * fRightScale;
-
-		_float fUpScale = XMVectorGetX(XMVector3Length(LocalMatrix.r[CTransform::STATE_UP]));
-		_vector vUp = XMVectorSetW(XMVector3Normalize(XMVector3Cross(vLook, vRight)), 0.f) * fUpScale;
-
-		LocalMatrix.r[CTransform::STATE_RIGHT] = vRight;
-		LocalMatrix.r[CTransform::STATE_UP] = vUp;
-		LocalMatrix.r[CTransform::STATE_LOOK] = vLook;
-
-
-		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(LocalMatrix));
-	}
-	else
-	{
-		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(LocalMatrix));
-	}
-
-	
-
-	
-	if(FAILED(m_pShaderCom->Bind_RawValue("g_iCutUV", &m_tEffectDesc.bCutUV, sizeof(_int))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_ViewMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TransPose(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_ProjMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TransPose(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
-		return E_FAIL;
-
-	return S_OK;
-}
-
 HRESULT CEffect::Bind_ShaderResource_Instance(CShader* pShader)
 {
 	if (FAILED(pShader->Bind_RawValue("g_fMaxCountX", &m_tEffectDesc.fMaxCountX, sizeof(_float))))
@@ -373,6 +244,12 @@ HRESULT CEffect::Bind_ShaderResource_Instance(CShader* pShader)
 
 
 	if (FAILED(pShader->Bind_RawValue("g_fUVFlow", &m_fAccUVFlow, sizeof(_float2))))
+		return E_FAIL;
+
+	if (FAILED(pShader->Bind_RawValue("g_iCutUV", &m_tEffectDesc.bCutUV, sizeof(_int))))
+		return E_FAIL;
+
+	if (FAILED(pShader->Bind_RawValue("g_vBloomPower", &m_tEffectDesc.vBloomPower, sizeof(_float3))))
 		return E_FAIL;
 
 	{
@@ -442,8 +319,7 @@ HRESULT CEffect::Bind_ShaderResource_Instance(CShader* pShader)
 
 
 
-	if (FAILED(pShader->Bind_RawValue("g_iCutUV", &m_tEffectDesc.bCutUV, sizeof(_int))))
-		return E_FAIL;
+
 
 	if (FAILED(pShader->Bind_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4))))
 		return E_FAIL;

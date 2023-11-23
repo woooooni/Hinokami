@@ -24,10 +24,6 @@ private:
 	class CCharacter* m_pCharacter = nullptr;
 	class CSword* m_pSword = nullptr;
 
-
-	_bool m_bFirstGravity = true;
-	_bool m_bFirstFindNearTarget = false;
-
 private:
 	void Input(_float fTimeDelta);
 	void Follow_Near_Target(_float fTimeDelta);

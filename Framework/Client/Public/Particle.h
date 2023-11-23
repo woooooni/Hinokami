@@ -48,7 +48,7 @@ public:
 
 		_float		fLifeTime = 0.f;
 		_float		fDestAlphaSpeed = 0.f;
-
+		_float		fBlurPower = 0.01f;
 	} PARTICLE_DESC;
 
 protected:

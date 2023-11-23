@@ -165,15 +165,27 @@ void CState_Zenitsu_Attack::Input(_float fTimeDelta)
 		switch (m_iCurrAnimIndex)
 		{
 		case 0:
+		{
 			Find_Near_Target();
 			Trace_Near_Target();
 			m_pCharacter->DrawSword();
+			_matrix WorldMatrix = XMMatrixIdentity();
+			WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) + 0.5f);
+			CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationZ(XMConvertToRadians(15.f)), WorldMatrix, 2.f, nullptr);
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
+		}
+			
 			break;
 		case 1:
+		{
 			Find_Near_Target();
 			Trace_Near_Target();
+			_matrix WorldMatrix = XMMatrixIdentity();
+			XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) + 0.5f);
+			CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationZ(XMConvertToRadians(15.f)), WorldMatrix, 2.f, nullptr);
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
+		}
+			
 			break;
 		case 2:
 			Find_Near_Target();

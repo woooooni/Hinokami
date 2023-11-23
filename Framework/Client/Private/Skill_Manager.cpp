@@ -115,7 +115,7 @@ HRESULT CSkill_Manager::Ready_Proto_Effects(const wstring& strEffectPath)
 			EffectDesc.fMoveSpeed = File->Read<_float>();
 			EffectDesc.fTurnSpeed = File->Read<_float>();
 
-			EffectDesc.vBlurPower = File->Read<_float2>();
+			EffectDesc.fBlurPower = File->Read<_float>();
 			EffectDesc.vUVFlow = File->Read<_float2>();
 
 			EffectDesc.vMoveDir = File->Read<_float3>();

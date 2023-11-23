@@ -20,6 +20,15 @@ public:
 	_float Get_TimeScale() { return m_fTimeScale; }
 
 	_float Get_TimeDelta() { return m_fTimeDelta; }
+
+	HRESULT Set_Slow(_float fSlowTime, _float fTimeScale) { 
+		m_bSlow = true;
+		m_fAccSlow = 0.f;
+		m_fSlowRecovery = fSlowTime;
+		m_fTimeScale = fTimeScale;
+
+		return S_OK;
+	}
 	
 private:
 	LARGE_INTEGER			m_FrameTime;
@@ -28,8 +37,18 @@ private:
 	LARGE_INTEGER			m_CpuTick;
 
 	_float					m_fTimeDelta;
-
 	_float					m_fTimeScale = 1.f;
+
+private:
+	_bool m_bHitLeg = false;
+	_float m_fAccHitLeg = 0.f;
+	_float m_fHitLegRecovery = 0.f;
+
+
+	_bool m_bSlow = false;
+	_float m_fAccSlow = 0.f;
+	_float m_fSlowRecovery = 0.f;
+
 
 public:
 	static CTimer*		Create(void);

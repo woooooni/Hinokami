@@ -222,6 +222,7 @@
     <ClInclude Include="..\Public\Network_Manager.h" />
     <ClInclude Include="..\Public\Skill.h" />
     <ClInclude Include="..\Public\Skill_Manager.h" />
+    <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\State_Boss_Battle_Dash.h" />
     <ClInclude Include="..\Public\State_Boss_Idle.h" />
     <ClInclude Include="..\Public\State_Character_Battle_AirDash.h" />
@@ -426,6 +427,7 @@
     <ClCompile Include="..\Private\UI_NextFog.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Trail.cpp" />
     <ClCompile Include="..\Private\Zenitsu.cpp" />
+    <ClCompile Include="..\Public\Sky.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
