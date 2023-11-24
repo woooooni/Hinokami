@@ -80,6 +80,10 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 		}
 		else
 		{
+			if (fProgress >= .18f && fProgress <= .185f)
+			{
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMVectorSet(0.f, 0.f, 0.f, 1.f), 2.f, m_pSword);
+			}
 			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 			m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 		}
@@ -92,6 +96,21 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 		}
 		else
 		{
+			if (fProgress >= 0.f && fProgress < 0.001f)
+			{
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMVectorSet(0.f, 0.f, 0.f, 1.f), .5f, m_pSword);
+			}
+
+			if (fProgress >= .2f && fProgress <= .21f)
+			{
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMVectorSet(0.f, 0.f, 0.f, 1.f), .5f, m_pSword);
+			}
+
+			if (fProgress >= .4f && fProgress <= .41f)
+			{
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMVectorSet(0.f, 0.f, 0.f, 1.f), .5f, m_pSword);
+			}
+
 			m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 		}
@@ -165,26 +184,16 @@ void CState_Zenitsu_Attack::Input(_float fTimeDelta)
 		switch (m_iCurrAnimIndex)
 		{
 		case 0:
-		{
 			Find_Near_Target();
 			Trace_Near_Target();
 			m_pCharacter->DrawSword();
-			_matrix WorldMatrix = XMMatrixIdentity();
-			WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) + 0.5f);
-			CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationZ(XMConvertToRadians(15.f)), WorldMatrix, 2.f, nullptr);
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
-		}
 			
 			break;
 		case 1:
-		{
 			Find_Near_Target();
 			Trace_Near_Target();
-			_matrix WorldMatrix = XMMatrixIdentity();
-			XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) + 0.5f);
-			CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationZ(XMConvertToRadians(15.f)), WorldMatrix, 2.f, nullptr);
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
-		}
 			
 			break;
 		case 2:
@@ -201,9 +210,6 @@ void CState_Zenitsu_Attack::Input(_float fTimeDelta)
 
 		return;
 	}
-
-
-	
 }
 
 void CState_Zenitsu_Attack::Find_Near_Target()

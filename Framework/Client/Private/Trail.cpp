@@ -51,7 +51,7 @@ void CTrail::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
 	if(m_TrailDesc.bTrail)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_EFFECT, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
 }
 
 HRESULT CTrail::Render()

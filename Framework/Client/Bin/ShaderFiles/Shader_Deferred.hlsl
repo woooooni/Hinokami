@@ -2,6 +2,7 @@
 
 
 texture2D		g_Texture; // 디버그용 텍스쳐
+
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix			g_ProjMatrixInv;
 matrix			g_ViewMatrixInv;
@@ -303,7 +304,7 @@ PS_OUT PS_BLUR_DOWNSCALE(PS_IN In)
 {
 	PS_OUT			Out = (PS_OUT)0;
 
-	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	Out.vColor = g_BlurTarget.Sample(LinearSampler, In.vTexcoord);
 	return Out;
 }
 
@@ -336,7 +337,7 @@ PS_OUT PS_BLUR_Gaussian(PS_IN In) : SV_TARGET0
 		
 	}
 	
-	Out.vColor = float4((vFinalColor / fKernelSum).rgb, 1.f);
+	Out.vColor = vFinalColor / fKernelSum;
 	return Out;
 }
 
@@ -359,7 +360,7 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
 
 	vector vBloom = pow(pow(abs(vBloomColor), 2.2f) + pow(abs(vBloomOriTex), 2.2f), 1.f / 2.2f);
 
-	vector vFinalColor = vector(vHDRColor.rgb, 1.f);
+	vector vFinalColor = vHDRColor;
 
 	vFinalColor = pow(abs(vFinalColor), 2.2f);
 	vBloom = pow(abs(vBloom), 2.2f);
@@ -484,7 +485,7 @@ technique11 DefaultTechnique
 		// 8
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DSS_None, 0);
-		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		HullShader = NULL;

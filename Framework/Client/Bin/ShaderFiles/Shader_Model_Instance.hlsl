@@ -17,6 +17,7 @@ struct VS_IN
 	float4		vUp : TEXCOORD2;
 	float4		vLook : TEXCOORD3;
 	float4		vTranslation : TEXCOORD4;
+	uint		iInstanceID : SV_INSTANCEID;
 };
 
 struct VS_OUT
@@ -28,6 +29,7 @@ struct VS_OUT
 	float3		vTangent : TANGENT;
 	float3		vBinormal : BINORMAL;
 	float4		vWorldPosition : TEXCOORD2;
+	uint		iInstanceID : SV_INSTANCEID;
 };
 
 
@@ -51,6 +53,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vBinormal = normalize(cross(Out.vNormal, Out.vTangent));
 	Out.vTexUV = In.vTexUV;
 	Out.vProjPos = Out.vPosition;
+	Out.iInstanceID = In.iInstanceID;
 
 	return Out;
 }
@@ -65,6 +68,7 @@ struct PS_IN
 	float3		vTangent : TANGENT;
 	float3		vBinormal : BINORMAL;
 	float4		vWorldPosition : TEXCOORD2;
+	uint		iInstanceID : SV_INSTANCEID;
 };
 
 struct PS_OUT

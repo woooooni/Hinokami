@@ -222,6 +222,9 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Bloom"), 500.f, 700.f, 200.f, 200.f)))
 		return E_FAIL;
 
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur_Bloom"), 700.f, 700.f, 200.f, 200.f)))
+		return E_FAIL;
+
 
 	
 
@@ -326,6 +329,36 @@ HRESULT CRenderer::Add_RenderGroup_Instancing(RENDERGROUP eRenderGroup, SHADER_T
 	else
 	{
 		iter->second.WorldMatrices.push_back(WorldMatrix);
+	}
+	return S_OK;
+}
+
+HRESULT CRenderer::Add_RenderGroup_Instancing_Effect(RENDERGROUP eRenderGroup, SHADER_TYPE eShaderType, CGameObject* pGameObject, _float4x4 WorldMatrix, const EFFECT_INSTANCE_DESC& EffectInstanceDesc)
+{
+
+	if (eRenderGroup >= RENDER_END)
+		return E_FAIL;
+
+	auto iter = m_Render_Instancing_Objects[eRenderGroup].find(pGameObject->Get_PrototypeTag());
+	if (iter == m_Render_Instancing_Objects[eRenderGroup].end())
+	{
+		INSTANCING_DESC InstancingDesc;
+		InstancingDesc.pGameObject = pGameObject;
+		Safe_AddRef(pGameObject);
+
+		InstancingDesc.eShaderType = eShaderType;
+		InstancingDesc.WorldMatrices.reserve(100);
+		InstancingDesc.WorldMatrices.push_back(WorldMatrix);
+
+		InstancingDesc.EffectInstancingDesc.reserve(100);
+		InstancingDesc.EffectInstancingDesc.push_back(EffectInstanceDesc);
+
+		m_Render_Instancing_Objects[eRenderGroup].emplace(pGameObject->Get_PrototypeTag(), InstancingDesc);
+	}
+	else
+	{
+		iter->second.WorldMatrices.push_back(WorldMatrix);
+		iter->second.EffectInstancingDesc.push_back(EffectInstanceDesc);
 	}
 	return S_OK;
 }
@@ -664,9 +697,12 @@ HRESULT CRenderer::Render_Effect()
 		const CEffect::EFFECT_DESC& EffectDesc = pEffect->Get_EffectDesc();
 		fSigma = EffectDesc.fBlurPower;
 
+		if (FAILED(m_pIntancingShaders[Pair.second.eShaderType]->Bind_RawValue("g_EffectDesc", Pair.second.EffectInstancingDesc.data(), sizeof(EFFECT_INSTANCE_DESC) * Pair.second.EffectInstancingDesc.size())))
+			return E_FAIL;
 		if (FAILED(Pair.second.pGameObject->Render_Instance(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
 			return E_FAIL;
 
+		Pair.second.EffectInstancingDesc.clear();
 		Pair.second.WorldMatrices.clear();
 
 		Safe_Release(Pair.second.pGameObject);
@@ -682,8 +718,11 @@ HRESULT CRenderer::Render_Effect()
 		if (FAILED(Render_Blur(L"Target_Effect", L"MRT_Blur_Effect")))
 			return E_FAIL;
 
-		//if (FAILED(Render_Blur(L"Target_Bloom", L"MRT_Blur_Bloom")))
-		//	return E_FAIL;
+		if (FAILED(Render_Blur(L"Target_Bloom", L"MRT_Blur_Bloom")))
+			return E_FAIL;
+
+		if (FAILED(Render_Final()))
+			return E_FAIL;
 
 
 	}
@@ -820,7 +859,7 @@ HRESULT CRenderer::Render_Final()
 	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Bloom"), "g_OriginBloomTarget")))
 		return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Blur_Effect"), "g_BlurEffectTarget")))
+	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Blur_Effect"), "g_OriginEffectTarget")))
 		return E_FAIL;
 
 	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Blur_Bloom"), "g_BlurBloomTarget")))
@@ -917,6 +956,9 @@ HRESULT CRenderer::Render_Debug()
 		return E_FAIL;
 
 	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+
+	if(FAILED(m_pTarget_Manager->Render(TEXT("MRT_Blur_Bloom"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
 
 	

@@ -22,7 +22,7 @@ public:
 	void	Tick(_float fTimeDelta);
 
 public:
-	HRESULT Generate_Effect(const wstring& strPrototypeEffectName, _matrix OffsetMatrix, _matrix WorldMatrix, _float fEffectDeletionTime, class CGameObject* pOwner = nullptr);
+	HRESULT Generate_Effect(const wstring& strPrototypeEffectName, _matrix RotationMatrix, _vector vPosition, _float fEffectDeletionTime, class CGameObject* pOwner = nullptr);
 
 private:
 	ID3D11Device* m_pDevice;

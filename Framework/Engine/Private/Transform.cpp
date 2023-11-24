@@ -91,6 +91,9 @@ void CTransform::Go_Straight(_float fTimeDelta, CNavigation* pNavigation)
 
 void CTransform::Go_Dir(_fvector vDir, _float fTimeDelta, CNavigation* pNavigation)
 {
+	if (XMVectorGetX(XMVector3Length(vDir)) < .99f)
+		return;
+
 	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
 	_vector		vSlidingDir = XMVectorSet(0.f, 0.f, 0.f, 0.f);
 	vPosition += XMVector3Normalize(vDir) * m_TransformDesc.fSpeedPerSec * fTimeDelta;
@@ -120,6 +123,11 @@ void CTransform::Go_Dir(_fvector vDir, _float fTimeDelta, CNavigation* pNavigati
 
 void CTransform::Go_Dir(_fvector vDir, _float fSpeed, _float fTimeDelta, CNavigation* pNavigation)
 {
+	if (XMVectorGetX(XMVector3Length(vDir)) < .99f)
+		return;
+	if (fSpeed <= 0.f)
+		return;
+
 	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
 	vPosition += XMVector3Normalize(vDir) * fSpeed * fTimeDelta;
 
@@ -301,6 +309,9 @@ void CTransform::Turn(_fvector vAxis, _float fTimeDelta)
 
 void CTransform::Turn(_fvector vAxis, _float fSpeed, _float fTimeDelta)
 {
+	if (fSpeed <= 0.f)
+		return;
+
 	_matrix		RotationMatrix = XMMatrixRotationAxis(vAxis, fSpeed * fTimeDelta);
 
 	WRITE_LOCK

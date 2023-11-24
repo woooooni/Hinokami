@@ -10,6 +10,21 @@ class CVIBuffer_Instancing;
 class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
+	typedef struct tagEffectInstancingDesc
+	{
+		_int		g_iCutUV;
+		_float		g_fMaxCountX;
+		_float		g_fMaxCountY;
+		_float		g_fAlpha;
+		_float2		g_fUVIndex;
+		_float2		g_fUVFlow;
+
+		_float4		g_fAdditiveDiffuseColor;
+		_float4		g_vBloomPower;
+
+	} EFFECT_INSTANCE_DESC;
+
+public:
 	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOW, RENDER_NONLIGHT, RENDER_LIGHT, RENDER_NONBLEND, RENDER_ALPHABLEND, RENDER_EFFECT, RENDER_UI, RENDER_END };
 	enum SHADER_TYPE { MODEL, RECT, EFFECT_TEXTURE, EFFECT_MODEL, TYPE_END };
 	
@@ -30,6 +45,7 @@ private:
 	{
 		class CGameObject* pGameObject = { nullptr };
 		vector<XMFLOAT4X4> WorldMatrices;
+		vector<EFFECT_INSTANCE_DESC> EffectInstancingDesc;
 		SHADER_TYPE eShaderType = SHADER_TYPE::TYPE_END;
 	}INSTANCING_DESC;
 
@@ -45,6 +61,7 @@ public:
 public:
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pGameObject);
 	HRESULT Add_RenderGroup_Instancing(RENDERGROUP eRenderGroup, SHADER_TYPE eShaderType, class CGameObject* pGameObject, _float4x4 WorldMatrix);
+	HRESULT Add_RenderGroup_Instancing_Effect(RENDERGROUP eRenderGroup, SHADER_TYPE eShaderType, class CGameObject* pGameObject, _float4x4 WorldMatrix, const EFFECT_INSTANCE_DESC& EffectInstanceDesc);
 	HRESULT Draw();
 
 

@@ -35,7 +35,7 @@ void CEffect_Manager::Tick(_float fTimeDelta)
 
 }
 
-HRESULT CEffect_Manager::Generate_Effect(const wstring& strEffectName, _matrix OffsetMatrix, _matrix WorldMatrix, _float fEffectDeletionTime, CGameObject* pOwner)
+HRESULT CEffect_Manager::Generate_Effect(const wstring& strEffectName, _matrix RotationMatrix, _vector vPosition, _float fEffectDeletionTime, CGameObject* pOwner)
 {
 
 	CGameObject* pGameObject = GI->Clone_GameObject(L"Prototype_Effect_" + strEffectName, LAYER_TYPE::LAYER_EFFECT);
@@ -49,7 +49,23 @@ HRESULT CEffect_Manager::Generate_Effect(const wstring& strEffectName, _matrix O
 
 
 	CEffect::EFFECT_DESC EffectDesc = pEffect->Get_EffectDesc();
-	XMStoreFloat4x4(&EffectDesc.OffsetMatrix, XMLoadFloat4x4(&EffectDesc.OffsetMatrix) * OffsetMatrix);
+	_matrix OffsetMatrix = XMLoadFloat4x4(&EffectDesc.OffsetMatrix);
+	_float fScaleX = XMVectorGetX(XMVector3Length(OffsetMatrix.r[CTransform::STATE_RIGHT]));
+	_float fScaleY = XMVectorGetX(XMVector3Length(OffsetMatrix.r[CTransform::STATE_UP]));
+	_float fScaleZ = XMVectorGetX(XMVector3Length(OffsetMatrix.r[CTransform::STATE_LOOK]));
+
+	OffsetMatrix.r[CTransform::STATE_RIGHT] = XMVector3Normalize(OffsetMatrix.r[CTransform::STATE_RIGHT]);
+	OffsetMatrix.r[CTransform::STATE_UP] = XMVector3Normalize(OffsetMatrix.r[CTransform::STATE_UP]);
+	OffsetMatrix.r[CTransform::STATE_LOOK] = XMVector3Normalize(OffsetMatrix.r[CTransform::STATE_LOOK]);
+
+
+	OffsetMatrix *= RotationMatrix;
+
+	OffsetMatrix.r[CTransform::STATE_RIGHT] = XMVector3Normalize(OffsetMatrix.r[CTransform::STATE_RIGHT]) * fScaleX;
+	OffsetMatrix.r[CTransform::STATE_UP] = XMVector3Normalize(OffsetMatrix.r[CTransform::STATE_UP]) * fScaleY;
+	OffsetMatrix.r[CTransform::STATE_LOOK] = XMVector3Normalize(OffsetMatrix.r[CTransform::STATE_LOOK]) * fScaleZ;
+
+	XMStoreFloat4x4(&EffectDesc.OffsetMatrix, OffsetMatrix);
 	pEffect->Set_EffectDesc(EffectDesc);
 
 
@@ -61,7 +77,7 @@ HRESULT CEffect_Manager::Generate_Effect(const wstring& strEffectName, _matrix O
 	if (pTransform == nullptr)
 		return E_FAIL;
 
-	pTransform->Set_WorldMatrix(WorldMatrix);
+	pTransform->Set_State(CTransform::STATE_POSITION, vPosition);
 	
 	if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_EFFECT, pEffect)))
 		return E_FAIL;
@@ -116,6 +132,7 @@ HRESULT CEffect_Manager::Ready_Proto_Effects(const wstring& strEffectPath)
 			EffectDesc.fTurnSpeed = File->Read<_float>();
 
 			EffectDesc.fBlurPower = File->Read<_float>();
+			EffectDesc.vBloomPower = File->Read<_float3>();
 			EffectDesc.vUVFlow = File->Read<_float2>();
 
 			EffectDesc.vMoveDir = File->Read<_float3>();

@@ -6,15 +6,19 @@ Texture2D	g_DiffuseTexture;
 Texture2D	g_AlphaTexture;
 
 
-float		g_fMaxCountX;
-float		g_fMaxCountY;
-float		g_fAlpha;
-float2		g_fUVIndex;
-float2		g_fUVFlow;
-float3		g_fAdditiveDiffuseColor;
 
-float3		g_vBloomPower;
-int			g_iCutUV;
+struct EffectDesc
+{
+	int			g_iCutUV;
+	float		g_fMaxCountX;
+	float		g_fMaxCountY;
+	float		g_fAlpha;
+	float2		g_fUVIndex;
+	float2		g_fUVFlow;
+
+	float4		g_fAdditiveDiffuseColor;
+	float4		g_vBloomPower;
+};
 
 
 
@@ -28,12 +32,20 @@ struct VS_IN
 	float4		vUp : TEXCOORD2;
 	float4		vLook : TEXCOORD3;
 	float4		vTranslation : TEXCOORD4;
+
+	uint	iInstanceID : SV_INSTANCEID;
+
 };
+
+EffectDesc g_EffectDesc[1000];
+
 
 struct VS_OUT
 {
 	float4		vPosition : SV_POSITION;
 	float2		vTexUV : TEXCOORD0;
+
+	uint	iInstanceID : SV_INSTANCEID;
 };
 
 
@@ -48,8 +60,10 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vPosition = mul(Out.vPosition, matVP);
 	
 	Out.vTexUV = float2(
-		((g_fUVIndex.x + In.vTexUV.x) / g_fMaxCountX) + g_fUVFlow.x,
-		((g_fUVIndex.y + In.vTexUV.y) / g_fMaxCountY) + g_fUVFlow.y);
+		((g_EffectDesc[In.iInstanceID].g_fUVIndex.x + In.vTexUV.x) / g_EffectDesc[In.iInstanceID].g_fMaxCountX) + g_EffectDesc[In.iInstanceID].g_fUVFlow.x,
+		((g_EffectDesc[In.iInstanceID].g_fUVIndex.y + In.vTexUV.y) / g_EffectDesc[In.iInstanceID].g_fMaxCountY) + g_EffectDesc[In.iInstanceID].g_fUVFlow.y);
+
+	Out.iInstanceID = In.iInstanceID;
 
 	return Out;
 }
@@ -59,6 +73,8 @@ struct PS_IN
 {
 	float4		vPosition : SV_POSITION;
 	float2		vTexUV : TEXCOORD0;
+
+	uint	iInstanceID : SV_INSTANCEID;
 };
 
 struct PS_OUT
@@ -69,11 +85,11 @@ struct PS_OUT
 
 
 
-float4 CalcBrightness(float4 vColor)
+float4 CalcBrightness(float4 vColor, uint iInstanceID)
 {
 	float BrightColor = 0.f;
 
-	float brightness = dot(vColor, g_vBloomPower);
+	float brightness = dot(vColor, g_EffectDesc[iInstanceID].g_vBloomPower);
 	if (brightness > 0.99f)
 		BrightColor = float4(vColor.rgb, 1.0f);
 
@@ -86,16 +102,16 @@ PS_OUT PS_DEFAULT(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	if (0 < g_iCutUV)
+	if (0 < g_EffectDesc[In.iInstanceID].g_iCutUV)
 	{
 		if (In.vTexUV.x > 1.f && In.vTexUV.y > 1.f)
 			discard;
 	}
 
-	Out.vDiffuse = vector(g_fAdditiveDiffuseColor, g_fAlpha);
+	Out.vDiffuse = vector(g_EffectDesc[In.iInstanceID].g_fAdditiveDiffuseColor.rgb, g_EffectDesc[In.iInstanceID].g_fAlpha);
 	if (0 == Out.vDiffuse.a)
 		discard;
-	Out.vBrightness = CalcBrightness(Out.vDiffuse);
+	Out.vBrightness = CalcBrightness(Out.vDiffuse, In.iInstanceID);
 
 	return Out;
 
@@ -105,7 +121,7 @@ PS_OUT PS_NO_DIFFUSE_WITH_ALPHA(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	if (0 < g_iCutUV)
+	if (0 < g_EffectDesc[In.iInstanceID].g_iCutUV)
 	{
 		if (In.vTexUV.x > 1.f && In.vTexUV.y > 1.f)
 			discard;
@@ -116,12 +132,12 @@ PS_OUT PS_NO_DIFFUSE_WITH_ALPHA(PS_IN In)
 	if (vTextureAlpha.r <= 0.001f)
 		discard;
 
-	Out.vDiffuse = vector(g_fAdditiveDiffuseColor, g_fAlpha);
+	Out.vDiffuse = vector(g_EffectDesc[In.iInstanceID].g_fAdditiveDiffuseColor.rgb, g_EffectDesc[In.iInstanceID].g_fAlpha);
 
 	if (0 == Out.vDiffuse.a)
 		discard;
 
-	Out.vBrightness = CalcBrightness(Out.vDiffuse);
+	Out.vBrightness = CalcBrightness(Out.vDiffuse, In.iInstanceID);
 	return Out;
 
 };
@@ -130,14 +146,14 @@ PS_OUT PS_NO_ALPHA_WITH_DIFFUSE(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	if (0 < g_iCutUV)
+	if (0 < g_EffectDesc[In.iInstanceID].g_iCutUV)
 	{
 		if (In.vTexUV.x > 1.f && In.vTexUV.y > 1.f)
 			discard;
 	}
 
 	vector vTextureDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	vector vAdditiveColor = vector(g_fAdditiveDiffuseColor, g_fAlpha);
+	vector vAdditiveColor = vector(g_EffectDesc[In.iInstanceID].g_fAdditiveDiffuseColor.rgb, g_EffectDesc[In.iInstanceID].g_fAlpha);
 
 
 	if (vTextureDiffuse.r <= 0.01f)
@@ -147,13 +163,13 @@ PS_OUT PS_NO_ALPHA_WITH_DIFFUSE(PS_IN In)
 	vector vDiffuseColor = vTextureDiffuse + vAdditiveColor;
 	saturate(vDiffuseColor);
 
-	vector vMtrlColor = vector(vDiffuseColor.rgb, g_fAlpha);
+	vector vMtrlColor = vector(vDiffuseColor.rgb, g_EffectDesc[In.iInstanceID].g_fAlpha);
 	Out.vDiffuse = vMtrlColor;
 
 	if (0 == Out.vDiffuse.a)
 		discard;
 
-	Out.vBrightness = CalcBrightness(Out.vDiffuse);
+	Out.vBrightness = CalcBrightness(Out.vDiffuse, In.iInstanceID);
 
 	return Out;
 
@@ -163,7 +179,7 @@ PS_OUT PS_BOTH(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	if (0 < g_iCutUV)
+	if (0 < g_EffectDesc[In.iInstanceID].g_iCutUV)
 	{
 		if (In.vTexUV.x > 1.f && In.vTexUV.y > 1.f)
 			discard;
@@ -171,7 +187,7 @@ PS_OUT PS_BOTH(PS_IN In)
 
 	vector vTextureDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	vector vTextureAlpha = g_AlphaTexture.Sample(LinearSampler, In.vTexUV);
-	vector vAdditiveColor = vector(g_fAdditiveDiffuseColor, g_fAlpha);
+	vector vAdditiveColor = vector(g_EffectDesc[In.iInstanceID].g_fAdditiveDiffuseColor.rgb, g_EffectDesc[In.iInstanceID].g_fAlpha);
 
 
 	if (vTextureAlpha.r <= 0.1f)
@@ -182,13 +198,13 @@ PS_OUT PS_BOTH(PS_IN In)
 	saturate(vDiffuseColor);
 	vDiffuseColor.a = 0.f;
 
-	vector vMtrlColor = vector(vDiffuseColor.rgb, g_fAlpha);
+	vector vMtrlColor = vector(vDiffuseColor.rgb, g_EffectDesc[In.iInstanceID].g_fAlpha);
 	Out.vDiffuse = vMtrlColor;
 
 	if (0 == Out.vDiffuse.a)
 		discard;
 
-	Out.vBrightness = CalcBrightness(Out.vDiffuse);
+	Out.vBrightness = CalcBrightness(Out.vDiffuse, In.iInstanceID);
 
 	return Out;
 

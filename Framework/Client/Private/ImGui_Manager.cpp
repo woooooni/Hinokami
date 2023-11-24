@@ -2050,6 +2050,7 @@ HRESULT CImGui_Manager::Save_Effect(const wstring& strFullPath)
     File->Write<_float>(EffectDesc.fTurnSpeed);
 
     File->Write<_float>(EffectDesc.fBlurPower);
+    File->Write<_float3>(EffectDesc.vBloomPower);
     File->Write<_float2>(EffectDesc.vUVFlow);
 
     File->Write<_float3>(EffectDesc.vMoveDir);
@@ -2107,6 +2108,7 @@ HRESULT CImGui_Manager::Load_Effect(const wstring& strFullPath)
     EffectDesc.fTurnSpeed = File->Read<_float>();
 
     EffectDesc.fBlurPower = File->Read<_float>();
+    EffectDesc.vBloomPower = File->Read<_float3>();
     EffectDesc.vUVFlow = File->Read<_float2>();
 
     EffectDesc.vMoveDir = File->Read<_float3>();

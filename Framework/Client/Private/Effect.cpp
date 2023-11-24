@@ -131,10 +131,26 @@ void CEffect::LateTick(_float fTimeDelta)
 
 	m_pRigidBodyCom->LateTick_RigidBody(fTimeDelta);
 
+	CRenderer::EFFECT_INSTANCE_DESC EffectInstanceDesc;
+	ZeroMemory(&EffectInstanceDesc, sizeof CRenderer::EFFECT_INSTANCE_DESC);
+
+	EffectInstanceDesc.g_fMaxCountX = m_tEffectDesc.fMaxCountX;
+	EffectInstanceDesc.g_fMaxCountY = m_tEffectDesc.fMaxCountY;
+	EffectInstanceDesc.g_fAlpha = m_tEffectDesc.fAlpha;
+	EffectInstanceDesc.g_fUVIndex = m_vUVIndex;
+	EffectInstanceDesc.g_fUVFlow = m_fAccUVFlow;
+
+	EffectInstanceDesc.g_fAdditiveDiffuseColor = m_tEffectDesc.vAdditiveDiffuseColor;
+	EffectInstanceDesc.g_vBloomPower = _float4(m_tEffectDesc.vBloomPower.x, m_tEffectDesc.vBloomPower.y, m_tEffectDesc.vBloomPower.z, 0.f);
+	EffectInstanceDesc.g_iCutUV = m_tEffectDesc.bCutUV;
+
+
+
+
 	if (m_eType == EFFECT_TYPE::EFFECT_MESH)
-		m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDER_EFFECT, CRenderer::SHADER_TYPE::EFFECT_MODEL, this, WolrdMatrix);
+		m_pRendererCom->Add_RenderGroup_Instancing_Effect(CRenderer::RENDER_EFFECT, CRenderer::SHADER_TYPE::EFFECT_MODEL, this, WolrdMatrix, EffectInstanceDesc);
 	else
-		m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDER_EFFECT, CRenderer::SHADER_TYPE::EFFECT_TEXTURE, this, WolrdMatrix);
+		m_pRendererCom->Add_RenderGroup_Instancing_Effect(CRenderer::RENDER_EFFECT, CRenderer::SHADER_TYPE::EFFECT_TEXTURE, this, WolrdMatrix, EffectInstanceDesc);
 }
 
 
@@ -227,7 +243,7 @@ void CEffect::Decrement(_float fTimeDelta)
 
 HRESULT CEffect::Bind_ShaderResource_Instance(CShader* pShader)
 {
-	if (FAILED(pShader->Bind_RawValue("g_fMaxCountX", &m_tEffectDesc.fMaxCountX, sizeof(_float))))
+	/*if (FAILED(pShader->Bind_RawValue("g_fMaxCountX", &m_tEffectDesc.fMaxCountX, sizeof(_float))))
 		return E_FAIL;
 
 	if (FAILED(pShader->Bind_RawValue("g_fMaxCountY", &m_tEffectDesc.fMaxCountY, sizeof(_float))))
@@ -250,7 +266,7 @@ HRESULT CEffect::Bind_ShaderResource_Instance(CShader* pShader)
 		return E_FAIL;
 
 	if (FAILED(pShader->Bind_RawValue("g_vBloomPower", &m_tEffectDesc.vBloomPower, sizeof(_float3))))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	{
 
@@ -284,45 +300,6 @@ HRESULT CEffect::Bind_ShaderResource_Instance(CShader* pShader)
 			m_iPassIndex = 3;
 	}
 
-	_float4x4 WorldMatrix;
-
-	_matrix LocalMatrix = XMLoadFloat4x4(&m_tEffectDesc.OffsetMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(&m_ParentMatrix);
-
-
-	if (m_tEffectDesc.bBillboard)
-	{
-		// 빌보드를 적용한다.
-		_vector vPosition = LocalMatrix.r[CTransform::STATE_POSITION];
-		_vector vCamPosition = XMLoadFloat4(&GI->Get_CamPosition());
-
-		_float fLookScale = XMVectorGetX(XMVector3Length(LocalMatrix.r[CTransform::STATE_LOOK]));
-		_vector vLook = XMVectorSetW(XMVector3Normalize(vPosition - vCamPosition), 0.f) * fLookScale;
-
-		_float fRightScale = XMVectorGetX(XMVector3Length(LocalMatrix.r[CTransform::STATE_RIGHT]));
-		_vector vRight = XMVectorSetW(XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)), 0.f) * fRightScale;
-
-		_float fUpScale = XMVectorGetX(XMVector3Length(LocalMatrix.r[CTransform::STATE_UP]));
-		_vector vUp = XMVectorSetW(XMVector3Normalize(XMVector3Cross(vLook, vRight)), 0.f) * fUpScale;
-
-		LocalMatrix.r[CTransform::STATE_RIGHT] = vRight;
-		LocalMatrix.r[CTransform::STATE_UP] = vUp;
-		LocalMatrix.r[CTransform::STATE_LOOK] = vLook;
-
-
-		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(LocalMatrix));
-	}
-	else
-	{
-		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(LocalMatrix));
-	}
-
-
-
-
-
-
-	if (FAILED(pShader->Bind_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4))))
-		return E_FAIL;
 
 	if (FAILED(pShader->Bind_RawValue("g_ViewMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TransPose(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
 		return E_FAIL;
@@ -436,7 +413,14 @@ void CEffect::Free()
 {
 	__super::Free();
 
-	
+	Safe_Release(m_pModelCom);
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pDiffuseTextureCom);
+	Safe_Release(m_pAlphaTextureCom);
+	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pTransformCom);
+	Safe_Release(m_pRigidBodyCom);
+	Safe_Release(m_pVIBufferCom);
 }
 
 
