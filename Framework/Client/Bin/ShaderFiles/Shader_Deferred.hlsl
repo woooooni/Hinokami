@@ -48,8 +48,6 @@ float4 g_vFogColor = { .5f, .5f, .5f, 1.f };
 float g_fBias = 0.2f;
 
 
-float3 g_vBloomPower = { 0.f, 0.f, 0.f };
-
 
 struct VS_IN
 {
@@ -189,15 +187,13 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 
 float PCF_ShadowCaculation(float4 vLightPos)
 {
-	
-
 	float3 projCoords = vLightPos.xyz / vLightPos.w;
 	
 	projCoords.x = projCoords.x * 0.5f + 0.5f;
 	projCoords.y = projCoords.y * -0.5f + 0.5f;
 	
 	float fCurrentDepth = projCoords.z;
-	if (fCurrentDepth > 1.f)
+	if (fCurrentDepth >= 1.f)
 		return 1.f;
 
 	float fShadow = 0.0;
@@ -209,7 +205,7 @@ float PCF_ShadowCaculation(float4 vLightPos)
 		for (int y = -1; y <= 1; ++y)
 		{
 			float fPCFDepth = (g_ShadowTarget.Sample(PointSampler, projCoords.xy + float2(x, y) * texelSize).r) * 1000.f;
-			fShadow += vLightPos.w - g_fBias > fPCFDepth ? 0.5f : 1.0f;
+			fShadow += ((vLightPos.w - g_fBias) > fPCFDepth) ? 0.5f : 1.0f;
 		}
 	}
 	fShadow /= 9.0f;
@@ -218,6 +214,16 @@ float PCF_ShadowCaculation(float4 vLightPos)
 }
 
 
+float3x3 Kx = { -1.f, 0.f, 1.f,
+				-2.f, 0.f, 2.f,
+				-1.f, 0.f, 1.f };
+
+float3x3 Ky = { 1.f,  2.f,  1.f,
+				0.f,  0.f,  0.f,
+			   -1.f, -2.f, -1.f };
+
+float2 g_PixelOffset = float2(1.f / 1600.f, 1.f / 900.f);
+float3 g_PixelDot = float3(.4f, .2f, 0.f);
 
 PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 {
@@ -241,14 +247,33 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 
 
 
+	// 외곽선
+	float Lx = 0;
+	float Ly = 0;
+
+	for (int y = -1; y <= 1; ++y)
+	{
+		for (int x = -1; x <= 1; ++x)
+		{
+			float2 offset = float2(x, y) * g_PixelOffset;
+			float3 tex = g_ShadeTarget.Sample(PointSampler, In.vTexcoord + offset).rgb;
+			float luminance = dot(tex, g_PixelDot);
+
+			Lx += luminance * Kx[y + 1][x + 1];
+			Ly += luminance * Ky[y + 1][x + 1];
+		}
+	}
+	float L = sqrt((Lx * Lx) + (Ly * Ly));
+	vector vOutline = vector(1.f - L.xxx, 1.f);
+	Out.vColor *= vOutline;
+
+
 	vector		vWorldPos;
 	vector		vDepthDesc = g_DepthTarget.Sample(PointSampler, In.vTexcoord);
 	float		fViewZ = vDepthDesc.y * 1000.f;
 
 
-
-
-
+	// 그림자
 	/* 투영스페이스 상의 위치를 구한다. */
 	vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
 	vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
@@ -267,37 +292,25 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 	// float2 vLightUV = float2(0.f, 0.f);
 	vector	vLightPos = mul(vWorldPos, g_LightViewMatrix);
 	vLightPos = mul(vLightPos, g_CamProjMatrix);
-
-	//vLightUV.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
-	//vLightUV.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
-
-	//vector		vShadowDepthDesc = g_ShadowTarget.Sample(PointSampler, vLightUV);
-	//float		fOldZ = vShadowDepthDesc.x * 1000.f;
-
-
 	float fShadowColor = PCF_ShadowCaculation(vLightPos);
-	vector vShadowColor = vector(fShadowColor, fShadowColor, fShadowColor, 1.f);
 
+	vector vShadowColor = vector(fShadowColor, fShadowColor, fShadowColor, 1.f);
 	Out.vColor *= vShadowColor;
+
+
+	
+
+
 
 	// 안개
 	float fFogFactor = saturate(((g_vFogStartEnd.y - (fViewZ)) / (g_vFogStartEnd.y - g_vFogStartEnd.x)));
 	Out.vColor = fFogFactor * Out.vColor + (1.f - fFogFactor) * g_vFogColor;
-
-
-	return Out;
-}
-
-
-
-PS_OUT PS_BLOOM(PS_IN In)
-{
-	PS_OUT		Out = (PS_OUT)0;
-
-
-	return Out;
 	
+
+	return Out;
 }
+
+
 
 
 PS_OUT PS_BLUR_DOWNSCALE(PS_IN In)
@@ -334,7 +347,6 @@ PS_OUT PS_BLUR_Gaussian(PS_IN In) : SV_TARGET0
 			vFinalColor += vPixleColor * fWeight;
 			fKernelSum += fWeight;
 		}
-		
 	}
 	
 	Out.vColor = vFinalColor / fKernelSum;
@@ -366,7 +378,6 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
 	vBloom = pow(abs(vBloom), 2.2f);
 
 	vFinalColor += vBloom;
-	
 	vFinalColor = pow(abs(vFinalColor), 1.f / 2.2f);
 
 	Out.vColor = g_DiffuseTarget.Sample(LinearSampler, In.vTexcoord) + vFinalColor;
@@ -438,7 +449,7 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_BLOOM();
+		PixelShader = compile ps_5_0 PS_MAIN_DEBUG();
 	}
 
 	pass BlurDownScale
@@ -472,7 +483,7 @@ technique11 DefaultTechnique
 		// 7
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DSS_None, 0);
-		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		HullShader = NULL;
@@ -485,7 +496,7 @@ technique11 DefaultTechnique
 		// 8
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DSS_None, 0);
-		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		HullShader = NULL;

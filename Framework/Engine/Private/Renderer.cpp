@@ -511,7 +511,6 @@ HRESULT CRenderer::Render_NonAlphaBlend()
 	}
 	m_Render_Instancing_Objects[RENDER_NONBLEND].clear();
 
-
 	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
 		return E_FAIL;
 
@@ -580,6 +579,8 @@ HRESULT CRenderer::Render_Deferred()
 	if (FAILED(m_pShader->Bind_RawValue("g_vFogStartEnd", &m_vFogStartEnd, sizeof(_float2))))
 		return E_FAIL;
 
+	
+
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
@@ -610,6 +611,9 @@ HRESULT CRenderer::Render_Deferred()
 	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Diffuse"), "g_DiffuseTarget")))
 		return E_FAIL;
 
+	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Normal"), "g_NormalTarget")))
+		return E_FAIL;
+
 	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Shade"), "g_ShadeTarget")))
 		return E_FAIL;
 
@@ -623,7 +627,7 @@ HRESULT CRenderer::Render_Deferred()
 		return E_FAIL;
 
 
-	// TODO :: ±×¸²ÀÚ.
+	
 	_float4x4		LightMatix = GI->Get_ShadowViewMatrix(GI->Get_CurrentLevel());
 
 	if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrix", &LightMatix)))
@@ -682,11 +686,30 @@ HRESULT CRenderer::Render_Effect()
 	}
 	m_RenderObjects[RENDER_EFFECT].clear();
 
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Effect"))))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Blur_Effect"))))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Blur_Bloom"))))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
+
+
 
 	_float fSigma = 0.01f;
 	for (auto& Pair : m_Render_Instancing_Objects[RENDER_EFFECT])
 	{
-		if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Effect"))))
+		if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_Effect", false))))
 			return E_FAIL;
 
 		CEffect* pEffect = dynamic_cast<CEffect*>(Pair.second.pGameObject);
@@ -715,24 +738,23 @@ HRESULT CRenderer::Render_Effect()
 			return E_FAIL;
 
 
-		if (FAILED(Render_Blur(L"Target_Effect", L"MRT_Blur_Effect")))
+		if (FAILED(Render_Blur(L"Target_Effect", L"MRT_Blur_Effect", false)))
 			return E_FAIL;
 
-		if (FAILED(Render_Blur(L"Target_Bloom", L"MRT_Blur_Bloom")))
+		if (FAILED(Render_Blur(L"Target_Bloom", L"MRT_Blur_Bloom", false)))
 			return E_FAIL;
-
-		if (FAILED(Render_Final()))
-			return E_FAIL;
-
-
 	}
+
+	
+
+
 	m_Render_Instancing_Objects[RENDER_EFFECT].clear();
 
 
 	return S_OK;
 }
 
-HRESULT CRenderer::Render_Blur(const wstring& strStartTargetTag , const wstring& strFinalTragetTag)
+HRESULT CRenderer::Render_Blur(const wstring& strStartTargetTag , const wstring& strFinalTragetTag, _bool bClear)
 {
 	if (FAILED(Render_BlurDownSample(strStartTargetTag)))
 		return E_FAIL;
@@ -740,7 +762,7 @@ HRESULT CRenderer::Render_Blur(const wstring& strStartTargetTag , const wstring&
 	if (FAILED(Render_BlurGaussian()))
 		return E_FAIL;
 
-	if (FAILED(Render_BlurUpSample(strFinalTragetTag)))
+	if (FAILED(Render_BlurUpSample(strFinalTragetTag, bClear)))
 		return E_FAIL;
 
 	return S_OK;
@@ -815,9 +837,9 @@ HRESULT CRenderer::Render_BlurGaussian()
 
 
 
-HRESULT CRenderer::Render_BlurUpSample(const wstring& strFinalMrtTag)
+HRESULT CRenderer::Render_BlurUpSample(const wstring& strFinalMrtTag, _bool bClear)
 {
-	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, strFinalMrtTag)))
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, strFinalMrtTag, bClear)))
 		return E_FAIL;
 
 	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_BlurGaussian"), "g_BlurTarget")))

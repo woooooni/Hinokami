@@ -17,6 +17,7 @@
 #include "Monster_Normal_0.h"
 #include "Monster_Normal_1.h"
 #include "Monster_Normal_2.h"
+#include "Enmu_Projectile.h"
 #include "Boss_Enmu.h"
 
 
@@ -453,6 +454,9 @@ HRESULT CLoader::Loading_For_Level_Train_Boss()
 		return E_FAIL;
 
 
+	
+		
+
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
 		CCamera_Free::Create(m_pDevice, m_pContext, TEXT("Free_Camera")), LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
@@ -495,6 +499,11 @@ HRESULT CLoader::Loading_For_Level_Train_Boss()
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Enmu"),
 		CBoss_Enmu::Create(m_pDevice, m_pContext, TEXT("Enmu"), tMonsterStat), LAYER_TYPE::LAYER_MONSTER)))
+		return E_FAIL;
+
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Enmu_Projectile"),
+		CEnmu_Projectile::Create(m_pDevice, m_pContext), LAYER_TYPE::LAYER_EFFECT)))
 		return E_FAIL;
 
 

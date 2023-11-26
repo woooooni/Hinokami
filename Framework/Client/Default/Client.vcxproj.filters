@@ -244,9 +244,6 @@
     <Filter Include="97. ShaderFiles\Instancing">
       <UniqueIdentifier>{9dc92367-cff9-46a1-9a4d-f72d7df5ad80}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97. ShaderFiles\Effect">
-      <UniqueIdentifier>{0eb0bbd2-3014-4244-8bcf-b8af8bda1a3f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. Skill">
       <UniqueIdentifier>{64ee1a0c-5d3e-4e30-956e-4bfdd855c9e2}</UniqueIdentifier>
     </Filter>
@@ -693,6 +690,9 @@
     <ClInclude Include="..\Public\Sky.h">
       <Filter>02.GameObjects\12. Sky</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Enmu_Projectile.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Enmu\Projectile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1022,6 +1022,9 @@
     <ClCompile Include="..\Public\Sky.cpp">
       <Filter>02.GameObjects\12. Sky</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Enmu_Projectile.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Enmu\Projectile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1069,12 +1072,6 @@
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_TextureEffect_Instance.hlsl">
       <Filter>97. ShaderFiles\Instancing</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
-      <Filter>97. ShaderFiles\Effect</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_TextureEffect.hlsl">
-      <Filter>97. ShaderFiles\Effect</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

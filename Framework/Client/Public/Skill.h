@@ -13,12 +13,20 @@ private:
 	virtual ~CSkill() = default;
 
 
+public:
+	virtual void Tick(_float fTimeDelta);
+
+
 protected:
 	wstring m_strSkillTag;
+	_float m_fSkillCoolTime = 1.f;
+	_float m_fAccSkillCoolTime = 0.f;
+
+
+
+
 public:
 	virtual void Free() override;
-
-
 };
 
 END

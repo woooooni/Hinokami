@@ -40,9 +40,9 @@ void CSky::Tick(_float fTimeDelta)
 
 void CSky::LateTick(_float fTimeDelta)
 {
-	m_pTransformCom->Set_Sclae({ .5f, 1.f, .5f });
+	m_pTransformCom->Set_Sclae({ 1.f, 1.f, 1.f });
 	
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(XMLoadFloat4(&GI->Get_CamPosition()), XMVectorGetY(XMLoadFloat4(&GI->Get_CamPosition())) - 15.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(XMLoadFloat4(&GI->Get_CamPosition()), XMVectorGetY(XMLoadFloat4(&GI->Get_CamPosition()))));
 
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);	
 }
@@ -61,13 +61,9 @@ HRESULT CSky::Render()
 		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
 			return E_FAIL;
 
-		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_NORMALS, "g_NormalTexture")))
-			iPassIndex = 0;
-		else
-			iPassIndex++;
-
-		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, iPassIndex)))
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 2)))
 			return E_FAIL;
+		
 	}
 		
 

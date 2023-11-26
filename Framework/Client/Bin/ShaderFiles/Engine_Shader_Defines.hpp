@@ -47,7 +47,7 @@ RasterizerState RS_Sky
 	FillMode = solid;
 
 	/* 앞면을 컬링하겠다. == 후면을 보여주겠다. */
-	CullMode = Front;
+	CullMode = Back;
 
 	/* 앞면을 시계방향으로 쓰겠다. */
 	FrontCounterClockwise = false;

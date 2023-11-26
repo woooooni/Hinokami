@@ -193,7 +193,16 @@ void CState_Enmu_Attack::Tick_Far_Attack_0(_float fTimeDelta)
 
 
 		_vector vJumpDir = XMVectorSet(fDirX, 0.8f, fDirZ, 0.f);
-		m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 5.f);
+		m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 5.f);		
+	}
+
+	if (fProgress >= 0.4f && fProgress <= 0.41f)
+	{
+		for (_uint i = 0; i < 3; ++i)
+		{
+			_int iRandom = rand() % 3 - 1;
+			Shoot(Find_NearTarget(fTimeDelta), XMVectorSet(_float(iRandom), 0.f, 0.f, 0.f), fTimeDelta);
+		}
 	}
 
 	if (fProgress >= 1.f)
@@ -213,6 +222,28 @@ void CState_Enmu_Attack::Tick_Far_Attack_1(_float fTimeDelta)
 
 	if (m_iCurrAnimIndex == 0)
 	{
+		if (fProgress >= .3f && fProgress <= .31f)
+		{
+			_int iRandom = (rand() + rand() + rand()) % 3 - 1;
+			Shoot(Find_NearTarget(fTimeDelta), XMVectorSet(_float(iRandom), 0.f, 0.f, 0.f), fTimeDelta);
+		}
+		if (fProgress >= .4f && fProgress <= .41f)
+		{
+			_int iRandom = (rand() + rand() + rand()) % 3 - 1;
+			Shoot(Find_NearTarget(fTimeDelta), XMVectorSet(_float(iRandom), 0.f, 0.f, 0.f), fTimeDelta);
+		}
+
+		if (fProgress >= .5f && fProgress <= .51f)
+		{
+			_int iRandom = (rand() + rand() + rand()) % 3 - 1;
+			Shoot(Find_NearTarget(fTimeDelta), XMVectorSet(_float(iRandom), 0.f, 0.f, 0.f), fTimeDelta);
+		}
+
+		if (fProgress >= .6f && fProgress <= .61f)
+		{
+			_int iRandom = (rand() + rand() + rand()) % 3 - 1;
+			Shoot(Find_NearTarget(fTimeDelta), XMVectorSet(_float(iRandom), 0.f, 0.f, 0.f), fTimeDelta);
+		}
 		if (fProgress >= .8f)
 		{
 			m_iCurrAnimIndex++;
@@ -233,7 +264,6 @@ void CState_Enmu_Attack::Tick_Far_Attack_1(_float fTimeDelta)
 
 void CState_Enmu_Attack::Tick_Far_Attack_2(_float fTimeDelta)
 {
-	// TODO :: ÀÌÆåÆ® »ý¼º.
 	_float fProgress = m_pModelCom->Get_Animations()[m_AnimationsIndex[m_iRandomAttackIndex][m_iCurrAnimIndex]]->Get_AnimationProgress();
 	m_pOwnerMonster->Set_Infinite(999.f, true);
 
@@ -305,6 +335,46 @@ void CState_Enmu_Attack::Tick_Far_Attack_2(_float fTimeDelta)
 }
 
 
+void CState_Enmu_Attack::Shoot(CGameObject* pTarget, _vector vOffsetPosition, _float fTimeDelta)
+{
+
+	CGameObject* pProjectile = nullptr;
+	if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_EFFECT, L"Prototype_GameObject_Enmu_Projectile", nullptr, &pProjectile)))
+		return;
+	if (FAILED(nullptr == pProjectile))
+		return;
+
+	CTransform* pProjectileTransform = pProjectile->Get_Component<CTransform>(L"Com_Transform");
+	CTransform* pTargetTransform = pTarget->Get_Component<CTransform>(L"Com_Transform");
+
+	if (nullptr == pProjectileTransform || nullptr == pTargetTransform)
+		return;
+
+	_vector vPosition = m_pTransformCom->Get_Position();
+	_vector vDir = XMVector3Normalize(pTargetTransform->Get_Position() - m_pTransformCom->Get_Position());
+	
+	pProjectileTransform->Set_State(CTransform::STATE_LOOK, vDir);
+	pProjectileTransform->Set_State(CTransform::STATE_RIGHT, XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), pProjectileTransform->Get_Look()));
+	pProjectileTransform->Set_State(CTransform::STATE_UP, XMVector3Cross(pProjectileTransform->Get_Look(), pProjectileTransform->Get_Right()));
+	pProjectileTransform->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f) + vOffsetPosition, 1.f));
+	
+
+}
+
+CGameObject* CState_Enmu_Attack::Find_NearTarget(_float fTimeDelta)
+{
+	list<CGameObject*>& TargetObjects = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_CHARACTER);
+	for (auto& pTarget : TargetObjects)
+	{
+		CTransform* pTargetTransform = pTarget->Get_Component<CTransform>(L"Com_Transform");
+		if (nullptr == pTargetTransform)
+			continue;
+
+		return pTarget;
+	}
+	return nullptr;
+}
+
 _float CState_Enmu_Attack::Find_NearTarget_Distance(_float fTimeDelta)
 {
 	list<CGameObject*>& TargetObjects = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_CHARACTER);
@@ -324,6 +394,7 @@ _float CState_Enmu_Attack::Find_NearTarget_Distance(_float fTimeDelta)
 			fMinDistance = fDistance;
 			m_pTransformCom->LookAt_ForLandObject(pTargetTransform->Get_State(CTransform::STATE_POSITION));
 		}
+
 	}
 	return fMinDistance;
 }
@@ -347,7 +418,6 @@ void CState_Enmu_Attack::Follow_NearTarget(_float fTimeDelta)
 			fMinDistance = fDistance;
 			m_pTransformCom->LookAt_ForLandObject(pTargetTransform->Get_State(CTransform::STATE_POSITION));
 			vDir = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
-
 			m_pTransformCom->Go_Dir(vDir, 15.f, fTimeDelta, m_pNavigationCom);
 		}
 	}

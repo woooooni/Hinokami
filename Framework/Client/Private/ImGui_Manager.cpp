@@ -156,6 +156,30 @@ void CImGui_Manager::Tick_Basic_Tool(_float fTimeDelta)
         style.Alpha = m_fWindowAlpha;
     }
 
+    if (KEY_TAP(KEY::P))
+    {
+        list<CGameObject*>& Trees = GI->Find_GameObjects(LEVEL_TOOL, LAYER_TREE);
+        auto iter = Trees.begin();
+        while (iter != Trees.end())
+        {
+            CTransform* pTransform = (*iter)->Get_Component<CTransform>(L"Com_Transform");
+            if (pTransform == nullptr)
+                continue;
+
+            _vector vPosition = pTransform->Get_Position();
+            if (XMVectorGetX(vPosition) < -50.f || XMVectorGetX(vPosition) > 50.f)
+            {
+                iter = Trees.erase(iter);
+                continue;
+            }
+            else
+            {
+                ++iter;
+            }
+                
+
+        }
+    }
     ImGui::BeginTabBar("##NoNameTabBar");
     ImGui::Checkbox("Demo_Window", &m_bShowDemo);
 
@@ -1204,16 +1228,17 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         ImGui::Text("============================================");
 
         _int bCutUv = tEffectDesc.bCutUV;
-        _bool bCutUvChecked = bCutUv != -1;
+        _bool bCutUvChecked = (bCutUv != -1);
         ImGui::Text("Cut UV");
         IMGUI_SAME_LINE;
-        if (ImGui::Checkbox("##Effect_BillBoard", &bCutUvChecked))
-        {
-            if (bCutUv != -1)
-                tEffectDesc.bCutUV = -1;
-            else
-                tEffectDesc.bCutUV = 1;
-        }
+        ImGui::Checkbox("##Effect_CutUV", &bCutUvChecked);
+
+        if (bCutUvChecked == true)
+            tEffectDesc.bCutUV = 1;
+        else
+            tEffectDesc.bCutUV = -1;
+
+        
 
 
         ImGui::Text("Bill_Board ");
@@ -1267,7 +1292,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
 
 
         _float3 fOffsetScale, fOffsetRoation, fOffsetPosition;
-
+        
         XMStoreFloat3(&fOffsetScale, vOffsetScale);
         XMStoreFloat3(&fOffsetRoation, vOffsetRotation);
         XMStoreFloat3(&fOffsetPosition, vOffsetPosition);
@@ -1277,33 +1302,37 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         ImGui::DragFloat3("##Effect_OffsetScale", (_float*)&fOffsetScale, 0.01f, 0.f, 10.f);
         
 
+        ImGui::Text("Offset_Rotation : ");
+        IMGUI_SAME_LINE;
         fOffsetRoation.x = XMConvertToDegrees(fOffsetRoation.x);
         fOffsetRoation.y = XMConvertToDegrees(fOffsetRoation.y);
         fOffsetRoation.z = XMConvertToDegrees(fOffsetRoation.z);
 
-        ImGui::Text("Offset_Rotation : ");
-        IMGUI_SAME_LINE;
-        ImGui::DragFloat3("##Effect_OffsetRotation", (_float*)&fOffsetRoation, 0.1f, 0.f, 90.f);
+        if (ImGui::DragFloat3("##Effect_OffsetRotation", (_float*)&fOffsetRoation, 0.1f, -360.f, 360.f))
+        {
+            if (fOffsetRoation.y == 180.f)
+            {
+                fOffsetRoation.x = 180.f;
+                fOffsetRoation.y = 0.f;
+                fOffsetRoation.z = 180.f;
+            }
+                
+            fOffsetRoation.x = XMConvertToRadians(fOffsetRoation.x);
+            fOffsetRoation.y = XMConvertToRadians(fOffsetRoation.y);
+            fOffsetRoation.z = XMConvertToRadians(fOffsetRoation.z);
+
+            
+            vOffsetQuaternion = XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3(&fOffsetRoation));
+        }
+
+
+        
         
 
         ImGui::Text("Offset_Position : ");
         IMGUI_SAME_LINE;
         ImGui::DragFloat3("##Effect_OffsetPosition", (_float*)&fOffsetPosition, 0.01f, -1000.f, 1000.f);
 
-
-
-        if (fOffsetRoation.x == XMConvertToRadians(90.f))
-            fOffsetRoation.x = XMConvertToRadians(89.5f);
-        if (fOffsetRoation.y == XMConvertToRadians(90.f))
-            fOffsetRoation.y = XMConvertToRadians(89.5f);
-        if (fOffsetRoation.z == XMConvertToRadians(90.f))
-            fOffsetRoation.z = XMConvertToRadians(89.5f);
-
-        fOffsetRoation.x = XMConvertToRadians(fOffsetRoation.x);
-        fOffsetRoation.y = XMConvertToRadians(fOffsetRoation.y);
-        fOffsetRoation.z = XMConvertToRadians(fOffsetRoation.z);
-        
-        vOffsetQuaternion = XMQuaternionRotationRollPitchYaw(fOffsetRoation.x, fOffsetRoation.y, fOffsetRoation.z);
         
         XMStoreFloat4x4(&tEffectDesc.OffsetMatrix, 
             XMMatrixAffineTransformation(XMLoadFloat3(&fOffsetScale), XMVectorSet(0.f, 0.f, 0.f, 1.f), vOffsetQuaternion, XMLoadFloat3(&fOffsetPosition)));
@@ -2039,7 +2068,7 @@ HRESULT CImGui_Manager::Save_Effect(const wstring& strFullPath)
     File->Write<string>(CUtils::ToString(EffectDesc.strAlphaTexturName));
     
     File->Write<_bool>(EffectDesc.bBillboard);
-    File->Write<_bool>(EffectDesc.bCutUV);
+    File->Write<_int>(EffectDesc.bCutUV);
     
     File->Write<_float>(EffectDesc.fAlpha);
     File->Write<_float>(EffectDesc.fDestAlphaSpeed);
@@ -2097,7 +2126,7 @@ HRESULT CImGui_Manager::Load_Effect(const wstring& strFullPath)
     EffectDesc.strAlphaTexturName = CUtils::ToWString(File->Read<string>());
 
     EffectDesc.bBillboard = File->Read<_bool>();
-    EffectDesc.bCutUV = File->Read<_bool>();
+    EffectDesc.bCutUV = File->Read<_int>();
 
     EffectDesc.fAlpha = File->Read<_float>();
     EffectDesc.fDestAlphaSpeed = File->Read<_float>();

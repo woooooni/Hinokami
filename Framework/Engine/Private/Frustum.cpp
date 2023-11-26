@@ -46,6 +46,7 @@ _bool CFrustum::Intersect_Frustum_World(_fvector vWorldPos, _float fRadius)
 
 	/* Plane		: a b c d */
 	/* vWorldPos	: x y z 1 */
+	fRadius = XMConvertToRadians(fRadius);
 	for (size_t i = 0; i < 6; i++)
 	{
 		if (fRadius < XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_WorldPlanes[i]), vWorldPos)))

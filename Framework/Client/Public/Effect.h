@@ -24,8 +24,8 @@ public:
 		wstring strDiffuseTetextureName = L"";
 		wstring strAlphaTexturName = L"";
 
-		_bool bBillboard = false;
-		_int bCutUV = -1;
+		_bool	bBillboard = false;
+		_int	bCutUV = -1;
 
 		_float			fTurnSpeed = 0.f;
 		_float			fMoveSpeed = 0.f;
@@ -131,12 +131,8 @@ public:
 public:
 	void Set_Owner(CGameObject* pGameObject) { m_pOwnerObject = pGameObject; }
 	const EFFECT_DESC& Get_EffectDesc() { return m_tEffectDesc; }
-	void Set_EffectDesc(const EFFECT_DESC& tDesc) 
-	{ 
-		m_tEffectDesc = tDesc;
-		m_iDiffuseTextureIdx = m_pDiffuseTextureCom->Find_Index(m_tEffectDesc.strDiffuseTetextureName);
-		m_iAlphaTextureIdx = m_pAlphaTextureCom->Find_Index(m_tEffectDesc.strAlphaTexturName);
-	}
+	void Set_EffectDesc(const EFFECT_DESC& tDesc);
+	
 
 	_bool Is_End() { return m_bEnd; };
 	void Set_End(_bool bEnd) { m_bEnd = bEnd; }
@@ -154,8 +150,10 @@ public:
 	void Set_OffsetMatrix(_fmatrix fOffsetMatrix) { XMStoreFloat4x4(&m_tEffectDesc.OffsetMatrix, fOffsetMatrix); }
 	const _float4x4& Get_OffsetMatrix() { return  m_tEffectDesc.OffsetMatrix; }
 
-	void Set_Gravity(_bool bGravity) { m_pRigidBodyCom->Set_Gravity(bGravity); }
-	_bool Is_Gravity() { return m_pRigidBodyCom->Is_Gravity(); }
+
+public:
+	void Set_Gravity(_bool bGravity);
+	_bool Is_Gravity();
 
 	void Set_MoveDir(_vector vDir);
 	void Set_MoveSpeed(_float fSpeed) { m_tEffectDesc.fMoveSpeed = fSpeed; }
@@ -185,7 +183,6 @@ public:
 
 private:
 	class CModel* m_pModelCom = nullptr;
-	class CShader* m_pShaderCom = nullptr;
 	class CTexture* m_pDiffuseTextureCom = nullptr;
 	class CTexture* m_pAlphaTextureCom = nullptr;
 	class CRenderer* m_pRendererCom = nullptr;

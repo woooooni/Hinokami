@@ -147,7 +147,6 @@ PS_OUT PS_MAIN(PS_IN In)
 	vector vRimColor = g_vRimColor * fRimPower;
 	Out.vDiffuse += vRimColor;
 
-
 	if (0 == Out.vDiffuse.a)
 		discard;
 
@@ -175,6 +174,8 @@ PS_OUT PS_MAIN_NORMAL(PS_IN In)
 
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.0f, 0.0f);
+
+	
 
 	float fRimPower = 1.f - saturate(dot(vNormal.xyz, normalize((-1.f * (In.vWorldPosition - g_vCamPosition)))));
 	fRimPower = pow(fRimPower, 2.f);

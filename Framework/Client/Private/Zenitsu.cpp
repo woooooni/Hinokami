@@ -301,9 +301,8 @@ HRESULT CZenitsu::Ready_States()
 
 	strAnimationName.clear();
 
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseJump01_2");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkCmbAW01");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkCmbAW02");
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01A_0");
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01A_2");
 
 	m_pStateCom->Add_State(CCharacter::AIR_ATTACK,
 		CState_Zenitsu_Air_Attack::Create(m_pDevice,

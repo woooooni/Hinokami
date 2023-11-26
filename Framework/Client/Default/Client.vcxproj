@@ -185,6 +185,7 @@
     <ClInclude Include="..\Public\Boss_Enmu.h" />
     <ClInclude Include="..\Public\Building.h" />
     <ClInclude Include="..\Public\Camera_Main.h" />
+    <ClInclude Include="..\Public\Enmu_Projectile.h" />
     <ClInclude Include="..\Public\Effect_Manager.h" />
     <ClInclude Include="..\Public\Level_Train.h" />
     <ClInclude Include="..\Public\Monster_Normal_0.h" />
@@ -313,6 +314,7 @@
     <ClCompile Include="..\Private\Boss_Enmu.cpp" />
     <ClCompile Include="..\Private\Building.cpp" />
     <ClCompile Include="..\Private\Camera_Main.cpp" />
+    <ClCompile Include="..\Private\Enmu_Projectile.cpp" />
     <ClCompile Include="..\Private\Effect_Manager.cpp" />
     <ClCompile Include="..\Private\Level_Train.cpp" />
     <ClCompile Include="..\Private\Level_Train_Boss.cpp" />
@@ -451,12 +453,10 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_AnimModel.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Model.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Model_Instance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Rect_Instance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_TextureEffect.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Protocol\GenPackets.bat" />

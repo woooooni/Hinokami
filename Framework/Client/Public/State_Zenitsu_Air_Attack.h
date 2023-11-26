@@ -21,15 +21,18 @@ public:
 
 
 private:
+	class CGameObject* m_pTarget = nullptr;
 	class CCharacter* m_pCharacter = nullptr;
 	class CSword* m_pSword = nullptr;
 
 	_uint m_iSkillCount = 3;
 
+
 private:
 	void Input(_float fTimeDelta);
 	void Find_Near_Target();
 	void Follow_Near_Target(_float fTimeDelta);
+	void Generate_Effect(_float fTimeDelta);
 
 public:
 	static CState_Zenitsu_Air_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

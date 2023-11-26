@@ -15,6 +15,10 @@ CSkill::CSkill(const CSkill& rhs)
 
 }
 
+void CSkill::Tick(_float fTimeDelta)
+{
+}
+
 void CSkill::Free()
 {
 	__super::Free();

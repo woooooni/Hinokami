@@ -90,7 +90,7 @@ void CMonster::LateTick(_float fTimeDelta)
 		
 
 	__super::LateTick(fTimeDelta);
-	if (true == GI->Intersect_Frustum_World(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3.f))
+	if (true == GI->Intersect_Frustum_World(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 	{
 		std::async(&CModel::Play_Animation, m_pModelCom, m_pTransformCom, fTimeDelta);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
@@ -196,7 +196,6 @@ void CMonster::Collision_Enter(const COLLISION_INFO& tInfo)
 			On_Damaged(tInfo);
 		}
 	}
-
 }
 
 void CMonster::Collision_Continue(const COLLISION_INFO& tInfo)
@@ -315,6 +314,8 @@ void CMonster::Free()
 
 	for (auto& pPart : m_Parts)
 		Safe_Release(pPart);
+
+
 
 	m_Parts.clear();
 

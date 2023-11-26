@@ -63,94 +63,94 @@ HRESULT CLevel_Train_Boss::Initialize()
 HRESULT CLevel_Train_Boss::Tick(_float fTimeDelta)
 {
 
-	if (KEY_TAP(KEY::U))
-	{
-		m_vFogStartEnd.x -= 1.f;
-		m_vFogStartEnd.x = max(0.f, m_vFogStartEnd.x);
-		m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
-	}
+	//if (KEY_TAP(KEY::U))
+	//{
+	//	m_vFogStartEnd.x -= 1.f;
+	//	m_vFogStartEnd.x = max(0.f, m_vFogStartEnd.x);
+	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	//}
 
-	if (KEY_TAP(KEY::I))
-	{
-		m_vFogStartEnd.x += 1.f;
-		m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
-	}
+	//if (KEY_TAP(KEY::I))
+	//{
+	//	m_vFogStartEnd.x += 1.f;
+	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	//}
 
-	if (KEY_TAP(KEY::O))
-	{
-		
-		if (KEY_HOLD(KEY::SHIFT))
-		{
-			m_vFogStartEnd.y -= 1.f;
-		}
-		else
-		{
-			m_vFogStartEnd.y -= 10.f;
-		}
-		m_vFogStartEnd.y = max(0.f, m_vFogStartEnd.y);
-		m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
-	}
+	//if (KEY_TAP(KEY::O))
+	//{
+	//	
+	//	if (KEY_HOLD(KEY::SHIFT))
+	//	{
+	//		m_vFogStartEnd.y -= 1.f;
+	//	}
+	//	else
+	//	{
+	//		m_vFogStartEnd.y -= 10.f;
+	//	}
+	//	m_vFogStartEnd.y = max(0.f, m_vFogStartEnd.y);
+	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	//}
 
-	if (KEY_TAP(KEY::P))
-	{
+	//if (KEY_TAP(KEY::P))
+	//{
 
-		if (KEY_HOLD(KEY::SHIFT))
-		{
-			m_vFogStartEnd.y -= 1.f;
-		}
-		else
-		{
-			m_vFogStartEnd.y += 10.f;
-		}
-		
-		m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
-	}
+	//	if (KEY_HOLD(KEY::SHIFT))
+	//	{
+	//		m_vFogStartEnd.y -= 1.f;
+	//	}
+	//	else
+	//	{
+	//		m_vFogStartEnd.y += 10.f;
+	//	}
+	//	
+	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	//}
 
 
-	if (KEY_TAP(KEY::R))
-	{
-		if (KEY_HOLD(KEY::SHIFT))
-		{
-			m_vFogColor.x -= 0.1f;
-			m_vFogColor.x = max(0.f, m_vFogColor.x);
-		}
-		else
-		{
-			m_vFogColor.x += 0.1f;
-			m_vFogColor.x = min(m_vFogColor.x, 1.f);
-		}
-		m_pRendererCom->Set_FogColor(m_vFogColor);
-	}
+	//if (KEY_TAP(KEY::R))
+	//{
+	//	if (KEY_HOLD(KEY::SHIFT))
+	//	{
+	//		m_vFogColor.x -= 0.1f;
+	//		m_vFogColor.x = max(0.f, m_vFogColor.x);
+	//	}
+	//	else
+	//	{
+	//		m_vFogColor.x += 0.1f;
+	//		m_vFogColor.x = min(m_vFogColor.x, 1.f);
+	//	}
+	//	m_pRendererCom->Set_FogColor(m_vFogColor);
+	//}
 
-	if (KEY_TAP(KEY::G))
-	{
-		if (KEY_HOLD(KEY::SHIFT))
-		{
-			m_vFogColor.y -= 0.1f;
-			m_vFogColor.y = max(0.f, m_vFogColor.y);
-		}
-		else
-		{
-			m_vFogColor.y += 0.1f;
-			m_vFogColor.y = min(m_vFogColor.y, 1.f);
-		}
-		m_pRendererCom->Set_FogColor(m_vFogColor);
-	}
+	//if (KEY_TAP(KEY::G))
+	//{
+	//	if (KEY_HOLD(KEY::SHIFT))
+	//	{
+	//		m_vFogColor.y -= 0.1f;
+	//		m_vFogColor.y = max(0.f, m_vFogColor.y);
+	//	}
+	//	else
+	//	{
+	//		m_vFogColor.y += 0.1f;
+	//		m_vFogColor.y = min(m_vFogColor.y, 1.f);
+	//	}
+	//	m_pRendererCom->Set_FogColor(m_vFogColor);
+	//}
 
-	if (KEY_TAP(KEY::B))
-	{
-		if (KEY_HOLD(KEY::SHIFT))
-		{
-			m_vFogColor.z -= 0.1f;
-			m_vFogColor.z = max(0.f, m_vFogColor.z);
-		}
-		else
-		{
-			m_vFogColor.z += 0.1f;
-			m_vFogColor.z = min(m_vFogColor.z, 1.f);
-		}
-		m_pRendererCom->Set_FogColor(m_vFogColor);
-	}
+	//if (KEY_TAP(KEY::B))
+	//{
+	//	if (KEY_HOLD(KEY::SHIFT))
+	//	{
+	//		m_vFogColor.z -= 0.1f;
+	//		m_vFogColor.z = max(0.f, m_vFogColor.z);
+	//	}
+	//	else
+	//	{
+	//		m_vFogColor.z += 0.1f;
+	//		m_vFogColor.z = min(m_vFogColor.z, 1.f);
+	//	}
+	//	m_pRendererCom->Set_FogColor(m_vFogColor);
+	//}
 
 
 

@@ -40,7 +40,12 @@ private:
 	_uint m_iRandomAttackIndex = 0;
 	class CMonster* m_pOwnerMonster = nullptr;
 
+	class CGameObject* m_pTarget = nullptr;
+
+
 private:
+	void Shoot(class CGameObject* pTarget, _vector vOffsetPosition, _float fTimeDelta);
+	class CGameObject* Find_NearTarget(_float fTimeDelta);
 	_float Find_NearTarget_Distance(_float fTimeDelta);
 	void Follow_NearTarget(_float fTimeDelta);
 	

@@ -80,9 +80,9 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 		}
 		else
 		{
-			if (fProgress >= .18f && fProgress <= .185f)
+			if (fProgress >= .15f && fProgress <= .16f)
 			{
-				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMVectorSet(0.f, 0.f, 0.f, 1.f), 2.f, m_pSword);
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMMatrixIdentity(), 2.f, m_pSword);
 			}
 			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 			m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
@@ -96,19 +96,34 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 		}
 		else
 		{
-			if (fProgress >= 0.f && fProgress < 0.001f)
+			if (fProgress >= 0.1f && fProgress < 0.11f)
 			{
-				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMVectorSet(0.f, 0.f, 0.f, 1.f), .5f, m_pSword);
+				_vector vPosition  = m_pTransformCom->Get_Position();
+				_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+				WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f);
+
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Zenitsu_Slash_0", XMMatrixRotationZ(XMConvertToRadians(30.f)), WorldMatrix, 1.f);
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Zenitsu_Slash_1", XMMatrixRotationZ(XMConvertToRadians(150.f)), WorldMatrix, 1.f);
 			}
 
 			if (fProgress >= .2f && fProgress <= .21f)
 			{
-				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMVectorSet(0.f, 0.f, 0.f, 1.f), .5f, m_pSword);
+				_vector vPosition = m_pTransformCom->Get_Position();
+				_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+				WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f);
+
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Zenitsu_Slash_0", XMMatrixRotationZ(XMConvertToRadians(-15.f)), WorldMatrix, 1.f);
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Zenitsu_Slash_1", XMMatrixRotationZ(XMConvertToRadians(-165.f)), WorldMatrix, 1.f);
 			}
 
 			if (fProgress >= .4f && fProgress <= .41f)
 			{
-				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMVectorSet(0.f, 0.f, 0.f, 1.f), .5f, m_pSword);
+				_vector vPosition = m_pTransformCom->Get_Position();
+				_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+				WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f);
+
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Zenitsu_Slash_0", XMMatrixRotationZ(XMConvertToRadians(60.f)), WorldMatrix, 1.f);
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Zenitsu_Slash_1", XMMatrixRotationZ(XMConvertToRadians(120.f)), WorldMatrix, 1.f);
 			}
 
 			m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
@@ -143,16 +158,58 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 	case 4:
 		if (fProgress >= 0.1f && fProgress < 0.4f)
 		{
-			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 10.f, 1.f);
+			if (fProgress >= 0.18f && fProgress <= 0.19f)
+			{
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMMatrixIdentity(), 2.f, m_pSword);
+			}
+
+			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 7.f, 1.f);
 			m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 		}
-		else if(fProgress >= 0.4f)
+		else
 		{
 			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 			m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
-			
+
 		}
+
+		/*if (fProgress >= 0.2f && fProgress <= 0.3f)
+		{
+			Vec3 vLook = m_pTransformCom->Get_Look();
+
+			XMVectorSetY(vLook, 0.f);
+			vLook.Normalize(vLook);
+
+			m_pRigidBodyCom->Add_Velocity(vLook, 5.f);
+
+			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 7.f, 0.f, 1.f);
+			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+
+			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 7.f, 0.f, 1.f);
+			m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
+		}
+		else if (fProgress >= 0.5f)
+		{
+			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
+			m_pSword->Set_ActiveColliders(CCollider::BASIC, true);
+
+			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+			m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
+		}*/
 		break;
+	//case 4:
+	//	if (fProgress >= 0.1f && fProgress < 0.4f)
+	//	{
+	//		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 10.f, 1.f);
+	//		m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
+	//	}
+	//	else if(fProgress >= 0.4f)
+	//	{
+	//		m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+	//		m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
+	//		
+	//	}
+	//	break;
 	}
 
 
@@ -173,10 +230,19 @@ void CState_Zenitsu_Attack::Exit_State()
 
 void CState_Zenitsu_Attack::Input(_float fTimeDelta)
 {
-	if (KEY_HOLD(KEY::RBTN) && m_iCurrAnimIndex == 3)
+	if (KEY_HOLD(KEY::RBTN))
 	{
-		m_pStateMachineCom->Change_State(CCharacter::AIR_ATTACK);
-		return;
+		switch (m_iCurrAnimIndex)
+		{
+		case 2:
+			Find_Near_Target();
+			Trace_Near_Target();
+			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
+			break;
+		case 3:
+			m_pStateMachineCom->Change_State(CCharacter::AIR_ATTACK);
+			break;
+		}
 	}
 
 	if (KEY_HOLD(KEY::LBTN))
@@ -199,13 +265,14 @@ void CState_Zenitsu_Attack::Input(_float fTimeDelta)
 		case 2:
 			Find_Near_Target();
 			Trace_Near_Target();
-			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
+			m_iCurrAnimIndex = 4;
+			m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 			break;
-		case 3:
-			Find_Near_Target();
-			Trace_Near_Target();
-			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
-			break;
+		//case 3:
+		//	Find_Near_Target();
+		//	Trace_Near_Target();
+		//	m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
+		//	break;
 		}
 
 		return;

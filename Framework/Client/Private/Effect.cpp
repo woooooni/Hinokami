@@ -181,6 +181,23 @@ HRESULT CEffect::Save_EffectInfo()
 	return S_OK;
 }
 
+void CEffect::Set_EffectDesc(const EFFECT_DESC& tDesc)
+{
+	m_tEffectDesc = tDesc;
+	m_iDiffuseTextureIdx = m_pDiffuseTextureCom->Find_Index(m_tEffectDesc.strDiffuseTetextureName);
+	m_iAlphaTextureIdx = m_pAlphaTextureCom->Find_Index(m_tEffectDesc.strAlphaTexturName);
+}
+
+void CEffect::Set_Gravity(_bool bGravity)
+{
+	m_pRigidBodyCom->Set_Gravity(bGravity);
+}
+
+_bool CEffect::Is_Gravity()
+{
+	return m_pRigidBodyCom->Is_Gravity();
+}
+
 void CEffect::Set_MoveDir(_vector vDir)
 {
 	XMStoreFloat3(&m_tEffectDesc.vMoveDir, XMVector3Normalize(vDir));
@@ -355,10 +372,6 @@ HRESULT CEffect::Ready_Components()
 
 	if(m_eType == EFFECT_TYPE::EFFECT_MESH)
 	{
-		/* For.Com_Shader */
-		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Mesh_Effect"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
-			return E_FAIL;
-
 
 		/* For.Com_Model */
 		if (FAILED(__super::Add_Component(LEVEL_STATIC, m_strModelPrototype, TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
@@ -367,10 +380,6 @@ HRESULT CEffect::Ready_Components()
 
 	else
 	{
-		/* For.Com_Shader */
-		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Texture_Effect"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
-			return E_FAIL;
-
 
 		/* For.Com_VIBuffer */
 		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
@@ -414,7 +423,6 @@ void CEffect::Free()
 	__super::Free();
 
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pDiffuseTextureCom);
 	Safe_Release(m_pAlphaTextureCom);
 	Safe_Release(m_pRendererCom);

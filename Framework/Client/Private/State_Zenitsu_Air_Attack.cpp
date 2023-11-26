@@ -39,78 +39,47 @@ void CState_Zenitsu_Air_Attack::Enter_State(void* pArg)
 	
 
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
-	Follow_Near_Target(GI->Get_TimeDelta(L"Timer_GamePlay"));
-
 	m_pRigidBodyCom->Set_Velocity({ 0.f, 0.f, 0.f });
 	m_pRigidBodyCom->Set_Gravity(false);
 
-	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
-	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
+	Find_Near_Target();
+	if (nullptr != m_pTarget)
+	{
+		Generate_Effect(GI->Get_TimeDelta(L"Timer_GamePlay"));
 
-	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
-	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
+	}
 }
 
 void CState_Zenitsu_Air_Attack::Tick_State(_float fTimeDelta)
 {
+	Input(fTimeDelta);
 	_float fProgress = m_pModelCom->Get_CurrAnimation()->Get_AnimationProgress();
 
-	if(fProgress >= .8f)
-		Input(fTimeDelta);
-	else
+	if (fProgress >= .8f && m_iCurrAnimIndex == 0)
 	{
-		if (0 == m_iCurrAnimIndex && fProgress >= .2f)
-			Input(fTimeDelta);
+		m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
+		m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
+		m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
+		m_pCharacter->Set_ActiveColliders(CCollider::BODY, true);
 
+
+		m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
+		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 	}
-
-	if (fProgress >= .9f)
+		
+	
+	if (1 == m_iCurrAnimIndex)
 	{
-		m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
-		return;
+		if (fProgress >= 0.99f)
+			m_pRigidBodyCom->Set_Gravity(true);
 	}
-
-
-
-	switch (m_iCurrAnimIndex)
-	{
-	case 0:
-		break;
-	case 1:
-		if (fProgress >= .5f)
-		{
-			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-			m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
-		}
-		else
-		{
-			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 0.f, 4.f, 1.f);
-			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 0.f, 4.f, 1.f);
-
-			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-			m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
-		}
-		break;
-	case 2:
-		if (fProgress >= .5f)
-		{
-			
-
-			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-			m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
-		}
-		else
-		{
-			if (fProgress >= 4.f)
-			{
-				m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 4.f, 1.f);
-				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 4.f, 1.f);
-				m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
-			}
-			
-		}
-		break;
-	}
+	//
+	//if (fProgress >= 1.f)
+	//{
+	//	m_pStateMachineCom->Change_State(CCharacter::STATE::BATTLE_IDLE);
+	//	return;
+	//}
+		
 }
 
 void CState_Zenitsu_Air_Attack::Exit_State()
@@ -123,6 +92,8 @@ void CState_Zenitsu_Air_Attack::Exit_State()
 
 	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
+	m_pCharacter->Set_ActiveColliders(CCollider::BODY, true);
+	
 
 	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
@@ -134,23 +105,17 @@ void CState_Zenitsu_Air_Attack::Exit_State()
 
 void CState_Zenitsu_Air_Attack::Input(_float fTimeDelta)
 {
-	if (KEY_TAP(KEY::LBTN))
+	if (KEY_TAP(KEY::RBTN))
 	{
-		switch (m_iCurrAnimIndex)
+		Find_Near_Target();
+		
+		if (nullptr != m_pTarget)
 		{
-		case 0:
-			Find_Near_Target();
-			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
-			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
-			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
-			break;
-		case 1:
-			Find_Near_Target();
-			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
-			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
-			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
-			break;
+			m_iCurrAnimIndex = 0;
+			m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
+			Generate_Effect(fTimeDelta);
 		}
+
 	}
 
 
@@ -158,6 +123,7 @@ void CState_Zenitsu_Air_Attack::Input(_float fTimeDelta)
 
 void CState_Zenitsu_Air_Attack::Find_Near_Target()
 {
+	m_pTarget = nullptr;
 	_float fMinDistance = 9999999999.f;
 	CTransform* pFindTargetTransform = nullptr;
 	const list<CGameObject*>& Targets = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_MONSTER);
@@ -173,6 +139,7 @@ void CState_Zenitsu_Air_Attack::Find_Near_Target()
 		{
 			fMinDistance = fDistance;
 			pFindTargetTransform = pTargetTransform;
+			m_pTarget = pTarget;
 		}
 	}
 
@@ -236,6 +203,49 @@ void CState_Zenitsu_Air_Attack::Follow_Near_Target(_float fTimeDelta)
 		m_pTransformCom->LookAt_ForLandObject(vTargetPosition);		
 	}
 
+}
+
+void CState_Zenitsu_Air_Attack::Generate_Effect(_float fTimeDelta)
+{
+	
+
+
+	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>(L"Com_Transform");
+	_vector vTargetPosition = pTargetTransform->Get_Position();
+	_vector vDir = vTargetPosition - m_pTransformCom->Get_Position();
+	_vector vCenterPosition = m_pTransformCom->Get_Position() + (vDir * .5f);
+
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSetY(vCenterPosition, XMVectorGetY(vCenterPosition) + 1.f);
+
+	
+	_matrix RotaionMatrix = XMMatrixIdentity();
+	RotaionMatrix.r[CTransform::STATE_LOOK] = XMVector3Normalize(vDir);
+	RotaionMatrix.r[CTransform::STATE_RIGHT] = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMVector3Normalize(RotaionMatrix.r[CTransform::STATE_LOOK])));
+	RotaionMatrix.r[CTransform::STATE_UP] = XMVector3Normalize(XMVector3Cross(XMVector3Normalize(RotaionMatrix.r[CTransform::STATE_LOOK]), RotaionMatrix.r[CTransform::STATE_RIGHT]));
+	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_0", RotaionMatrix, WorldMatrix, 1.f);
+	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_1", RotaionMatrix, WorldMatrix, 1.f);
+
+
+
+
+	RotaionMatrix.r[CTransform::STATE_LOOK] = XMVector3Normalize(RotaionMatrix.r[CTransform::STATE_LOOK]);
+	WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + (-1.f * XMVector3Normalize(m_pTransformCom->Get_Look()));
+	WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSetY(WorldMatrix.r[CTransform::STATE_POSITION], XMVectorGetY(WorldMatrix.r[CTransform::STATE_POSITION]) + 1.f);
+	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_Dash_0", RotaionMatrix, WorldMatrix, 1.f);
+
+
+
+
+
+	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
+	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
+
+	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
+	m_pCharacter->Set_ActiveColliders(CCollider::BODY, false);
+
+	m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vTargetPosition - m_pTransformCom->Get_Position()), 10.f);
 }
 
 CState_Zenitsu_Air_Attack* CState_Zenitsu_Air_Attack::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)
