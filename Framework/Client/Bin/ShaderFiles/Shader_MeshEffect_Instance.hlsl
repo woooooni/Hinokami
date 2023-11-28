@@ -7,7 +7,7 @@ Texture2D	g_AlphaTexture;
 
 
 
-
+float g_fBlurPower = 0.f;
 struct EffectDesc
 {
 	int			g_iCutUV;
@@ -90,7 +90,8 @@ struct PS_IN
 struct PS_OUT
 {
 	float4		vDiffuse : SV_TARGET0;
-	float4      vBrightness : SV_TARGET1;
+	float4		vBlurPower : SV_TARGET1;
+	float4      vBrightness : SV_TARGET2;
 };
 
 
@@ -101,7 +102,10 @@ float4 CalcBrightness(float4 vColor, uint iInstanceID)
 	float brightness = dot(vColor, g_EffectDesc[iInstanceID].g_vBloomPower);
 
 	if (brightness > 0.99f)
+	{
 		BrightColor = float4(vColor.rgb, 1.0f);
+	}
+		
 
 	return BrightColor;
 }
@@ -121,6 +125,7 @@ PS_OUT PS_DEFAULT(PS_IN In)
 		discard;
 
 	Out.vBrightness = CalcBrightness(Out.vDiffuse, In.iInstanceID);
+	Out.vBlurPower = vector(g_fBlurPower / 100.f, 0.f, 0.f, 1.f);
 	return Out;
 
 };
@@ -154,7 +159,7 @@ PS_OUT PS_NO_ALPHA_WITH_DIFFUSE(PS_IN In)
 		discard;
 
 	Out.vBrightness = CalcBrightness(Out.vDiffuse, In.iInstanceID);
-
+	Out.vBlurPower = vector(g_fBlurPower / 100.f, 0.f, 0.f, 1.f);
 	return Out;
 
 };
@@ -171,7 +176,7 @@ PS_OUT PS_NO_DIFFUSE_WITH_ALPHA(PS_IN In)
 
 	vector vTextureAlpha = g_AlphaTexture.Sample(LinearSampler, In.vTexUV);
 
-	if (vTextureAlpha.r <= 0.001f)
+	if ((vTextureAlpha.r <= 0.01f) && (vTextureAlpha.g <= 0.01f) && (vTextureAlpha.b <= 0.01f))
 		discard;
 
 	Out.vDiffuse = vector(g_EffectDesc[In.iInstanceID].g_fAdditiveDiffuseColor.rgb, g_EffectDesc[In.iInstanceID].g_fAlpha);
@@ -180,7 +185,7 @@ PS_OUT PS_NO_DIFFUSE_WITH_ALPHA(PS_IN In)
 		discard;
 
 	Out.vBrightness = CalcBrightness(Out.vDiffuse, In.iInstanceID);
-
+	Out.vBlurPower = vector(g_fBlurPower / 100.f, 0.f, 0.f, 1.f);
 	return Out;
 
 };
@@ -201,7 +206,7 @@ PS_OUT PS_BOTH(PS_IN In)
 	vector vAdditiveColor = vector(g_EffectDesc[In.iInstanceID].g_fAdditiveDiffuseColor.rgb, g_EffectDesc[In.iInstanceID].g_fAlpha);
 
 
-	if (vTextureAlpha.r <= 0.1f)
+	if (vTextureAlpha.r <= 0.1f && vTextureAlpha.g <= 0.1f && vTextureAlpha.b <= 0.1f)
 		discard;
 
 	vector vDiffuseColor = vTextureDiffuse + vAdditiveColor;
@@ -216,6 +221,7 @@ PS_OUT PS_BOTH(PS_IN In)
 		discard;
 
 	Out.vBrightness = CalcBrightness(Out.vDiffuse, In.iInstanceID);
+	Out.vBlurPower = vector(g_fBlurPower / 100.f, 0.f, 0.f, 1.f);
 	return Out;
 
 };

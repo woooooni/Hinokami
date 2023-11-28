@@ -25,6 +25,7 @@ texture2D		g_BlurBloomTarget;
 texture2D		g_BlurEffectTarget;
 
 texture2D		g_BlurTarget;
+texture2D		g_BlurPowerTarget;
 
 
 
@@ -205,7 +206,7 @@ float PCF_ShadowCaculation(float4 vLightPos)
 		for (int y = -1; y <= 1; ++y)
 		{
 			float fPCFDepth = (g_ShadowTarget.Sample(PointSampler, projCoords.xy + float2(x, y) * texelSize).r) * 1000.f;
-			fShadow += ((vLightPos.w - g_fBias) > fPCFDepth) ? 0.5f : 1.0f;
+			fShadow += (vLightPos.w > fPCFDepth + g_fBias) ? 0.5f : 1.0f;
 		}
 	}
 	fShadow /= 9.0f;
@@ -247,7 +248,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 
 
 
-	// 외곽선
+	//// 외곽선
 	float Lx = 0;
 	float Ly = 0;
 
@@ -268,12 +269,11 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 	Out.vColor *= vOutline;
 
 
+	// 그림자
 	vector		vWorldPos;
 	vector		vDepthDesc = g_DepthTarget.Sample(PointSampler, In.vTexcoord);
 	float		fViewZ = vDepthDesc.y * 1000.f;
 
-
-	// 그림자
 	/* 투영스페이스 상의 위치를 구한다. */
 	vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
 	vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
@@ -286,14 +286,11 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 
 	/* 월드까지 가자. */
 	vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-
-
-	/* 빛 기준 UV좌표를 구하자. */
-	// float2 vLightUV = float2(0.f, 0.f);
+	
 	vector	vLightPos = mul(vWorldPos, g_LightViewMatrix);
 	vLightPos = mul(vLightPos, g_CamProjMatrix);
-	float fShadowColor = PCF_ShadowCaculation(vLightPos);
 
+	float fShadowColor = PCF_ShadowCaculation(vLightPos);
 	vector vShadowColor = vector(fShadowColor, fShadowColor, fShadowColor, 1.f);
 	Out.vColor *= vShadowColor;
 
@@ -323,33 +320,61 @@ PS_OUT PS_BLUR_DOWNSCALE(PS_IN In)
 
 
 float2 g_PixleSize = float2(1.f / (1600.f / 2.f), 1.f / (900.f / 2.f));
-int g_KernelSize = 20;
-float g_fSigma = 0.01f;
 
-float g_fWeights[20] = 
-{ 0.01f, 0.015f, 0.02f, 0.025f, 0.03f, 0.035f, 0.04f, 0.045f, 0.05f, 0.055f, 0.06f, 
-0.065f, 0.07f, 0.075f, 0.08f, 0.085f, 0.09f, 0.095f, 0.1f, 0.105f };
 
-PS_OUT PS_BLUR_Gaussian(PS_IN In) : SV_TARGET0
+PS_OUT PS_BLUR_Horizontal(PS_IN In) : SV_TARGET0
 {
 	PS_OUT Out = (PS_OUT)0;
+	float fWeights[5] = { 1.f, 0.9f, 0.55f, 0.18f, 0.1f };
+	float fBlurPower = g_BlurPowerTarget.Sample(PointSampler, In.vTexcoord).r * 100.f;
+	float fNormalization = (fWeights[0] + 2.0f * (fWeights[1] + fWeights[2] + fWeights[3] + fWeights[4]));
 
-	float4 vFinalColor = float4(0.f, 0.f, 0.f, 0.f);
-	float fKernelSum = 0.f;
-	for (int i = -g_KernelSize / 2; i <= g_KernelSize / 2; ++i)
+	for (int i = 0; i < 5; ++i)
 	{
-		for (int j = -g_KernelSize / 2; j <= g_KernelSize / 2; ++j)
-		{
-			float fWeight = exp(-(i * i + j * j) / (2.f * g_fSigma * g_fSigma));
-			float2 fOffset = float2(i * g_PixleSize.x, j * g_PixleSize.y);
-			float4 vPixleColor = g_BlurTarget.Sample(PointSampler, In.vTexcoord + fOffset);
-
-			vFinalColor += vPixleColor * fWeight;
-			fKernelSum += fWeight;
-		}
+		fWeights[i] /= fNormalization;
 	}
-	
-	Out.vColor = vFinalColor / fKernelSum;
+
+	vector vFinalColor = float4(0.f, 0.f, 0.f, 0.f);
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(g_PixleSize.x * -4.f, 0.f))) * fWeights[4];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(g_PixleSize.x * -3.f, 0.f))) * fWeights[3];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(g_PixleSize.x * -2.f, 0.f))) * fWeights[2];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(g_PixleSize.x * -1.f, 0.f))) * fWeights[1];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(g_PixleSize.x * 0.f, 0.f))) * fWeights[0];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(g_PixleSize.x * 1.f, 0.f))) * fWeights[1];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(g_PixleSize.x * 2.f, 0.f))) * fWeights[2];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(g_PixleSize.x * 3.f, 0.f))) * fWeights[3];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(g_PixleSize.x * 4.f, 0.f))) * fWeights[4];
+
+	Out.vColor = vFinalColor;
+	return Out;
+}
+
+PS_OUT PS_BLUR_Vertical(PS_IN In) : SV_TARGET0
+{
+	PS_OUT Out = (PS_OUT)0;
+	float fWeights[5] = { 1.f, 0.9f, 0.55f, 0.18f, 0.1f };
+	float fBlurPower = g_BlurPowerTarget.Sample(PointSampler, In.vTexcoord).r * 100.f;
+	float fNormalization = (fWeights[0] + 2.f * (fWeights[1] + fWeights[2] + fWeights[3] + fWeights[4]));
+
+	for (int i = 0; i < 5; ++i)
+	{
+		fWeights[i] /= fNormalization;
+	}
+
+	vector vFinalColor = float4(0.f, 0.f, 0.f, 0.f);
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(0.f, g_PixleSize.y * -4.f))) * fWeights[4];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(0.f, g_PixleSize.y * -3.f))) * fWeights[3];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(0.f, g_PixleSize.y * -2.f))) * fWeights[2];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(0.f, g_PixleSize.y * -1.f))) * fWeights[1];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(0.f, g_PixleSize.y * 0.f))) * fWeights[0];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(0.f, g_PixleSize.y * 1.f))) * fWeights[1];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(0.f, g_PixleSize.y * 2.f))) * fWeights[2];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(0.f, g_PixleSize.y * 3.f))) * fWeights[3];
+	vFinalColor += g_BlurTarget.Sample(PointSampler, (In.vTexcoord + float2(0.f, g_PixleSize.y * 4.f))) * fWeights[4];
+
+
+	Out.vColor = vFinalColor;
+
 	return Out;
 }
 
@@ -366,21 +391,17 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	vector vHDRColor = g_OriginEffectTarget.Sample(PointSampler, In.vTexcoord);
-	vector vBloomColor = g_BlurBloomTarget.Sample(PointSampler, In.vTexcoord);
-	vector vBloomOriTex = g_OriginBloomTarget.Sample(PointSampler, In.vTexcoord);
+	vector vOriginEffectColor = g_OriginEffectTarget.Sample(PointSampler, In.vTexcoord);
+	vector vOriginBloomColor = g_OriginBloomTarget.Sample(PointSampler, In.vTexcoord);
+	vector vBlurBloomColor = g_BlurBloomTarget.Sample(PointSampler, In.vTexcoord);
+	vector vBlurEffectColor = g_BlurEffectTarget.Sample(PointSampler, In.vTexcoord);
 
-	vector vBloom = pow(pow(abs(vBloomColor), 2.2f) + pow(abs(vBloomOriTex), 2.2f), 1.f / 2.2f);
 
-	vector vFinalColor = vHDRColor;
-
-	vFinalColor = pow(abs(vFinalColor), 2.2f);
-	vBloom = pow(abs(vBloom), 2.2f);
-
-	vFinalColor += vBloom;
-	vFinalColor = pow(abs(vFinalColor), 1.f / 2.2f);
-
-	Out.vColor = g_DiffuseTarget.Sample(LinearSampler, In.vTexcoord) + vFinalColor;
+	Out.vColor = g_DiffuseTarget.Sample(LinearSampler, In.vTexcoord);
+	Out.vColor += vOriginEffectColor;
+	Out.vColor += vOriginBloomColor;
+	Out.vColor += vBlurBloomColor;
+	Out.vColor += vBlurEffectColor;
 
 	return Out;
 }
@@ -465,7 +486,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_BLUR_DOWNSCALE();
 	}
 
-	pass Blur_Gaussian
+	pass Blur_Horizontal
 	{
 		// 6
 		SetRasterizerState(RS_Default);
@@ -475,12 +496,25 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_BLUR_Gaussian();
+		PixelShader = compile ps_5_0 PS_BLUR_Horizontal();
+	}
+
+	pass Blur_Vertical
+	{
+		// 7
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_None, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_BLUR_Vertical();
 	}
 
 	pass BlurUpScale
 	{
-		// 7
+		// 8
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DSS_None, 0);
 		SetBlendState(BS_OneBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
@@ -493,7 +527,7 @@ technique11 DefaultTechnique
 
 	pass Render_Final
 	{
-		// 8
+		// 9
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DSS_None, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);

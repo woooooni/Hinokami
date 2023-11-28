@@ -24,6 +24,9 @@ HRESULT CEffect_Manager::Reserve_Manager(ID3D11Device* pDevice, ID3D11DeviceCont
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
 
+	if (FAILED(GI->Ready_Model_Data_FromPath(LEVEL_STATIC, CModel::TYPE_NONANIM, L"../Bin/Resources/Effect/Model/")))
+		return E_FAIL;
+
 	if (FAILED(Ready_Proto_Effects(strEffectPath)))
 		return E_FAIL;
 	
@@ -32,21 +35,18 @@ HRESULT CEffect_Manager::Reserve_Manager(ID3D11Device* pDevice, ID3D11DeviceCont
 
 void CEffect_Manager::Tick(_float fTimeDelta)
 {
-
+	int i = 0;
 }
 
-HRESULT CEffect_Manager::Generate_Effect(const wstring& strEffectName, _matrix RotationMatrix, _matrix WorldMatrix, _float fEffectDeletionTime, CGameObject* pOwner)
+HRESULT CEffect_Manager::Generate_Effect(const wstring& strEffectName, _matrix RotationMatrix, _matrix WorldMatrix, _float fEffectDeletionTime, CGameObject* pOwner, CEffect** ppOut)
 {
-
-	CGameObject* pGameObject = GI->Clone_GameObject(L"Prototype_Effect_" + strEffectName, LAYER_TYPE::LAYER_EFFECT);
+	CGameObject* pGameObject = GI->Clone_GameObject(L"Prototype_Effect_" + strEffectName, LAYER_EFFECT);
 	if (nullptr == pGameObject)
 		return E_FAIL;
-	
+
 	CEffect* pEffect = dynamic_cast<CEffect*>(pGameObject);
 	if (nullptr == pEffect)
 		return E_FAIL;
-
-
 
 	CEffect::EFFECT_DESC EffectDesc = pEffect->Get_EffectDesc();
 	_matrix OffsetMatrix = XMLoadFloat4x4(&EffectDesc.OffsetMatrix);
@@ -69,10 +69,11 @@ HRESULT CEffect_Manager::Generate_Effect(const wstring& strEffectName, _matrix R
 	if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_EFFECT, pEffect)))
 		return E_FAIL;
 
+	if (ppOut != nullptr)
+		*ppOut = pEffect;
+
 	return S_OK;
 }
-
-
 
 
 HRESULT CEffect_Manager::Ready_Proto_Effects(const wstring& strEffectPath)
@@ -151,8 +152,8 @@ HRESULT CEffect_Manager::Ready_Proto_Effects(const wstring& strEffectPath)
 			CEffect* pEffect = dynamic_cast<CEffect*>(pObject);
 			if (pEffect == nullptr)
 				return E_FAIL;
-
-
+		
+			
 		}
 	}
 	return S_OK;

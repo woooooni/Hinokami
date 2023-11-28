@@ -4,11 +4,10 @@
 #include "GameObject.h"
 
 BEGIN(Engine)
+class CModel;
 class CShader;
-class CTexture;
 class CRenderer;
 class CTransform;
-class CVIBuffer_Cube;
 END
 
 BEGIN(Client)
@@ -31,11 +30,11 @@ public:
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
 
-private: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
-	CModel*					m_pModelCom = { nullptr };
-	CRenderer*				m_pRendererCom = { nullptr };
-	CTransform*				m_pTransformCom = { nullptr };
-	CShader*				m_pShaderCom = { nullptr };
+private:
+	class CModel*					m_pModelCom = { nullptr };
+	class CRenderer*				m_pRendererCom = { nullptr };
+	class CTransform*				m_pTransformCom = { nullptr };
+	class CShader*					m_pShaderCom = { nullptr };
 
 private:
 	HRESULT Ready_Components();

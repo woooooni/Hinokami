@@ -33,6 +33,10 @@
 #include "State_Character_Damaged_AirBorn.h"
 #include "State_Character_Damaged_AirStay.h"
 
+#include "State_Tanjiro_Skill_0.h"
+#include "State_Tanjiro_Skill_1.h"
+#include "State_Tanjiro_Skill_2.h"
+
 USING(Client)
 
 
@@ -333,6 +337,39 @@ HRESULT CTanjiro::Ready_States()
 
 	m_pStateCom->Add_State(CCharacter::AIR_ATTACK,
 		CState_Tanjiro_Air_Attack::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+
+	strAnimationName.clear();
+
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkSkl02_0");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkSkl02_1");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkSkl02_2");
+
+	m_pStateCom->Add_State(CCharacter::SKILL_0,
+		CState_Tanjiro_Skill_0::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+	strAnimationName.clear();
+
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkSkl03_0");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkSkl03_1");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkSkl03_2");
+
+	m_pStateCom->Add_State(CCharacter::SKILL_1,
+		CState_Tanjiro_Skill_1::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkSkl04");
+	m_pStateCom->Add_State(CCharacter::SKILL_2,
+		CState_Tanjiro_Skill_2::Create(m_pDevice,
 			m_pContext,
 			m_pStateCom,
 			strAnimationName));

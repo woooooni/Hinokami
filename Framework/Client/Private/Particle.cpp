@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Particle.h"
 #include "GameInstance.h"
-
+#include "Effect_Manager.h"
 #include "Effect.h"
 #include "Utils.h"
 
@@ -94,6 +94,7 @@ HRESULT CParticle::Ready_Effects()
 		Safe_Release(pEffect);
 
 	m_Effects.clear();
+
 	m_fAccLifeTime = 0.f;
 
 	for (_uint i = 0; i < m_tParticleDesc.iNumEffectCount; ++i)
@@ -102,6 +103,7 @@ HRESULT CParticle::Ready_Effects()
 		if (pEffect == nullptr)
 			return E_FAIL;
 
+		Safe_AddRef(pEffect);
 		m_Effects.push_back(pEffect);
 	}
 	return S_OK;
@@ -109,16 +111,15 @@ HRESULT CParticle::Ready_Effects()
 
 Client::CEffect* CParticle::Generate_Effect()
 {
-	CGameObject* pObject = GI->Clone_GameObject(m_strPrototypeEffectTag, LAYER_EFFECT);
-	if (nullptr == pObject)
+	CGameObject* pGameObject = GI->Clone_GameObject(m_strPrototypeEffectTag, LAYER_EFFECT);
+	if (nullptr == pGameObject)
 		return nullptr;
 
-	CEffect* pEffect = dynamic_cast<CEffect*>(pObject);
+	CEffect* pEffect = dynamic_cast<CEffect*>(pGameObject);
 	if (nullptr == pEffect)
 		return nullptr;
 
 	CEffect::EFFECT_DESC EffectDesc = pEffect->Get_EffectDesc();
-
 	EffectDesc.bBillboard = m_tParticleDesc.bBillboard;
 	
 
@@ -156,7 +157,7 @@ Client::CEffect* CParticle::Generate_Effect()
 
 	EffectDesc.fBlurPower = m_tParticleDesc.fBlurPower;
 	EffectDesc.fDestAlphaSpeed = m_tParticleDesc.fDestAlphaSpeed;
-	pEffect->Set_EffectDesc(EffectDesc);	
+	pEffect->Set_EffectDesc(EffectDesc);
 	
 	return pEffect;
 }
@@ -212,9 +213,10 @@ void CParticle::Free()
 {
 	__super::Free();
 
-	for (auto& pEffect : m_Effects)	
+	for (auto& pEffect : m_Effects)
+	{
 		Safe_Release(pEffect);
-
+	}
 	m_Effects.clear();
 	Safe_Release(m_pTransformCom);
 }

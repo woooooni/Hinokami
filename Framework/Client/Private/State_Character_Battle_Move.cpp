@@ -178,6 +178,16 @@ void CState_Character_Battle_Move::Tick_State(_float fTimeDelta)
 		if (KEY_NONE(KEY::W) && KEY_NONE(KEY::A) && KEY_NONE(KEY::S) && KEY_NONE(KEY::D))		
 			m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
 	}
+
+
+	if (KEY_TAP(KEY::NUM_1))
+		m_pStateMachineCom->Change_State(CCharacter::SKILL_0);
+
+	if (KEY_TAP(KEY::NUM_2))
+		m_pStateMachineCom->Change_State(CCharacter::SKILL_1);
+
+	if (KEY_TAP(KEY::NUM_3))
+		m_pStateMachineCom->Change_State(CCharacter::SKILL_2);
 	
 }
 

@@ -153,6 +153,15 @@ HRESULT CTarget_Manager::Begin_Shadow_MRT(ID3D11DeviceContext* pContext, const w
 	return	S_OK;
 }
 
+HRESULT CTarget_Manager::Clear_RenderTarget(const wstring& strTargetTag)
+{
+	CRenderTarget* pRenderTarget = Find_RenderTarget(strTargetTag);
+	if (nullptr == pRenderTarget)
+		return E_FAIL;
+	
+	return pRenderTarget->Clear();
+}
+
 HRESULT CTarget_Manager::End_MRT(ID3D11DeviceContext* pContext)
 {
 

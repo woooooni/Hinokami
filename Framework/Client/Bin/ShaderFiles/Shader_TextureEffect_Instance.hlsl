@@ -4,7 +4,7 @@
 matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 Texture2D	g_DiffuseTexture;
 Texture2D	g_AlphaTexture;
-
+float g_fBlurPower = 0.f;
 
 
 struct EffectDesc
@@ -19,6 +19,7 @@ struct EffectDesc
 	float4		g_fAdditiveDiffuseColor;
 	float4		g_vBloomPower;
 };
+EffectDesc g_EffectDesc[1000];
 
 
 
@@ -37,7 +38,7 @@ struct VS_IN
 
 };
 
-EffectDesc g_EffectDesc[1000];
+
 
 
 struct VS_OUT
@@ -80,7 +81,8 @@ struct PS_IN
 struct PS_OUT
 {
 	float4		vDiffuse : SV_TARGET0;
-	float4      vBrightness : SV_TARGET1;
+	float4		vBlurPower : SV_TARGET1;
+	float4      vBrightness : SV_TARGET2;
 };
 
 
@@ -111,8 +113,10 @@ PS_OUT PS_DEFAULT(PS_IN In)
 	Out.vDiffuse = vector(g_EffectDesc[In.iInstanceID].g_fAdditiveDiffuseColor.rgb, g_EffectDesc[In.iInstanceID].g_fAlpha);
 	if (0 == Out.vDiffuse.a)
 		discard;
-	Out.vBrightness = CalcBrightness(Out.vDiffuse, In.iInstanceID);
 
+	Out.vBlurPower = vector(g_fBlurPower / 100.f, 0.f, 0.f, 1.f);
+	Out.vBrightness = CalcBrightness(Out.vDiffuse, In.iInstanceID);
+	
 	return Out;
 
 };
@@ -137,6 +141,7 @@ PS_OUT PS_NO_DIFFUSE_WITH_ALPHA(PS_IN In)
 	if (0 == Out.vDiffuse.a)
 		discard;
 
+	Out.vBlurPower = vector(g_fBlurPower / 100.f, 0.f, 0.f, 1.f);
 	Out.vBrightness = CalcBrightness(Out.vDiffuse, In.iInstanceID);
 	return Out;
 
@@ -169,6 +174,7 @@ PS_OUT PS_NO_ALPHA_WITH_DIFFUSE(PS_IN In)
 	if (0 == Out.vDiffuse.a)
 		discard;
 
+	Out.vBlurPower = vector(g_fBlurPower / 100.f, 0.f, 0.f, 1.f);
 	Out.vBrightness = CalcBrightness(Out.vDiffuse, In.iInstanceID);
 
 	return Out;
@@ -204,6 +210,7 @@ PS_OUT PS_BOTH(PS_IN In)
 	if (0 == Out.vDiffuse.a)
 		discard;
 
+	Out.vBlurPower = vector(g_fBlurPower / 100.f, 0.f, 0.f, 1.f);
 	Out.vBrightness = CalcBrightness(Out.vDiffuse, In.iInstanceID);
 
 	return Out;

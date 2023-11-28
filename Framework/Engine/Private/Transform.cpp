@@ -115,7 +115,6 @@ void CTransform::Go_Dir(_fvector vDir, _float fTimeDelta, CNavigation* pNavigati
 				{
 					Set_State(CTransform::STATE_POSITION, vNewPosition);
 				}
-				
 			}
 		}
 	}
@@ -281,8 +280,15 @@ void CTransform::Set_Position(_vector vPosition,_float fTimeDelta, CNavigation* 
 			}
 			else
 			{
+				_float3 vVelocity = pOwnerRigidBody->Get_Velocity();
 				vSlidingDir = XMVector3Normalize(vSlidingDir);
-				_vector vNewPosition = Get_State(CTransform::STATE_POSITION) + vSlidingDir * 1.f * fTimeDelta;
+				_vector vNewPosition = Get_State(CTransform::STATE_POSITION) + vSlidingDir * vVelocity.y * fTimeDelta;
+
+				if (XMVectorGetY(vNewPosition) <= pOwnerRigidBody->Get_RefHeight())
+				{
+					vNewPosition = XMVectorSetY(vNewPosition, pOwnerRigidBody->Get_RefHeight());
+				}
+
 				if (true == pNavigation->Is_Movable(vNewPosition, XMVector3Normalize(vNewPosition - Get_State(CTransform::STATE_POSITION)), nullptr))
 				{
 					Set_State(CTransform::STATE_POSITION, vNewPosition);

@@ -120,6 +120,7 @@ void CBoss_Enmu::Collision_Exit(const COLLISION_INFO& tInfo)
 void CBoss_Enmu::On_Damaged(const COLLISION_INFO& tInfo)
 {
 	__super::On_Damaged(tInfo);
+	// GI->Set_Slow(L"Timer_GamePlay", 0.1f, 0.f);
 }
 
 

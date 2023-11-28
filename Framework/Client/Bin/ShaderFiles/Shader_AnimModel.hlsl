@@ -230,7 +230,7 @@ PS_OUT_SHADOW_DEPTH PS_SHADOW_DEPTH(PS_IN In)
 {
 	PS_OUT_SHADOW_DEPTH Out = (PS_OUT_SHADOW_DEPTH)0;
 
-	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);;
+	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 	if(vColor.a <= 0.3f)
 		discard;
 

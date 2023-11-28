@@ -28,6 +28,9 @@
 #include "State_Character_Damaged_Bound.h"
 #include "State_Character_Damaged_AirBorn.h"
 
+#include "State_Zenitsu_Skill_0.h"
+#include "State_Zenitsu_Special.h"
+
 USING(Client)
 
 
@@ -78,7 +81,8 @@ void CZenitsu::Tick(_float fTimeDelta)
 {
 	if (KEY_TAP(KEY::E))
 	{
-		// CParticle_Manager::GetInstance()->Generate_Particle(L"Kyojuro_Attack_Particle", m_pTransformCom->Get_WorldMatrix());
+		CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_0", m_pTransformCom->Get_WorldMatrix());
+		CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_1", m_pTransformCom->Get_WorldMatrix());
 	}
 
 	m_pStateCom->Tick_State(fTimeDelta);
@@ -300,7 +304,6 @@ HRESULT CZenitsu::Ready_States()
 
 
 	strAnimationName.clear();
-
 	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01A_0");
 	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01A_2");
 
@@ -309,6 +312,64 @@ HRESULT CZenitsu::Ready_States()
 			m_pContext,
 			m_pStateCom,
 			strAnimationName));
+
+
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_0");
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_1");
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_2");
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_3");
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_4");
+
+	m_pStateCom->Add_State(CCharacter::SKILL_0,
+		CState_Zenitsu_Skill_0::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+	m_pStateCom->Add_State(CCharacter::SKILL_1,
+		CState_Zenitsu_Skill_0::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+	m_pStateCom->Add_State(CCharacter::SKILL_2,
+		CState_Zenitsu_Skill_0::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+
+
+	/*strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_0");
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_1");
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_2");
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_3");
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_4");
+	m_pStateCom->Add_State(CCharacter::TRY_SPECIAL,
+		CState_Zenitsu_Skill_0::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));*/
+
+
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_SplSnsReady01_0");
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkAwake01_Cut");
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_Cut");
+	
+	m_pStateCom->Add_State(CCharacter::SPECIAL,
+		CState_Zenitsu_Special::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+
+
+
 
 
 

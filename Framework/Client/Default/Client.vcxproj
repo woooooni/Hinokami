@@ -52,6 +52,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -158,6 +159,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../../Reference/Headers/;../Public/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -255,8 +257,13 @@
     <ClInclude Include="..\Public\State_Character_Dead.h" />
     <ClInclude Include="..\Public\State_Character_Battle_Idle.h" />
     <ClInclude Include="..\Public\State_Character_Battle_Move.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Skill_0.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Skill_1.h" />
+    <ClInclude Include="..\Public\State_Tanjiro_Skill_2.h" />
     <ClInclude Include="..\Public\State_Zenitsu_Air_Attack.h" />
     <ClInclude Include="..\Public\State_Zenitsu_Attack.h" />
+    <ClInclude Include="..\Public\State_Zenitsu_Skill_0.h" />
+    <ClInclude Include="..\Public\State_Zenitsu_Special.h" />
     <ClInclude Include="..\Public\Struct.pb.h" />
     <ClInclude Include="..\Public\Sweath.h" />
     <ClInclude Include="..\Public\Tanjiro.h" />
@@ -365,6 +372,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\Skill.cpp" />
     <ClCompile Include="..\Private\Skill_Manager.cpp" />
+    <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\State_Boss_Battle_Dash.cpp" />
     <ClCompile Include="..\Private\State_Boss_Idle.cpp" />
     <ClCompile Include="..\Private\State_Character_Battle_AirDash.cpp" />
@@ -396,8 +404,13 @@
     <ClCompile Include="..\Private\State_Character_Battle_Idle.cpp" />
     <ClCompile Include="..\Private\State_Character_Battle_Jump.cpp" />
     <ClCompile Include="..\Private\State_Character_Battle_Move.cpp" />
+    <ClCompile Include="..\Private\State_Tanjiro_Skill_0.cpp" />
+    <ClCompile Include="..\Private\State_Tanjiro_Skill_1.cpp" />
+    <ClCompile Include="..\Private\State_Tanjiro_Skill_2.cpp" />
     <ClCompile Include="..\Private\State_Zenitsu_Air_Attack.cpp" />
     <ClCompile Include="..\Private\State_Zenitsu_Attack.cpp" />
+    <ClCompile Include="..\Private\State_Zenitsu_Skill_0.cpp" />
+    <ClCompile Include="..\Private\State_Zenitsu_Special.cpp" />
     <ClCompile Include="..\Private\Struct.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
@@ -429,7 +442,6 @@
     <ClCompile Include="..\Private\UI_NextFog.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Trail.cpp" />
     <ClCompile Include="..\Private\Zenitsu.cpp" />
-    <ClCompile Include="..\Public\Sky.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

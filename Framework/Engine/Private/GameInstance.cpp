@@ -175,12 +175,12 @@ _float CGameInstance::Get_TimeScale(const wstring& strTimerTag)
 	return m_pTimer_Manager->Get_TimeScale(strTimerTag);
 }
 
-HRESULT CGameInstance::Set_Slow(const wstring& strTimerTag, _float fSlowTime, _float fTimeScale)
+HRESULT CGameInstance::Set_Slow(const wstring& strTimerTag, _float fSlowTime, _float fTimeScale, _bool bForce)
 {
 	if (nullptr == m_pTimer_Manager)
 		return E_FAIL;
 
-	return m_pTimer_Manager->Set_Slow(strTimerTag, fSlowTime, fTimeScale);
+	return m_pTimer_Manager->Set_Slow(strTimerTag, fSlowTime, fTimeScale, bForce);
 }
 
 ID3D11Device* CGameInstance::Get_Device()

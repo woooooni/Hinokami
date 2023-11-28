@@ -193,7 +193,7 @@ void CState_Enmu_Attack::Tick_Far_Attack_0(_float fTimeDelta)
 
 
 		_vector vJumpDir = XMVectorSet(fDirX, 0.8f, fDirZ, 0.f);
-		m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 5.f);		
+		m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 5.f);
 	}
 
 	if (fProgress >= 0.4f && fProgress <= 0.41f)

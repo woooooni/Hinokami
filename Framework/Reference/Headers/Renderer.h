@@ -102,11 +102,11 @@ private:
 
 
 	///////////////////// Blur
-	HRESULT Render_BlurDownSample(const wstring& strStartTargetTag);
-	HRESULT Render_BlurGaussian();
-	HRESULT Render_BlurUpSample(const wstring& strFinalMrtTag, _bool bClear);
-
 	HRESULT Render_Blur(const wstring& strStartTargetTag, const wstring& strFinalMrtTag, _bool bClear);
+	HRESULT Render_BlurDownSample(const wstring& strStartTargetTag);
+	HRESULT Render_Blur_Horizontal();
+	HRESULT Render_Blur_Vertical();
+	HRESULT Render_BlurUpSample(const wstring& strFinalMrtTag, _bool bClear);
 	//////////////////////
 
 	///////////////////// Bloom
@@ -145,7 +145,7 @@ private:
 	map<wstring, INSTANCING_DESC>		m_Render_Instancing_Objects[RENDER_END];
 
 	_float4								m_vPlayerPosition = {0.f, 0.f, 0.f, 1.f};
-
+	_bool m_bDebugDraw = true;
 
 
 	

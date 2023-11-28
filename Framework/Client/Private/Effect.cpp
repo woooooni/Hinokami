@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Effect.h"
 #include "GameInstance.h"
+#include "Effect_Manager.h"
 
 
 
@@ -40,6 +41,7 @@ CEffect::CEffect(const CEffect& rhs)
 HRESULT CEffect::Initialize_Prototype(const EFFECT_DESC& tEffectDesc)
 {
 	m_tEffectDesc = tEffectDesc;
+	m_tOriginEffectDesc = tEffectDesc;
 	return S_OK;
 }
 
@@ -55,14 +57,14 @@ HRESULT CEffect::Initialize(void* pArg)
 	m_iAlphaTextureIdx = m_pAlphaTextureCom->Find_Index(m_tEffectDesc.strAlphaTexturName);
 	XMStoreFloat4x4(&m_ParentMatrix, XMMatrixIdentity());
 
-	
-
-
 	return S_OK;
 }
 
 void CEffect::Tick(_float fTimeDelta)
 {
+	if (m_bDead && GI->Get_CurrentLevel() != LEVEL_TOOL)
+		return;
+
 	m_fAccDeletionTime += fTimeDelta;
 
 	if (m_fAccDeletionTime >= m_fDeletionTime)
@@ -101,6 +103,9 @@ void CEffect::Tick(_float fTimeDelta)
 void CEffect::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
+
+	if (m_bDead && GI->Get_CurrentLevel() != LEVEL_TOOL)
+		return;
 
 	_float4x4 WolrdMatrix;
 	XMStoreFloat4x4(&WolrdMatrix, XMLoadFloat4x4(&m_tEffectDesc.OffsetMatrix) * m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(&m_ParentMatrix));
@@ -156,6 +161,9 @@ void CEffect::LateTick(_float fTimeDelta)
 
 HRESULT CEffect::Render_Instance(CShader* pInstancingShader, CVIBuffer_Instancing* pInstancingBuffer, const vector<_float4x4>& WorldMatrices)
 {
+	if (m_bDead && GI->Get_CurrentLevel() != LEVEL_TOOL)
+		return S_OK;
+
 	if (FAILED(Bind_ShaderResource_Instance(pInstancingShader)))
 		return E_FAIL;
 
@@ -201,6 +209,22 @@ _bool CEffect::Is_Gravity()
 void CEffect::Set_MoveDir(_vector vDir)
 {
 	XMStoreFloat3(&m_tEffectDesc.vMoveDir, XMVector3Normalize(vDir));
+}
+
+void CEffect::Reset_Effect()
+{
+	m_tEffectDesc = m_tOriginEffectDesc;
+	m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
+	m_pRigidBodyCom->Set_Velocity({ 0.f, 0.f, 0.f });
+
+	m_iDiffuseTextureIdx = m_pDiffuseTextureCom->Find_Index(m_tEffectDesc.strDiffuseTetextureName);
+	m_iAlphaTextureIdx = m_pAlphaTextureCom->Find_Index(m_tEffectDesc.strAlphaTexturName);
+	XMStoreFloat4x4(&m_ParentMatrix, XMMatrixIdentity());
+
+	m_tEffectDesc.vUVFlow = { 0.f, 0.f };
+	m_fAccUVFlow = { 0.f, 0.f };
+	m_vUVIndex = { 0.f, 0.f };
+
 }
 
 void CEffect::Increment(_float fTimeDelta)
@@ -285,6 +309,9 @@ HRESULT CEffect::Bind_ShaderResource_Instance(CShader* pShader)
 	if (FAILED(pShader->Bind_RawValue("g_vBloomPower", &m_tEffectDesc.vBloomPower, sizeof(_float3))))
 		return E_FAIL;*/
 
+
+	if (FAILED(pShader->Bind_RawValue("g_fBlurPower", &m_tEffectDesc.fBlurPower, sizeof(_float))))
+		return E_FAIL;
 	{
 
 		if (-1 < m_iDiffuseTextureIdx)

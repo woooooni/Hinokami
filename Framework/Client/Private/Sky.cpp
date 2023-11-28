@@ -63,7 +63,6 @@ HRESULT CSky::Render()
 
 		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, 2)))
 			return E_FAIL;
-		
 	}
 		
 

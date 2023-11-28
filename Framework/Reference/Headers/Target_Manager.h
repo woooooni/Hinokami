@@ -17,11 +17,16 @@ public:
 
 	HRESULT Add_RenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vColor);
 	HRESULT Add_MRT(const wstring& strMRTTag, const wstring& strTargetTag);
+	
 	HRESULT Bind_SRV(class CShader* pShader, const wstring& strTargetTag, const _char* pConstantName);
 
 	/* strMRTTag에 해당하는 list에 담겨있는 타겟들을 장치에 바인딩한다. */
 	HRESULT Begin_MRT(ID3D11DeviceContext* pContext, const wstring& strMRTTag, _bool bClear = true);
 	HRESULT Begin_Shadow_MRT(ID3D11DeviceContext* pContext, const wstring& strMRTTag);
+
+
+
+	HRESULT Clear_RenderTarget(const wstring& strTargetTag);
 
 	/* 다시 원래 상태로 복구한다. */
 	HRESULT End_MRT(ID3D11DeviceContext* pContext);

@@ -5,11 +5,11 @@
 
 BEGIN(Client)
 
-class CState_Zenitsu_Air_Attack final : public CState
+class CState_Tanjiro_Skill_0 final : public CState
 {
 private:
-	CState_Zenitsu_Air_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
-	virtual ~CState_Zenitsu_Air_Attack() = default;
+	CState_Tanjiro_Skill_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
+	virtual ~CState_Tanjiro_Skill_0() = default;
 
 public:
 	HRESULT Initialize(const list<wstring>& AnimationList);
@@ -24,14 +24,18 @@ private:
 	class CGameObject* m_pTarget = nullptr;
 	class CCharacter* m_pCharacter = nullptr;
 	class CSword* m_pSword = nullptr;
+	class CEffect* m_pSkillEffect = nullptr;
 
 private:
-	void Input(_float fTimeDelta);
+	_float m_fAccSkillTime = 0.f;
+	_float m_fSkillTime = 0.5f;
+
+private:
 	void Find_Near_Target();
 	void Use_Skill(_float fTimeDelta);
 
 public:
-	static CState_Zenitsu_Air_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
+	static CState_Tanjiro_Skill_0* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;
 };
 

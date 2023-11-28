@@ -2647,14 +2647,14 @@ void CImGui_Manager::Tick_Particle_Tool(_float fTimeDelta)
         IMGUI_NEW_LINE;
         if (ParticleDesc.bRigidActive == true)
         {
-            ImGui::DragFloat3("##RigidBodyDir", (_float*)&ParticleDesc.vDir, 0.01f, 0.f, 1000.f);
+            ImGui::DragFloat3("##RigidBodyDir", (_float*)&ParticleDesc.vForceDir, 0.01f, 0.f, 1000.f);
             ImGui::Checkbox("Random ForceDir", &ParticleDesc.bRandomForceDir);
         }
 
         IMGUI_NEW_LINE;
 
         ImGui::Text("== Alpha Speed ==");
-        ImGui::DragFloat("##Particle_Decrease Alpha", &ParticleDesc.fDestAlphaSpeed, 0.01f, 0.f, 100.f);
+        ImGui::DragFloat("##Particle_Decrease_Alpha", &ParticleDesc.fDestAlphaSpeed, 0.01f, 0.f, 100.f);
 
         
         m_pPrevParticle->Set_ParticleDesc(ParticleDesc);

@@ -48,7 +48,7 @@ _float CTimer_Manager::Get_TimeDelta(const wstring& strTimerTag)
 
 	return pTimer->Get_TimeDelta();
 }
-HRESULT CTimer_Manager::Set_Slow(const wstring& strTimerTag, _float fSlowTime, _float fTimeScale)
+HRESULT CTimer_Manager::Set_Slow(const wstring& strTimerTag, _float fSlowTime, _float fTimeScale, _bool bForce)
 {
 	CTimer* pTimer = Find_Timer(strTimerTag);
 
@@ -56,7 +56,7 @@ HRESULT CTimer_Manager::Set_Slow(const wstring& strTimerTag, _float fSlowTime, _
 		return E_FAIL;
 
 
-	return pTimer->Set_Slow(fSlowTime, fTimeScale);
+	return pTimer->Set_Slow(fSlowTime, fTimeScale, bForce);
 }
 
 

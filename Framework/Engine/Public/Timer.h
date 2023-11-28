@@ -21,7 +21,11 @@ public:
 
 	_float Get_TimeDelta() { return m_fTimeDelta; }
 
-	HRESULT Set_Slow(_float fSlowTime, _float fTimeScale) { 
+	HRESULT Set_Slow(_float fSlowTime, _float fTimeScale, _bool bForce) { 
+
+		if (m_bSlow && false == bForce)
+			return S_OK;
+
 		m_bSlow = true;
 		m_fAccSlow = 0.f;
 		m_fSlowRecovery = fSlowTime;

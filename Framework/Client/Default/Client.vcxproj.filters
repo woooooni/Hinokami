@@ -346,6 +346,24 @@
     <Filter Include="02.GameObjects\12. Sky">
       <UniqueIdentifier>{72a20cbd-dee1-4a37-b1c4-5558815ef731}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Skill\Zenitsu">
+      <UniqueIdentifier>{45ed9211-051f-423a-9a41-93e40d41bc5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Skill\Tanjiro">
+      <UniqueIdentifier>{d7137545-b8e4-4eb5-9f29-9871473bd333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Skill\Kyojuro">
+      <UniqueIdentifier>{a171ca6a-95dc-4656-ba5f-c391f3afa2cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\01. Zenitsu\State\Skill">
+      <UniqueIdentifier>{f48f7c52-bcf3-460a-a920-1da54d5d5cdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\01. Zenitsu\State\Special">
+      <UniqueIdentifier>{694174e6-070e-450d-b811-8da931efbfe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\00. Tanjiro\Skill">
+      <UniqueIdentifier>{75115f1c-3dad-4407-9f15-dd8315ef4b5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -693,6 +711,21 @@
     <ClInclude Include="..\Public\Enmu_Projectile.h">
       <Filter>02.GameObjects\05. Monster\Boss\Enmu\Projectile</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_Zenitsu_Skill_0.h">
+      <Filter>02.GameObjects\03. Character\01. Zenitsu\State\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Zenitsu_Special.h">
+      <Filter>02.GameObjects\03. Character\01. Zenitsu\State\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Tanjiro_Skill_0.h">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Tanjiro_Skill_1.h">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Tanjiro_Skill_2.h">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\Skill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1019,11 +1052,26 @@
     <ClCompile Include="..\Private\State_Zenitsu_Attack.cpp">
       <Filter>02.GameObjects\03. Character\01. Zenitsu\State\Attack</Filter>
     </ClCompile>
-    <ClCompile Include="..\Public\Sky.cpp">
-      <Filter>02.GameObjects\12. Sky</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Enmu_Projectile.cpp">
       <Filter>02.GameObjects\05. Monster\Boss\Enmu\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sky.cpp">
+      <Filter>02.GameObjects\12. Sky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Zenitsu_Skill_0.cpp">
+      <Filter>02.GameObjects\03. Character\01. Zenitsu\State\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Zenitsu_Special.cpp">
+      <Filter>02.GameObjects\03. Character\01. Zenitsu\State\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Tanjiro_Skill_0.cpp">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Tanjiro_Skill_1.cpp">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Tanjiro_Skill_2.cpp">
+      <Filter>02.GameObjects\03. Character\00. Tanjiro\Skill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

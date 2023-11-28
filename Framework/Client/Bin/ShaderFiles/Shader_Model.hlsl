@@ -83,9 +83,19 @@ PS_OUT PS_MAIN(PS_IN In)
 	if (0 == Out.vDiffuse.a)
 		discard;
 
-	
-
 	return Out;	
+}
+
+PS_OUT PS_SKY(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(1.f, 1.f, 0.f, 0.f);
+
+	return Out;
+
 }
 
 PS_OUT PS_MAIN_NORMAL(PS_IN In)
@@ -160,7 +170,7 @@ technique11 DefaultTechnique
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN();
+		PixelShader = compile ps_5_0 PS_SKY();
 	}
 
 	pass Temp3

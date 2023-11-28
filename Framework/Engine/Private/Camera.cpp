@@ -59,6 +59,8 @@ HRESULT CCamera::Render()
 void CCamera::Cam_Shake(const CAM_SHAKE& pCameraShakeDesc)
 {
 	m_tShakeDesc = pCameraShakeDesc;
+
+	m_tShakeDesc.fForce = max(m_tShakeDesc.fForce, 1.f);
 	m_tShakeDesc.bEnd = false;
 	m_tShakeDesc.fAccTime = 0.f;
 }

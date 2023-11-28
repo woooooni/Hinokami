@@ -62,6 +62,15 @@ void CState_Character_Battle_Idle::Tick_State(_float fTimeDelta)
 
 	if (KEY_TAP(KEY::SPACE))
 		m_pStateMachineCom->Change_State(CCharacter::BATTLE_JUMP);
+
+	if(KEY_TAP(KEY::NUM_1))
+		m_pStateMachineCom->Change_State(CCharacter::SKILL_0);
+
+	if (KEY_TAP(KEY::NUM_2))
+		m_pStateMachineCom->Change_State(CCharacter::SKILL_1);
+
+	if (KEY_TAP(KEY::NUM_3))
+		m_pStateMachineCom->Change_State(CCharacter::SKILL_2);
 }
 
 void CState_Character_Battle_Idle::Exit_State()

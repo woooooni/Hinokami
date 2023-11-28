@@ -94,7 +94,7 @@ void CRigidBody::Update_Gravity(_float fTimeDelta)
 	{
 		m_bIsGround = true;
 
-		if (m_vVelocity.y < 0.f)
+		if (m_vVelocity.y > 0.f)
 			m_vVelocity.y = 0.f;
 	}
 	else

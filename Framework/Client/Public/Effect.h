@@ -175,6 +175,8 @@ public:
 		m_vUVIndex = { 0.f, 0.f };
 	}
 
+	void Reset_Effect();
+
 public:
 	class CTexture* Get_DiffuseTexture() { return m_pDiffuseTextureCom; }
 	class CTexture* Get_AlphaTexture() { return m_pAlphaTextureCom; }
@@ -193,6 +195,7 @@ private:
 private:
 	EFFECT_TYPE m_eType = EFFECT_TYPE::EFFECT_END;
 	EFFECT_DESC m_tEffectDesc;
+	EFFECT_DESC m_tOriginEffectDesc;
 
 
 private:

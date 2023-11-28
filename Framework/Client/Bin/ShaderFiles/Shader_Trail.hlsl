@@ -90,10 +90,9 @@ PS_OUT PS_NO_ALPHA_WITH_DIFFUSE(PS_IN In)
 	if ((vTextureDiffuse.r <= 0.01f) && (vTextureDiffuse.g <= 0.01f) && (vTextureDiffuse.b <= 0.01f))
 		discard;
 
-	vector vDiffuseColor = vTextureDiffuse + g_vColor;
-	saturate(vDiffuseColor);
-
+	vector vDiffuseColor = vTextureDiffuse;
 	vDiffuseColor.a = vTextureDiffuse.a;
+
 	Out.vDiffuse = vDiffuseColor;
 
 	if (0 == Out.vDiffuse.a)
@@ -115,7 +114,7 @@ PS_OUT PS_NO_DIFFUSE_WITH_ALPHA(PS_IN In)
 
 	vector vTextureAlpha = g_AlphaTexture.Sample(LinearSampler, In.vTexUV);
 
-	if (vTextureAlpha.r <= 0.001f)
+	if (vTextureAlpha.r <= 0.001f && vTextureAlpha.g <= 0.001f && vTextureAlpha.b <= 0.001f)
 		discard;
 
 	Out.vDiffuse = g_vColor;
@@ -146,7 +145,7 @@ PS_OUT PS_BOTH(PS_IN In)
 	if (vTextureAlpha.r <= 0.1f || (vTextureDiffuse.r <= 0.001f && vTextureDiffuse.g <= 0.001f && vTextureDiffuse.b <= 0.001f))
 		discard;
 
-	vector vDiffuseColor = vTextureDiffuse + g_vColor;
+	vector vDiffuseColor = vTextureDiffuse;
 	vDiffuseColor.a = vTextureAlpha.r;
 
 	saturate(vDiffuseColor);

@@ -235,41 +235,32 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 
 void CState_Tanjiro_Attack::Find_Near_Target()
 {
-	list<CGameObject*>& Monsters = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_MONSTER);
-	_float fDistance = 99999999999.f;
+	
+	_float fMinDistance = 9999999999.f;
+	CTransform* pFindTargetTransform = nullptr;
 
-	CGameObject* pTarget = nullptr;
-	_vector vNearTargetPosition;
-	for (auto& pMonster : Monsters)
+	m_pTarget = nullptr;
+	const list<CGameObject*>& Targets = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_MONSTER);
+	for (auto& pTarget : Targets)
 	{
-		if (nullptr == pMonster || pMonster->Is_ReserveDead() || pMonster->Is_Dead())
+		CTransform* pTargetTransform = pTarget->Get_Component<CTransform>(L"Com_Transform");
+
+		if (nullptr == pTargetTransform)
 			continue;
 
-		CTransform* pTransform = pMonster->Get_Component<CTransform>(L"Com_Transform");
-		if (pTransform == nullptr)
-			continue;
-
-		if (pMonster->Is_ReserveDead() || pMonster->Is_Dead())
-			continue;
-		
-
-		_vector vTargetPosition = pTransform->Get_State(CTransform::STATE_POSITION);
-		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-		_vector vDir = vTargetPosition - vPosition;
-
-		_float fLen = XMVectorGetX(XMVector3Length(vDir));
-		if (fLen < fDistance)
+		_float fDistance = Vec3::Distance(pTargetTransform->Get_Position(), m_pTransformCom->Get_Position());
+		if (fDistance < fMinDistance)
 		{
-			fDistance = fLen;
-			pTarget = pMonster;
-			vNearTargetPosition = vTargetPosition;
+			fMinDistance = fDistance;
+			pFindTargetTransform = pTargetTransform;
+			m_pTarget = pTarget;
 		}
 	}
 
-	if (pTarget != nullptr && fDistance <= 10.f)
+	if (nullptr != pFindTargetTransform && fMinDistance < 20.f)
 	{
-		m_pTransformCom->LookAt_ForLandObject(vNearTargetPosition);
+		Vec4 vTargetPos = pFindTargetTransform->Get_Position();
+		m_pTransformCom->LookAt_ForLandObject(vTargetPos);
 	}
 }
 

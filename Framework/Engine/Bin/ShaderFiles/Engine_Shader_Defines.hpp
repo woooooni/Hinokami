@@ -86,6 +86,11 @@ BlendState BS_Default
 	BlendEnable[0] = false;
 };
 
+BlendState BS_NoneBlend
+{
+	BlendEnable[0] = false;
+};
+
 BlendState BS_AlphaBlend
 {
 	BlendEnable[0] = true;
