@@ -78,6 +78,8 @@ void CNpc_Defence_Zenitsu::Tick(_float fTimeDelta)
 
 		if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", &NextInfo)))
 			assert(nullptr);
+
+		Set_Dead(true);
 	}
 
 	if (m_bTalking)
@@ -306,6 +308,9 @@ void CNpc_Defence_Zenitsu::Talk()
 
 void CNpc_Defence_Zenitsu::Talking(_float fTimeDelta)
 {
+	if (m_bDead)
+		return;
+
 	m_fTextAlpha -= fTimeDelta;
 	if (m_fTextAlpha <= 0.f)
 		m_fTextAlpha = 0.f;
@@ -391,6 +396,9 @@ void CNpc_Defence_Zenitsu::Start_Defence()
 
 void CNpc_Defence_Zenitsu::Tick_Defence(_float fTimeDelta)
 {
+	if (m_bDead)
+		return;
+
 	if (m_bStartDefence)
 	{
 		m_fAccRandomAnim += fTimeDelta;
@@ -405,7 +413,7 @@ void CNpc_Defence_Zenitsu::Tick_Defence(_float fTimeDelta)
 		if (0 == Monsters.size())
 		{
 			m_iDefenceDifficulty++;
-			if (m_iDefenceDifficulty >= 3)
+			if (m_iDefenceDifficulty > 3)
 			{
 				m_bStartDefence = false;
 				m_bClearDefence = true;

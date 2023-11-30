@@ -42,6 +42,8 @@ public:
 		_bool		bRigidActive = false;
 		_bool		bRandomForceDir = false;
 		
+		_bool		bRandomFriction = false;
+		_float		fFrictionScale = 20.f;
 		_float3		vForceDir = { 0.f, 1.f, 0.f };
 		_float		fForce = 1.f;
 

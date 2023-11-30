@@ -52,7 +52,10 @@ void CState_Tanjiro_Skill_2::Tick_State(_float fTimeDelta)
 			_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
 			WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + m_pTransformCom->Get_Look() * .5f;
-			CEffect_Manager::GetInstance()->Generate_Effect(L"Tanjiro_Water_Splash_0", XMMatrixIdentity(), WorldMatrix, .5f);
+			CEffect_Manager::GetInstance()->Generate_Effect(L"Tanjiro_Water_Splash_0", XMMatrixIdentity(), WorldMatrix, 1.f);
+			CEffect_Manager::GetInstance()->Generate_Effect(L"Tanjiro_White_Wave_0", XMMatrixIdentity(), WorldMatrix, 1.f);
+			CEffect_Manager::GetInstance()->Generate_Effect(L"Tanjiro_White_Wave_1", XMMatrixIdentity(), WorldMatrix, 1.f);
+			
 			CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Tanjiro_Particle_0", WorldMatrix);
 			CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Tanjiro_Particle_0", WorldMatrix);
 			CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Tanjiro_Particle_0", WorldMatrix);

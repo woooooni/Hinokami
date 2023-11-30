@@ -17,6 +17,8 @@
 #include "State_Monter_Dead.h"
 
 #include "State_Enmu_Attack.h"
+#include "State_Enmu_Skill_0.h"
+
 #include "State_Boss_Battle_Dash.h"
 
 #include "State_Monster_Damaged_Basic.h"
@@ -70,11 +72,28 @@ HRESULT CBoss_Enmu::Initialize(void* pArg)
 
 void CBoss_Enmu::Tick(_float fTimeDelta)
 {
+	
 	m_pStateCom->Tick_State(fTimeDelta);
+	if (CMonster::IDLE == m_pStateCom->Get_CurrState() && m_iSkillCount > 0)
+	{
+		_float fRatio = m_tStat.fHp / m_tStat.fMaxHp;
+		if (fRatio <= .8f && m_iSkillCount == 3)
+		{
+			--m_iSkillCount;
+			m_pStateCom->Change_State(MONSTER_STATE::SKILL);
+		}
+		else if (fRatio <= .5f && m_iSkillCount == 2)
+		{
+			--m_iSkillCount;
+			m_pStateCom->Change_State(MONSTER_STATE::SKILL);
+		}
+		else if (fRatio <= .3f && m_iSkillCount == 1)
+		{
+			--m_iSkillCount;
+			m_pStateCom->Change_State(MONSTER_STATE::SKILL);
+		}
+	}
 	__super::Tick(fTimeDelta);
-
-	if (m_bDead)
-		CPool<CBoss_Enmu>::Return_Obj(this);
 }
 
 void CBoss_Enmu::LateTick(_float fTimeDelta)
@@ -89,7 +108,6 @@ HRESULT CBoss_Enmu::Render()
 		return E_FAIL;
 
 	m_pNavigationCom->Render();
-
 	return S_OK;
 }
 
@@ -237,10 +255,12 @@ HRESULT CBoss_Enmu::Ready_States()
 	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P1011_V00_C00_AtkSkl06_4");
 	AttackAnimations.push_back(strAnimationName);
 
-
-
 	m_pStateCom->Add_State(CMonster::ATTACK, CState_Enmu_Attack::Create(m_pDevice, m_pContext, m_pStateCom, AttackAnimations));
-	AttackAnimations.clear();
+
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P1011_V00_C00.ao|A_P1011_V00_C00_BaseNut01_1");
+	m_pStateCom->Add_State(CMonster::SKILL, CState_Enmu_Skill_0::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 
 	strAnimationName.clear();

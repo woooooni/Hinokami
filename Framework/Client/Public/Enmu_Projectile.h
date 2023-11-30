@@ -38,7 +38,7 @@ public:
 
 private:
 	class CTransform* m_pTransformCom = nullptr;
-
+	class CRenderer* m_pRendererCom = nullptr;
 private:
 	_float m_fSpeed = 10.f;
 	_float m_fAccDeletionTime = 0.f;

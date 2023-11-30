@@ -373,6 +373,9 @@ void CTransform::LookAt(_fvector vAt)
 void CTransform::LookAt_ForLandObject(_fvector vAt)
 {
 	_vector		vLook = vAt - Get_State(CTransform::STATE_POSITION);
+	if (XMVectorGetX(XMVector3Length(XMVector3Normalize(vLook))) < 1.f)
+		return;
+
 	_float3		vScale = Get_Scale();
 	_vector		vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;	
 	vLook = XMVector3Normalize(XMVector3Cross(vRight, Get_State(CTransform::STATE_UP))) * vScale.z;

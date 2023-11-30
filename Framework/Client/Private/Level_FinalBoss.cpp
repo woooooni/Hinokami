@@ -15,8 +15,6 @@ HRESULT CLevel_FinalBoss::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Camera(LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
@@ -125,8 +123,8 @@ HRESULT CLevel_FinalBoss::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
  	if(FAILED(GI->Add_GameObject(LEVELID::LEVEL_FINAL_BOSS, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
 		return E_FAIL;
 
-	/*if (FAILED(GI->Add_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
-		return E_FAIL;*/
+	if (FAILED(GI->Add_GameObject(LEVELID::LEVEL_FINAL_BOSS, LAYER_BACKGROUND, TEXT("Prototype_GameObject_Sky_Night"))))
+		return E_FAIL;
 
 	
 
@@ -135,8 +133,8 @@ HRESULT CLevel_FinalBoss::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_FinalBoss::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 {
-	CGameObject* pTanjiro = nullptr;
-	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_FINAL_BOSS, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Tanjiro"), nullptr, &pTanjiro)))
+	CGameObject* pKyojuro = nullptr;
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_FINAL_BOSS, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Kyojuro"), nullptr, &pKyojuro)))
 		return E_FAIL;
 
 	CGameObject* pObject = GI->Find_GameObject(LEVELID::LEVEL_FINAL_BOSS, LAYER_CAMERA, L"Main_Camera");
@@ -147,7 +145,7 @@ HRESULT CLevel_FinalBoss::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 	if (nullptr == pCamera)
 		return E_FAIL;
 
-	CCharacter* pCharacter = dynamic_cast<CCharacter*>(pTanjiro);
+	CCharacter* pCharacter = dynamic_cast<CCharacter*>(pKyojuro);
 	if (nullptr == pCharacter)
 		return E_FAIL;
 
@@ -172,6 +170,18 @@ HRESULT CLevel_FinalBoss::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 
 	//if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_TransformCom())))
 	//	return E_FAIL;
+
+	CNavigation* pNavigation = pCharacter->Get_Component<CNavigation>(L"Com_Navigation");
+	if (nullptr != pNavigation)
+	{
+		CNavigation::NAVIGATION_DESC NavigationDesc;
+		NavigationDesc.bInitialize_Index = true;
+		NavigationDesc.vStartWorldPosition = _float4(0.f, 15.f, 40.f, 1.f);
+		if (FAILED(pNavigation->Initialize(&NavigationDesc)))
+			return E_FAIL;
+
+		pCharacter->Get_Component<CTransform>(L"Com_Transform")->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pNavigation->Get_NaviDesc().vStartWorldPosition));
+	}
 
 	return S_OK;
 }

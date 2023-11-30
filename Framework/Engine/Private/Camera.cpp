@@ -54,16 +54,17 @@ HRESULT CCamera::Render()
 	return S_OK;
 }
 
-
-
-void CCamera::Cam_Shake(const CAM_SHAKE& pCameraShakeDesc)
+void CCamera::Cam_Shake(_float fDuration, _float fForce)
 {
-	m_tShakeDesc = pCameraShakeDesc;
+	m_tShakeDesc.fForce = max(fForce, 1.f);
+	m_tShakeDesc.fDuration = fDuration;
 
-	m_tShakeDesc.fForce = max(m_tShakeDesc.fForce, 1.f);
 	m_tShakeDesc.bEnd = false;
 	m_tShakeDesc.fAccTime = 0.f;
 }
+
+
+
 
 HRESULT CCamera::Ready_Components()
 {

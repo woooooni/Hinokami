@@ -33,7 +33,8 @@ protected:
 	virtual HRESULT Ready_Colliders() override;
 
 
-
+private:
+	_int m_iSkillCount = 3;
 	
 
 private:

@@ -79,7 +79,7 @@ void CUI_Cursor::LateTick(_float fTimeDelta)
 	}
 	else
 	{
-		if (GI->Get_CurrentLevel() == LEVEL_FINAL_BOSS || GI->Get_CurrentLevel() == LEVEL_TRAIN || GI->Get_CurrentLevel() == LEVEL_TRAIN_BOSS)
+		if (GI->Get_CurrentLevel() != LEVEL_LOADING)
 			return;
 
 		if (true == m_bShow)

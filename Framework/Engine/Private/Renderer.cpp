@@ -38,7 +38,7 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	/* For.Target_Depth */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Depth"),
-		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
 	/* For.Target_Shade */
@@ -81,7 +81,7 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	/* For.Target_ShadowDepth */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowDepth"),
-		ViewportDesc.Width * 10.f, ViewportDesc.Height * 10.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		ViewportDesc.Width * 10.f, ViewportDesc.Height * 10.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
 
@@ -116,6 +116,11 @@ HRESULT CRenderer::Initialize_Prototype()
 	/* For.Target_Blur_UpSampling */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Blur_UpSampling"),
 		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/* For.Target_UI */
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_UI"),
+		ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(1.f, 1.f, 1.f, 0.f))))
 		return E_FAIL;
 
 
@@ -195,6 +200,13 @@ HRESULT CRenderer::Initialize_Prototype()
 		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Shadow"), TEXT("Target_ShadowDepth"))))
 			return E_FAIL;
 	}
+
+	// UI
+	{
+		/* For.MRT_UI */
+		if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_UI"), TEXT("Target_UI"))))
+			return E_FAIL;
+	}
 	
 
 
@@ -231,6 +243,9 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur_Effect"), 500.f, 500.f, 200.f, 200.f)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_UI"), 700.f, 500.f, 200.f, 200.f)))
 		return E_FAIL;
 
 	
@@ -368,10 +383,10 @@ HRESULT CRenderer::Add_RenderGroup_Instancing_Effect(RENDERGROUP eRenderGroup, S
 		Safe_AddRef(pGameObject);
 
 		InstancingDesc.eShaderType = eShaderType;
-		InstancingDesc.WorldMatrices.reserve(1000);
+		InstancingDesc.WorldMatrices.reserve(500);
 		InstancingDesc.WorldMatrices.push_back(WorldMatrix);
 
-		InstancingDesc.EffectInstancingDesc.reserve(1000);
+		InstancingDesc.EffectInstancingDesc.reserve(500);
 		InstancingDesc.EffectInstancingDesc.push_back(EffectInstanceDesc);
 
 		m_Render_Instancing_Objects[eRenderGroup].emplace(pGameObject->Get_PrototypeTag(), InstancingDesc);
@@ -384,8 +399,12 @@ HRESULT CRenderer::Add_RenderGroup_Instancing_Effect(RENDERGROUP eRenderGroup, S
 			Safe_AddRef(pGameObject);
 		}
 		
-		iter->second.WorldMatrices.push_back(WorldMatrix);
-		iter->second.EffectInstancingDesc.push_back(EffectInstanceDesc);
+		if (iter->second.WorldMatrices.size() <= 500)
+		{
+			iter->second.WorldMatrices.push_back(WorldMatrix);
+			iter->second.EffectInstancingDesc.push_back(EffectInstanceDesc);
+		}
+		
 	}
 	return S_OK;
 }
@@ -426,11 +445,13 @@ HRESULT CRenderer::Draw()
 	if (FAILED(Render_Blur(L"Target_Bloom", L"MRT_Blur_Bloom", true)))
 		return E_FAIL;
 
+	if (FAILED(Render_UI()))
+		return E_FAIL;
+
 	if (FAILED(Render_Final()))
 		return E_FAIL;
 
-	if(FAILED(Render_UI()))
-		return E_FAIL;
+	
 
 	if (FAILED(Render_Text()))
 		return E_FAIL;
@@ -627,6 +648,36 @@ HRESULT CRenderer::Render_Deferred()
 		return E_FAIL;
 
 
+	if (KEY_TAP(KEY::OPEN_SQUARE_BRACKET))
+	{
+		if (KEY_HOLD(KEY::SHIFT))
+		{
+			m_fBias += 0.0001f;
+		}
+		else
+		{
+			m_fBias += 0.001f;
+		}
+		
+	}
+
+	if (KEY_TAP(KEY::CLOSE_SQUARE_BRACKET))
+	{
+		if (KEY_HOLD(KEY::SHIFT))
+		{
+			m_fBias -= 0.0001f;
+		}
+		else
+		{
+			m_fBias -= 0.001f;
+		}
+
+	}
+
+	if (FAILED(m_pShader->Bind_RawValue("g_fBias", &m_fBias, sizeof(_float))))
+		return E_FAIL;
+
+
 	if (FAILED(m_pShader->Bind_RawValue("g_vFogColor", &m_vFogColor, sizeof(_float4))))
 		return E_FAIL;
 
@@ -751,7 +802,7 @@ HRESULT CRenderer::Render_Effect()
 		if (nullptr == Pair.second.pGameObject)
 			continue;
 
-		if (FAILED(m_pIntancingShaders[Pair.second.eShaderType]->Bind_RawValue("g_EffectDesc", Pair.second.EffectInstancingDesc.data(), sizeof(EFFECT_INSTANCE_DESC) * Pair.second.EffectInstancingDesc.size())))
+		if (FAILED(m_pIntancingShaders[Pair.second.eShaderType]->Bind_RawValue("g_EffectDesc", Pair.second.EffectInstancingDesc.data(), sizeof(EFFECT_INSTANCE_DESC) * Pair.second.WorldMatrices.size())))
 			return E_FAIL;
 
  		if (FAILED(Pair.second.pGameObject->Render_Instance(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
@@ -950,6 +1001,9 @@ HRESULT CRenderer::Render_Final()
 	if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_Blur_Bloom"), "g_BlurBloomTarget")))
 		return E_FAIL;
 
+	/*if (FAILED(m_pTarget_Manager->Bind_SRV(m_pShader, TEXT("Target_UI"), "g_UITarget")))
+		return E_FAIL;*/
+
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 
@@ -970,6 +1024,9 @@ HRESULT CRenderer::Render_Final()
 
 HRESULT CRenderer::Render_UI()
 {
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, L"MRT_Blend", false)))
+		return E_FAIL;
+
 	for (auto& iter : m_RenderObjects[RENDERGROUP::RENDER_UI])
 	{
 		if (FAILED(iter->Render()))
@@ -978,6 +1035,8 @@ HRESULT CRenderer::Render_UI()
 	}
 	m_RenderObjects[RENDER_UI].clear();
 
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
 
 
 	return S_OK;
@@ -1047,6 +1106,9 @@ HRESULT CRenderer::Render_Debug()
 		return E_FAIL;
 
 	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_Blur_Bloom"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Render(TEXT("MRT_UI"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
 	
 

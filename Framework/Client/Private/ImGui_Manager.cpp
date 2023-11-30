@@ -2645,11 +2645,20 @@ void CImGui_Manager::Tick_Particle_Tool(_float fTimeDelta)
         ImGui::Checkbox("Gravity", &ParticleDesc.bRigidActive);
 
         IMGUI_NEW_LINE;
-        if (ParticleDesc.bRigidActive == true)
-        {
-            ImGui::DragFloat3("##RigidBodyDir", (_float*)&ParticleDesc.vForceDir, 0.01f, 0.f, 1000.f);
-            ImGui::Checkbox("Random ForceDir", &ParticleDesc.bRandomForceDir);
-        }
+       
+        ImGui::DragFloat3("##RigidBodyDir", (_float*)&ParticleDesc.vForceDir, 0.01f, 0.f, 1000.f);
+        ImGui::Checkbox("Random ForceDir", &ParticleDesc.bRandomForceDir);
+
+
+        ImGui::Text("== Force ==");
+        ImGui::DragFloat("##RigidBodyForce", &ParticleDesc.fForce, 0.01f, 0.f, 1000.f);
+
+
+        ImGui::Text("== Friction ==");
+        ImGui::DragFloat("##RigidBodyFriction", &ParticleDesc.fFrictionScale, 0.01f, 0.f, 100.f);
+
+        ImGui::Text("== Random Friction ==");
+        ImGui::Checkbox("##Random Friction", &ParticleDesc.bRandomFriction);
 
         IMGUI_NEW_LINE;
 

@@ -19,7 +19,12 @@ HRESULT CEnmu_Projectile::Initialize_Prototype()
 
 HRESULT CEnmu_Projectile::Initialize(void* pArg)
 {
+    __super::Initialize(pArg);
+
     if (FAILED(Ready_Components()))
+        return E_FAIL;
+
+    if (FAILED(Ready_Colliders()))
         return E_FAIL;
 
     if (FAILED(CEffect_Manager::GetInstance()->Generate_Effect(L"Enmu_Projectile", XMMatrixIdentity(), XMMatrixIdentity(), 5.f, this)))
@@ -32,6 +37,7 @@ void CEnmu_Projectile::Tick(_float fTimeDelta)
 {
 
     __super::Tick(fTimeDelta);
+    GI->Add_CollisionGroup(COLLISION_GROUP::MONSTER, this);
 
     m_fAccDeletionTime += fTimeDelta;
     if(m_fAccDeletionTime >= m_fDeletionTime)
@@ -50,14 +56,18 @@ void CEnmu_Projectile::Tick(_float fTimeDelta)
 void CEnmu_Projectile::LateTick(_float fTimeDelta)
 {
     __super::LateTick(fTimeDelta);
-    GI->Add_CollisionGroup(COLLISION_GROUP::MONSTER, this);
+    
+    for (_uint i = 0; i < CCollider::DETECTION_TYPE::DETECTION_END; ++i)
+    {
+        for (auto& pCollider : m_Colliders[i])
+            m_pRendererCom->Add_Debug(pCollider);
+    }
     
 }
 
 HRESULT CEnmu_Projectile::Render()
 {
     __super::Render();
-    
     return S_OK;
 }
 
@@ -85,7 +95,11 @@ HRESULT CEnmu_Projectile::Ready_Components()
     if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
         return E_FAIL;
 
+    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
+        return E_FAIL;
 
+
+    
     return S_OK;
 }
 
@@ -100,14 +114,20 @@ HRESULT CEnmu_Projectile::Ready_Colliders()
 
     ColliderDesc.pOwnerTransform = m_pTransformCom;
 
+    XMStoreFloat4x4(&ColliderDesc.ModePivotMatrix, XMMatrixIdentity());
     ColliderDesc.tSphere = tSphere;
     ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
 
     if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::BOUNDARY, &ColliderDesc)))
         return E_FAIL;
 
-    if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::BODY, &ColliderDesc)))
+    if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
         return E_FAIL;
+
+    Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, true);
+    Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+
+    Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 6.f, 1.f);
 
     return S_OK;
 }

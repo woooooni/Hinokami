@@ -107,7 +107,7 @@ technique11 DefaultTechnique
 	pass DefaultPass
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DSS_Default, 0);
+		SetDepthStencilState(DSS_None, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -117,7 +117,7 @@ technique11 DefaultTechnique
 	pass OpacityPass
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DSS_Default, 0);
+		SetDepthStencilState(DSS_None, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -128,7 +128,7 @@ technique11 DefaultTechnique
 	pass ReverseOpacityPass
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DSS_Default, 0);
+		SetDepthStencilState(DSS_None, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -139,7 +139,7 @@ technique11 DefaultTechnique
 	pass UsingAlphaValue
 	{
 		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DSS_Default, 0);
+		SetDepthStencilState(DSS_None, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();

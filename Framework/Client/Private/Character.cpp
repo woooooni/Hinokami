@@ -67,7 +67,7 @@ void CCharacter::Tick(_float fTimeDelta)
 	}
 	
 
-	for(_uint i = 0; i < SOCEKT_END; ++i)
+	for(_uint i = 0; i < SOCKET_END; ++i)
 	{
 		if (nullptr == m_pTrails[i])
 			continue;
@@ -78,7 +78,6 @@ void CCharacter::Tick(_float fTimeDelta)
 
 		m_pTrails[i]->Set_TransformMatrix(WorldMatrix * m_pTransformCom->Get_WorldMatrix());
 		m_pTrails[i]->Tick(fTimeDelta);
-		
 	}
 }
 
@@ -104,30 +103,37 @@ void CCharacter::LateTick(_float fTimeDelta)
 		
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
-	m_pRendererCom->Add_Debug(m_pNavigationCom);
+	
 
 	m_pRendererCom->Set_PlayerPosition(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	for (_uint i = 0; i < SOCEKT_END; ++i)
+	for (_uint i = 0; i < SOCKET_END; ++i)
 	{
 		if (nullptr == m_pTrails[i])
 			continue;
 
 		m_pTrails[i]->LateTick(fTimeDelta);
 	}
+
+
+
+	for (_uint i = 0; i < CCollider::DETECTION_TYPE::DETECTION_END; ++i)
+	{
+		for (auto& pCollider : m_Colliders[i])
+			m_pRendererCom->Add_Debug(pCollider);
+	}
+	m_pRendererCom->Add_Debug(m_pNavigationCom);
 }
 
 HRESULT CCharacter::Render()
 {
-	__super::Render();
+	// __super::Render();
 
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &GI->Get_CamPosition(), sizeof(_float4))))
 		return E_FAIL;
-
-
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TransPose(), sizeof(_float4x4))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_ViewMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TransPose(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
@@ -144,7 +150,7 @@ HRESULT CCharacter::Render()
 			vRimColor = { 0.f, 0.5f, 1.f, 1.f };
 			break;
 		case CHARACTER_TYPE::ZENITSU:
-			vRimColor = { .8f, .8f, .2f, 1.f };
+			vRimColor = { 0.f, 0.5f, 1.f, 1.f };
 			break;
 		}
 	}
@@ -398,7 +404,7 @@ void CCharacter::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTransformCom);
 
-	for (_uint i = 0; i < SOCEKT_END; ++i)
+	for (_uint i = 0; i < SOCKET_END; ++i)
 	{
 		if (nullptr == m_pTrails[i])
 			continue;

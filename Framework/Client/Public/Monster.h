@@ -28,6 +28,9 @@ public:
 		IDLE, 
 		JUMP,
 		ATTACK,
+		BOSS_ATTACK_0,
+		BOSS_ATTACK_1,
+		BOSS_ATTACK_2,
 		SKILL,
 		DASH,
 		DAMAGED_BASIC, 
@@ -36,7 +39,6 @@ public:
 		DAMAGED_BOUND,
 		KNOCKDOWN,
 		DIE,
-
 		TRACE,
 		DEFENCE_TRACE,
 		STATE_END
@@ -50,6 +52,10 @@ public:
 	{
 		_float fHp = 0.f;
 		_float fMp = 0.f;
+
+		
+		_float fMaxHp = 0.f;
+		_float fMaxMp = 0.f;
 	} MONSTER_STAT;
 
 protected:
@@ -118,10 +124,12 @@ protected:
 
 protected:
 	MONSTER_STAT m_tStat = {};
-	
 	_float m_fAccInfinite = 0.f;
 	_float m_fInfiniteTime = 0.2f;
 	_bool m_bInfinite = false;
+
+protected:
+	class CTrail* m_pTrails[SOCKET_TYPE::SOCKET_END];
 
 protected:
 	_float m_fDissolveWeight = 0.f;

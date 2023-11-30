@@ -196,7 +196,7 @@ void CState_Enmu_Attack::Tick_Far_Attack_0(_float fTimeDelta)
 		m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 5.f);
 	}
 
-	if (fProgress >= 0.4f && fProgress <= 0.41f)
+	if (fProgress >= 0.4f && fProgress <= 0.42f)
 	{
 		for (_uint i = 0; i < 3; ++i)
 		{
@@ -222,24 +222,24 @@ void CState_Enmu_Attack::Tick_Far_Attack_1(_float fTimeDelta)
 
 	if (m_iCurrAnimIndex == 0)
 	{
-		if (fProgress >= .3f && fProgress <= .31f)
+		if (fProgress >= .3f && fProgress <= .32f)
 		{
 			_int iRandom = (rand() + rand() + rand()) % 3 - 1;
 			Shoot(Find_NearTarget(fTimeDelta), XMVectorSet(_float(iRandom), 0.f, 0.f, 0.f), fTimeDelta);
 		}
-		if (fProgress >= .4f && fProgress <= .41f)
-		{
-			_int iRandom = (rand() + rand() + rand()) % 3 - 1;
-			Shoot(Find_NearTarget(fTimeDelta), XMVectorSet(_float(iRandom), 0.f, 0.f, 0.f), fTimeDelta);
-		}
-
-		if (fProgress >= .5f && fProgress <= .51f)
+		if (fProgress >= .4f && fProgress <= .42f)
 		{
 			_int iRandom = (rand() + rand() + rand()) % 3 - 1;
 			Shoot(Find_NearTarget(fTimeDelta), XMVectorSet(_float(iRandom), 0.f, 0.f, 0.f), fTimeDelta);
 		}
 
-		if (fProgress >= .6f && fProgress <= .61f)
+		if (fProgress >= .5f && fProgress <= .52f)
+		{
+			_int iRandom = (rand() + rand() + rand()) % 3 - 1;
+			Shoot(Find_NearTarget(fTimeDelta), XMVectorSet(_float(iRandom), 0.f, 0.f, 0.f), fTimeDelta);
+		}
+
+		if (fProgress >= .6f && fProgress <= .62f)
 		{
 			_int iRandom = (rand() + rand() + rand()) % 3 - 1;
 			Shoot(Find_NearTarget(fTimeDelta), XMVectorSet(_float(iRandom), 0.f, 0.f, 0.f), fTimeDelta);
@@ -431,7 +431,7 @@ CState_Enmu_Attack* CState_Enmu_Attack::Create(ID3D11Device* pDevice, ID3D11Devi
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);
-		MSG_BOX("Failed Create : CState_Enmu_Attack");
+		MSG_BOX("Failed Create : CState_Akaza_Attack");
 		return nullptr;
 	}
 		

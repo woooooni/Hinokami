@@ -26,9 +26,6 @@ HRESULT CLevel_Train_Boss::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_Camera(LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
 
@@ -206,8 +203,9 @@ HRESULT CLevel_Train_Boss::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
  	if(FAILED(GI->Add_GameObject(LEVELID::LEVEL_TRAIN_BOSS, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
 		return E_FAIL;
 
-	if (FAILED(GI->Add_GameObject(LEVELID::LEVEL_TRAIN_BOSS, LAYER_BACKGROUND, TEXT("Prototype_GameObject_Sky"))))
+	if (FAILED(GI->Add_GameObject(LEVELID::LEVEL_TRAIN_BOSS, LAYER_BACKGROUND, TEXT("Prototype_GameObject_Sky_Night"))))
 		return E_FAIL;
+
 	/*if (FAILED(GI->Add_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
 		return E_FAIL;*/
 
@@ -256,6 +254,18 @@ HRESULT CLevel_Train_Boss::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 	if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_Component<CTransform>(L"Com_Transform"))))
 		return E_FAIL;
 
+	CNavigation* pNavigation = pCharacter->Get_Component<CNavigation>(L"Com_Navigation");
+	if (nullptr != pNavigation)
+	{
+		CNavigation::NAVIGATION_DESC NavigationDesc;
+		NavigationDesc.bInitialize_Index = true;
+		NavigationDesc.vStartWorldPosition = _float4(0.f, 15.f, 40.f, 1.f);
+		if (FAILED(pNavigation->Initialize(&NavigationDesc)))
+			return E_FAIL;
+
+		pCharacter->Get_Component<CTransform>(L"Com_Transform")->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pNavigation->Get_NaviDesc().vStartWorldPosition));
+	}
+
 	return S_OK;
 }
 
@@ -272,7 +282,8 @@ HRESULT CLevel_Train_Boss::Ready_Layer_BackGround(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_Train_Boss::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 {
-	CGameObject* pBoss = GI->Clone_GameObject(TEXT("Prototype_GameObject_Enmu"), LAYER_MONSTER);
+	// CGameObject* pBoss = GI->Clone_GameObject(TEXT("Prototype_GameObject_Enmu"), LAYER_MONSTER);
+	CGameObject* pBoss = GI->Clone_GameObject(TEXT("Prototype_GameObject_Akaza"), LAYER_MONSTER);
 
 
 	CTransform* pTransform = pBoss->Get_Component<CTransform>(L"Com_Transform");

@@ -189,6 +189,39 @@ PS_OUT PS_MAIN_NORMAL(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_AKAZA(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+
+	Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+
+	vector		vTextureNormal = g_NormalTexture.Sample(LinearSampler, In.vTexUV);
+
+	float3		vNormal = vTextureNormal.xyz * 2.f - 1.f;
+	float3x3	WorldMatrix = float3x3(In.vTangent, In.vBinormal, In.vNormal.xyz);
+
+
+	vNormal = normalize(mul(vNormal, WorldMatrix));
+
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.0f, 0.0f);
+
+
+
+	float fRimPower = 1.f - saturate(dot(vNormal.xyz, normalize((-1.f * (In.vWorldPosition - g_vCamPosition)))));
+	fRimPower = pow(fRimPower, 2.f);
+
+	vector vRimColor = g_vRimColor * fRimPower;
+	Out.vDiffuse += vRimColor;
+
+	if (0 == Out.vDiffuse.a)
+		discard;
+
+	return Out;
+}
+
 PS_OUT PS_DISSOLVE_DEAD(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -231,11 +264,11 @@ PS_OUT_SHADOW_DEPTH PS_SHADOW_DEPTH(PS_IN In)
 	PS_OUT_SHADOW_DEPTH Out = (PS_OUT_SHADOW_DEPTH)0;
 
 	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
-	if(vColor.a <= 0.3f)
+	if(vColor.a <= 0.01f)
 		discard;
 
 
-	Out.vDepth = vector(In.vProjPos.w / 1000.0f, In.vProjPos.w * In.vProjPos.w, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.w / 1000.0f, 0.f, 0.f, 1.f);
 
 	return Out;
 }
@@ -281,7 +314,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_DISSOLVE_DEAD();
 	}
 
-	pass Temp0
+	pass Akaza
 	{
 		// 3
 		SetRasterizerState(RS_Default);
@@ -290,7 +323,7 @@ technique11 DefaultTechnique
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_AKAZA();
 	}
 
 	pass Temp1

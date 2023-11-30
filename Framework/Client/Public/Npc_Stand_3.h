@@ -7,13 +7,13 @@
 
 BEGIN(Client)
 
-class CNpc_General_0 final : public CNpc
+class CNpc_Stand_3 final : public CNpc
 {
 
 private:
-	CNpc_General_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
-	CNpc_General_0(const CNpc_General_0& rhs);
-	virtual ~CNpc_General_0() = default;
+	CNpc_Stand_3(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CNpc_Stand_3(const CNpc_Stand_3& rhs);
+	virtual ~CNpc_Stand_3() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -33,13 +33,12 @@ protected:
 	virtual HRESULT Ready_States() override;
 	virtual HRESULT Ready_Colliders() override;
 
-
 public:
 	virtual void On_Damaged(CGameObject* pAttacker, _uint eDamageType, _float fDamage) override;
 
 
 public:
-	static CNpc_General_0* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag);
+	static CNpc_Stand_3* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

@@ -19,7 +19,6 @@ CParticle::CParticle(const CParticle& rhs)
 	, m_tParticleDesc(rhs.m_tParticleDesc)
 	, m_fAccLifeTime(0.f)
 	, m_strPrototypeEffectTag(rhs.m_strPrototypeEffectTag)
-	
 {
 	
 }
@@ -42,6 +41,7 @@ HRESULT CParticle::Initialize(void* pArg)
 	if (FAILED(Ready_Effects()))
 		return E_FAIL;
 	
+	m_fAccLifeTime = 0.f;
 
 	return S_OK;
 }
@@ -136,28 +136,34 @@ Client::CEffect* CParticle::Generate_Effect()
 	if (m_tParticleDesc.bRandomDir)
 	{
 		vDir.x = CUtils::Random_Float(-vDir.x, vDir.x);
-		vDir.y = CUtils::Random_Float(-vDir.y, vDir.y);
+		vDir.y = CUtils::Random_Float(0.f, vDir.y);
 		vDir.z = CUtils::Random_Float(-vDir.z, vDir.z);
 	}
 	XMStoreFloat3(&EffectDesc.vMoveDir, XMVector3Normalize(XMLoadFloat3(&vDir)));
 
 	pEffect->Set_Gravity(m_tParticleDesc.bRigidActive);
-	if (m_tParticleDesc.bRigidActive)
+	_float3 vForceDir = m_tParticleDesc.vForceDir;
+	if (m_tParticleDesc.bRandomForceDir)
 	{
-		_float3 vForceDir = m_tParticleDesc.vForceDir;
-		if (m_tParticleDesc.bRandomForceDir)
-		{
-			vForceDir.x = CUtils::Random_Float(-vForceDir.x, vForceDir.x);
-			vForceDir.y = CUtils::Random_Float(-vForceDir.y, vForceDir.y);
-			vForceDir.z = CUtils::Random_Float(-vForceDir.z, vForceDir.z);
-		}
+		vForceDir.x = CUtils::Random_Float(-vForceDir.x, vForceDir.x);
+		vForceDir.y = CUtils::Random_Float(-vForceDir.y, vForceDir.y);
+		vForceDir.z = CUtils::Random_Float(-vForceDir.z, vForceDir.z);
+	}
 
-		pEffect->Get_RigidBodyCom()->Add_Velocity(XMVector3Normalize(XMLoadFloat3(&vForceDir)), m_tParticleDesc.fForce);
-	}	
+	_float fFrictionScale = m_tParticleDesc.fFrictionScale;
+	if (m_tParticleDesc.bRandomFriction)
+	{
+		fFrictionScale = CUtils::Random_Float(0.f, fFrictionScale);
+	}
+	pEffect->Get_RigidBodyCom()->Set_Friction_Scale(fFrictionScale);
+	pEffect->Get_RigidBodyCom()->Add_Velocity(XMVector3Normalize(XMLoadFloat3(&vForceDir)), m_tParticleDesc.fForce);
 
 	EffectDesc.fBlurPower = m_tParticleDesc.fBlurPower;
 	EffectDesc.fDestAlphaSpeed = m_tParticleDesc.fDestAlphaSpeed;
+	
 	pEffect->Set_EffectDesc(EffectDesc);
+
+	pEffect->Set_DeletionTime(m_tParticleDesc.fLifeTime);
 	
 	return pEffect;
 }

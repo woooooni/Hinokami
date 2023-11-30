@@ -443,7 +443,7 @@ HRESULT CZenitsu::Ready_Sockets()
 	if (nullptr == m_pModelCom)
 		return E_FAIL;
 
-	m_Sockets.resize(SOCEKT_END);
+	m_Sockets.resize(SOCKET_END);
 
 	m_Sockets[SOCKET_SWORD] = m_pModelCom->Get_HierarchyNode(L"R_HandCommon_1_Lct");
 	m_Sockets[SOCKET_RIGHT_HAND] = m_pModelCom->Get_HierarchyNode(L"R_Hand_1");

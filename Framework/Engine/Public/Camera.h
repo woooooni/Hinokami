@@ -49,7 +49,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	void Cam_Shake(const CAM_SHAKE& pCameraShakeDesc);
+	void Cam_Shake(_float fDuration, _float fForce);
 
 public:
 	HRESULT Set_TargetTransform(class CTransform* pTargetTransform) 

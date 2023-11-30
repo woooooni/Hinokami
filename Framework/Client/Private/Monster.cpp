@@ -10,6 +10,8 @@ CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const w
 	: CGameObject(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_MONSTER)
 {
 	m_tStat = tStat;
+	m_tStat.fMaxHp = m_tStat.fHp;
+	m_tStat.fMaxMp = m_tStat.fMp;
 }
 
 CMonster::CMonster(const CMonster& rhs)
@@ -41,6 +43,8 @@ HRESULT CMonster::Initialize(void* pArg)
 
 void CMonster::Tick(_float fTimeDelta)
 {
+	__super::Tick(fTimeDelta);
+
 	GI->Add_CollisionGroup(COLLISION_GROUP::MONSTER, this);
 
 	for (auto& pPart : m_Parts)
@@ -75,6 +79,7 @@ void CMonster::Tick(_float fTimeDelta)
 
 void CMonster::LateTick(_float fTimeDelta)
 {
+
 	if (nullptr == m_pRendererCom)
 		return;
 
@@ -96,11 +101,18 @@ void CMonster::LateTick(_float fTimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 	}
+
+	for (_uint i = 0; i < CCollider::DETECTION_TYPE::DETECTION_END; ++i)
+	{
+		for (auto& pCollider : m_Colliders[i])
+			m_pRendererCom->Add_Debug(pCollider);
+	}
+
 }
 
 HRESULT CMonster::Render()
 {
-	__super::Render();
+	// __super::Render();
 	 
 	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;

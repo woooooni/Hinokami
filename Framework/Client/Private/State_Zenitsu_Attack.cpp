@@ -110,7 +110,7 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 			{
 				_vector vPosition = m_pTransformCom->Get_Position();
 				_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-				WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f);
+				WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + .5f);
 
 				CEffect_Manager::GetInstance()->Generate_Effect(L"Zenitsu_Slash_0", XMMatrixRotationZ(XMConvertToRadians(-15.f)), WorldMatrix, 1.f);
 				CEffect_Manager::GetInstance()->Generate_Effect(L"Zenitsu_Slash_1", XMMatrixRotationZ(XMConvertToRadians(-165.f)), WorldMatrix, 1.f);
@@ -120,7 +120,7 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 			{
 				_vector vPosition = m_pTransformCom->Get_Position();
 				_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-				WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f);
+				WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + .5f);
 
 				CEffect_Manager::GetInstance()->Generate_Effect(L"Zenitsu_Slash_0", XMMatrixRotationZ(XMConvertToRadians(60.f)), WorldMatrix, 1.f);
 				CEffect_Manager::GetInstance()->Generate_Effect(L"Zenitsu_Slash_1", XMMatrixRotationZ(XMConvertToRadians(120.f)), WorldMatrix, 1.f);

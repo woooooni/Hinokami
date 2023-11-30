@@ -58,22 +58,7 @@ void CCamera_Main::Tick(_float fTimeDelta)
 		else if (0.f >= m_vAngle.y)
 			m_vAngle.y = 360.f;
 	}
-	if (KEY_TAP(KEY::F9))
-	{
-		CCamera::CAM_SHAKE tShake;
-		ZeroMemory(&tShake, sizeof(CCamera::CAM_SHAKE));
 
-		tShake.fDuration = 1.f;
-		tShake.fForce = 10.f;
-
-
-		Cam_Shake(tShake);
-	}
-	__super::Tick(fTimeDelta);
-}
-
-void CCamera_Main::LateTick(_float fTimeDelta)
-{
 	// x, y 회전 행렬
 	_matrix mX = XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(m_vAngle.x));
 	_matrix mY = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_vAngle.y));
@@ -91,13 +76,20 @@ void CCamera_Main::LateTick(_float fTimeDelta)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), vDestPos, m_fCamSpeed * fTimeDelta));
 
-	_float4 vLookAt; 
+	_float4 vLookAt;
 	XMStoreFloat4(&vLookAt, vPlayerPos);
 	vLookAt.y += 1.f;
 	m_pTransformCom->LookAt(XMLoadFloat4(&vLookAt));
 
 
+	__super::LateTick(fTimeDelta);
+	
+	__super::Tick(fTimeDelta);
+}
 
+void CCamera_Main::LateTick(_float fTimeDelta)
+{
+	
 
 	if (false == m_tShakeDesc.bEnd)
 	{
@@ -118,7 +110,7 @@ void CCamera_Main::LateTick(_float fTimeDelta)
 
 	}
 	
-	__super::LateTick(fTimeDelta);
+	
 }
 
 HRESULT CCamera_Main::Render()

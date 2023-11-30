@@ -271,21 +271,6 @@
     <Filter Include="02.GameObjects\98. UI\05. Combo">
       <UniqueIdentifier>{615008f1-99a6-448d-87b7-bee9f7d265f0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\11. NPC\01. Defence_Zenitsu">
-      <UniqueIdentifier>{742de20c-0212-46d9-a3ac-a81a00d98dd0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\11. NPC\00. General_Person">
-      <UniqueIdentifier>{2f79fcca-670d-424e-a261-c98dfef3175e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\11. NPC\00. General_Person\00">
-      <UniqueIdentifier>{2d481f1a-199e-459f-b002-43255ece3ed0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\11. NPC\00. General_Person\01">
-      <UniqueIdentifier>{cf3ef552-5332-4580-aaa0-b95207949d00}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\11. NPC\00. General_Person\02">
-      <UniqueIdentifier>{6c949536-7cf6-49a7-a54d-061b6d56cf94}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\98. UI\00. Common\Battle">
       <UniqueIdentifier>{bd089743-ee31-4439-a20b-696489d67146}</UniqueIdentifier>
     </Filter>
@@ -363,6 +348,54 @@
     </Filter>
     <Filter Include="02.GameObjects\03. Character\00. Tanjiro\Skill">
       <UniqueIdentifier>{75115f1c-3dad-4407-9f15-dd8315ef4b5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Akaza">
+      <UniqueIdentifier>{07525885-20b4-4f87-ba79-35240c2de5da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person">
+      <UniqueIdentifier>{2f79fcca-670d-424e-a261-c98dfef3175e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\00">
+      <UniqueIdentifier>{2d481f1a-199e-459f-b002-43255ece3ed0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\01">
+      <UniqueIdentifier>{cf3ef552-5332-4580-aaa0-b95207949d00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\02">
+      <UniqueIdentifier>{6c949536-7cf6-49a7-a54d-061b6d56cf94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\01. Walking_Person">
+      <UniqueIdentifier>{9a843d9c-e5a1-4d66-84b9-394550a86ca4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\99. State">
+      <UniqueIdentifier>{0e0123e2-e061-44f3-b357-554b10c897d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\98. Defence_Zenitsu">
+      <UniqueIdentifier>{742de20c-0212-46d9-a3ac-a81a00d98dd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\99. State\Idle">
+      <UniqueIdentifier>{a7e05cd4-5b88-4182-a131-2fd9a6a11390}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\99. State\Walk">
+      <UniqueIdentifier>{9936b665-6a04-489f-91a8-241ea7671b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\03">
+      <UniqueIdentifier>{42bc9ee2-1f7c-4fd0-bf41-189f5f00e860}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\06. WorldHP">
+      <UniqueIdentifier>{2bc1e263-2705-4dc2-9cbc-8cca8b1fd589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Enmu\State\Skill">
+      <UniqueIdentifier>{a0b3b891-7713-4db6-89c1-5a5cdb80150b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Akaza\State">
+      <UniqueIdentifier>{0464ba3a-66e8-400e-8404-56879ad1286d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Akaza\State\Attack">
+      <UniqueIdentifier>{dfb34a3e-1e1e-4c4e-8f60-0427ea743336}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Akaza\State\Idle">
+      <UniqueIdentifier>{9a30683b-938f-4862-96de-5c5567e08d68}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -663,8 +696,8 @@
     <ClInclude Include="..\Public\UI_GaugeBar.h">
       <Filter>02.GameObjects\98. UI\04. Gauge_Bar</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Npc_General_0.h">
-      <Filter>02.GameObjects\11. NPC\00. General_Person\00</Filter>
+    <ClInclude Include="..\Public\Npc_Stand_0.h">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\00</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster_Normal_1.h">
       <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster1</Filter>
@@ -673,7 +706,7 @@
       <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster2</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Npc_Defence_Zenitsu.h">
-      <Filter>02.GameObjects\11. NPC\01. Defence_Zenitsu</Filter>
+      <Filter>02.GameObjects\11. NPC\98. Defence_Zenitsu</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_BattleStart.h">
       <Filter>02.GameObjects\98. UI\00. Common\Battle\Start</Filter>
@@ -725,6 +758,45 @@
     </ClInclude>
     <ClInclude Include="..\Public\State_Tanjiro_Skill_2.h">
       <Filter>02.GameObjects\03. Character\00. Tanjiro\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kyojuro.h">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Boss_Akaza.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Npc_Idle.h">
+      <Filter>02.GameObjects\11. NPC\99. State\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Npc_Walk.h">
+      <Filter>02.GameObjects\11. NPC\99. State\Walk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Npc_Stand_1.h">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\01</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Npc_Stand_2.h">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\02</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Npc_Stand_3.h">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\03</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_WorldHp.h">
+      <Filter>02.GameObjects\98. UI\06. WorldHP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Enmu_Skill_0.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Enmu\State\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Akaza_Attack_0.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\State\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Akaza_Attack_1.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\State\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Akaza_Attack_2.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\State\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Akaza_Idle.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\State\Idle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1010,8 +1082,8 @@
     <ClCompile Include="..\Private\UI_GaugeBar.cpp">
       <Filter>02.GameObjects\98. UI\04. Gauge_Bar</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Npc_General_0.cpp">
-      <Filter>02.GameObjects\11. NPC\00. General_Person\00</Filter>
+    <ClCompile Include="..\Private\Npc_Stand_0.cpp">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\00</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Normal_1.cpp">
       <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster1</Filter>
@@ -1020,7 +1092,7 @@
       <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster2</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Npc_Defence_Zenitsu.cpp">
-      <Filter>02.GameObjects\11. NPC\01. Defence_Zenitsu</Filter>
+      <Filter>02.GameObjects\11. NPC\98. Defence_Zenitsu</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_BattleEnd.cpp">
       <Filter>02.GameObjects\98. UI\00. Common\Battle\End</Filter>
@@ -1072,6 +1144,45 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Tanjiro_Skill_2.cpp">
       <Filter>02.GameObjects\03. Character\00. Tanjiro\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kyojuro.cpp">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss_Akaza.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Npc_Idle.cpp">
+      <Filter>02.GameObjects\11. NPC\99. State\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Npc_Walk.cpp">
+      <Filter>02.GameObjects\11. NPC\99. State\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Npc_Stand_1.cpp">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\01</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Npc_Stand_2.cpp">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\02</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Npc_Stand_3.cpp">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\03</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_WorldHp.cpp">
+      <Filter>02.GameObjects\98. UI\06. WorldHP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Enmu_Skill_0.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Enmu\State\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Akaza_Attack_0.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\State\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Akaza_Attack_1.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\State\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Akaza_Attack_2.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\State\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Akaza_Idle.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\State\Idle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

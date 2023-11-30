@@ -52,7 +52,7 @@ public:
 #pragma endregion
 
 	enum PARTTYPE { PART_SWEATH, PART_SWORD, PART_END };
-	enum SOCKET_TYPE { SOCKET_SWORD, SOCKET_SWEATH, SOCKET_RIGHT_HAND, SOCKET_LEFT_FOOT, SOCKET_RIGHT_FOOT, SOCEKT_END };
+	enum SOCKET_TYPE { SOCKET_SWORD, SOCKET_SWEATH, SOCKET_RIGHT_HAND, SOCKET_LEFT_FOOT, SOCKET_RIGHT_FOOT, SOCKET_END };
 	enum CHARACTER_TYPE { TANJIRO, ZENITSU, KYOJURO, CHARACTER_END };
 public:
 	typedef struct tagCharacterStat
@@ -124,7 +124,7 @@ protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CStateMachine* m_pStateCom = nullptr;
 	CNavigation* m_pNavigationCom = nullptr;
 
-	class CTrail* m_pTrails[SOCEKT_END];
+	class CTrail* m_pTrails[SOCKET_END];
 
 
 protected:

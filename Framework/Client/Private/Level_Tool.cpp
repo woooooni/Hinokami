@@ -25,9 +25,6 @@ HRESULT CLevel_Tool::Initialize()
  	m_pImGuiManager = CImGui_Manager::GetInstance();
 	Safe_AddRef(m_pImGuiManager);
 
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_Camera(LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
 

@@ -39,6 +39,7 @@ void CState_Zenitsu_Skill_0::Enter_State(void* pArg)
 {
 
 	m_iCurrAnimIndex = 0;
+	m_fAccGenParticle = 0.f;
 	m_pCharacter->SweathSword();
 	Find_Near_Target();
 
@@ -102,6 +103,8 @@ void CState_Zenitsu_Skill_0::Tick_State(_float fTimeDelta)
 			m_pRigidBodyCom->Set_Friction_Scale(20.f);
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
 		}
+
+		CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_0", m_pTransformCom->Get_WorldMatrix());
 		break;
 	case 4:
 		if (fProgress >= .8f)
@@ -117,6 +120,7 @@ void CState_Zenitsu_Skill_0::Tick_State(_float fTimeDelta)
 void CState_Zenitsu_Skill_0::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
+	m_fAccGenParticle = 0.f;
 
 	m_pCharacter->SweathSword();
 	m_pSword->Stop_Trail();
@@ -217,10 +221,15 @@ void CState_Zenitsu_Skill_0::Use_Skill(_float fTimeDelta)
 		EffectMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + EffectMatrix.r[CTransform::STATE_LOOK] + XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	}
 	
+	/*_matrix EffectMatrix = XMMatrixIdentity();
+	EffectMatrix.r[CTransform::STATE_POSITION] = (m_pTransformCom->Get_Position() + XMVectorSet(0.f, 0.f, 0.f, 0.f)) + (XMVector3Normalize(vDir) * 1.f);*/
 
-
-	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_0", XMMatrixIdentity(), EffectMatrix, 1.f);
-	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_1", XMMatrixIdentity(), EffectMatrix, 1.f);
+	_matrix SkillMatrix = XMMatrixIdentity();
+	SkillMatrix.r[CTransform::STATE_POSITION] = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	SkillMatrix.r[CTransform::STATE_POSITION] += SkillMatrix.r[CTransform::STATE_LOOK] * 1.5f;
+	
+	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_0", SkillMatrix, XMMatrixIdentity(), .8f, m_pCharacter);
+	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_1", SkillMatrix, XMMatrixIdentity(), .8f, m_pCharacter);
 
 
 
@@ -234,14 +243,9 @@ void CState_Zenitsu_Skill_0::Use_Skill(_float fTimeDelta)
 	CEffect_Manager::GetInstance()->Generate_Effect(L"Wind_0", OffsetMatrix, XMMatrixIdentity(), 1.f, m_pCharacter);
 
 
-	EffectMatrix = XMMatrixIdentity();
-	EffectMatrix.r[CTransform::STATE_POSITION] = (m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f)) + (XMVector3Normalize(vDir) * 1.f);
-	CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_0", EffectMatrix);
-	CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_1", EffectMatrix);
+	
 
-	EffectMatrix.r[CTransform::STATE_POSITION] = (m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f)) + (XMVector3Normalize(vDir) * 2.f);
-	CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_0", EffectMatrix);
-	CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_1", EffectMatrix);
+	
 
 	m_pCharacter->Set_Infinite(999.f, true);
 	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
@@ -257,10 +261,7 @@ void CState_Zenitsu_Skill_0::Use_Skill(_float fTimeDelta)
 	CCamera* pCamera = dynamic_cast<CCamera*>(GI->Find_GameObject(GI->Get_CurrentLevel(), LAYER_CAMERA, L"Main_Camera"));
 	if (nullptr != pCamera)
 	{
-		CCamera::CAM_SHAKE ShakeDesc;
-		ShakeDesc.fDuration = 0.5f;
-		ShakeDesc.fForce = 10.f;
-		pCamera->Cam_Shake(ShakeDesc);
+		pCamera->Cam_Shake(.5f, 10.f);
 	}
 }
 

@@ -8,6 +8,7 @@
 #include "Effect_Manager.h"
 #include "Particle_Manager.h"
 #include "Monster.h"
+#include "Camera.h"
 
 CState_Zenitsu_Air_Attack::CState_Zenitsu_Air_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
@@ -115,13 +116,9 @@ void CState_Zenitsu_Air_Attack::Input(_float fTimeDelta)
 	{
 		Find_Near_Target();
 		
-		if (nullptr != m_pTarget)
-		{
-			m_iCurrAnimIndex = 0;
-			m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
-			Use_Skill(fTimeDelta);
-		}
-
+		m_iCurrAnimIndex = 0;
+		m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
+		Use_Skill(fTimeDelta);
 	}
 
 
@@ -159,29 +156,46 @@ void CState_Zenitsu_Air_Attack::Find_Near_Target()
 
 void CState_Zenitsu_Air_Attack::Use_Skill(_float fTimeDelta)
 {
-	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>(L"Com_Transform");
-	_vector vTargetPosition = pTargetTransform->Get_Position();
-	_vector vDir = vTargetPosition - m_pTransformCom->Get_Position();
-	_vector vCenterPosition = m_pTransformCom->Get_Position() + (vDir * .5f);
+	_matrix EffectMatrix = m_pTransformCom->Get_WorldMatrix();
+	_vector vDir = XMVectorSet(0.f, 0.f, 0.f, 0.f);
 
-	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-	WorldMatrix.r[CTransform::STATE_LOOK] = XMVector3Normalize(vDir);
-	WorldMatrix.r[CTransform::STATE_RIGHT] = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMVector3Normalize(WorldMatrix.r[CTransform::STATE_LOOK]));
-	WorldMatrix.r[CTransform::STATE_UP] = XMVector3Cross(XMVector3Normalize(WorldMatrix.r[CTransform::STATE_LOOK]), XMVector3Normalize(WorldMatrix.r[CTransform::STATE_RIGHT]));
-	WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + WorldMatrix.r[CTransform::STATE_LOOK] + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	if (nullptr != m_pTarget)
+	{
+		CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>(L"Com_Transform");
+		_vector vTargetPosition = pTargetTransform->Get_Position();
+		vDir = vTargetPosition - m_pTransformCom->Get_Position();
+		_vector vCenterPosition = m_pTransformCom->Get_Position() + (vDir * .5f);
+
+		EffectMatrix.r[CTransform::STATE_LOOK] = XMVector3Normalize(vDir);
+		EffectMatrix.r[CTransform::STATE_RIGHT] = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMVector3Normalize(EffectMatrix.r[CTransform::STATE_LOOK]));
+		EffectMatrix.r[CTransform::STATE_UP] = XMVector3Cross(XMVector3Normalize(EffectMatrix.r[CTransform::STATE_LOOK]), XMVector3Normalize(EffectMatrix.r[CTransform::STATE_RIGHT]));
+		EffectMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + EffectMatrix.r[CTransform::STATE_LOOK] + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	}
+	else
+	{
+		vDir = XMVector3Normalize(m_pTransformCom->Get_Look());
+		EffectMatrix.r[CTransform::STATE_LOOK] = XMVector3Normalize(vDir);
+		EffectMatrix.r[CTransform::STATE_RIGHT] = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMVector3Normalize(EffectMatrix.r[CTransform::STATE_LOOK]));
+		EffectMatrix.r[CTransform::STATE_UP] = XMVector3Cross(XMVector3Normalize(EffectMatrix.r[CTransform::STATE_LOOK]), XMVector3Normalize(EffectMatrix.r[CTransform::STATE_RIGHT]));
+		EffectMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + EffectMatrix.r[CTransform::STATE_LOOK] + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	}
+
+	/*_matrix EffectMatrix = XMMatrixIdentity();
+	EffectMatrix.r[CTransform::STATE_POSITION] = (m_pTransformCom->Get_Position() + XMVectorSet(0.f, 0.f, 0.f, 0.f)) + (XMVector3Normalize(vDir) * 1.f);*/
+
+	_matrix SkillMatrix = XMMatrixIdentity();
+	SkillMatrix.r[CTransform::STATE_POSITION] = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+	SkillMatrix.r[CTransform::STATE_POSITION] += SkillMatrix.r[CTransform::STATE_LOOK] * 1.5f;
+
+	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_0", SkillMatrix, XMMatrixIdentity(), .8f, m_pCharacter);
+	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_1", SkillMatrix, XMMatrixIdentity(), .8f, m_pCharacter);
 
 
-	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_0", XMMatrixIdentity(), WorldMatrix, 1.f);
-	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_1", XMMatrixIdentity(), WorldMatrix, 1.f);
 
 
+	EffectMatrix.r[CTransform::STATE_POSITION] = (m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f)) + (-1.f * XMVector3Normalize(vDir));
+	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_Dash_0", XMMatrixIdentity(), EffectMatrix, 1.f);
 
-
-	WorldMatrix.r[CTransform::STATE_POSITION] = (m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f)) + (-1.f * XMVector3Normalize(vDir));
-	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_Dash_0", XMMatrixIdentity(), WorldMatrix, 1.f);
-
-
-	//WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + (1.f * XMVector3Normalize(m_pTransformCom->Get_Look()) + XMVectorSet(0.f, 1.f, 0.f, 0.f));
 
 	_matrix OffsetMatrix = XMMatrixIdentity();
 	OffsetMatrix.r[CTransform::STATE_POSITION] = XMVectorSet(0.f, 1.f, 0.f, 1.f);
@@ -189,16 +203,10 @@ void CState_Zenitsu_Air_Attack::Use_Skill(_float fTimeDelta)
 
 
 
-	WorldMatrix = XMMatrixIdentity();
-	WorldMatrix.r[CTransform::STATE_POSITION] = (m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f)) + (XMVector3Normalize(vDir) * 1.f);
-	CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_0", WorldMatrix);
-	CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_1", WorldMatrix);
 
-	WorldMatrix.r[CTransform::STATE_POSITION] = (m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f)) + (XMVector3Normalize(vDir) * 2.f);
-	CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_0", WorldMatrix);
-	CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_1", WorldMatrix);
-	
 
+
+	m_pCharacter->Set_Infinite(999.f, true);
 	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
 	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
 
@@ -207,6 +215,12 @@ void CState_Zenitsu_Air_Attack::Use_Skill(_float fTimeDelta)
 	m_pCharacter->Set_ActiveColliders(CCollider::BODY, false);
 
 	m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vDir), 10.f);
+
+	CCamera* pCamera = dynamic_cast<CCamera*>(GI->Find_GameObject(GI->Get_CurrentLevel(), LAYER_CAMERA, L"Main_Camera"));
+	if (nullptr != pCamera)
+	{
+		pCamera->Cam_Shake(.5f, 10.f);
+	}
 }
 
 CState_Zenitsu_Air_Attack* CState_Zenitsu_Air_Attack::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)

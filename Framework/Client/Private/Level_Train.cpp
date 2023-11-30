@@ -28,9 +28,6 @@ HRESULT CLevel_Train::Initialize()
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_Camera(LAYER_TYPE::LAYER_CAMERA)))
 		return E_FAIL;
 
@@ -169,7 +166,7 @@ HRESULT CLevel_Train::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 		return E_FAIL;*/
 	
 	
-	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN, LAYER_BACKGROUND, TEXT("Prototype_GameObject_Sky"))))
+	if (FAILED(GI->Add_GameObject(LEVELID::LEVEL_TRAIN, LAYER_BACKGROUND, TEXT("Prototype_GameObject_Sky_Night"))))
 		return E_FAIL;
 	
 
@@ -194,8 +191,6 @@ HRESULT CLevel_Train::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 	if (nullptr == pCharacter)
 		return E_FAIL;
 
-	if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_Component<CTransform>(L"Com_Transform"))))
-		return E_FAIL;
 
 	//CGameObject* pZenitsu = nullptr;
 	//if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Zenitsu"), nullptr, &pZenitsu)))
@@ -213,8 +208,23 @@ HRESULT CLevel_Train::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 	//if (nullptr == pCharacter)
 	//	return E_FAIL;
 
-	//if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_TransformCom())))
-	//	return E_FAIL;
+
+	if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_Component<CTransform>(L"Com_Transform"))))
+		return E_FAIL;
+
+	CNavigation* pNavigation = pCharacter->Get_Component<CNavigation>(L"Com_Navigation");
+	if (nullptr != pNavigation)
+	{
+		CNavigation::NAVIGATION_DESC NavigationDesc;
+		NavigationDesc.bInitialize_Index = true;
+		NavigationDesc.vStartWorldPosition = _float4(0.f, 15.f, 40.f, 1.f);
+		if (FAILED(pNavigation->Initialize(&NavigationDesc)))
+			return E_FAIL;
+
+		pCharacter->Get_Component<CTransform>(L"Com_Transform")->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pNavigation->Get_NaviDesc().vStartWorldPosition));
+	}
+	
+
 
 	return S_OK;
 }

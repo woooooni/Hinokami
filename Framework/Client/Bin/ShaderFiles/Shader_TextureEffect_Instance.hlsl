@@ -91,7 +91,7 @@ float4 CalcBrightness(float4 vColor, uint iInstanceID)
 {
 	float BrightColor = 0.f;
 
-	float brightness = dot(vColor, g_EffectDesc[iInstanceID].g_vBloomPower);
+	float brightness = dot(vColor.rgb, g_EffectDesc[iInstanceID].g_vBloomPower.rgb);
 	if (brightness > 0.99f)
 		BrightColor = float4(vColor.rgb, 1.0f);
 

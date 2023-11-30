@@ -26,7 +26,7 @@ texture2D		g_BlurEffectTarget;
 
 texture2D		g_BlurTarget;
 texture2D		g_BlurPowerTarget;
-
+texture2D		g_UITarget;
 
 
 
@@ -186,7 +186,7 @@ PS_OUT_LIGHT PS_MAIN_POINT(PS_IN In)
 }
 
 
-float PCF_ShadowCaculation(float4 vLightPos)
+float PCF_ShadowCaculation(float4 vLightPos, float3 vLightDir)
 {
 	float3 projCoords = vLightPos.xyz / vLightPos.w;
 	
@@ -197,16 +197,17 @@ float PCF_ShadowCaculation(float4 vLightPos)
 	if (fCurrentDepth >= 1.f)
 		return 1.f;
 
-	float fShadow = 0.0;
+	float fShadow = 0.0f;
 	float2 texelSize = float2(1.f / 1600.f, 1.f / 900.f);
 	texelSize /= 10.f;
+
 
 	for (int x = -1; x <= 1; ++x)
 	{
 		for (int y = -1; y <= 1; ++y)
 		{
-			float fPCFDepth = (g_ShadowTarget.Sample(PointSampler, projCoords.xy + float2(x, y) * texelSize).r) * 1000.f;
-			fShadow += (vLightPos.w > fPCFDepth + g_fBias) ? 0.5f : 1.0f;
+			float fPCFDepth = g_ShadowTarget.Sample(PointSampler, projCoords.xy + (float2(x, y) * texelSize)).r;
+			fShadow += vLightPos.w - g_fBias > fPCFDepth * 1000.f ? 0.5f : 1.0f;
 		}
 	}
 	fShadow /= 9.0f;
@@ -288,9 +289,11 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 	vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 	
 	vector	vLightPos = mul(vWorldPos, g_LightViewMatrix);
+	float3 vLightDir = normalize(float3(0.f, 0.f, 0.f) - vLightPos.xyz);
+
 	vLightPos = mul(vLightPos, g_CamProjMatrix);
 
-	float fShadowColor = PCF_ShadowCaculation(vLightPos);
+	float fShadowColor = PCF_ShadowCaculation(vLightPos, vLightDir);
 	vector vShadowColor = vector(fShadowColor, fShadowColor, fShadowColor, 1.f);
 	Out.vColor *= vShadowColor;
 
@@ -402,6 +405,7 @@ PS_OUT PS_MAIN_FINAL(PS_IN In)
 	Out.vColor += vOriginBloomColor;
 	Out.vColor += vBlurBloomColor;
 	Out.vColor += vBlurEffectColor;
+	// Out.vColor += g_UITarget.Sample(LinearSampler, In.vTexcoord);
 
 	return Out;
 }

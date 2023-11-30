@@ -133,7 +133,7 @@ PS_OUT_SHADOW_DEPTH PS_SHADOW_DEPTH(PS_IN In)
 		discard;
 
 
-	Out.vDepth = vector(In.vProjPos.w / 1000.0f, In.vProjPos.w * In.vProjPos.w, 0.f, 1.f);
+	Out.vDepth = vector(In.vProjPos.w / 1000.0f, 0.f, 0.f, 1.f);
 
 	return Out;
 }

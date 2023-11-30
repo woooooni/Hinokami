@@ -55,7 +55,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_TOOL, L"Train_Boss")))
+	if (FAILED(Open_Level(LEVEL_TRAIN_BOSS, L"Train_Boss")))
 		return E_FAIL;
 
 
@@ -180,26 +180,26 @@ HRESULT CMainApp::Initialize_Client()
 		return E_FAIL;
 
 
-	_vector vEye = XMVectorSet(0.f, 100.f, -100.f, 1.f);
-	_vector vAt = XMVectorSet(60.f, -10.f, 115.f, 1.f);
-	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	if (FAILED(GI->Add_ShadowLight(LEVEL_FINAL_BOSS, vEye, vAt, vUp)))
-		return E_FAIL;
+	
+	
+	
+	
 
-	vEye = XMVectorSet(0.f, 100.f, -100.f, 1.f);
-	vAt = XMVectorSet(60.f, -10.f, 115.f, 1.f);
-	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_vector vEye = XMVectorSet(-135.f, 100.f, -135.f, 1.f);
+	_vector vAt = XMVectorSet(0.f, -2.f, 52.f, 1.f);
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	if (FAILED(GI->Add_ShadowLight(LEVEL_TOOL, vEye, vAt, vUp)))
 		return E_FAIL;
 
-	vEye = XMVectorSet(0.f, 100.f, -100.f, 1.f);
-	vAt = XMVectorSet(60.f, -10.f, 115.f, 1.f);
+	vEye = XMVectorSet(-135.f, 100.f, -135.f, 1.f);
+	vAt = XMVectorSet(0.f, -2.f, 52.f, 1.f);
 	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	if (FAILED(GI->Add_ShadowLight(LEVEL_TRAIN_STATION, vEye, vAt, vUp)))
 		return E_FAIL;
 
-	vEye = XMVectorSet(100.f, 100.f, 1500.f, 1.f);
-	vAt = XMVectorSet(-10.f, -10.f, -10.f, 1.f);
+
+	vEye = XMVectorSet(-100.f, 50.f, 400.f, 1.f);
+	vAt = XMVectorSet(100.f, -10.f, 0.f, 1.f);
 	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	if (FAILED(GI->Add_ShadowLight(LEVEL_TRAIN, vEye, vAt, vUp)))
 		return E_FAIL;
@@ -208,6 +208,12 @@ HRESULT CMainApp::Initialize_Client()
 	vAt = XMVectorSet(100.f, -10.f, 0.f, 1.f);
 	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	if (FAILED(GI->Add_ShadowLight(LEVEL_TRAIN_BOSS, vEye, vAt, vUp)))
+		return E_FAIL;
+
+	vEye = XMVectorSet(0.f, 100.f, -100.f, 1.f);
+	vAt = XMVectorSet(60.f, -10.f, 115.f, 1.f);
+	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	if (FAILED(GI->Add_ShadowLight(LEVEL_FINAL_BOSS, vEye, vAt, vUp)))
 		return E_FAIL;
 
 	return S_OK;

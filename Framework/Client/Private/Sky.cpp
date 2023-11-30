@@ -3,14 +3,16 @@
 #include "GameInstance.h"
 
 
-CSky::CSky(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CSky::CSky(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, SKY_TYPE eSkyType)
 	: CGameObject(pDevice, pContext, L"Sky_Box", OBJ_TYPE::OBJ_BACKGROUND)
+	, m_eSkyType(eSkyType)
 {
 
 }
 
-CSky::CSky(const CGameObject & rhs)
+CSky::CSky(const CSky& rhs)
 	: CGameObject(rhs)
+	, m_eSkyType(rhs.m_eSkyType)
 {
 
 }
@@ -82,8 +84,17 @@ HRESULT CSky::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Sky_1"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-		return E_FAIL;
+	if (m_eSkyType == SKY_TYPE::SUNSET)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Sky_0"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Sky_1"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+	}
+	
 
 
 	/* Com_Transform */
@@ -109,9 +120,11 @@ HRESULT CSky::Bind_ShaderResources()
 	return S_OK;
 }
 
-CSky * CSky::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+
+
+CSky* CSky::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, SKY_TYPE eSkyType)
 {
-	CSky*	pInstance = new CSky(pDevice, pContext);
+	CSky* pInstance = new CSky(pDevice, pContext, eSkyType);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{

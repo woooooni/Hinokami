@@ -241,6 +241,9 @@
     <Filter Include="01.Utiltiy\07. Frustum">
       <UniqueIdentifier>{2d646b6c-06a6-41d9-a9c3-4a18d9779c86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utiltiy\08. SoundManager">
+      <UniqueIdentifier>{12338d7c-f1af-403a-93a7-f7c7b64972ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">

@@ -144,6 +144,7 @@ private:
 	class CShader*						m_pIntancingShaders[SHADER_TYPE::TYPE_END];
 	map<wstring, INSTANCING_DESC>		m_Render_Instancing_Objects[RENDER_END];
 
+	_float								m_fBias = 0.2f;
 	_float4								m_vPlayerPosition = {0.f, 0.f, 0.f, 1.f};
 	_bool m_bDebugDraw = true;
 
