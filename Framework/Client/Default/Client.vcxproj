@@ -183,6 +183,7 @@
     <ClInclude Include="..\..\ThirdParty\imstb_rectpack.h" />
     <ClInclude Include="..\..\ThirdParty\imstb_textedit.h" />
     <ClInclude Include="..\..\ThirdParty\imstb_truetype.h" />
+    <ClInclude Include="..\Public\Akaza_Projectile.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Boss_Akaza.h" />
     <ClInclude Include="..\Public\Boss_Enmu.h" />
@@ -330,6 +331,7 @@
     <ClCompile Include="..\..\ThirdParty\imgui_widgets.cpp">
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
+    <ClCompile Include="..\Private\Akaza_Projectile.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Boss_Akaza.cpp" />
     <ClCompile Include="..\Private\Boss_Enmu.cpp" />

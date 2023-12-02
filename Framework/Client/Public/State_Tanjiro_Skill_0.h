@@ -30,6 +30,9 @@ private:
 	_float m_fAccSkillTime = 0.f;
 	_float m_fSkillTime = 0.5f;
 
+	_float m_fAccGenParticle = 0.f;
+	_float m_fGenParticleTime = 0.1f;
+
 private:
 	void Find_Near_Target();
 	void Use_Skill(_float fTimeDelta);

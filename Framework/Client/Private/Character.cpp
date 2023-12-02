@@ -9,7 +9,9 @@
 #include <future>
 #include "Trail.h"
 #include "Monster.h"
-
+#include "Effect_Manager.h"
+#include "Particle_Manager.h"
+#include "Camera.h"
 
 USING(Client)
 CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, CHARACTER_TYPE eCharacterType)
@@ -217,7 +219,7 @@ HRESULT CCharacter::Render_ShadowDepth()
 
 void CCharacter::Collision_Enter(const COLLISION_INFO& tInfo)
 {
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER)
+	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER || tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_EFFECT)
 	{
 		if (tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::BODY && tInfo.pOtherCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::ATTACK)
 		{
@@ -334,6 +336,16 @@ void CCharacter::Set_Infinite(_float fInfiniteTime, _bool bInfinite)
 
 }
 
+
+void CCharacter::LookAt_DamagedObject(CGameObject* pAttacker)
+{
+	CTransform* pOtherTransform = pAttacker->Get_Component<CTransform>(L"Com_Transform");
+	if (nullptr == pOtherTransform)
+		return;
+
+	m_pTransformCom->LookAt_ForLandObject(pOtherTransform->Get_State(CTransform::STATE_POSITION));
+}
+
 void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 {
 	if (m_bInfinite || m_bReserveDead)
@@ -352,7 +364,35 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 		return;
 	}
 
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
+	WorldMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(0.f, 0.5f, 0.f, 0.f) + XMVector3Normalize(XMVectorSetW(tInfo.pOtherCollider->Get_Position(), 1.f) - WorldMatrix.r[CTransform::STATE_POSITION]) * 0.5f;
+	_int iRandomEffect = (rand() + rand() + rand()) % 2;
+
+	wstring strHitEffect = L"Basic_Damaged_" + to_wstring(iRandomEffect);
+	CEffect_Manager::GetInstance()->Generate_Effect(strHitEffect, XMMatrixIdentity(), WorldMatrix, .5f);
+	CParticle_Manager::GetInstance()->Generate_Particle(L"Particle_Hit_0", WorldMatrix);
+	
+	
+
+	if (true == tInfo.pOtherCollider->Is_HitLag())
+	{
+		if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER)
+		{
+			GI->Set_Slow(L"Timer_GamePlay", .3f, .01f, false);
+		}
+	}
+
+	LookAt_DamagedObject(tInfo.pOther);
+
+	if (tInfo.pOtherCollider->Get_AirBorn_Power() > 0.f)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_Position() + XMVectorSet(0.f, .1f, 0.f, 0.f));
+	}
+
+	CCamera* pCamera = dynamic_cast<CCamera*>(GI->Find_GameObject(GI->Get_CurrentLevel(), LAYER_CAMERA, L"Main_Camera"));
+	
+	
 	switch (tInfo.pOtherCollider->Get_AttackType())
 	{
 	case CCollider::ATTACK_TYPE::BASIC:
@@ -368,14 +408,17 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
 			tInfo.pOtherCollider->Get_PushPower());
 
+		if (nullptr != pCamera)
+			pCamera->Cam_Shake(1.f, 3.f);
 		m_pStateCom->Change_State(STATE::DAMAGED_AIRBORN);
+
 		break;
 
 	case CCollider::ATTACK_TYPE::BLOW:
 		m_pRigidBodyCom->Add_Velocity_Acc(
 			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
-			tInfo.pOtherCollider->Get_PushPower());
 
+			tInfo.pOtherCollider->Get_PushPower());
 		m_pStateCom->Change_State(STATE::DAMAGED_BLOW);
 		break;
 
@@ -384,6 +427,7 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 		m_pRigidBodyCom->Add_Velocity_Acc(
 			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
 			tInfo.pOtherCollider->Get_PushPower());
+
 		m_pStateCom->Change_State(STATE::DAMAGED_BOUND);
 		break;
 	}

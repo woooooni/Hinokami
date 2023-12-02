@@ -30,6 +30,7 @@ void CState_Akaza_Attack_0::Enter_State(void* pArg)
 {
 	m_iCurrAnimIndex = 0;
 	m_pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+	m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f, true);
 
 	m_pModelCom->Get_Animations()[m_AnimIndices[m_iCurrAnimIndex]]->Set_AnimationSpeed(2.f);
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
@@ -44,7 +45,7 @@ void CState_Akaza_Attack_0::Tick_State(_float fTimeDelta)
 	case 0:
 		if (true == Follow_NearTarget(fTimeDelta))
 		{
-			m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f);
+			m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f, false);
 			m_pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 
 			m_iCurrAnimIndex++;
@@ -52,6 +53,8 @@ void CState_Akaza_Attack_0::Tick_State(_float fTimeDelta)
 		}
 		break;
 	case 1:
+		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f, false);
+		m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		if (fProgress >= 0.9f)
 		{
 			m_iCurrAnimIndex++;
@@ -61,6 +64,8 @@ void CState_Akaza_Attack_0::Tick_State(_float fTimeDelta)
 		break;
 
 	case 2:
+		Find_Near_Target();
+		Trace_Near_Target();
 		if (fProgress >= 0.9f)
 		{
 			m_iCurrAnimIndex++;
@@ -69,6 +74,10 @@ void CState_Akaza_Attack_0::Tick_State(_float fTimeDelta)
 		break;
 
 	case 3:
+		Find_Near_Target();
+		Trace_Near_Target();
+		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f, false);
+		m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		if (fProgress >= 0.9f)
 		{
 			m_iCurrAnimIndex++;
@@ -77,22 +86,24 @@ void CState_Akaza_Attack_0::Tick_State(_float fTimeDelta)
 		break;
 
 	case 4:
-		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f);
-		m_pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+		Find_Near_Target();
+		Trace_Near_Target();
+		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f, false);
+		m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 
 		if (fProgress >= 0.9f)
 		{
-			// TODO::EFFECT
-
 			m_iCurrAnimIndex++;
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
+			m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 10.f, 1.f, false);
 		}
 		break;
 
 	case 5:
-		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 10.f, 1.f);
-		m_pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+		Find_Near_Target();
+		Trace_Near_Target();
 
+		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 10.f, 1.f, false);
 		if (fProgress >= 0.9f)
 		{
 			m_pStateMachineCom->Change_State(CMonster::IDLE);
@@ -165,6 +176,65 @@ _bool CState_Akaza_Attack_0::Follow_NearTarget(_float fTimeDelta)
 		m_pStateMachineCom->Change_State(CMonster::MONSTER_STATE::IDLE);
 		return false;
 	}
+}
+
+
+void CState_Akaza_Attack_0::Find_Near_Target()
+{
+	_float fMinDistance = 9999999999.f;
+	CTransform* pFindTargetTransform = nullptr;
+
+	m_pTarget = nullptr;
+	const list<CGameObject*>& Targets = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_CHARACTER);
+	for (auto& pTarget : Targets)
+	{
+		CTransform* pTargetTransform = pTarget->Get_Component<CTransform>(L"Com_Transform");
+
+		if (nullptr == pTargetTransform)
+			continue;
+
+		_float fDistance = XMVectorGetX(XMVector3Length(pTargetTransform->Get_Position() - m_pTransformCom->Get_Position()));
+		if (fDistance < fMinDistance)
+		{
+			fMinDistance = fDistance;
+			pFindTargetTransform = pTargetTransform;
+			m_pTarget = pTarget;
+			break;
+		}
+	}
+
+	if (nullptr != pFindTargetTransform && fMinDistance < 20.f)
+	{
+		m_pTransformCom->LookAt_ForLandObject(pFindTargetTransform->Get_Position());
+	}
+}
+
+
+
+void CState_Akaza_Attack_0::Trace_Near_Target()
+{
+	if (nullptr == m_pTarget)
+	{
+		m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_Look()), 6.f);
+		return;
+	}
+	else
+	{
+		CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>(L"Com_Transform");
+
+		if (nullptr == pTargetTransform)
+		{
+			m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_Look()), 6.f);
+			return;
+		}
+
+		_float fDistance = XMVectorGetX(XMVector3Length(pTargetTransform->Get_Position() - m_pTransformCom->Get_Position()));
+		if (fDistance <= 5.f)
+		{
+			m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_Look()), fDistance * 3.f);
+		}
+	}
+
 }
 
 

@@ -82,6 +82,15 @@ void CEffect::Tick(_float fTimeDelta)
 	m_fAccUVFlow.y += m_tEffectDesc.vUVFlow.y * fTimeDelta;
 	if(m_tEffectDesc.fAlpha > 0.f)
 		m_tEffectDesc.fAlpha -= m_tEffectDesc.fDestAlphaSpeed * fTimeDelta;
+
+
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	WorldMatrix.r[CTransform::STATE_RIGHT] += XMVectorSet(1.f, 0.f, 0.f, 0.f) * XMVectorGetX(XMVector3Normalize(XMLoadFloat3(&m_tEffectDesc.vScaleDir))) * m_tEffectDesc.fScaleSpeed * fTimeDelta;
+	WorldMatrix.r[CTransform::STATE_UP] += XMVectorSet(0.f, 1.f, 0.f, 0.f) * XMVectorGetY(XMVector3Normalize(XMLoadFloat3(&m_tEffectDesc.vScaleDir))) * m_tEffectDesc.fScaleSpeed * fTimeDelta;
+	WorldMatrix.r[CTransform::STATE_LOOK] += XMVectorSet(0.f, 0.f, 1.f, 0.f) * XMVectorGetZ(XMVector3Normalize(XMLoadFloat3(&m_tEffectDesc.vScaleDir))) * m_tEffectDesc.fScaleSpeed * fTimeDelta;
+	m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+
+	m_strPrototypeTag;
 	
 	_vector vMoveDir = XMVector3Normalize(XMLoadFloat3(&m_tEffectDesc.vMoveDir));
 	_vector vTurnDir = XMVector3Normalize(XMLoadFloat3(&m_tEffectDesc.vTurnDir));
@@ -151,11 +160,14 @@ void CEffect::LateTick(_float fTimeDelta)
 
 
 
-
-	if (m_eType == EFFECT_TYPE::EFFECT_MESH)
-		m_pRendererCom->Add_RenderGroup_Instancing_Effect(CRenderer::RENDER_EFFECT, CRenderer::SHADER_TYPE::EFFECT_MODEL, this, WolrdMatrix, EffectInstanceDesc);
-	else
-		m_pRendererCom->Add_RenderGroup_Instancing_Effect(CRenderer::RENDER_EFFECT, CRenderer::SHADER_TYPE::EFFECT_TEXTURE, this, WolrdMatrix, EffectInstanceDesc);
+	if (true == GI->Intersect_Frustum_World(XMLoadFloat4x4(&WolrdMatrix).r[CTransform::STATE_POSITION], 3.f))
+	{
+		if (m_eType == EFFECT_TYPE::EFFECT_MESH)
+			m_pRendererCom->Add_RenderGroup_Instancing_Effect(CRenderer::RENDER_EFFECT, CRenderer::SHADER_TYPE::EFFECT_MODEL, this, WolrdMatrix, EffectInstanceDesc);
+		else
+			m_pRendererCom->Add_RenderGroup_Instancing_Effect(CRenderer::RENDER_EFFECT, CRenderer::SHADER_TYPE::EFFECT_TEXTURE, this, WolrdMatrix, EffectInstanceDesc);
+	}
+	
 }
 
 

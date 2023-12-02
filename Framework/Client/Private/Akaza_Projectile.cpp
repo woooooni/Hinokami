@@ -1,23 +1,24 @@
 #include "stdafx.h"
 #include "GameInstance.h"
-#include "Enmu_Projectile.h"
+#include "Akaza_Projectile.h"
 #include "Effect_Manager.h"
-CEnmu_Projectile::CEnmu_Projectile(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CGameObject(pDevice, pContext, L"Enmu_Projectile", OBJ_TYPE::OBJ_EFFECT)
+
+CAkaza_Projectile::CAkaza_Projectile(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+    : CGameObject(pDevice, pContext, L"Akaza_Projectile", OBJ_TYPE::OBJ_EFFECT)
 {
 }
 
-CEnmu_Projectile::CEnmu_Projectile(const CEnmu_Projectile& rhs)
+CAkaza_Projectile::CAkaza_Projectile(const CAkaza_Projectile& rhs)
     : CGameObject(rhs)
 {
 }
 
-HRESULT CEnmu_Projectile::Initialize_Prototype()
+HRESULT CAkaza_Projectile::Initialize_Prototype()
 {
     return S_OK;
 }
 
-HRESULT CEnmu_Projectile::Initialize(void* pArg)
+HRESULT CAkaza_Projectile::Initialize(void* pArg)
 {
     __super::Initialize(pArg);
 
@@ -27,13 +28,13 @@ HRESULT CEnmu_Projectile::Initialize(void* pArg)
     if (FAILED(Ready_Colliders()))
         return E_FAIL;
 
-    if (FAILED(CEffect_Manager::GetInstance()->Generate_Effect(L"Enmu_Projectile", XMMatrixIdentity(), XMMatrixIdentity(), 5.f, this)))
+    if (FAILED(CEffect_Manager::GetInstance()->Generate_Effect(L"Akaza_Projectile", XMMatrixIdentity(), XMMatrixIdentity(), 5.f, this)))
         return E_FAIL;
 
     return S_OK;
 }
 
-void CEnmu_Projectile::Tick(_float fTimeDelta)
+void CAkaza_Projectile::Tick(_float fTimeDelta)
 {
 
     __super::Tick(fTimeDelta);
@@ -53,7 +54,7 @@ void CEnmu_Projectile::Tick(_float fTimeDelta)
     
 }
 
-void CEnmu_Projectile::LateTick(_float fTimeDelta)
+void CAkaza_Projectile::LateTick(_float fTimeDelta)
 {
     __super::LateTick(fTimeDelta);
     
@@ -65,25 +66,25 @@ void CEnmu_Projectile::LateTick(_float fTimeDelta)
     
 }
 
-HRESULT CEnmu_Projectile::Render()
+HRESULT CAkaza_Projectile::Render()
 {
     __super::Render();
     return S_OK;
 }
 
-void CEnmu_Projectile::Collision_Enter(const COLLISION_INFO& tInfo)
+void CAkaza_Projectile::Collision_Enter(const COLLISION_INFO& tInfo)
 {
 }
 
-void CEnmu_Projectile::Collision_Continue(const COLLISION_INFO& tInfo)
+void CAkaza_Projectile::Collision_Continue(const COLLISION_INFO& tInfo)
 {
 }
 
-void CEnmu_Projectile::Collision_Exit(const COLLISION_INFO& tInfo)
+void CAkaza_Projectile::Collision_Exit(const COLLISION_INFO& tInfo)
 {
 }
 
-HRESULT CEnmu_Projectile::Ready_Components()
+HRESULT CAkaza_Projectile::Ready_Components()
 {
     /* For.Com_Transform */
     CTransform::TRANSFORMDESC		TransformDesc;
@@ -103,7 +104,7 @@ HRESULT CEnmu_Projectile::Ready_Components()
     return S_OK;
 }
 
-HRESULT CEnmu_Projectile::Ready_Colliders()
+HRESULT CAkaza_Projectile::Ready_Colliders()
 {
     CCollider_Sphere::SPHERE_COLLIDER_DESC ColliderDesc;
     ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
@@ -132,30 +133,30 @@ HRESULT CEnmu_Projectile::Ready_Colliders()
     return S_OK;
 }
 
-HRESULT CEnmu_Projectile::Bind_ShaderResources()
+HRESULT CAkaza_Projectile::Bind_ShaderResources()
 {
     return S_OK;
 }
 
-CEnmu_Projectile* CEnmu_Projectile::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CAkaza_Projectile* CAkaza_Projectile::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-    CEnmu_Projectile* pInstance = new CEnmu_Projectile(pDevice, pContext);
+    CAkaza_Projectile* pInstance = new CAkaza_Projectile(pDevice, pContext);
     if (FAILED(pInstance->Initialize_Prototype()))
     {
-        MSG_BOX("Create Failed : CEnmu_Projectile");
+        MSG_BOX("Create Failed : CAkaza_Projectile");
         Safe_Release(pInstance);
         return nullptr;
     }
     return pInstance;
 }
 
-CGameObject* CEnmu_Projectile::Clone(void* pArg)
+CGameObject* CAkaza_Projectile::Clone(void* pArg)
 {
-    CEnmu_Projectile* pInstance = new CEnmu_Projectile(*this);
+    CAkaza_Projectile* pInstance = new CAkaza_Projectile(*this);
 
     if (FAILED(pInstance->Initialize(pArg)))
     {
-        MSG_BOX("Failed to Cloned : CEnmu_Projectile");
+        MSG_BOX("Failed to Cloned : CAkaza_Projectile");
         Safe_Release(pInstance);
         return nullptr;
     }
@@ -163,7 +164,7 @@ CGameObject* CEnmu_Projectile::Clone(void* pArg)
     return pInstance;
 }
 
-void CEnmu_Projectile::Free()
+void CAkaza_Projectile::Free()
 {
     __super::Free();
     Safe_Release(m_pTransformCom);

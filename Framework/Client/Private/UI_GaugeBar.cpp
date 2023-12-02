@@ -91,22 +91,19 @@ void CUI_GaugeBar::Debug_Input(_float fTimeDelta)
 
 void CUI_GaugeBar::Tick(_float fTimeDelta)
 {
-	if (m_pOwnerCharacter)
+	if (nullptr != m_pOwnerCharacter)
 	{
-		
+		const CCharacter::CHARACTER_STAT& CharacterStatDesc = m_pOwnerCharacter->Get_Stat();
+		m_fDestRatio = CharacterStatDesc.fHp / CharacterStatDesc.fMaxHp;
 	}
-	else if (m_pOwnerMonster)
+	else if (nullptr != m_pOwnerMonster)
 	{
-		
+		const CMonster::MONSTER_STAT& MonsterStatDesc = m_pOwnerMonster->Get_Stat();
+		m_fDestRatio = MonsterStatDesc.fHp / MonsterStatDesc.fMaxHp;
 	}
-	else if (m_pOwnerNpc)
-	{
 
-	}
-	else
-	{
-
-	}
+	_float fIncrease = fTimeDelta;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_Position() - XMVectorSet(fTimeDelta, 0.f, 0.f, 0.f));
 }
 
 void CUI_GaugeBar::LateTick(_float fTimeDelta)

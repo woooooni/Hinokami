@@ -59,6 +59,9 @@ public:
 	{
 		_float fHp = 1000.f;
 		_float fMp = 100.f;
+
+		_float fMaxHp = 1000.f;
+		_float fMaxMp = 100.f;
 	}CHARACTER_STAT;
 
 protected:
@@ -105,15 +108,17 @@ public:
 	const CHARACTER_STAT& Get_Stat() { return m_tStat; }
 	void Set_Stat(const CHARACTER_STAT& StatDesc) { m_tStat = StatDesc; }
 
-
+	void LookAt_DamagedObject(CGameObject* pAttacker);
 
 protected:
 	virtual HRESULT Ready_Components() PURE;
 	virtual HRESULT Ready_States() PURE;
 	virtual HRESULT Ready_Colliders() PURE;
-
-
 	virtual void On_Damaged(const COLLISION_INFO& tInfo);
+
+	
+
+
 
 protected: /* 해당 객체가 사용해야할 컴포넌트들을 저장하낟. */
 	CShader* m_pShaderCom = nullptr;
@@ -141,6 +146,8 @@ protected:
 
 	CHARACTER_STAT m_tStat = {};
 	CHARACTER_TYPE m_eCharacterType = CHARACTER_TYPE::CHARACTER_END;
+
+	
 
 public:
 	virtual void Free() override;

@@ -55,21 +55,25 @@ void CState_Zenitsu_Air_Attack::Tick_State(_float fTimeDelta)
 	Input(fTimeDelta);
 	_float fProgress = m_pModelCom->Get_CurrAnimation()->Get_AnimationProgress();
 
-	if (fProgress >= .8f && m_iCurrAnimIndex == 0)
+	switch (m_iCurrAnimIndex)
 	{
-		m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
-		m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
-		m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
-		m_pCharacter->Set_ActiveColliders(CCollider::BODY, true);
+	case 0:
+		if (fProgress >= 0.8f)
+		{
+			m_pCharacter->Set_Infinite(0.f, false);
+			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
+			m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
+			m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
+			m_pCharacter->Set_ActiveColliders(CCollider::BODY, true);
 
-
-		m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
-		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
-	}
-		
-	
-	if (1 == m_iCurrAnimIndex)
-	{
+			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
+			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
+		}
+		_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+		WorldMatrix.r[CTransform::STATE_POSITION] += WorldMatrix.r[CTransform::STATE_LOOK];
+		CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_0", WorldMatrix);
+		break;
+	case 1:
 		if (fProgress >= 0.99f)
 		{
 			if (m_pRigidBodyCom->Is_Ground())
@@ -77,9 +81,13 @@ void CState_Zenitsu_Air_Attack::Tick_State(_float fTimeDelta)
 				m_pStateMachineCom->Change_State(CCharacter::STATE::BATTLE_IDLE);
 			}
 			m_pRigidBodyCom->Set_Gravity(true);
-		}
-			
+		}	
+		break;
 	}
+	
+		
+	
+	
 	//
 	//if (fProgress >= 1.f)
 	//{

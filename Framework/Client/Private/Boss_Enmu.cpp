@@ -363,10 +363,6 @@ HRESULT CBoss_Enmu::Ready_Colliders()
 
 
 
-	// Weapon
-
-
-
 	return S_OK;
 }
 

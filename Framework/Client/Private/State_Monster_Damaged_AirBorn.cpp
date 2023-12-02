@@ -47,11 +47,14 @@ void CState_Monster_Damaged_AirBorn::Tick_State(_float fTimeDelta)
 			m_bFirstGround = true;
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[2]);
 		}
-			
-		m_fAccRecovery += fTimeDelta;
-		if(m_fAccRecovery >= m_fRecoveryTime)
+		else
 		{
-			m_pStateMachineCom->Change_State(CMonster::MONSTER_STATE::IDLE);
+			m_pOwnerMonster->Set_Infinite(999.f, true);
+			m_fAccRecovery += fTimeDelta;
+			if (m_fAccRecovery >= m_fRecoveryTime)
+			{
+				m_pStateMachineCom->Change_State(CMonster::MONSTER_STATE::IDLE);
+			}
 		}
 	}
 
@@ -60,7 +63,7 @@ void CState_Monster_Damaged_AirBorn::Tick_State(_float fTimeDelta)
 
 void CState_Monster_Damaged_AirBorn::Exit_State()
 {
-	m_pOwnerMonster->Set_Infinite(0.2f, true);
+	m_pOwnerMonster->Set_Infinite(0.f, false);
 	m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
 	m_iCurrAnimIndex = 0;

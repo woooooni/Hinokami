@@ -33,6 +33,9 @@ private:
 	void Find_Near_Target();
 	void Trace_Near_Target();
 
+private:
+	_bool m_bSlashEffect[5] = { false, false, false , false, false };
+
 public:
 	static CState_Tanjiro_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;

@@ -59,6 +59,15 @@ void CCamera_Main::Tick(_float fTimeDelta)
 			m_vAngle.y = 360.f;
 	}
 
+	
+	
+	__super::Tick(fTimeDelta);
+}
+
+void CCamera_Main::LateTick(_float fTimeDelta)
+{
+	__super::LateTick(fTimeDelta);
+
 	// x, y 회전 행렬
 	_matrix mX = XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(m_vAngle.x));
 	_matrix mY = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_vAngle.y));
@@ -81,16 +90,6 @@ void CCamera_Main::Tick(_float fTimeDelta)
 	vLookAt.y += 1.f;
 	m_pTransformCom->LookAt(XMLoadFloat4(&vLookAt));
 
-
-	__super::LateTick(fTimeDelta);
-	
-	__super::Tick(fTimeDelta);
-}
-
-void CCamera_Main::LateTick(_float fTimeDelta)
-{
-	
-
 	if (false == m_tShakeDesc.bEnd)
 	{
 
@@ -101,10 +100,9 @@ void CCamera_Main::LateTick(_float fTimeDelta)
 
 		_float fForce = (rand() % _uint(m_tShakeDesc.fForce)) - (m_tShakeDesc.fForce / 2.f);
 
-		_vector vShakeDir = XMVector3Normalize(XMVectorSet(1.f, 0.f, 1.f, 0.f));
+		_vector vShakeDir = XMVector3Normalize(XMVectorSet(1.f, 1.f, 1.f, 0.f));
 		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		vPosition += vShakeDir * fForce * fTimeDelta;
-
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 

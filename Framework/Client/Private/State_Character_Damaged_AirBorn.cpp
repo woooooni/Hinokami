@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Character.h"
 #include "RigidBody.h"
+#include "Animation.h"
 
 
 CState_Character_Damaged_AirBorn::CState_Character_Damaged_AirBorn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
@@ -36,10 +37,18 @@ void CState_Character_Damaged_AirBorn::Enter_State(void* pArg)
 
 void CState_Character_Damaged_AirBorn::Tick_State(_float fTimeDelta)
 {
+	_float fProgress = m_pModelCom->Get_CurrAnimation()->Get_AnimationProgress();
 	if (m_pModelCom->Is_Animation_Finished(m_AnimIndices[0]))
 	{
+		m_iCurrAnimIndex++;
 		m_pModelCom->Set_AnimIndex(m_AnimIndices[1]);
 	}
+
+	if (m_iCurrAnimIndex == 1 && fProgress >= .8f)
+	{
+		m_pRigidBodyCom->Set_Gravity(true);
+	}
+
 
 	if (m_pRigidBodyCom->Is_Ground())
 	{
@@ -47,6 +56,7 @@ void CState_Character_Damaged_AirBorn::Tick_State(_float fTimeDelta)
 		{
 			m_bFirstGround = true;
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[2]);
+			m_pOwnerCharacter->Set_Infinite(999.f, true);
 		}
 		else
 		{
@@ -54,11 +64,10 @@ void CState_Character_Damaged_AirBorn::Tick_State(_float fTimeDelta)
 			if (m_fAccRecovery >= m_fRecoveryTime)
 			{
 				m_fAccRecovery = 0.f;
+				m_pOwnerCharacter->Set_Infinite(0.f, false);
 				m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
 			}
 		}
-			
-		
 	}
 }
 
@@ -70,7 +79,6 @@ void CState_Character_Damaged_AirBorn::Exit_State()
 	m_bFirstGround = false;
 
 	m_pOwnerCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
-	m_pOwnerCharacter->Set_Infinite(1.f, true);
 }
 
 CState_Character_Damaged_AirBorn* CState_Character_Damaged_AirBorn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)

@@ -4,6 +4,10 @@
 #include "Model.h"
 #include "Monster.h"
 #include "Animation.h"
+#include "Effect_Manager.h"
+#include "HierarchyNode.h"
+#include "Utils.h"
+#include "Particle_Manager.h"
 
 CState_Akaza_Attack_1::CState_Akaza_Attack_1(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
@@ -80,7 +84,7 @@ void CState_Akaza_Attack_1::Tick_State(_float fTimeDelta)
 			Trace_Near_Target();
 			++m_iCurrAnimIndex;
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
-			m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 10.f, 0.f, 1.f);
+			m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 16.f, 3.f, 1.f);
 			m_pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		}
 		break;
@@ -91,10 +95,39 @@ void CState_Akaza_Attack_1::Tick_State(_float fTimeDelta)
 			Trace_Near_Target();
 			++m_iCurrAnimIndex;
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
-		}
 
+			m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 1.f, 1.f, false);
+			m_pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+		}
 		break;
+
 	case 5:
+		if (fProgress <= .7f)
+		{
+			m_fAccAttackEffect += fTimeDelta;
+			m_fAttackEffect = .05f;
+			if (m_fAccAttackEffect >= m_fAttackEffect)
+			{
+				m_fAccAttackEffect = 0.f;
+				_matrix EffectWorldMatrix = m_pTransformCom->Get_WorldMatrix();
+				_float fRandomX = CUtils::Random_Float(-1.f, 1.f);
+				_float fRandomY = CUtils::Random_Float(-1.f, 1.f);
+				_float fRandomZ = CUtils::Random_Float(-1.f, 1.f);
+				EffectWorldMatrix.r[CTransform::STATE_POSITION] += EffectWorldMatrix.r[CTransform::STATE_LOOK] + XMVectorSet(0.f, 1.f, 0.f, 0.f) + XMVectorSet(fRandomX, fRandomY, fRandomZ, 0.f);
+
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Akaza_Attack_Wind_0", XMMatrixIdentity(), EffectWorldMatrix, 1.f);
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Fist_Wind_3", XMMatrixIdentity(), EffectWorldMatrix, 1.f);
+				CParticle_Manager::GetInstance()->Generate_Particle(L"Akaza_Attack_Paritlce_1", EffectWorldMatrix);
+
+				EffectWorldMatrix.r[CTransform::STATE_POSITION] -= EffectWorldMatrix.r[CTransform::STATE_LOOK] * .5f;
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Fist_0", XMMatrixIdentity(), EffectWorldMatrix, 1.f);
+			}
+		}
+		if (fProgress >= .4f)
+		{
+			m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 8.f, 1.f, true);
+			m_pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+		}
 		if (fProgress >= .9f)
 		{
 			m_pStateMachineCom->Change_State(CMonster::MONSTER_STATE::IDLE);
@@ -109,7 +142,7 @@ void CState_Akaza_Attack_1::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
 	m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 0.f);
-	m_pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
+	m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }
 
 void CState_Akaza_Attack_1::Find_Near_Target()
@@ -118,7 +151,7 @@ void CState_Akaza_Attack_1::Find_Near_Target()
 	CTransform* pFindTargetTransform = nullptr;
 
 	m_pTarget = nullptr;
-	const list<CGameObject*>& Targets = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_MONSTER);
+	const list<CGameObject*>& Targets = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_CHARACTER);
 	for (auto& pTarget : Targets)
 	{
 		CTransform* pTargetTransform = pTarget->Get_Component<CTransform>(L"Com_Transform");
@@ -126,19 +159,19 @@ void CState_Akaza_Attack_1::Find_Near_Target()
 		if (nullptr == pTargetTransform)
 			continue;
 
-		_float fDistance = Vec3::Distance(pTargetTransform->Get_Position(), m_pTransformCom->Get_Position());
+		_float fDistance = XMVectorGetX(XMVector3Length(pTargetTransform->Get_Position() - m_pTransformCom->Get_Position()));
 		if (fDistance < fMinDistance)
 		{
 			fMinDistance = fDistance;
 			pFindTargetTransform = pTargetTransform;
 			m_pTarget = pTarget;
+			break;
 		}
 	}
 
-	if (nullptr != pFindTargetTransform && fMinDistance < 20.f && fMinDistance > 1.f)
+	if (nullptr != pFindTargetTransform && fMinDistance < 20.f)
 	{
-		Vec4 vTargetPos = pFindTargetTransform->Get_Position();
-		m_pTransformCom->LookAt_ForLandObject(vTargetPos);
+		m_pTransformCom->LookAt_ForLandObject(pFindTargetTransform->Get_Position());
 	}
 }
 
@@ -159,7 +192,7 @@ void CState_Akaza_Attack_1::Trace_Near_Target()
 			return;
 		}
 
-		_float fDistance = Vec3::Distance(pTargetTransform->Get_Position(), m_pTransformCom->Get_Position());
+		_float fDistance = XMVectorGetX(XMVector3Length(pTargetTransform->Get_Position() - m_pTransformCom->Get_Position()));
 		if (fDistance <= 5.f)
 		{
 			m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_Look()), fDistance * 3.f);

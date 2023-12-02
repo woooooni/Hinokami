@@ -33,6 +33,8 @@ private:
 
 private:
 	_bool Follow_NearTarget(_float fTimeDelta);
+	void Find_Near_Target();
+	void Trace_Near_Target();
 
 public:
 	static CState_Akaza_Attack_0* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

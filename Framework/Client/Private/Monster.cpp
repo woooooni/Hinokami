@@ -3,7 +3,10 @@
 #include "Monster.h"
 #include "HierarchyNode.h"
 #include "Part.h"
-
+#include "Effect_Manager.h"
+#include "Utils.h"
+#include "Camera.h"
+#include "Particle_Manager.h"
 
 USING(Client)
 CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const MONSTER_STAT& tStat)
@@ -79,9 +82,7 @@ void CMonster::Tick(_float fTimeDelta)
 
 void CMonster::LateTick(_float fTimeDelta)
 {
-
-	if (nullptr == m_pRendererCom)
-		return;
+	std::async(&CModel::Play_Animation, m_pModelCom, m_pTransformCom, fTimeDelta);
 
 	for (auto& pPart : m_Parts)
 		pPart->LateTick(fTimeDelta);
@@ -93,11 +94,10 @@ void CMonster::LateTick(_float fTimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, pPart);
 	}
 		
-
+	
 	__super::LateTick(fTimeDelta);
 	if (true == GI->Intersect_Frustum_World(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 	{
-		std::async(&CModel::Play_Animation, m_pModelCom, m_pTransformCom, fTimeDelta);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 	}
@@ -130,7 +130,7 @@ HRESULT CMonster::Render()
 
 	_float4 vRimColor = { 0.f, 0.f, 0.f, 0.f };
 	if (m_bInfinite)
-		vRimColor = { 1.f, .2f, .2f, 1.f };
+		vRimColor = { 0.f, 0.f, 0.f, 1.f };
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vRimColor", &vRimColor, sizeof(_float4))))
 		return E_FAIL;
@@ -270,8 +270,55 @@ void CMonster::On_Damaged(const COLLISION_INFO& tInfo)
 		return;
 	}
 
+	if (tInfo.pOtherCollider->Get_AirBorn_Power() > 0.f)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_Position() + XMVectorSet(0.f, .1f, 0.f, 0.f));
+	}
+
+	
+
+
+	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_WEAPON)
+	{
+		_float fRadianX = XMConvertToRadians(CUtils::Random_Float(-30.f, 30.f));
+		_float fRadianY = XMConvertToRadians(CUtils::Random_Float(-30.f, 30.f));
+		_float fRadianZ = XMConvertToRadians(CUtils::Random_Float(-30.f, 30.f));
+
+		_vector vQuaternion = XMQuaternionRotationRollPitchYaw(fRadianX, fRadianY, fRadianZ);
+		
+		_matrix WorldMatrix = XMMatrixIdentity();
+		WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSetW(tInfo.pOtherCollider->Get_Position(), 1.f);
+
+		_int iRandom = CUtils::Random_Int(0, 3);
+		CEffect_Manager::GetInstance()->Generate_Effect(L"Basic_Slash_Damaged_" + to_wstring(iRandom), XMMatrixRotationQuaternion(vQuaternion), WorldMatrix, .1f);
+
+		CParticle_Manager::GetInstance()->Generate_Particle(L"Particle_Sword_Hit_0", WorldMatrix);
+	}
+	else
+	{
+		
+		_matrix WorldMatrix = XMMatrixIdentity();
+		WorldMatrix.r[CTransform::STATE_POSITION] = tInfo.pOtherCollider->Get_Position();
+		_int iRandomEffect = (rand() + rand() + rand()) % 2;
+
+		wstring strHitEffect = L"Basic_Damaged_" + to_wstring(iRandomEffect);
+
+		CEffect_Manager::GetInstance()->Generate_Effect(strHitEffect, XMMatrixIdentity(), WorldMatrix, .5f);
+		CParticle_Manager::GetInstance()->Generate_Particle(L"Particle_Hit_0", WorldMatrix);
+	}
+
+
+	if (true == tInfo.pOtherCollider->Is_HitLag())
+	{
+		GI->Set_Slow(L"Timer_GamePlay", .3f, .01f, false);
+	}
+
 
 	LookAt_DamagedObject(tInfo.pOther);
+
+
+	CCamera* pCamera = dynamic_cast<CCamera*>(GI->Find_GameObject(GI->Get_CurrentLevel(), LAYER_CAMERA, L"Main_Camera"));
+	
 	switch (tInfo.pOtherCollider->Get_AttackType())
 	{
 	case CCollider::ATTACK_TYPE::BASIC:
@@ -287,6 +334,10 @@ void CMonster::On_Damaged(const COLLISION_INFO& tInfo)
 			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
 			tInfo.pOtherCollider->Get_PushPower());
 		m_pStateCom->Change_State(MONSTER_STATE::DAMAGED_AIRBORN);
+		if (nullptr != pCamera)
+		{
+			pCamera->Cam_Shake(1.f, 3.f);
+		}
 		break;
 
 	case CCollider::ATTACK_TYPE::BLOW:

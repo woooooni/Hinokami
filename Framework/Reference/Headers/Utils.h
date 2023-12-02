@@ -18,6 +18,7 @@ public:
 	static wstring PathToWString(wstring strPath);
 	static _float3 ToEulerAngles(_vector Quaternion);
 
+	static _int Random_Int(_int fMin, _int fMax);
 	static _float Random_Float(_float fMin, _float fMax);
 
 };

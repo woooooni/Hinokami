@@ -58,7 +58,7 @@ void CState_Tanjiro_Basic_Jump::Enter_State(void* pArg)
 	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 0.1f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
-	m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 10.f);
+	m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 15.f);
 }
 
 void CState_Tanjiro_Basic_Jump::Tick_State(_float fTimeDelta)

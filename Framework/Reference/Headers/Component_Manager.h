@@ -11,8 +11,10 @@
 #include "StateMachine.h"
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Cell.h"
+#include "Collider_OBB.h"
 #include "Collider_AABB.h"
 #include "Collider_Sphere.h"
+
 
 #include "VIBuffer_Cube.h"
 #include "VIBuffer_Terrain.h"

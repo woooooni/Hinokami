@@ -106,7 +106,7 @@ PS_OUT PS_DEFAULT(PS_IN In)
 
 	if (0 < g_EffectDesc[In.iInstanceID].g_iCutUV)
 	{
-		if (In.vTexUV.x > 1.f && In.vTexUV.y > 1.f)
+		if ((In.vTexUV.x > 1.f) || (In.vTexUV.y > 1.f) || (In.vTexUV.x < 0.f) || (In.vTexUV.y < 0.f))
 			discard;
 	}
 
@@ -127,7 +127,7 @@ PS_OUT PS_NO_DIFFUSE_WITH_ALPHA(PS_IN In)
 
 	if (0 < g_EffectDesc[In.iInstanceID].g_iCutUV)
 	{
-		if (In.vTexUV.x > 1.f && In.vTexUV.y > 1.f)
+		if ((In.vTexUV.x > 1.f) || (In.vTexUV.y > 1.f) || (In.vTexUV.x < 0.f) || (In.vTexUV.y < 0.f))
 			discard;
 	}
 
@@ -153,7 +153,7 @@ PS_OUT PS_NO_ALPHA_WITH_DIFFUSE(PS_IN In)
 
 	if (0 < g_EffectDesc[In.iInstanceID].g_iCutUV)
 	{
-		if (In.vTexUV.x > 1.f && In.vTexUV.y > 1.f)
+		if ((In.vTexUV.x > 1.f) || (In.vTexUV.y > 1.f) || (In.vTexUV.x < 0.f) || (In.vTexUV.y < 0.f))
 			discard;
 	}
 
@@ -187,7 +187,7 @@ PS_OUT PS_BOTH(PS_IN In)
 
 	if (0 < g_EffectDesc[In.iInstanceID].g_iCutUV)
 	{
-		if (In.vTexUV.x > 1.f && In.vTexUV.y > 1.f)
+		if ((In.vTexUV.x > 1.f) || (In.vTexUV.y > 1.f) || (In.vTexUV.x < 0.f) || (In.vTexUV.y < 0.f))
 			discard;
 	}
 
@@ -195,9 +195,9 @@ PS_OUT PS_BOTH(PS_IN In)
 	vector vTextureAlpha = g_AlphaTexture.Sample(LinearSampler, In.vTexUV);
 	vector vAdditiveColor = vector(g_EffectDesc[In.iInstanceID].g_fAdditiveDiffuseColor.rgb, g_EffectDesc[In.iInstanceID].g_fAlpha);
 
-
 	if (vTextureAlpha.r <= 0.1f)
 		discard;
+
 
 	vector vDiffuseColor = vTextureDiffuse + vAdditiveColor;
 

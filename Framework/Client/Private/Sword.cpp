@@ -79,12 +79,11 @@ void CSword::LateTick(_float fTimeDelta)
 {
 	m_pTrailObject->LateTick(fTimeDelta);
 	__super::LateTick(fTimeDelta);
+	
 }
 
 HRESULT CSword::Render()
 {
-	__super::Render();
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -236,36 +235,51 @@ HRESULT CSword::Ready_Colliders()
 	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 50.f);
 	XMStoreFloat4x4(&ColliderDesc.ModePivotMatrix, m_pModelCom->Get_PivotMatrix());
 
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::BOUNDARY, &ColliderDesc)))
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::BOUNDARY, &ColliderDesc)))
 		return E_FAIL;
 
-	ColliderDesc.tSphere.Radius = 0.2f;
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 130.f);
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
-		return E_FAIL;
 
-	ColliderDesc.tSphere.Radius = 0.2f;
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 110.f);
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
-		return E_FAIL;
 
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 90.f);
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
-		return E_FAIL;
+	CCollider_OBB::OBB_COLLIDER_DESC OBBDesc;
+	ZeroMemory(&OBBDesc, sizeof OBBDesc);
+	OBBDesc.tBox.Extents = _float3(5.f, 5.f, 60.f);
+	XMStoreFloat4(&OBBDesc.tBox.Orientation, XMQuaternionRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f)));
 
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 70.f);
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
-		return E_FAIL;
 
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 50.f);
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
-		return E_FAIL;
+	OBBDesc.pOwnerTransform = m_pTransformCom;
+	OBBDesc.vOffsetPosition = _float3(0.f, 0.f, 60.f);
+	
+	XMStoreFloat4x4(&OBBDesc.ModePivotMatrix, m_pModelCom->Get_PivotMatrix());
 
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 30.f);
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider_Sphere::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::OBB, CCollider::DETECTION_TYPE::ATTACK, &OBBDesc)))
 		return E_FAIL;
+	//ColliderDesc.tSphere.Radius = 0.2f;
+	//ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 130.f);
+	//if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+	//	return E_FAIL;
 
-	vector<CCollider*>& Colliders = Get_Collider(CCollider_Sphere::DETECTION_TYPE::ATTACK);
+	//ColliderDesc.tSphere.Radius = 0.2f;
+	//ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 110.f);
+	//if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+	//	return E_FAIL;
+
+	//ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 90.f);
+	//if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+	//	return E_FAIL;
+
+	//ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 70.f);
+	//if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+	//	return E_FAIL;
+
+	//ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 50.f);
+	//if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+	//	return E_FAIL;
+
+	//ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 30.f);
+	//if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider_Sphere::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+	//	return E_FAIL;
+
+	vector<CCollider*>& Colliders = Get_Collider(CCollider::DETECTION_TYPE::ATTACK);
 	for (auto& pCollider : Colliders)
 	{
 		pCollider->Set_ColliderID(Colliders[0]->Get_ColliderID());

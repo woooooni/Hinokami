@@ -32,7 +32,7 @@ public:
     void Set_Gravity(_bool bGravity) 
     { 
         if (true == bGravity)
-            m_fGravity = 9.8f;
+            m_fGravity = 14.7f;
         else
             m_fGravity = 0.f;
 
@@ -65,7 +65,7 @@ private:
     void Update_Velocity(_float fTimeDelta);
 
 private:
-    _float m_fGravity = 9.8f;               // 중력 계수
+    _float m_fGravity = 14.7f;               // 중력 계수
     _float3 m_vVelocity = { 0.f, 0.f, 0.f };    // 현재 속도
     
     _float3 m_vMaxVelocity = { 100.f, 100.f, 100.f }; // 속도 최대치.

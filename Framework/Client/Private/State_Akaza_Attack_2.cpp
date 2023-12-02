@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Monster.h"
 #include "Animation.h"
+#include "Utils.h"
 
 CState_Akaza_Attack_2::CState_Akaza_Attack_2(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
@@ -26,6 +27,7 @@ HRESULT CState_Akaza_Attack_2::Initialize(const list<wstring>& AnimationList)
 
 void CState_Akaza_Attack_2::Enter_State(void* pArg)
 {
+	m_fAccShoot = 0.f;
 	m_iCurrAnimIndex = 0;
 	m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 	m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f);
@@ -33,7 +35,7 @@ void CState_Akaza_Attack_2::Enter_State(void* pArg)
 
 	_vector vDir = -1.f * m_pTransformCom->Get_Look();
 	m_pTransformCom->Set_Position(m_pTransformCom->Get_Position() + XMVectorSet(0.f, 0.1f, 0.f, 0.f), GI->Get_TimeDelta(L"Timer_GamePlay"), m_pNavigationCom);
-	m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(XMVectorSetY(vDir, 0.8f)), 10.f);
+	m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(XMVectorSetY(vDir, 0.8f)), 14.f);
 }
 
 void CState_Akaza_Attack_2::Tick_State(_float fTimeDelta)
@@ -51,31 +53,13 @@ void CState_Akaza_Attack_2::Tick_State(_float fTimeDelta)
 
 	case 1:
 	{
-		if (fProgress >= .1f && fProgress <= .11f)
+		m_fAccShoot += fTimeDelta;
+		if (m_fAccShoot >= m_fShootTime)
 		{
-			// TODO :: 발사체
+			m_fAccShoot = 0.f;
 			Shoot(fTimeDelta);
 		}
-		else if (fProgress >= .3f && fProgress <= .31f)
-		{
-			// TODO :: 발사체
-			Shoot(fTimeDelta);
-		}
-		else if (fProgress >= .5f && fProgress <= .51f)
-		{
-			// TODO :: 발사체
-			Shoot(fTimeDelta);
-		}
-		else if (fProgress >= .7f && fProgress <= .71f)
-		{
-			// TODO :: 발사체
-			Shoot(fTimeDelta);
-		}
-		else if (fProgress >= .9f && fProgress <= .91f)
-		{
-			// TODO :: 발사체
-			Shoot(fTimeDelta);
-		}
+		
 
 		_float3 vVelocity = m_pRigidBodyCom->Get_Velocity();
 		_float fForce = XMVectorGetX(XMVector3Length(XMLoadFloat3(&vVelocity)));
@@ -103,6 +87,7 @@ void CState_Akaza_Attack_2::Tick_State(_float fTimeDelta)
 void CState_Akaza_Attack_2::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
+	m_fAccShoot = 0.f;
 	m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f);
 	m_pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
@@ -120,7 +105,7 @@ void CState_Akaza_Attack_2::Find_Near_Target()
 	CTransform* pFindTargetTransform = nullptr;
 
 	m_pTarget = nullptr;
-	const list<CGameObject*>& Targets = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_MONSTER);
+	const list<CGameObject*>& Targets = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_CHARACTER);
 	for (auto& pTarget : Targets)
 	{
 		CTransform* pTargetTransform = pTarget->Get_Component<CTransform>(L"Com_Transform");
@@ -146,6 +131,27 @@ void CState_Akaza_Attack_2::Find_Near_Target()
 
 void CState_Akaza_Attack_2::Shoot(_float fTimeDelta)
 {
+
+	CGameObject* pProjectile = nullptr;
+	if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_EFFECT, L"Prototype_GameObject_Akaza_Projectile", nullptr, &pProjectile)))
+		return;
+	if (FAILED(nullptr == pProjectile))
+		return;
+
+	CTransform* pProjectileTransform = pProjectile->Get_Component<CTransform>(L"Com_Transform");
+	CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>(L"Com_Transform");
+
+	if (nullptr == pProjectileTransform || nullptr == pTargetTransform)
+		return;
+
+	_vector vPosition = m_pTransformCom->Get_Position();
+	_vector vDir = XMVector3Normalize(pTargetTransform->Get_Position() - m_pTransformCom->Get_Position());
+
+	_float fRandomX = CUtils::Random_Float(-2.f, 2.f);
+	pProjectileTransform->Set_State(CTransform::STATE_LOOK, vDir);
+	pProjectileTransform->Set_State(CTransform::STATE_RIGHT, XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), pProjectileTransform->Get_Look()));
+	pProjectileTransform->Set_State(CTransform::STATE_UP, XMVector3Cross(pProjectileTransform->Get_Look(), pProjectileTransform->Get_Right()));
+	pProjectileTransform->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f) + XMVectorSet(fRandomX, 0.f, 0.f, 0.f), 1.f));
 }
 
 CState_Akaza_Attack_2* CState_Akaza_Attack_2::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,

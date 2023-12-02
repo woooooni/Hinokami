@@ -9,6 +9,7 @@
 #include "Effect_Manager.h"
 #include "Particle_Manager.h"
 #include "Monster.h"
+#include "Camera.h"
 
 CState_Tanjiro_Skill_2::CState_Tanjiro_Skill_2(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
@@ -50,16 +51,33 @@ void CState_Tanjiro_Skill_2::Tick_State(_float fTimeDelta)
 		if (fProgress >= .4f && fProgress <= .42f)
 		{
 			_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-
-			WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + m_pTransformCom->Get_Look() * .5f;
+			WorldMatrix.r[CTransform::STATE_POSITION] += m_pTransformCom->Get_Look();			
 			CEffect_Manager::GetInstance()->Generate_Effect(L"Tanjiro_Water_Splash_0", XMMatrixIdentity(), WorldMatrix, 1.f);
-			CEffect_Manager::GetInstance()->Generate_Effect(L"Tanjiro_White_Wave_0", XMMatrixIdentity(), WorldMatrix, 1.f);
-			CEffect_Manager::GetInstance()->Generate_Effect(L"Tanjiro_White_Wave_1", XMMatrixIdentity(), WorldMatrix, 1.f);
-			
-			CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Tanjiro_Particle_0", WorldMatrix);
-			CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Tanjiro_Particle_0", WorldMatrix);
-			CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Tanjiro_Particle_0", WorldMatrix);
+			CParticle_Manager::GetInstance()->Generate_Particle(L"Particle_White_Wave", WorldMatrix);
+
+			CCamera* pCamera = dynamic_cast<CCamera*>(GI->Find_GameObject(GI->Get_CurrentLevel(), LAYER_CAMERA, L"Main_Camera"));
+			if (nullptr != pCamera)
+			{
+				pCamera->Cam_Shake(2.f, 10.f);
+			}
 		}
+
+		if (fProgress >= .4f)
+		{
+			m_fAccGenParticle += fTimeDelta;
+			if (m_fAccGenParticle >= m_fGenParticleTime)
+			{
+				m_fAccGenParticle = 0.f;
+				_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+				WorldMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(0.f, 1.f, 0.f, 0.f);
+				CParticle_Manager::GetInstance()->Generate_Particle(L"Tanjiro_Paritlcle_0", WorldMatrix);
+
+				WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+				WorldMatrix.r[CTransform::STATE_POSITION] += m_pTransformCom->Get_Look();
+				CParticle_Manager::GetInstance()->Generate_Particle(L"Particle_White_Wave", WorldMatrix);
+			}
+		}
+		
 
 		if (fProgress >= .8f)
 		{
@@ -163,8 +181,8 @@ void CState_Tanjiro_Skill_2::Use_Skill(_float fTimeDelta)
 	
 
 	m_pCharacter->Set_Infinite(999.f, true);
-	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 6.f, 0.f, 1.f);
-	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 6.f, 0.f, 1.f);
+	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, false);
+	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, false);
 
 	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);

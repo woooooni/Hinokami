@@ -216,24 +216,24 @@ HRESULT CLevel_Train_Boss::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_Train_Boss::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 {
-	//CGameObject* pTanjiro = nullptr;
-	//if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_BOSS, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Tanjiro"), nullptr, &pTanjiro)))
-	//	return E_FAIL;
+	/*CGameObject* pTanjiro = nullptr;
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_BOSS, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Tanjiro"), nullptr, &pTanjiro)))
+		return E_FAIL;
 
-	//CGameObject* pObject = GI->Find_GameObject(LEVELID::LEVEL_TRAIN_BOSS, LAYER_CAMERA, L"Main_Camera");
-	//if (nullptr == pObject)
-	//	return E_FAIL;
+	CGameObject* pObject = GI->Find_GameObject(LEVELID::LEVEL_TRAIN_BOSS, LAYER_CAMERA, L"Main_Camera");
+	if (nullptr == pObject)
+		return E_FAIL;
 
-	//CCamera_Main* pCamera = dynamic_cast<CCamera_Main*>(pObject);
-	//if (nullptr == pCamera)
-	//	return E_FAIL;
+	CCamera_Main* pCamera = dynamic_cast<CCamera_Main*>(pObject);
+	if (nullptr == pCamera)
+		return E_FAIL;
 
-	//CCharacter* pCharacter = dynamic_cast<CCharacter*>(pTanjiro);
-	//if (nullptr == pCharacter)
-	//	return E_FAIL;
+	CCharacter* pCharacter = dynamic_cast<CCharacter*>(pTanjiro);
+	if (nullptr == pCharacter)
+		return E_FAIL;*/
 
-	//if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_Component<CTransform>(L"Com_Transform"))))
-	//	return E_FAIL;
+
+
 
 	CGameObject* pZenitsu = nullptr;
 	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_BOSS, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Zenitsu"), nullptr, &pZenitsu)))
@@ -250,6 +250,8 @@ HRESULT CLevel_Train_Boss::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 	CCharacter* pCharacter = dynamic_cast<CCharacter*>(pZenitsu);
 	if (nullptr == pCharacter)
 		return E_FAIL;
+
+
 
 	if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_Component<CTransform>(L"Com_Transform"))))
 		return E_FAIL;

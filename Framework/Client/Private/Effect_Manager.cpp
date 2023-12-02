@@ -123,6 +123,9 @@ HRESULT CEffect_Manager::Ready_Proto_Effects(const wstring& strEffectPath)
 			EffectDesc.vBloomPower = File->Read<_float3>();
 			EffectDesc.vUVFlow = File->Read<_float2>();
 
+			EffectDesc.fScaleSpeed = File->Read<_float>();
+			EffectDesc.vScaleDir = File->Read<_float3>();
+
 			EffectDesc.vMoveDir = File->Read<_float3>();
 			EffectDesc.vTurnDir = File->Read<_float3>();
 

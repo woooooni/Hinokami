@@ -40,10 +40,10 @@ void CState_Zenitsu_Attack::Enter_State(void* pArg)
 	m_pCharacter->SweathSword();
 
 	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
-	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
+	m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
 
-	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f);
-	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f);
+	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f, true);
+	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f, true);
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 
 
@@ -71,8 +71,8 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 	case 0:
 		break;
 	case 1:
-		m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
-		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
+		m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
+		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
 		if (fProgress >= 0.5f)
 		{
 			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
@@ -84,8 +84,6 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 			{
 				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMMatrixIdentity(), 2.f, m_pSword);
 			}
-			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
-			m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 		}
 		break;
 	case 2:
@@ -127,7 +125,7 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 			}
 
 			m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
-			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
+			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
 		}
 		break;
 	case 3:
@@ -140,16 +138,16 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 
 			m_pRigidBodyCom->Add_Velocity(vLook, 5.f);
 
-			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 7.f, 0.f, 1.f);
+			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 7.f, 0.f, 1.f, true);
 			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 
-			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 7.f, 0.f, 1.f);
+			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 7.f, 0.f, 1.f, true);
 			m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 		}
 		else if (fProgress >= 0.5f)
 		{
-			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
-			m_pSword->Set_ActiveColliders(CCollider::BASIC, true);
+			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
+			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
 
 			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 			m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);

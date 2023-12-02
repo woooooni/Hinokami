@@ -124,10 +124,14 @@ HRESULT CGameObject::Compute_CamZ(_fvector vWorldPos)
 HRESULT CGameObject::Add_Collider(_uint iLevelIndex, _uint eColliderType, _uint eDetectionType, void* pArg)
 {
 	CComponent* pComponent = nullptr;
-	if(eColliderType == CCollider::COLLIDER_TYPE::SPHERE)
-		 pComponent = GAME_INSTANCE->Clone_Component(iLevelIndex, L"Prototype_Component_Sphere_Collider", this, pArg);
-	else
+	if (eColliderType == CCollider::COLLIDER_TYPE::SPHERE)
+		pComponent = GAME_INSTANCE->Clone_Component(iLevelIndex, L"Prototype_Component_Sphere_Collider", this, pArg);
+	else if (eColliderType == CCollider::COLLIDER_TYPE::AABB)
 		pComponent = GAME_INSTANCE->Clone_Component(iLevelIndex, L"Prototype_Component_AABB_Collider", this, pArg);
+	else if (eColliderType == CCollider::COLLIDER_TYPE::OBB)
+		pComponent = GAME_INSTANCE->Clone_Component(iLevelIndex, L"Prototype_Component_OBB_Collider", this, pArg);
+	else
+		return E_FAIL;
 
 
 
@@ -167,7 +171,7 @@ HRESULT CGameObject::Set_ActiveColliders(_uint eDetectionType, _bool bActive)
 	return S_OK;
 }
 
-HRESULT CGameObject::Set_Collider_AttackMode(_uint eAttackMode, _float fAirBornPower, _float fPushPower, _float fDamage)
+HRESULT CGameObject::Set_Collider_AttackMode(_uint eAttackMode, _float fAirBornPower, _float fPushPower, _float fDamage, _bool bHitLag)
 {
 	auto iter = m_Colliders.find(CCollider::DETECTION_TYPE::ATTACK);
 	if (iter == m_Colliders.end())
@@ -176,6 +180,7 @@ HRESULT CGameObject::Set_Collider_AttackMode(_uint eAttackMode, _float fAirBornP
 	for (auto& pCollider : iter->second)
 	{
 		pCollider->Set_AttackType(CCollider::ATTACK_TYPE(eAttackMode));
+		pCollider->Set_HitLag(bHitLag);
 		pCollider->Set_AirBorn_Power(fAirBornPower);
 		pCollider->Set_PushPower(fPushPower);
 		pCollider->Set_Damage(fDamage);

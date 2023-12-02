@@ -55,7 +55,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_TRAIN_BOSS, L"Train_Boss")))
+	if (FAILED(Open_Level(LEVEL_TOOL, L"Train_Boss")))
 		return E_FAIL;
 
 
@@ -395,13 +395,18 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CRigidBody::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_AABB_Collider */
+	/* For.Prototype_Component_Sphere_Collider */
 	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Sphere_Collider"),
 		CCollider_Sphere::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Sphere_Collider */
 	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_AABB_Collider"),
 		CCollider_AABB::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_OBB_Collider"),
+		CCollider_OBB::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
 

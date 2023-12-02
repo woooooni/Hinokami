@@ -71,6 +71,11 @@ HRESULT CPart::Initialize(void* pArg)
 void CPart::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
+	for (_uint i = 0; i < CCollider::DETECTION_TYPE::DETECTION_END; ++i)
+	{
+		for (auto& pCollider : m_Colliders[i])
+			m_pRendererCom->Add_Debug(pCollider);
+	}
 }
 
 HRESULT CPart::Render()

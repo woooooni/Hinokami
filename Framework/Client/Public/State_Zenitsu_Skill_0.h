@@ -32,7 +32,7 @@ private:
 	void Use_Skill(_float fTimeDelta);
 
 private:
-	_float m_fGenParticleTime = .5f;
+	_float m_fGenParticleTime = .05f;
 	_float m_fAccGenParticle = 0.f;
 
 public:

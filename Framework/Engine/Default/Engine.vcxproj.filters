@@ -244,6 +244,9 @@
     <Filter Include="01.Utiltiy\08. SoundManager">
       <UniqueIdentifier>{12338d7c-f1af-403a-93a7-f7c7b64972ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utiltiy\03.Component\10. Collider\OBB">
+      <UniqueIdentifier>{f2ca6f38-bba7-4d03-8e64-1823311d1d7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -483,6 +486,9 @@
     <ClInclude Include="..\Public\Frustum.h">
       <Filter>01.Utiltiy\07. Frustum</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Collider_OBB.h">
+      <Filter>01.Utiltiy\03.Component\10. Collider\OBB</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -703,6 +709,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Frustum.cpp">
       <Filter>01.Utiltiy\07. Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Collider_OBB.cpp">
+      <Filter>01.Utiltiy\03.Component\10. Collider\OBB</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

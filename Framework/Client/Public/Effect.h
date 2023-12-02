@@ -46,6 +46,8 @@ public:
 		_float4			vDiffuseColor = _float4(0.f, 0.f, 0.f, 0.f);
 		_float4			vAdditiveDiffuseColor = _float4(0.f, 0.f, 0.f, 0.f);
 
+		_float3			vScaleDir = _float3(0.f, 0.f, 0.f);
+		_float			fScaleSpeed = 0.f;
 
 		// Translation
 		_float3			vMoveDir = _float3(0.f, 0.f, 0.f);
@@ -86,6 +88,9 @@ public:
 
 			vDiffuseColor = rhs.vDiffuseColor;
 			vAdditiveDiffuseColor = rhs.vAdditiveDiffuseColor;
+
+			vScaleDir = rhs.vScaleDir;
+			fScaleSpeed = rhs.fScaleSpeed;
 
 
 			// Translation

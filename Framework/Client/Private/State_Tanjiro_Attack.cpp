@@ -34,6 +34,9 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 {
 	m_iCurrAnimIndex = 0;
 
+	for (_uint i = 0; i < 5; ++i)
+		m_bSlashEffect[i] = false;
+
 	Find_Near_Target();
 	m_pCharacter->DrawSword();
 
@@ -42,7 +45,7 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 
-	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
+	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, true);
 
 	m_pSword->SetUp_Trail_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, -1.5f, 1.f));
 
@@ -65,11 +68,22 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 	if (m_pModelCom->Is_Animation_Finished(m_AnimIndices[m_iCurrAnimIndex]))
 	{
 		m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
+		return;
 	}
 	
 	switch (m_iCurrAnimIndex)
 	{
 	case 0:
+		if (fProgress > 0.2f)
+		{
+			if (false == m_bSlashEffect[m_iCurrAnimIndex])
+			{
+				m_bSlashEffect[m_iCurrAnimIndex] = true;
+				_matrix OffsetMatrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(180.f)) * XMMatrixRotationZ(XMConvertToRadians(270.f));
+				OffsetMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(-0.5f, 0.f, 0.f, 0.f);
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_1", OffsetMatrix, XMMatrixIdentity(), 2.f, m_pSword);
+			}
+		}
 		if (fProgress > 0.5f)
 		{
 			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
@@ -82,6 +96,17 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 		break;
 
 	case 1:
+		if (fProgress > 0.2f)
+		{
+			if (false == m_bSlashEffect[m_iCurrAnimIndex])
+			{
+				m_bSlashEffect[m_iCurrAnimIndex] = true;
+				_matrix OffsetMatrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(180.f)) * XMMatrixRotationZ(XMConvertToRadians(270.f));
+				OffsetMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(-0.5f, 0.f, 0.f, 0.f);
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_1", OffsetMatrix, XMMatrixIdentity(), 2.f, m_pSword);
+			}
+		}
+
 		if (fProgress > 0.5f)
 		{
 			m_pSword->Stop_Trail();
@@ -91,11 +116,22 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 			
 		}
 
-		m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
-		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
+		m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
+		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
 		break;
 
 	case 2:
+		if (fProgress > 0.2f)
+		{
+			if (false == m_bSlashEffect[m_iCurrAnimIndex])
+			{
+				m_bSlashEffect[m_iCurrAnimIndex] = true;
+				_matrix OffsetMatrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(180.f)) * XMMatrixRotationZ(XMConvertToRadians(270.f));
+				OffsetMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(-0.5f, 0.f, 0.f, 0.f);
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_1", OffsetMatrix, XMMatrixIdentity(), 2.f, m_pSword);
+			}
+		}
+
 		if (fProgress > 0.5f)
 		{
 			m_pSword->Stop_Trail();
@@ -103,8 +139,8 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 		}
-		m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
-		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
+		m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
+		m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
 		break;
 
 	case 3:
@@ -112,13 +148,20 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 		{
 			if (fProgress <= 0.4f)
 			{
-				m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 7.f, 0.1f, 1.f);
-				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 7.f, 0.1f, 1.f);
+				if (false == m_bSlashEffect[m_iCurrAnimIndex])
+				{
+					m_bSlashEffect[m_iCurrAnimIndex] = true;
+					_matrix OffsetMatrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(180.f)) * XMMatrixRotationZ(XMConvertToRadians(270.f));
+					OffsetMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(-0.5f, 0.f, 0.f, 0.f);
+					CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_1", OffsetMatrix, XMMatrixIdentity(), 2.f, m_pSword);
+				}
+				m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 12.f, 0.1f, 1.f);
+				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 12.f, 0.1f, 1.f);
 			}
 			else
 			{
-				m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BOUND, -5.f, 1.5f, 1.f);
-				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BOUND, -5.f, 1.5f, 1.f);
+				m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BOUND, -5.f, 1.5f, 1.f, false);
+				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BOUND, -5.f, 1.5f, 1.f, false);
 			}
 				
 				
@@ -135,8 +178,16 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 	case 4:
 		if (fProgress >= 0.2f && fProgress <= 0.55f)
 		{
-			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 5.f, 1.f);
-			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 5.f, 1.f);
+			if (false == m_bSlashEffect[m_iCurrAnimIndex])
+			{
+				m_bSlashEffect[m_iCurrAnimIndex] = true;
+				_matrix OffsetMatrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(180.f)) * XMMatrixRotationZ(XMConvertToRadians(270.f));
+				OffsetMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(-0.5f, 0.f, 0.f, 0.f);
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_1", OffsetMatrix, XMMatrixIdentity(), 2.f, m_pSword);
+			}
+
+			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 10.f, 1.f);
+			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 10.f, 1.f);
 
 			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
@@ -158,6 +209,9 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 
 void CState_Tanjiro_Attack::Exit_State()
 {
+	for (_uint i = 0; i < 5; ++i)	
+		m_bSlashEffect[i] = false;
+
 	m_iCurrAnimIndex = 0;
 	
 	Find_Near_Target();
@@ -167,8 +221,8 @@ void CState_Tanjiro_Attack::Exit_State()
 	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
 
-	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
-	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
+	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
+	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
 }
 
 
@@ -223,6 +277,8 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 			default:
 				break;
 			}
+
+			
 		}
 
 		if (KEY_TAP(KEY::RBTN))

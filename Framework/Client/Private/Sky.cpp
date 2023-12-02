@@ -56,7 +56,7 @@ HRESULT CSky::Render()
 
 	_uint iNumMesh = m_pModelCom->Get_NumMeshes();
 
-	for (_uint i = 0; i < iNumMesh; ++i)
+	for (_uint i = iNumMesh - 1; i > 0; --i)
 	{
 		_uint		iPassIndex = 0;
 

@@ -2,6 +2,7 @@
 #include "Collider_Sphere.h"
 #include "HierarchyNode.h"
 #include "Collider_AABB.h"
+#include "Collider_OBB.h"
 #include "GameObject.h"
 
 CCollider_Sphere::CCollider_Sphere(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -52,6 +53,12 @@ _bool CCollider_Sphere::Is_Collision(CCollider* pCollider)
 	{
 		CCollider_Sphere* pOtherCollider = static_cast<CCollider_Sphere*>(pCollider);
 		return m_tBoundingSphere.Intersects(pOtherCollider->Get_Sphere());
+	}
+
+	else if (pCollider->Get_ColliderType() == CCollider::OBB)
+	{
+		CCollider_OBB* pOtherCollider = static_cast<CCollider_OBB*>(pCollider);
+		return m_tBoundingSphere.Intersects(pOtherCollider->Get_OBB_Box());
 	}
 
 	return false;

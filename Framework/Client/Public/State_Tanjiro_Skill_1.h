@@ -26,6 +26,10 @@ private:
 	class CSword* m_pSword = nullptr;
 
 private:
+	_float m_fAccGenParticle = 0.f;
+	_float m_fGenParticleTime = 0.1f;
+
+private:
 	void Find_Near_Target();
 	void Use_Skill(_float fTimeDelta);
 

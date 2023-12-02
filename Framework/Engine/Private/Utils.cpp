@@ -84,6 +84,20 @@ _float3 CUtils::ToEulerAngles(_vector Quaternion)
 	
 }
 
+_int CUtils::Random_Int(_int fMin, _int fMax)
+{
+	_int iRealMin = min(fMin, fMax);
+	_int iRealMax = max(fMin, fMax);
+
+
+	std::random_device Random_Device;
+
+	std::mt19937 Generater(Random_Device());
+
+	std::uniform_int_distribution<_int> Distribution(iRealMin, iRealMax);
+	return Distribution(Generater);
+}
+
 _float CUtils::Random_Float(_float fMin, _float fMax)
 {	
 	_float fRealMin = min(fMin, fMax);

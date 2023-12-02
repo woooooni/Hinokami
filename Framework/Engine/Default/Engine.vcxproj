@@ -175,6 +175,7 @@
     <ClInclude Include="..\Public\Cell.h" />
     <ClInclude Include="..\Public\Collider.h" />
     <ClInclude Include="..\Public\Collider_AABB.h" />
+    <ClInclude Include="..\Public\Collider_OBB.h" />
     <ClInclude Include="..\Public\Collider_Sphere.h" />
     <ClInclude Include="..\Public\Collision_Manager.h" />
     <ClInclude Include="..\Public\FileUtils.h" />
@@ -259,6 +260,7 @@
     <ClCompile Include="..\Private\Cell.cpp" />
     <ClCompile Include="..\Private\Collider.cpp" />
     <ClCompile Include="..\Private\Collider_AABB.cpp" />
+    <ClCompile Include="..\Private\Collider_OBB.cpp" />
     <ClCompile Include="..\Private\Collider_Sphere.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
     <ClCompile Include="..\Private\CoreTLS.cpp" />

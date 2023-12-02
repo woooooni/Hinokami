@@ -31,7 +31,7 @@ _float CTimer::Compute_TimeDelta()
 	}
 
 	_float fTimeDelta = float(m_FrameTime.QuadPart - m_LastTime.QuadPart) / m_CpuTick.QuadPart;
-	if (m_bSlow)
+	if (true == m_bSlow)
 	{
 		m_fAccSlow += fTimeDelta;
 		if (m_fAccSlow >= m_fSlowRecovery)

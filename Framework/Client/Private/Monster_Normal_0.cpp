@@ -313,7 +313,11 @@ HRESULT CMonster_Normal_0::Ready_Colliders()
 
 
 
-	// Weapon
+	vector<CCollider*>& Colliders = Get_Collider(CCollider::DETECTION_TYPE::ATTACK);
+	for (auto& pCollider : Colliders)
+	{
+		pCollider->Set_ColliderID(Colliders[0]->Get_ColliderID());
+	}
 
 
 

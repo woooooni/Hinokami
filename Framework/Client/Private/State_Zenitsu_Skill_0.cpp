@@ -63,6 +63,7 @@ void CState_Zenitsu_Skill_0::Tick_State(_float fTimeDelta)
 	switch (m_iCurrAnimIndex)
 	{
 	case 0:
+		Find_Near_Target();
 		if (fProgress >= .8f)
 		{
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
@@ -77,12 +78,14 @@ void CState_Zenitsu_Skill_0::Tick_State(_float fTimeDelta)
 		break;
 
 	case 1:
+		Find_Near_Target();
 		m_pCharacter->Set_Infinite(0.f, false);
 		if (fProgress >= .5f)
 			Input(fTimeDelta);
 		break;
 
 	case 2:
+		Find_Near_Target();
 		if (fProgress >= .8f)
 		{
 			Use_Skill(fTimeDelta);
@@ -90,6 +93,16 @@ void CState_Zenitsu_Skill_0::Tick_State(_float fTimeDelta)
 		break;
 
 	case 3:
+		m_fGenParticleTime = 0.05f;
+		m_fAccGenParticle += fTimeDelta;
+		if (m_fAccGenParticle >= m_fGenParticleTime)
+		{
+			m_fAccGenParticle = 0.f;
+			_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+			WorldMatrix.r[CTransform::STATE_POSITION] += WorldMatrix.r[CTransform::STATE_LOOK];
+			CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_0", WorldMatrix);
+		}
+
 		if (0.1f > XMVectorGetX(XMVector3Length(XMLoadFloat3(&m_pRigidBodyCom->Get_Velocity()))))
 		{
 			m_pCharacter->Set_Infinite(0.f, false);
@@ -104,7 +117,7 @@ void CState_Zenitsu_Skill_0::Tick_State(_float fTimeDelta)
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
 		}
 
-		CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_0", m_pTransformCom->Get_WorldMatrix());
+		
 		break;
 	case 4:
 		if (fProgress >= .8f)
@@ -177,7 +190,7 @@ void CState_Zenitsu_Skill_0::Find_Near_Target()
 		}
 	}
 
-	if (nullptr != pFindTargetTransform && fMinDistance < 20.f)
+	if (nullptr != pFindTargetTransform && fMinDistance < 40.f)
 	{
 		Vec4 vTargetPos = pFindTargetTransform->Get_Position();
 		m_pTransformCom->LookAt_ForLandObject(vTargetPos);
@@ -197,6 +210,7 @@ void CState_Zenitsu_Skill_0::Use_Skill(_float fTimeDelta)
 		m_pChargingEffect = nullptr;
 	}
 		
+	Find_Near_Target();
 
 	_matrix EffectMatrix = m_pTransformCom->Get_WorldMatrix();
 	_vector vDir = XMVectorSet(0.f, 0.f, 0.f, 0.f);
@@ -248,8 +262,8 @@ void CState_Zenitsu_Skill_0::Use_Skill(_float fTimeDelta)
 	
 
 	m_pCharacter->Set_Infinite(999.f, true);
-	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
-	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
+	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, false);
+	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, false);
 
 	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);

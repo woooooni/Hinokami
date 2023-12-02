@@ -8,7 +8,7 @@ BEGIN(Engine)
 class ENGINE_DLL CCollider abstract : public CComponent
 {
 public:
-    enum COLLIDER_TYPE { SPHERE, AABB, TYPE_END };
+    enum COLLIDER_TYPE { SPHERE, AABB, OBB, TYPE_END };
     enum DETECTION_TYPE { BOUNDARY, ATTACK, BODY, HEAD, DETECTION_END };
     enum ATTACK_TYPE { BASIC, BLOW, BOUND, AIR_BORN, MODE_END };
 
@@ -61,6 +61,8 @@ public:
     void Set_Damage(_float fDamage) { m_fDamage = fDamage; }
     _float Get_Damage() { return m_fDamage; }
 
+    _bool Is_HitLag() { return m_bHitLag; }
+    void Set_HitLag(_bool bHitLag) { m_bHitLag = bHitLag; }
 
     virtual _vector Get_Position() { return XMVectorSet(0.f, 0.f, 0.f, 0.f); }
     virtual _float Get_Radius() { return 0.f; }
@@ -87,6 +89,7 @@ protected:
 
     _float3 m_vOffsetPosition = { 0.f, 0.f, 0.f };
     _bool m_bActive = true;
+    _bool m_bHitLag = true;
 
 
 protected:

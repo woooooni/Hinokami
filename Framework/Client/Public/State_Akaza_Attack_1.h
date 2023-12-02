@@ -30,6 +30,9 @@ private:
 	class CMonster* m_pOwnerMonster = nullptr;
 	class CGameObject* m_pTarget = nullptr;
 
+private:
+	_float m_fAttackEffect = .1f;
+	_float m_fAccAttackEffect = 0.f;
 
 private:
 	void Find_Near_Target();

@@ -23,6 +23,7 @@
 #include "Monster_Normal_1.h"
 #include "Monster_Normal_2.h"
 #include "Enmu_Projectile.h"
+#include "Akaza_Projectile.h"
 
 #include "Boss_Enmu.h"
 #include "Boss_Akaza.h"
@@ -55,6 +56,7 @@
 
 
 
+_bool CLoader::g_bFirstLoading = false;
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: m_pDevice(pDevice)
 	, m_pContext(pContext)
@@ -258,9 +260,6 @@ HRESULT CLoader::Loading_For_Level_Train_Station()
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_NormalMonster_2"),
 		CMonster_Normal_2::Create(m_pDevice, m_pContext, TEXT("NormalMonster2"), tMonsterStat), LAYER_TYPE::LAYER_MONSTER)))
 		return E_FAIL;
-
-
-
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Tanjiro"),
 		CTanjiro::Create(m_pDevice, m_pContext, TEXT("Tanjiro"), CCharacter::CHARACTER_TYPE::TANJIRO), LAYER_TYPE::LAYER_CHARACTER)))
@@ -553,6 +552,10 @@ HRESULT CLoader::Loading_For_Level_Train_Boss()
 
 	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Enmu_Projectile"),
 		CEnmu_Projectile::Create(m_pDevice, m_pContext), LAYER_TYPE::LAYER_EFFECT)))
+		return E_FAIL;
+
+	if (FAILED(GI->Add_Prototype(TEXT("Prototype_GameObject_Akaza_Projectile"),
+		CAkaza_Projectile::Create(m_pDevice, m_pContext), LAYER_TYPE::LAYER_EFFECT)))
 		return E_FAIL;
 
 

@@ -12,6 +12,9 @@
 #include "UI_BattleStart.h"
 #include "UI_BattleEnd.h"
 
+#include "Character.h"
+#include "Monster.h"
+
 IMPLEMENT_SINGLETON(CUI_Manager)
 
 CUI_Manager::CUI_Manager()
@@ -135,6 +138,33 @@ HRESULT CUI_Manager::Battle_End()
 	// TODO:: Play Sound
 	return S_OK;
 }
+
+HRESULT CUI_Manager::Reserve_HpBar(GAUGE_BARTYPE eBarType, CCharacter* pCharacter, _uint iCharacterType)
+{
+	if (eBarType >= GAUGE_BARTYPE::TYPE_END)
+		return E_FAIL;
+
+	if (iCharacterType >= CUI_GaugeBar::CHARACTER_TYPE::CHARACTER_END)
+		return E_FAIL;
+
+	m_pGaugeBars[eBarType]->Set_Owner(pCharacter, CUI_GaugeBar::CHARACTER_TYPE(iCharacterType));
+
+	return S_OK;
+}
+
+HRESULT CUI_Manager::Reserve_HpBar(GAUGE_BARTYPE eBarType, CMonster* pMonster, _uint iCharacterType)
+{
+	if (eBarType >= GAUGE_BARTYPE::TYPE_END)
+		return E_FAIL;
+
+	if (iCharacterType >= CUI_GaugeBar::CHARACTER_TYPE::CHARACTER_END)
+		return E_FAIL;
+
+	m_pGaugeBars[eBarType]->Set_Owner(pMonster, CUI_GaugeBar::CHARACTER_TYPE(iCharacterType));
+	return S_OK;
+}
+
+
 
 
 void CUI_Manager::Free()

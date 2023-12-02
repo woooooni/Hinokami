@@ -34,8 +34,11 @@ HRESULT CState_Tanjiro_Skill_0::Initialize(const list<wstring>& AnimationList)
 
 void CState_Tanjiro_Skill_0::Enter_State(void* pArg)
 {
-	m_fAccSkillTime = 0.f;
+	
 	m_iCurrAnimIndex = 0;
+	m_fAccSkillTime = 0.f;
+	m_fAccGenParticle = 0.f;
+
 	Find_Near_Target();
 	m_pCharacter->DrawSword();
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
@@ -56,14 +59,15 @@ void CState_Tanjiro_Skill_0::Tick_State(_float fTimeDelta)
 
 	case 1:
 		m_fAccSkillTime += fTimeDelta;
-		m_fSkillTime = 0.5f;
 		if (m_fAccSkillTime >= m_fSkillTime)
 		{
 			m_fAccSkillTime = 0.f;
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
+
 			m_pSkillEffect->Set_Dead(true);
 			Safe_Release(m_pSkillEffect);
 			m_pSkillEffect = nullptr;
+			
 
 			m_pCharacter->Set_Infinite(0.f, false);
 			m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
@@ -74,6 +78,15 @@ void CState_Tanjiro_Skill_0::Tick_State(_float fTimeDelta)
 			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
 		}
+
+		if (m_fAccGenParticle >= m_fGenParticleTime)
+		{
+			m_fAccGenParticle = 0.f;
+			_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+			WorldMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(0.f, 1.f, 0.f, 0.f);
+			CParticle_Manager::GetInstance()->Generate_Particle(L"Tanjiro_Paritlcle_0", WorldMatrix);
+		}
+
 		m_pTransformCom->Go_Dir(XMVector3Normalize(m_pTransformCom->Get_Look()), 20.f, fTimeDelta, m_pNavigationCom);
 		break;
 
@@ -92,6 +105,7 @@ void CState_Tanjiro_Skill_0::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
 	m_fAccSkillTime = 0.f;
+	m_fAccGenParticle = 0.f;
 
 	m_pCharacter->SweathSword();
 	m_pSword->Stop_Trail();
@@ -163,25 +177,27 @@ void CState_Tanjiro_Skill_0::Use_Skill(_float fTimeDelta)
 		Safe_AddRef(m_pSkillEffect);
 	}
 
+
+
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 	_vector vPosition = WorldMatrix.r[CTransform::STATE_POSITION];
 	WorldMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(0.f, 1.f, 0.f, 0.f);
 
 	WorldMatrix.r[CTransform::STATE_POSITION] = vPosition + m_pTransformCom->Get_Look() * .5f;
-	CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Tanjiro_Particle_0", WorldMatrix);
+	CParticle_Manager::GetInstance()->Generate_Particle(L"Tanjiro_Paritlcle_0", WorldMatrix);
 
 
 	WorldMatrix.r[CTransform::STATE_POSITION] = vPosition + m_pTransformCom->Get_Look() * 1.f;
-	CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Tanjiro_Particle_0", WorldMatrix);
+	CParticle_Manager::GetInstance()->Generate_Particle(L"Tanjiro_Paritlcle_0", WorldMatrix);
 
 	WorldMatrix.r[CTransform::STATE_POSITION] = vPosition + m_pTransformCom->Get_Look() * 2.f;
-	CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Tanjiro_Particle_0", WorldMatrix);
+	CParticle_Manager::GetInstance()->Generate_Particle(L"Tanjiro_Paritlcle_0", WorldMatrix);
 
 
 
 	m_pCharacter->Set_Infinite(999.f, true);
-	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
-	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
+	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f);
+	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f);
 
 	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);

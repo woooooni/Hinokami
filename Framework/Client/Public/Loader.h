@@ -27,6 +27,9 @@ public:
 	HRESULT Initialize(LEVELID eNextLevel, const wstring& strFolderName);
 	_int	Loading();
 
+public:
+	static _bool g_bFirstLoading;
+
 
 private:
 	ID3D11Device*			m_pDevice = { nullptr };

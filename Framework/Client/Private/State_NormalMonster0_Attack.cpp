@@ -23,6 +23,8 @@ HRESULT CState_NormalMonster0_Attack::Initialize(const list<wstring>& AnimationL
 	return S_OK;
 }
 
+
+
 void CState_NormalMonster0_Attack::Enter_State(void* pArg)
 {
 	m_iCurrAnimIndex = (rand() + rand() + rand()) % m_AnimIndices.size();

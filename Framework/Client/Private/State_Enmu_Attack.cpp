@@ -357,8 +357,6 @@ void CState_Enmu_Attack::Shoot(CGameObject* pTarget, _vector vOffsetPosition, _f
 	pProjectileTransform->Set_State(CTransform::STATE_RIGHT, XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), pProjectileTransform->Get_Look()));
 	pProjectileTransform->Set_State(CTransform::STATE_UP, XMVector3Cross(pProjectileTransform->Get_Look(), pProjectileTransform->Get_Right()));
 	pProjectileTransform->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f) + vOffsetPosition, 1.f));
-	
-
 }
 
 CGameObject* CState_Enmu_Attack::Find_NearTarget(_float fTimeDelta)

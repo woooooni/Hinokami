@@ -1,65 +1,63 @@
 #include "GameInstance.h"
 #include "Collider_AABB.h"
-#include "Collider_Sphere.h"
 #include "Collider_OBB.h"
+#include "Collider_Sphere.h"
 #include "HierarchyNode.h"
 
 
-CCollider_AABB::CCollider_AABB(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CCollider_OBB::CCollider_OBB(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCollider(pDevice, pContext, CCollider::AABB)
 
 {
 	
 }
 
-CCollider_AABB::CCollider_AABB(CCollider_AABB& rhs)
+CCollider_OBB::CCollider_OBB(CCollider_OBB& rhs)
 	: CCollider(rhs)
 {
 
 }
 
-HRESULT CCollider_AABB::Initialize_Prototype()
+HRESULT CCollider_OBB::Initialize_Prototype()
 {
 
 
 	return S_OK;
 }
 
-HRESULT CCollider_AABB::Initialize(void* pArg)
+HRESULT CCollider_OBB::Initialize(void* pArg)
 {
-	if (FAILED(__super::Initialize(pArg)))
-		return E_FAIL;
-
 	if (nullptr == pArg)
 		return E_FAIL;
 
+	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
 
-	AABB_COLLIDER_DESC* pDesc = static_cast<AABB_COLLIDER_DESC*>(pArg);
-	m_tBoundingBox = pDesc->tBox;
+	OBB_COLLIDER_DESC* pDesc = static_cast<OBB_COLLIDER_DESC*>(pArg);
+	m_tOriginOBB = pDesc->tBox;
 
 	return S_OK;
 }
 
-_bool CCollider_AABB::Is_Collision(CCollider* pCollider)
+_bool CCollider_OBB::Is_Collision(CCollider* pCollider)
 {
 	if (false == m_bActive)
 		return false;
 
-	if (pCollider->Get_ColliderType() == CCollider::AABB)
+	if (pCollider->Get_ColliderType() == CCollider::OBB)
 	{
-		CCollider_AABB* pOtherCollider = static_cast<CCollider_AABB*>(pCollider);
-		return m_tBoundingBox.Intersects(pOtherCollider->Get_AABB_Box());
+		CCollider_OBB* pOtherCollider = static_cast<CCollider_OBB*>(pCollider);
+		return m_tBoundingBox.Intersects(pOtherCollider->Get_OBB_Box());
 	}
 	else if (pCollider->Get_ColliderType() == CCollider::SPHERE)
 	{
 		CCollider_Sphere* pOtherCollider = static_cast<CCollider_Sphere*>(pCollider);
 		return m_tBoundingBox.Intersects(pOtherCollider->Get_Sphere());
 	}
-
-	else if (pCollider->Get_ColliderType() == CCollider::OBB)
+	else if (pCollider->Get_ColliderType() == CCollider::AABB)
 	{
-		CCollider_OBB* pOtherCollider = static_cast<CCollider_OBB*>(pCollider);
-		return m_tBoundingBox.Intersects(pOtherCollider->Get_OBB_Box());
+		CCollider_AABB* pOtherCollider = static_cast<CCollider_AABB*>(pCollider);
+		return m_tBoundingBox.Intersects(pOtherCollider->Get_AABB_Box());
 	}
 
 	return false;
@@ -67,13 +65,13 @@ _bool CCollider_AABB::Is_Collision(CCollider* pCollider)
 
 
 
-void CCollider_AABB::LateTick_Collider(_float fTimeDelta)
+void CCollider_OBB::LateTick_Collider(_float fTimeDelta)
 {
 	__super::LateTick_Collider(fTimeDelta);
-	XMStoreFloat3(&m_tBoundingBox.Center, XMLoadFloat4x4(&m_FinalMatrix).r[CTransform::STATE_POSITION]);
+	m_tOriginOBB.Transform(m_tBoundingBox, XMLoadFloat4x4(&m_FinalMatrix));
 }
 
-HRESULT CCollider_AABB::Render()
+HRESULT CCollider_OBB::Render()
 {
 	//if (m_bActive/* && m_eDetectionType != CCollider::BOUNDARY*/)
 	//{
@@ -109,25 +107,25 @@ HRESULT CCollider_AABB::Render()
 	return S_OK;
 }
 
-void CCollider_AABB::Collision_Enter(CCollider* pCollider)
+void CCollider_OBB::Collision_Enter(CCollider* pCollider)
 {
 	__super::Collision_Enter(pCollider);
 }
 
-void CCollider_AABB::Collision_Continue(CCollider* pCollider)
+void CCollider_OBB::Collision_Continue(CCollider* pCollider)
 {
 	__super::Collision_Continue(pCollider);
 }
 
-void CCollider_AABB::Collision_Exit(CCollider* pCollider)
+void CCollider_OBB::Collision_Exit(CCollider* pCollider)
 {
 	__super::Collision_Exit(pCollider);
 }
 
 
-CCollider_AABB* CCollider_AABB::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CCollider_OBB* CCollider_OBB::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CCollider_AABB* pInstance = new CCollider_AABB(pDevice, pContext);
+	CCollider_OBB* pInstance = new CCollider_OBB(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		Safe_Release(pInstance);
@@ -137,9 +135,9 @@ CCollider_AABB* CCollider_AABB::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 	return pInstance;
 }
 
-CComponent* CCollider_AABB::Clone(void* pArg)
+CComponent* CCollider_OBB::Clone(void* pArg)
 {
-	CCollider_AABB* pInstance = new CCollider_AABB(*this);
+	CCollider_OBB* pInstance = new CCollider_OBB(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		Safe_Release(pInstance);
@@ -149,7 +147,7 @@ CComponent* CCollider_AABB::Clone(void* pArg)
 	return pInstance;
 }
 
-void CCollider_AABB::Free()
+void CCollider_OBB::Free()
 {
 		
 	Safe_Delete(m_pBatch);

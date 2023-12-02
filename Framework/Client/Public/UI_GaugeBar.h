@@ -13,7 +13,7 @@ class CUI_GaugeBar final : public CUI
 public:
 	enum GAUGE_TYPE { HP, MP, GAUGE_END };
 	enum GAUGE_BAR_POSITION { LEFT_TOP, RIGHT_TOP, LEFT_TOP_BOTTOM, RIGHT_TOP_BOTTOM, POSITION_END };
-	enum CHARACTER_TYPE { TANJIRO, ZENITSU, KYOJURO,  ENMU, AKAZA, CHARACTER_END };
+	enum CHARACTER_TYPE { TANJIRO, ZENITSU, KYOJURO, ENMU, AKAZA, CHARACTER_END };
 
 protected:
 	CUI_GaugeBar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -30,14 +30,17 @@ public:
 
 public:
 	void Set_Owner(class CNpc* pOwner, CHARACTER_TYPE eType) { 
+		Reset();
 		m_pOwnerNpc = pOwner; 
 		m_eCharacterType = eType; 
 	}
 	void Set_Owner(class CMonster* pOwner, CHARACTER_TYPE eType) { 
+		Reset();
 		m_pOwnerMonster = pOwner; 
 		m_eCharacterType = eType;
 	}
 	void Set_Owner(class CCharacter* pOwner, CHARACTER_TYPE eType) { 
+		Reset();
 		m_pOwnerCharacter = pOwner; 
 		m_eCharacterType = eType;
 	}
@@ -66,6 +69,19 @@ private:
 	class CMonster* m_pOwnerMonster = nullptr;
 	class CCharacter* m_pOwnerCharacter = nullptr;
 	class CNpc* m_pOwnerNpc = nullptr;
+
+private:
+	_float m_fCurrRatio = 0.f;
+	_float m_fDestRatio = 0.f;
+private:
+	void Reset() { 
+		m_fCurrRatio = 0.f;
+		m_fDestRatio = 0.f;
+		m_pOwnerCharacter = nullptr; 
+		m_pOwnerMonster = nullptr; 
+		m_pOwnerNpc = nullptr; 
+
+	}
 
 public:
 	static CUI_GaugeBar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, GAUGE_TYPE eGaugeType, GAUGE_BAR_POSITION ePosition);

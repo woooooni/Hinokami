@@ -23,8 +23,12 @@ public:
 
 	HRESULT Set_Slow(_float fSlowTime, _float fTimeScale, _bool bForce) { 
 
-		if (m_bSlow && false == bForce)
-			return S_OK;
+		if (false == bForce)
+		{
+			if (true == m_bSlow)
+				return S_OK;
+		}
+		
 
 		m_bSlow = true;
 		m_fAccSlow = 0.f;
@@ -44,11 +48,6 @@ private:
 	_float					m_fTimeScale = 1.f;
 
 private:
-	_bool m_bHitLeg = false;
-	_float m_fAccHitLeg = 0.f;
-	_float m_fHitLegRecovery = 0.f;
-
-
 	_bool m_bSlow = false;
 	_float m_fAccSlow = 0.f;
 	_float m_fSlowRecovery = 0.f;

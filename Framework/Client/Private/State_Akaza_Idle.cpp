@@ -44,10 +44,12 @@ void CState_Akaza_Idle::Tick_State(_float fTimeDelta)
 		{
 			if (m_bAttackable)
 			{
-				if(10.f < XMVectorGetX(XMVector3Length(pTargetTransform->Get_Position() - m_pTransformCom->Get_Position())))
+				_float fDistance = XMVectorGetX(XMVector3Length(pTargetTransform->Get_Position() - m_pTransformCom->Get_Position()));
+				if(10.f < fDistance)
 					m_pStateMachineCom->Change_State(CMonster::BOSS_ATTACK_0);
 				else
 				{
+					// m_pStateMachineCom->Change_State(CMonster::BOSS_ATTACK_1);
 					_int iRandomAttack = ((rand() + rand() + rand()) % 2) + 1;
 					if (iRandomAttack == 1)
 					{
@@ -72,8 +74,8 @@ void CState_Akaza_Idle::Tick_State(_float fTimeDelta)
 				_vector vDir = vTargetPos - vPositon;
 				_float fDistance = XMVectorGetX(XMVector3Normalize(vDir));
 
-				if (XMConvertToRadians(30.f) > XMVectorGetX(XMVector3Dot(XMVector3Normalize(vDir), vLook)) 
-					&& XMConvertToRadians(-30.f) < XMVectorGetX(XMVector3Dot(XMVector3Normalize(vDir), vLook)))
+				if (XMConvertToRadians(15.f) > XMVectorGetX(XMVector3Dot(XMVector3Normalize(vDir), vLook)) 
+					&& XMConvertToRadians(-15.f) < XMVectorGetX(XMVector3Dot(XMVector3Normalize(vDir), vLook)))
 				{
 					m_pTransformCom->LookAt_ForLandObject(vTargetPos);
 					m_pStateMachineCom->Change_State(CMonster::DASH);

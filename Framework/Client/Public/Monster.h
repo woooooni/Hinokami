@@ -50,12 +50,12 @@ public:
 public:
 	typedef struct tagMonsterStat
 	{
-		_float fHp = 0.f;
+		_float fHp = 100.f;
 		_float fMp = 0.f;
 
 		
-		_float fMaxHp = 0.f;
-		_float fMaxMp = 0.f;
+		_float fMaxHp = 100.f;
+		_float fMaxMp = 10.f;
 	} MONSTER_STAT;
 
 protected:
@@ -91,7 +91,7 @@ public:
 
 public:
 	CHierarchyNode* Get_Socket(const wstring& strSocketName);
-
+	const MONSTER_STAT& Get_Stat() { return m_tStat; }
 
 
 public:

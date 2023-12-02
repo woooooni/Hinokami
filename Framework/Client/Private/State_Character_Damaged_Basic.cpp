@@ -28,11 +28,10 @@ void CState_Character_Damaged_Basic::Enter_State(void* pArg)
 	m_pOwnerCharacter->DrawSword();
 	m_pOwnerCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	
-
-	
 	m_iCurrAnimIndex = rand() % m_AnimIndices.size();
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
-	m_pOwnerCharacter->Set_Infinite(999.f, true);
+
+	m_pOwnerCharacter->Set_Infinite(.1f, true);
 }
 
 void CState_Character_Damaged_Basic::Tick_State(_float fTimeDelta)
@@ -43,7 +42,7 @@ void CState_Character_Damaged_Basic::Tick_State(_float fTimeDelta)
 
 void CState_Character_Damaged_Basic::Exit_State()
 {
-	m_pOwnerCharacter->Set_Infinite(0.1f, true);
+	
 }
 
 CState_Character_Damaged_Basic* CState_Character_Damaged_Basic::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine,const list<wstring>& AnimationList)

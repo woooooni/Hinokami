@@ -397,6 +397,9 @@
     <Filter Include="02.GameObjects\05. Monster\Boss\Akaza\State\Idle">
       <UniqueIdentifier>{9a30683b-938f-4862-96de-5c5567e08d68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Akaza\Projectile">
+      <UniqueIdentifier>{41effe82-2372-4cbd-a9bc-504a3109a506}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -798,6 +801,9 @@
     <ClInclude Include="..\Public\State_Akaza_Idle.h">
       <Filter>02.GameObjects\05. Monster\Boss\Akaza\State\Idle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Akaza_Projectile.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\Projectile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1183,6 +1189,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\State_Akaza_Idle.cpp">
       <Filter>02.GameObjects\05. Monster\Boss\Akaza\State\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Akaza_Projectile.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\Projectile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

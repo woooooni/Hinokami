@@ -30,6 +30,10 @@ private:
 	void Trace_Near_Target();
 	void Use_Skill(_float fTimeDelta);
 
+private:
+	_float m_fAccGenParticle = 0.f;
+	_float m_fGenParticleTime = 0.1f;
+
 public:
 	static CState_Tanjiro_Skill_2* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;

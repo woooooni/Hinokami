@@ -1216,6 +1216,7 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         {
             tEffectDesc.fAlpha = 1.f;
             m_pPrevEffect->Reset_UV();
+            pTransform->Set_WorldMatrix(XMMatrixIdentity());
         }
             
 
@@ -1278,6 +1279,17 @@ void CImGui_Manager::Tick_Effect_Tool(_float fTimeDelta)
         ImGui::Text("Bloom_Power");
         IMGUI_SAME_LINE;
         ImGui::DragFloat3("##EffectBloomPower", (_float*)&tEffectDesc.vBloomPower, 0.01f, 0.01f, 100.f);
+
+        IMGUI_NEW_LINE;
+        ImGui::Text("Scale Dir");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat3("##EffectScaleDir", (_float*)&tEffectDesc.vScaleDir, 0.01f, -100.f, 100.f);
+
+        IMGUI_NEW_LINE;
+        ImGui::Text("Scale Speed");
+        IMGUI_SAME_LINE;
+        ImGui::DragFloat("##EffectScaleSpeed", (_float*)&tEffectDesc.fScaleSpeed, 0.01f, 0.f, 100.f);
+
 
 
         IMGUI_NEW_LINE;
@@ -2082,6 +2094,9 @@ HRESULT CImGui_Manager::Save_Effect(const wstring& strFullPath)
     File->Write<_float3>(EffectDesc.vBloomPower);
     File->Write<_float2>(EffectDesc.vUVFlow);
 
+    File->Write<_float>(EffectDesc.fScaleSpeed);
+    File->Write<_float3>(EffectDesc.vScaleDir);
+
     File->Write<_float3>(EffectDesc.vMoveDir);
     File->Write<_float3>(EffectDesc.vTurnDir);
 
@@ -2139,6 +2154,9 @@ HRESULT CImGui_Manager::Load_Effect(const wstring& strFullPath)
     EffectDesc.fBlurPower = File->Read<_float>();
     EffectDesc.vBloomPower = File->Read<_float3>();
     EffectDesc.vUVFlow = File->Read<_float2>();
+
+    EffectDesc.fScaleSpeed = File->Read<_float>();
+    EffectDesc.vScaleDir = File->Read<_float3>();
 
     EffectDesc.vMoveDir = File->Read<_float3>();
     EffectDesc.vTurnDir = File->Read<_float3>();

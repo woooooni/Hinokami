@@ -353,10 +353,6 @@ HRESULT CBoss_Akaza::Ready_Colliders()
 
 
 
-	// Weapon
-
-
-
 	return S_OK;
 }
 
@@ -393,7 +389,7 @@ HRESULT CBoss_Akaza::Ready_Parts()
 		return E_FAIL;
 
 	m_pTrails[CMonster::SOCKET_TYPE::SOCKET_LEFT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.025f, 1.f), XMVectorSet(0.f, 0.0f, 0.025f, 1.f));
-	m_pTrails[CMonster::SOCKET_TYPE::SOCKET_LEFT_FOOT]->Set_VtxCount(44);
+	m_pTrails[CMonster::SOCKET_TYPE::SOCKET_LEFT_FOOT]->Set_VtxCount(66);
 
 
 
@@ -406,7 +402,7 @@ HRESULT CBoss_Akaza::Ready_Parts()
 		return E_FAIL;
 
 	m_pTrails[CMonster::SOCKET_TYPE::SOCKET_RIGHT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.025f, 1.f), XMVectorSet(0.f, 0.0f, 0.025f, 1.f));
-	m_pTrails[CMonster::SOCKET_TYPE::SOCKET_RIGHT_FOOT]->Set_VtxCount(44);
+	m_pTrails[CMonster::SOCKET_TYPE::SOCKET_RIGHT_FOOT]->Set_VtxCount(66);
 
 	return S_OK;
 }
