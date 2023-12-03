@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Level_Train_Station.h"
 #include "GameInstance.h"
-#include "Camera.h"
-#include "Camera_Main.h"
+
+#include "Camera_Manager.h"
 #include "Character.h"
 #include "Npc_Stand_0.h"
 #include "Npc_Stand_1.h"
@@ -17,10 +17,9 @@ CLevel_Train_Station::CLevel_Train_Station(ID3D11Device * pDevice, ID3D11DeviceC
 
 HRESULT CLevel_Train_Station::Initialize()
 {
+	GI->Lock_Mouse();
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
-
-	GI->Lock_Mouse();
 
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
@@ -73,66 +72,12 @@ HRESULT CLevel_Train_Station::Exit_Level()
 
 HRESULT CLevel_Train_Station::Ready_Lights()
 {
-	
-
-
-	// LIGHTDESC			LightDesc;
-
-	//ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	//LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	//LightDesc.vPosition = _float4(15.0f, 5.0f, 15.0f, 1.f);
-	//LightDesc.fRange = 10.f;
-	//LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.f, 1.f);
-	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	//LightDesc.vSpecular = LightDesc.vDiffuse;
-
-	//if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-	//	return E_FAIL;
-
-	//ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	//LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	//LightDesc.vPosition = _float4(25.0f, 5.0f, 15.0f, 1.f);
-	//LightDesc.fRange = 10.f;
-	//LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.f, 1.f);
-	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	//LightDesc.vSpecular = LightDesc.vDiffuse;
-
-	//if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-	//	return E_FAIL;
-
-	/*ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.5, 0.5, 0.5, 1.f);
-	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;*/
-
-
 	return S_OK;
 }
 
 HRESULT CLevel_Train_Station::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 {
-	
-
-
-	CCamera::CAMERADESC			CameraDesc;
-
-	CameraDesc.vEye = _float4(0.f, 10.f, -10.f, 1.f);
-	CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
-	CameraDesc.fFovy = XMConvertToRadians(60.0f);
-	CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
-	CameraDesc.fNear = 0.2f;
-	CameraDesc.fFar = 1000.f;
-
-	CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
-	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
-
- 	if(FAILED(GI->Add_GameObject(LEVELID::LEVEL_TRAIN_STATION, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
-		return E_FAIL;
+	CCamera_Manager::GetInstance()->Set_MainCamera(CCamera_Manager::CAMERA_TYPE::GAME_PLAY);
 
 	if (FAILED(GI->Add_GameObject(LEVELID::LEVEL_TRAIN_STATION, LAYER_BACKGROUND, TEXT("Prototype_GameObject_Sky_Sunset"))))
 		return E_FAIL;
@@ -148,14 +93,6 @@ HRESULT CLevel_Train_Station::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Tanjiro"), nullptr, &pTanjiro)))
 		return E_FAIL;
 
-	CGameObject* pObject = GI->Find_GameObject(LEVELID::LEVEL_TRAIN_STATION, LAYER_CAMERA, L"Main_Camera");
-	if (nullptr == pObject)
-		return E_FAIL;
-
-	CCamera_Main* pCamera = dynamic_cast<CCamera_Main*>(pObject);
-	if (nullptr == pCamera)
-		return E_FAIL;
-
 	CCharacter* pCharacter = dynamic_cast<CCharacter*>(pTanjiro);
 	if (nullptr == pCharacter)
 		return E_FAIL;
@@ -163,14 +100,6 @@ HRESULT CLevel_Train_Station::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 
 	//CGameObject* pZenitsu = nullptr;
 	//if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Zenitsu"), nullptr, &pZenitsu)))
-	//	return E_FAIL;
-
-	//CGameObject* pObject = GI->Find_GameObject(LEVELID::LEVEL_TRAIN_STATION, LAYER_CAMERA, L"Main_Camera");
-	//if (nullptr == pObject)
-	//	return E_FAIL;
-
-	//CCamera_Main* pCamera = dynamic_cast<CCamera_Main*>(pObject);
-	//if (nullptr == pCamera)
 	//	return E_FAIL;
 
 	//CCharacter* pCharacter = dynamic_cast<CCharacter*>(pZenitsu);
@@ -190,7 +119,9 @@ HRESULT CLevel_Train_Station::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 		pCharacter->Get_Component<CTransform>(L"Com_Transform")->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pNavigation->Get_NaviDesc().vStartWorldPosition));
 	}
 
-	if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_Component<CTransform>(L"Com_Transform"))))
+
+	CCamera* pMainCamera = CCamera_Manager::GetInstance()->Get_MainCamera();
+	if (FAILED(pMainCamera->Set_TargetTransform(pCharacter->Get_Component<CTransform>(L"Com_Transform"))))
 		return E_FAIL;
 
 	return S_OK;

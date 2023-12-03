@@ -6,7 +6,6 @@
 #include "Object_Manager.h"
 #include "Component_Manager.h"
 #include "Light_Manager.h"
-#include "Camera_Manager.h"
 #include "Font_Manager.h"
 #include "Model_Manager.h"
 #include "Key_Manager.h"
@@ -23,7 +22,6 @@ CGameInstance::CGameInstance()
 	, m_pLevel_Manager(CLevel_Manager::GetInstance())
 	, m_pObject_Manager(CObject_Manager::GetInstance())
 	, m_pComponent_Manager(CComponent_Manager::GetInstance())
-	// , m_pCamera_Manager(CCamera_Manager::GetInstance())
 	, m_pPipeLine(CPipeLine::GetInstance())
 	, m_pLight_Manager(CLight_Manager::GetInstance())
 	, m_pKey_Manager(CKey_Manager::GetInstance())
@@ -31,8 +29,8 @@ CGameInstance::CGameInstance()
 	, m_pModel_Manager(CModel_Manager::GetInstance())
 	, m_pCollision_Manager(CCollision_Manager::GetInstance())
 	, m_pTarget_Manager(CTarget_Manager::GetInstance())
-	// , m_pNetwork_Manager(CNetwork_Manager::GetInstance())
 	, m_pFrustum(CFrustum::GetInstance())
+	// , m_pNetwork_Manager(CNetwork_Manager::GetInstance())
 	
 {
 	Safe_AddRef(m_pTarget_Manager);

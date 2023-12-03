@@ -400,6 +400,21 @@
     <Filter Include="02.GameObjects\05. Monster\Boss\Akaza\Projectile">
       <UniqueIdentifier>{41effe82-2372-4cbd-a9bc-504a3109a506}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03. Character\02. Kyojuro\State">
+      <UniqueIdentifier>{02d2d041-a4a7-41cd-ad79-f87fb084395b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\02. Kyojuro\Skill">
+      <UniqueIdentifier>{979b4115-cfec-4d43-a883-e7986348e714}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96. Manager\Camera">
+      <UniqueIdentifier>{436a0687-4f5c-4650-8078-1041fe615530}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\00. State\Sleep">
+      <UniqueIdentifier>{f62dc022-5225-4b74-be85-6cea6db52041}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Character\02. Kyojuro\Projectile">
+      <UniqueIdentifier>{0a5c6bd4-660e-4d94-8a4a-2e368d82c033}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -804,6 +819,30 @@
     <ClInclude Include="..\Public\Akaza_Projectile.h">
       <Filter>02.GameObjects\05. Monster\Boss\Akaza\Projectile</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\State_Kyojuro_Skill_0.h">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Kyojuro_Skill_1.h">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Kyojuro_Skill_2.h">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Kyojuro_Attack.h">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Kyojuro_Air_Attack.h">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Camera_Manager.h">
+      <Filter>96. Manager\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Character_Down.h">
+      <Filter>02.GameObjects\03. Character\00. State\Sleep</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kyojuro_Projectile.h">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro\Projectile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1192,6 +1231,30 @@
     </ClCompile>
     <ClCompile Include="..\Private\Akaza_Projectile.cpp">
       <Filter>02.GameObjects\05. Monster\Boss\Akaza\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Kyojuro_Skill_0.cpp">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Kyojuro_Skill_1.cpp">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Kyojuro_Skill_2.cpp">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Kyojuro_Attack.cpp">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Kyojuro_Air_Attack.cpp">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Camera_Manager.cpp">
+      <Filter>96. Manager\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Character_Down.cpp">
+      <Filter>02.GameObjects\03. Character\00. State\Sleep</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kyojuro_Projectile.cpp">
+      <Filter>02.GameObjects\03. Character\02. Kyojuro\Projectile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Level_FinalBoss.h"
 #include "GameInstance.h"
-#include "Camera.h"
-#include "Camera_Main.h"
+#include "Camera_Manager.h"
 #include "Character.h"
 
 CLevel_FinalBoss::CLevel_FinalBoss(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -12,6 +11,8 @@ CLevel_FinalBoss::CLevel_FinalBoss(ID3D11Device * pDevice, ID3D11DeviceContext *
 
 HRESULT CLevel_FinalBoss::Initialize()
 {
+	GI->Lock_Mouse();
+
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
@@ -105,28 +106,10 @@ HRESULT CLevel_FinalBoss::Ready_Lights()
 
 HRESULT CLevel_FinalBoss::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 {
-	
-
-
-	CCamera::CAMERADESC			CameraDesc;
-
-	CameraDesc.vEye = _float4(0.f, 10.f, -10.f, 1.f);
-	CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
-	CameraDesc.fFovy = XMConvertToRadians(60.0f);
-	CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
-	CameraDesc.fNear = 0.2f;
-	CameraDesc.fFar = 300.0f;
-
-	CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
-	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
-
- 	if(FAILED(GI->Add_GameObject(LEVELID::LEVEL_FINAL_BOSS, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
-		return E_FAIL;
+	CCamera_Manager::GetInstance()->Set_MainCamera(CCamera_Manager::CAMERA_TYPE::GAME_PLAY);
 
 	if (FAILED(GI->Add_GameObject(LEVELID::LEVEL_FINAL_BOSS, LAYER_BACKGROUND, TEXT("Prototype_GameObject_Sky_Night"))))
 		return E_FAIL;
-
-	
 
 	return S_OK;
 }
@@ -137,39 +120,18 @@ HRESULT CLevel_FinalBoss::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_FINAL_BOSS, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Kyojuro"), nullptr, &pKyojuro)))
 		return E_FAIL;
 
-	CGameObject* pObject = GI->Find_GameObject(LEVELID::LEVEL_FINAL_BOSS, LAYER_CAMERA, L"Main_Camera");
-	if (nullptr == pObject)
-		return E_FAIL;
-
-	CCamera_Main* pCamera = dynamic_cast<CCamera_Main*>(pObject);
-	if (nullptr == pCamera)
-		return E_FAIL;
-
 	CCharacter* pCharacter = dynamic_cast<CCharacter*>(pKyojuro);
 	if (nullptr == pCharacter)
-		return E_FAIL;
-
-	if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_Component<CTransform>(L"Com_Transform"))))
 		return E_FAIL;
 
 	//CGameObject* pZenitsu = nullptr;
 	//if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_GAMEPLAY, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Zenitsu"), nullptr, &pZenitsu)))
 	//	return E_FAIL;
 
-	//CGameObject* pObject = GI->Find_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, L"Main_Camera");
-	//if (nullptr == pObject)
-	//	return E_FAIL;
-
-	//CCamera_Main* pCamera = dynamic_cast<CCamera_Main*>(pObject);
-	//if (nullptr == pCamera)
-	//	return E_FAIL;
-
 	//CCharacter* pCharacter = dynamic_cast<CCharacter*>(pZenitsu);
 	//if (nullptr == pCharacter)
 	//	return E_FAIL;
 
-	//if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_TransformCom())))
-	//	return E_FAIL;
 
 	CNavigation* pNavigation = pCharacter->Get_Component<CNavigation>(L"Com_Navigation");
 	if (nullptr != pNavigation)
@@ -182,6 +144,10 @@ HRESULT CLevel_FinalBoss::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 
 		pCharacter->Get_Component<CTransform>(L"Com_Transform")->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pNavigation->Get_NaviDesc().vStartWorldPosition));
 	}
+
+	CCamera* pMainCamera = CCamera_Manager::GetInstance()->Get_MainCamera();
+	if (FAILED(pMainCamera->Set_TargetTransform(pCharacter->Get_Component<CTransform>(L"Com_Transform"))))
+		return E_FAIL;
 
 	return S_OK;
 }

@@ -7,8 +7,6 @@ BEGIN(Client)
 
 class CCamera_Main final : public CCamera
 {
-	enum CAMERA_STATE { BASIC, CUT_SCENE, SPL_SKL, STATE_END };
-
 private:
 	CCamera_Main(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjTag);
 	CCamera_Main(const CCamera_Main& rhs, CTransform::TRANSFORMDESC* pArg);
@@ -20,6 +18,10 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void LateTick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+
+public:
+	virtual void Tick_Basic(_float fTimeDelta) override;
 
 protected:
 	virtual HRESULT Ready_Components() override;

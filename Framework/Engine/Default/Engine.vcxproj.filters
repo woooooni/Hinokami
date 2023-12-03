@@ -79,9 +79,6 @@
     <Filter Include="01.Utiltiy\02.GameObjects\01. Camera">
       <UniqueIdentifier>{b499766b-d80b-4e53-9576-e6ef0c89bbbc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utiltiy\02.GameObjects\01. Camera\Manager">
-      <UniqueIdentifier>{1e20dead-8850-40c4-91b2-77a917592581}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utiltiy\03.Component">
       <UniqueIdentifier>{2f7b0f55-c192-41e7-bb1e-3795db1aeefc}</UniqueIdentifier>
     </Filter>

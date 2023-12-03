@@ -8,7 +8,6 @@ CCamera::CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring s
 
 CCamera::CCamera(const CCamera & rhs, CTransform::TRANSFORMDESC* pArg)
 	: CGameObject(rhs)
-	, m_pTransformCom((CTransform*)rhs.m_pTransformCom->Clone(pArg))
 {
 
 }
@@ -33,12 +32,27 @@ HRESULT CCamera::Initialize(void * pArg)
 	ZeroMemory(&m_tShakeDesc, sizeof(CAM_SHAKE));
 	m_tShakeDesc.bEnd = true;
 
+	m_pTransformCom->Initialize(&m_CameraDesc.TransformDesc);
+
 	return S_OK;
 }
 
 void CCamera::Tick(_float fTimeDelta)
 {
-
+	switch (m_eCurrState)
+	{
+	case CCamera::BASIC:
+		Tick_Basic(fTimeDelta);
+		break;
+	case CCamera::CUT_SCENE:
+		Tick_CutScene(fTimeDelta);
+		break;
+	case CCamera::SKILL:
+		Tick_Skill(fTimeDelta);
+		break;
+	default:
+		break;
+	}
 
 
 }
@@ -52,6 +66,21 @@ void CCamera::LateTick(_float fTimeDelta)
 HRESULT CCamera::Render()
 {
 	return S_OK;
+}
+
+void CCamera::Tick_Basic(_float fTimeDelta)
+{
+
+}
+
+void CCamera::Tick_CutScene(_float fTimeDelta)
+{
+
+}
+
+void CCamera::Tick_Skill(_float fTimeDelta)
+{
+
 }
 
 void CCamera::Cam_Shake(_float fDuration, _float fForce)

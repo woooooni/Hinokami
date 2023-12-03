@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Monster.h"
 #include "Animation.h"
+#include "Utils.h"
 
 CState_Enmu_Attack::CState_Enmu_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
@@ -79,7 +80,7 @@ void CState_Enmu_Attack::Enter_State(void* pArg)
 		fDirZ = min(fDirZ, 1.f);
 
 		_vector vJumpDir = XMVectorSet(fDirX, 0.8f, fDirZ, 0.f);
-
+		m_pTransformCom->Set_Position(m_pTransformCom->Get_Position() + XMVectorSet(0.f, 0.1f, 0.f, 0.f), GI->Get_TimeDelta(L"Timer_Default"), m_pNavigationCom);
 		m_pRigidBodyCom->Add_Velocity(vJumpDir, 10.f);
 	}
 
@@ -132,6 +133,7 @@ void CState_Enmu_Attack::Tick_Near_Attack_0(_float fTimeDelta)
 	_float fProgress = m_pModelCom->Get_Animations()[m_AnimationsIndex[m_iRandomAttackIndex][m_iCurrAnimIndex]]->Get_AnimationProgress();
 	if (0 == m_iCurrAnimIndex)
 	{
+		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f, true);
 		if (Find_NearTarget_Distance(fTimeDelta) <= 1.3f)
 		{
 			m_iCurrAnimIndex++;
@@ -144,7 +146,8 @@ void CState_Enmu_Attack::Tick_Near_Attack_0(_float fTimeDelta)
 	}
 	else if (1 == m_iCurrAnimIndex)
 	{
-		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f);
+		Trace_Near_Target();
+		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f, false);
 		m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		if (fProgress >= .8f)
 		{
@@ -155,7 +158,7 @@ void CState_Enmu_Attack::Tick_Near_Attack_0(_float fTimeDelta)
 	}
 	else if (2 == m_iCurrAnimIndex)
 	{
-		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
+		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f, false);
 		m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		if (fProgress >= 1.f)
 		{
@@ -164,7 +167,7 @@ void CState_Enmu_Attack::Tick_Near_Attack_0(_float fTimeDelta)
 		}
 		else
 		{
-			if (fProgress >= .4f)
+			if (fProgress >= .3f)
 			{
 				m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 10.f, 1.f);
 				m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
@@ -192,15 +195,16 @@ void CState_Enmu_Attack::Tick_Far_Attack_0(_float fTimeDelta)
 		fDirZ = min(fDirZ, 1.f);
 
 
-		_vector vJumpDir = XMVectorSet(fDirX, 0.8f, fDirZ, 0.f);
-		m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 5.f);
+		_vector vJumpDir = XMVectorSet(fDirX, 0.5f, fDirZ, 0.f);
+		m_pTransformCom->Set_Position(m_pTransformCom->Get_Position() + XMVectorSet(0.f, 0.1f, 0.f, 0.f), GI->Get_TimeDelta(L"Timer_Default"), m_pNavigationCom);
+		m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 10.f);
 	}
 
 	if (fProgress >= 0.4f && fProgress <= 0.42f)
 	{
 		for (_uint i = 0; i < 3; ++i)
 		{
-			_int iRandom = rand() % 3 - 1;
+			_int iRandom = CUtils::Random_Int(-3, 3);
 			Shoot(Find_NearTarget(fTimeDelta), XMVectorSet(_float(iRandom), 0.f, 0.f, 0.f), fTimeDelta);
 		}
 	}
@@ -328,8 +332,9 @@ void CState_Enmu_Attack::Tick_Far_Attack_2(_float fTimeDelta)
 			fDirZ = min(fDirZ, 1.f);
 
 
-			_vector vJumpDir = XMVectorSet(fDirX, 0.8f, fDirZ, 0.f);
-			m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 5.f);
+			_vector vJumpDir = XMVectorSet(fDirX, 0.25f, fDirZ, 0.f);
+			m_pTransformCom->Set_Position(m_pTransformCom->Get_Position() + XMVectorSet(0.f, 0.1f, 0.f, 0.f), GI->Get_TimeDelta(L"Timer_Default"), m_pNavigationCom);
+			m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 10.f);
 		}
 	}
 }
@@ -361,6 +366,8 @@ void CState_Enmu_Attack::Shoot(CGameObject* pTarget, _vector vOffsetPosition, _f
 
 CGameObject* CState_Enmu_Attack::Find_NearTarget(_float fTimeDelta)
 {
+	m_pTarget = nullptr;
+
 	list<CGameObject*>& TargetObjects = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_CHARACTER);
 	for (auto& pTarget : TargetObjects)
 	{
@@ -368,6 +375,8 @@ CGameObject* CState_Enmu_Attack::Find_NearTarget(_float fTimeDelta)
 		if (nullptr == pTargetTransform)
 			continue;
 
+		m_pTarget = pTarget;
+		m_pTransformCom->LookAt_ForLandObject(pTargetTransform->Get_State(CTransform::STATE_POSITION));
 		return pTarget;
 	}
 	return nullptr;
@@ -417,6 +426,31 @@ void CState_Enmu_Attack::Follow_NearTarget(_float fTimeDelta)
 			m_pTransformCom->LookAt_ForLandObject(pTargetTransform->Get_State(CTransform::STATE_POSITION));
 			vDir = XMVector3Normalize(XMVectorSetY(vDir, 0.f));
 			m_pTransformCom->Go_Dir(vDir, 15.f, fTimeDelta, m_pNavigationCom);
+		}
+	}
+}
+
+void CState_Enmu_Attack::Trace_Near_Target()
+{
+	if (nullptr == m_pTarget)
+	{
+		m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_Look()), 6.f);
+		return;
+	}
+	else
+	{
+		CTransform* pTargetTransform = m_pTarget->Get_Component<CTransform>(L"Com_Transform");
+
+		if (nullptr == pTargetTransform)
+		{
+			m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_Look()), 6.f);
+			return;
+		}
+
+		_float fDistance = XMVectorGetX(XMVector3Length(pTargetTransform->Get_Position() - m_pTransformCom->Get_Position()));
+		if (fDistance <= 5.f)
+		{
+			m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_Look()), fDistance);
 		}
 	}
 }

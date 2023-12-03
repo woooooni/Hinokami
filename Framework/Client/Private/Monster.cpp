@@ -7,6 +7,7 @@
 #include "Utils.h"
 #include "Camera.h"
 #include "Particle_Manager.h"
+#include "Camera_Manager.h"
 
 USING(Client)
 CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const MONSTER_STAT& tStat)
@@ -130,7 +131,7 @@ HRESULT CMonster::Render()
 
 	_float4 vRimColor = { 0.f, 0.f, 0.f, 0.f };
 	if (m_bInfinite)
-		vRimColor = { 0.f, 0.f, 0.f, 1.f };
+		vRimColor = { 1.f, 0.f, 0.f, 1.f };
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vRimColor", &vRimColor, sizeof(_float4))))
 		return E_FAIL;
@@ -285,26 +286,31 @@ void CMonster::On_Damaged(const COLLISION_INFO& tInfo)
 		_float fRadianZ = XMConvertToRadians(CUtils::Random_Float(-30.f, 30.f));
 
 		_vector vQuaternion = XMQuaternionRotationRollPitchYaw(fRadianX, fRadianY, fRadianZ);
+
+
+
 		
-		_matrix WorldMatrix = XMMatrixIdentity();
-		WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSetW(tInfo.pOtherCollider->Get_Position(), 1.f);
+		_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+		WorldMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(0.f, 0.5f, 0.f, 0.f) + XMVector3Normalize(XMVectorSetW(tInfo.pOtherCollider->Get_Position(), 1.f) - WorldMatrix.r[CTransform::STATE_POSITION]) * 0.5f;
+		XMVectorSetW(WorldMatrix.r[CTransform::STATE_POSITION], 1.f);
 
-		_int iRandom = CUtils::Random_Int(0, 3);
-		CEffect_Manager::GetInstance()->Generate_Effect(L"Basic_Slash_Damaged_" + to_wstring(iRandom), XMMatrixRotationQuaternion(vQuaternion), WorldMatrix, .1f);
-
+		_int iRandom = CUtils::Random_Int(0, 2);
+		CEffect_Manager::GetInstance()->Generate_Effect(L"Basic_Slash_Damaged_" + to_wstring(iRandom), XMMatrixIdentity(), XMMatrixRotationQuaternion(vQuaternion) * WorldMatrix, .2f);
 		CParticle_Manager::GetInstance()->Generate_Particle(L"Particle_Sword_Hit_0", WorldMatrix);
 	}
 	else
 	{
 		
-		_matrix WorldMatrix = XMMatrixIdentity();
-		WorldMatrix.r[CTransform::STATE_POSITION] = tInfo.pOtherCollider->Get_Position();
-		_int iRandomEffect = (rand() + rand() + rand()) % 2;
+		_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+		WorldMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(0.f, 0.5f, 0.f, 0.f) + XMVector3Normalize(XMVectorSetW(tInfo.pOtherCollider->Get_Position(), 1.f) - WorldMatrix.r[CTransform::STATE_POSITION]) * 0.5f;
+		XMVectorSetW(WorldMatrix.r[CTransform::STATE_POSITION], 1.f);
+		CParticle_Manager::GetInstance()->Generate_Particle(L"Particle_Hit_0", WorldMatrix);
 
+		_int iRandomEffect = CUtils::Random_Int(0, 1);
 		wstring strHitEffect = L"Basic_Damaged_" + to_wstring(iRandomEffect);
 
 		CEffect_Manager::GetInstance()->Generate_Effect(strHitEffect, XMMatrixIdentity(), WorldMatrix, .5f);
-		CParticle_Manager::GetInstance()->Generate_Particle(L"Particle_Hit_0", WorldMatrix);
+		
 	}
 
 
@@ -317,7 +323,7 @@ void CMonster::On_Damaged(const COLLISION_INFO& tInfo)
 	LookAt_DamagedObject(tInfo.pOther);
 
 
-	CCamera* pCamera = dynamic_cast<CCamera*>(GI->Find_GameObject(GI->Get_CurrentLevel(), LAYER_CAMERA, L"Main_Camera"));
+	CCamera* pCamera = CCamera_Manager::GetInstance()->Get_MainCamera();
 	
 	switch (tInfo.pOtherCollider->Get_AttackType())
 	{

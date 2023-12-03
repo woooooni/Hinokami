@@ -29,7 +29,7 @@ private:
 	_float m_fScrollSpeed = 100.f;
 
 	_float m_fAccScroll = 0.f;
-	_float m_fLimitScroll = 300.f;
+	_float m_fLimitScroll = 290.f;
 
 
 

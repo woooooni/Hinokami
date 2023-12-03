@@ -84,7 +84,7 @@ void CState_Akaza_Attack_1::Tick_State(_float fTimeDelta)
 			Trace_Near_Target();
 			++m_iCurrAnimIndex;
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
-			m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 16.f, 3.f, 1.f);
+			m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 12.f, 3.f, 1.f);
 			m_pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		}
 		break;

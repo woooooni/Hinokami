@@ -48,6 +48,7 @@ public:
 		
 
 public:
+	void Set_Sweath(_bool bSweath) { m_bSweath = bSweath; }
 	void SetUp_Trail_Position(_vector vHighPosition, _vector vLowPosition);
 	void Generate_Trail(const wstring& strDiffuseTextureName, const wstring& strAlphaTextureName, const _float4& vColor, _uint iVertexCount);
 	void Stop_Trail();
@@ -56,6 +57,7 @@ private:
 	wstring					m_strModelPrototype;
 	_float					m_fDamage = 1.f;
 	SWORD_TYPE				m_eType = SWORD_END;
+	_bool					m_bSweath = true;
 
 private:
 	class CTrail* m_pTrailObject = { nullptr };

@@ -9,9 +9,13 @@ BEGIN(Client)
 class CSweath final : public CPart
 {
 public:
+	enum SWEATH_TYPE { TANJIRO, ZENITSU, KYOJURO, SWEATH_END };
+
+public:
 	typedef struct tagWeaponDesc : public CPart::PART_DESC
 	{		
 		_float3			vRotationDegree;
+		SWEATH_TYPE eType;
 	} SWEATH_DESC;
 
 protected:
@@ -33,7 +37,7 @@ public:
 
 private:
 	wstring					m_strModelPrototype;
-
+	SWEATH_TYPE				m_eType = SWEATH_END;
 
 private:
 	HRESULT Ready_Components();

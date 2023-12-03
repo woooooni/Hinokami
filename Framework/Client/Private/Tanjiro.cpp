@@ -32,6 +32,7 @@
 #include "State_Character_Damaged_Bound.h"
 #include "State_Character_Damaged_AirBorn.h"
 #include "State_Character_Damaged_AirStay.h"
+#include "State_Character_Down.h"
 
 #include "State_Tanjiro_Skill_0.h"
 #include "State_Tanjiro_Skill_1.h"
@@ -309,6 +310,16 @@ HRESULT CTanjiro::Ready_States()
 			strAnimationName));
 
 
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseTired01_0");
+	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_BaseTired01_1");
+	m_pStateCom->Add_State(CCharacter::KNOCKDOWN,
+		CState_Character_Down::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
+
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P0001_V00_C00.ao|A_P0001_V00_C00_AtkCmbW01");
@@ -489,6 +500,8 @@ HRESULT CTanjiro::Ready_Parts()
 	m_Parts.resize(PARTTYPE::PART_END);
 
 	CSweath::SWEATH_DESC			SweathDesc;
+
+	SweathDesc.eType = CSweath::SWEATH_TYPE::TANJIRO;
 	SweathDesc.pOwner = this;
 	SweathDesc.pParentTransform = m_pTransformCom;
 	SweathDesc.pSocketBone = m_Sockets[SOCKET_SWEATH];

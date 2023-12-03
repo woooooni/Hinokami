@@ -9,7 +9,7 @@ class CCamera_Free final : public CCamera
 {
 private:
 	CCamera_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjTag);
-	CCamera_Free(const CCamera_Free& rhs, CTransform::TRANSFORMDESC* pArg);
+	CCamera_Free(const CCamera_Free& rhs);
 	virtual ~CCamera_Free() = default;
 
 public:

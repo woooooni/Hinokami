@@ -11,9 +11,10 @@ class CCharacter;
 class CUI_GaugeBar final : public CUI
 {
 public:
+	enum CHARACTER_TYPE { TANJIRO, ZENITSU, KYOJURO, ENMU, AKAZA, CHARACTER_END };
 	enum GAUGE_TYPE { HP, MP, GAUGE_END };
 	enum GAUGE_BAR_POSITION { LEFT_TOP, RIGHT_TOP, LEFT_TOP_BOTTOM, RIGHT_TOP_BOTTOM, POSITION_END };
-	enum CHARACTER_TYPE { TANJIRO, ZENITSU, KYOJURO, ENMU, AKAZA, CHARACTER_END };
+	
 
 protected:
 	CUI_GaugeBar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -71,12 +72,13 @@ private:
 	class CNpc* m_pOwnerNpc = nullptr;
 
 private:
-	_float m_fCurrRatio = 0.f;
-	_float m_fDestRatio = 0.f;
+	_float m_fCurrRatio = 1.f;
+	_float m_fDestRatio = 1.f;
+
 private:
 	void Reset() { 
 		m_fCurrRatio = 0.f;
-		m_fDestRatio = 0.f;
+		m_fDestRatio = 1.f;
 		m_pOwnerCharacter = nullptr; 
 		m_pOwnerMonster = nullptr; 
 		m_pOwnerNpc = nullptr; 

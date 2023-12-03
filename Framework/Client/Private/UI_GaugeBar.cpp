@@ -78,7 +78,7 @@ HRESULT CUI_GaugeBar::Initialize(void* pArg)
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.f));
 
-	ShowCursor(false);
+	// ShowCursor(false);
 
 	return S_OK;
 }
@@ -94,16 +94,31 @@ void CUI_GaugeBar::Tick(_float fTimeDelta)
 	if (nullptr != m_pOwnerCharacter)
 	{
 		const CCharacter::CHARACTER_STAT& CharacterStatDesc = m_pOwnerCharacter->Get_Stat();
-		m_fDestRatio = CharacterStatDesc.fHp / CharacterStatDesc.fMaxHp;
+		m_fDestRatio = max(0.f, fabs(CharacterStatDesc.fHp / CharacterStatDesc.fMaxHp));
 	}
 	else if (nullptr != m_pOwnerMonster)
 	{
 		const CMonster::MONSTER_STAT& MonsterStatDesc = m_pOwnerMonster->Get_Stat();
-		m_fDestRatio = MonsterStatDesc.fHp / MonsterStatDesc.fMaxHp;
+		m_fDestRatio = max(0.f, fabs(MonsterStatDesc.fHp / MonsterStatDesc.fMaxHp));
 	}
 
-	_float fIncrease = fTimeDelta;
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_Position() - XMVectorSet(fTimeDelta, 0.f, 0.f, 0.f));
+
+	
+	m_pTransformCom->Set_Scale(XMLoadFloat3(&_float3(m_tInfo.fCX * m_fDestRatio, m_tInfo.fCY, 1.f)));
+
+	_float fMovePosX = m_tInfo.fCX - (m_tInfo.fCX * m_fDestRatio);
+
+	if (m_eBarPositon == GAUGE_BAR_POSITION::LEFT_TOP || m_eBarPositon == GAUGE_BAR_POSITION::LEFT_TOP_BOTTOM)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION,
+			XMVectorSet((m_tInfo.fX - (fMovePosX / 2.f)) - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
+	}
+	else
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION,
+			XMVectorSet((m_tInfo.fX + (fMovePosX / 2.f)) - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
+	}
+	
 }
 
 void CUI_GaugeBar::LateTick(_float fTimeDelta)

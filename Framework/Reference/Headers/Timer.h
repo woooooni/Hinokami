@@ -19,7 +19,7 @@ public:
 	void Set_TimeScale(_float fTimeScale) { m_fTimeScale = fTimeScale; }
 	_float Get_TimeScale() { return m_fTimeScale; }
 
-	_float Get_TimeDelta() { return m_fTimeDelta; }
+	_float Get_TimeDelta() { return m_fTimeDelta * m_fTimeScale; }
 
 	HRESULT Set_Slow(_float fSlowTime, _float fTimeScale, _bool bForce) { 
 

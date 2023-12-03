@@ -178,6 +178,8 @@ public:
 		m_tEffectDesc.vUVFlow = { 0.f, 0.f };
 		m_fAccUVFlow = { 0.f, 0.f };
 		m_vUVIndex = { 0.f, 0.f };
+		m_fAccIndex = 0.f;
+		m_bEnd = false;
 	}
 
 	void Reset_Effect();

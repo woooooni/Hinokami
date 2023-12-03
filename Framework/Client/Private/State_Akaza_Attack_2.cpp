@@ -135,6 +135,7 @@ void CState_Akaza_Attack_2::Shoot(_float fTimeDelta)
 	CGameObject* pProjectile = nullptr;
 	if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_EFFECT, L"Prototype_GameObject_Akaza_Projectile", nullptr, &pProjectile)))
 		return;
+
 	if (FAILED(nullptr == pProjectile))
 		return;
 

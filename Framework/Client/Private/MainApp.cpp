@@ -13,6 +13,7 @@
 #include "Effect_Manager.h"
 #include "Particle_Manager.h"
 #include "UI_Manager.h"
+#include "Camera_Manager.h"
 
 #include "Light.h"
 
@@ -55,7 +56,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_TOOL, L"Train_Boss")))
+	if (FAILED(Open_Level(LEVEL_TRAIN_BOSS, L"Train_Boss")))
 		return E_FAIL;
 
 
@@ -66,9 +67,11 @@ HRESULT CMainApp::Initialize()
 
 void CMainApp::Tick(_float fTimeDelta)
 {
+	CCamera_Manager::GetInstance()->Tick(fTimeDelta);
 	m_pGame_Instance->Tick(fTimeDelta);
 	CUI_Manager::GetInstance()->Tick(fTimeDelta);
 	
+	CCamera_Manager::GetInstance()->LateTick(fTimeDelta);
 	m_pGame_Instance->LateTick(fTimeDelta);
 	CUI_Manager::GetInstance()->LateTick(fTimeDelta);
 	
@@ -166,6 +169,9 @@ HRESULT CMainApp::Initialize_Client()
 
 	
 	if (FAILED(CUI_Manager::GetInstance()->Reserve_Manager(m_pDevice, m_pContext)))
+		return E_FAIL;
+
+	if (FAILED(CCamera_Manager::GetInstance()->Reserve_Manager(m_pDevice, m_pContext)))
 		return E_FAIL;
 
 	LIGHTDESC LightDesc;

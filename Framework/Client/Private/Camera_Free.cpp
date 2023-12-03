@@ -8,8 +8,8 @@ CCamera_Free::CCamera_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 {
 }
 
-CCamera_Free::CCamera_Free(const CCamera_Free & rhs, CTransform::TRANSFORMDESC * pArg)
-	: CCamera(rhs, pArg)
+CCamera_Free::CCamera_Free(const CCamera_Free & rhs)
+	: CCamera(rhs)
 {
 
 }
@@ -87,8 +87,6 @@ void CCamera_Free::Tick(_float fTimeDelta)
 		{
 			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), MouseMove * fTimeDelta * 0.05f);
 		}
-
-
 	}
 
 
@@ -133,7 +131,7 @@ CGameObject * CCamera_Free::Clone(void* pArg)
 {
 	CCamera::CAMERADESC*		pCameraDesc = (CCamera::CAMERADESC*)pArg;
 
-	CCamera_Free*		pInstance = new CCamera_Free(*this, &pCameraDesc->TransformDesc);
+	CCamera_Free*		pInstance = new CCamera_Free(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{

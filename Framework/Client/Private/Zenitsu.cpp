@@ -27,6 +27,7 @@
 #include "State_Character_Damaged_Blow.h"
 #include "State_Character_Damaged_Bound.h"
 #include "State_Character_Damaged_AirBorn.h"
+#include "State_Character_Down.h"
 
 #include "State_Zenitsu_Skill_0.h"
 #include "State_Zenitsu_Special.h"
@@ -287,6 +288,15 @@ HRESULT CZenitsu::Ready_States()
 			m_pStateCom,
 			strAnimationName));
 
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseTired01_0");
+	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseTired01_1");
+	m_pStateCom->Add_State(CCharacter::KNOCKDOWN,
+		CState_Character_Down::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
 
 
 	strAnimationName.clear();
@@ -369,6 +379,7 @@ HRESULT CZenitsu::Ready_States()
 
 
 
+	
 
 
 
@@ -419,18 +430,18 @@ HRESULT CZenitsu::Ready_Colliders()
 		return E_FAIL;
 
 
-	ColliderDesc.tSphere.Radius = .1f;
-	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"L_Foot_End");
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
-		return E_FAIL;
+	//ColliderDesc.tSphere.Radius = .1f;
+	//ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"L_Foot_End");
+	//ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
+	//if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+	//	return E_FAIL;
 
 
-	ColliderDesc.tSphere.Radius = .1f;
-	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"R_Foot_End");
-	ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
-		return E_FAIL;
+	//ColliderDesc.tSphere.Radius = .1f;
+	//ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"R_Foot_End");
+	//ColliderDesc.vOffsetPosition = _float3(0.f, 0.f, 0.f);
+	//if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
+	//	return E_FAIL;
 
 
 	Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
@@ -495,9 +506,12 @@ HRESULT CZenitsu::Ready_Parts()
 	m_Parts.resize(PARTTYPE::PART_END);
 
 	CSweath::SWEATH_DESC			SweathDesc;
+
+	SweathDesc.eType = CSweath::SWEATH_TYPE::ZENITSU;
 	SweathDesc.pOwner = this;
 	SweathDesc.pParentTransform = m_pTransformCom;
 	SweathDesc.pSocketBone = m_Sockets[SOCKET_SWEATH];
+
 	XMStoreFloat3(&SweathDesc.vRotationDegree,
 		XMVectorSet(XMConvertToRadians(0.f),
 			XMConvertToRadians(179.f),

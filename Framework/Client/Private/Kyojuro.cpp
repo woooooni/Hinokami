@@ -10,8 +10,6 @@
 
 
 
-#include "State_Zenitsu_Attack.h"
-#include "State_Zenitsu_Air_Attack.h"
 
 
 #include "State_Character_Battle_Idle.h"
@@ -19,6 +17,7 @@
 #include "State_Character_Battle_Jump.h"
 #include "State_Character_Battle_Dash.h"
 #include "State_Character_Battle_AirDash.h"
+#include "State_Character_Down.h"
 
 #include "State_Character_Dead.h"
 
@@ -28,8 +27,12 @@
 #include "State_Character_Damaged_Bound.h"
 #include "State_Character_Damaged_AirBorn.h"
 
-#include "State_Zenitsu_Skill_0.h"
-#include "State_Zenitsu_Special.h"
+#include "State_Kyojuro_Air_Attack.h"
+#include "State_Kyojuro_Attack.h"
+#include "State_Kyojuro_Skill_0.h"
+#include "State_Kyojuro_Skill_1.h"
+#include "State_Kyojuro_Skill_2.h"
+
 
 USING(Client)
 
@@ -79,12 +82,6 @@ HRESULT CKyojuro::Initialize(void* pArg)
 
 void CKyojuro::Tick(_float fTimeDelta)
 {
-	if (KEY_TAP(KEY::E))
-	{
-		CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_0", m_pTransformCom->Get_WorldMatrix());
-		CParticle_Manager::GetInstance()->Generate_Particle(L"Skl_01_Zenitsu_Particle_1", m_pTransformCom->Get_WorldMatrix());
-	}
-
 	m_pStateCom->Tick_State(fTimeDelta);
 	__super::Tick(fTimeDelta);
 }
@@ -148,7 +145,7 @@ HRESULT CKyojuro::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Zenitsu"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Kyojuro"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	/* For.Com_StateMachine */
@@ -188,11 +185,11 @@ HRESULT CKyojuro::Ready_States()
 	list<wstring> strAnimationName;
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseNut01_1");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseNut01_1");
 	m_pStateCom->Add_State(CCharacter::BATTLE_IDLE, CState_Character_Battle_Idle::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseRun01_1");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseRun01_1");
 	m_pStateCom->Add_State(CCharacter::BATTLE_MOVE,
 		CState_Character_Battle_Move::Create(m_pDevice,
 			m_pContext,
@@ -200,10 +197,10 @@ HRESULT CKyojuro::Ready_States()
 			strAnimationName));
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseJump01_0");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseJump01_1");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseJump01_2");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseJump01_3");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseJump01_0");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseJump01_1");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseJump01_2");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseJump01_3");
 	m_pStateCom->Add_State(CCharacter::BATTLE_JUMP,
 		CState_Character_Battle_Jump::Create(m_pDevice,
 			m_pContext,
@@ -214,10 +211,10 @@ HRESULT CKyojuro::Ready_States()
 	strAnimationName.clear();
 	// Left
 	// Right
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseStepL01");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseStepL02");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseStepR01");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseStepR02");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseStepL01");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseStepL02");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseStepR01");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseStepR02");
 
 	m_pStateCom->Add_State(CCharacter::BATTLE_DASH,
 		CState_Character_Battle_Dash::Create(m_pDevice,
@@ -228,8 +225,8 @@ HRESULT CKyojuro::Ready_States()
 	// Left
 	// Right
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseStepAL01");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_BaseStepAR01");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseStepAL01");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseStepAR01");
 	m_pStateCom->Add_State(CCharacter::BATTLE_AIRDASH,
 		CState_Character_Battle_AirDash::Create(m_pDevice,
 			m_pContext,
@@ -241,7 +238,7 @@ HRESULT CKyojuro::Ready_States()
 
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0000_V00_C00_Death");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0000_V00_C00_Death");
 	m_pStateCom->Add_State(CCharacter::DIE,
 		CState_Character_Dead::Create(m_pDevice,
 			m_pContext,
@@ -250,8 +247,8 @@ HRESULT CKyojuro::Ready_States()
 
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0000_V00_C00_Dmg02_F");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0000_V00_C00_Dmg02_G");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0000_V00_C00_Dmg01_F");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0000_V00_C00_Dmg02_G");
 	m_pStateCom->Add_State(CCharacter::DAMAGED_BASIC,
 		CState_Character_Damaged_Basic::Create(m_pDevice,
 			m_pContext,
@@ -259,8 +256,8 @@ HRESULT CKyojuro::Ready_States()
 			strAnimationName));
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0000_V00_C00_DmgBound01_0");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0000_V00_C00_DmgBound02_2");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0000_V00_C00_DmgBound01_0");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0000_V00_C00_DmgBound02_2");
 	m_pStateCom->Add_State(CCharacter::DAMAGED_BOUND,
 		CState_Character_Damaged_Bound::Create(m_pDevice,
 			m_pContext,
@@ -268,9 +265,9 @@ HRESULT CKyojuro::Ready_States()
 			strAnimationName));
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_0");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_1");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_0");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_1");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0000_V00_C00_DmgBlowF01_2");
 	m_pStateCom->Add_State(CCharacter::DAMAGED_BLOW,
 		CState_Character_Damaged_Blow::Create(m_pDevice,
 			m_pContext,
@@ -278,37 +275,47 @@ HRESULT CKyojuro::Ready_States()
 			strAnimationName));
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_0");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_1");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_2");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_0");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_1");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0000_V00_C00_DmgUpperF01_2");
 	m_pStateCom->Add_State(CCharacter::DAMAGED_AIRBORN,
 		CState_Character_Damaged_AirBorn::Create(m_pDevice,
 			m_pContext,
 			m_pStateCom,
 			strAnimationName));
 
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseNut02_0");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_BaseNut02_1");
+	m_pStateCom->Add_State(CCharacter::KNOCKDOWN,
+		CState_Character_Down::Create(m_pDevice,
+			m_pContext,
+			m_pStateCom,
+			strAnimationName));
+
 
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkCmbW01");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkCmbW02");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkCmbW03");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkCmbW03D01");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkCmbW04");
-
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_AtkCmbW01");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_AtkCmbW02");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_AtkCmbW03");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_AtkCmbW03D01");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_AtkCmbW03U01");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_AtkCmbW04");
+	
 	m_pStateCom->Add_State(CCharacter::ATTACK,
-		CState_Zenitsu_Attack::Create(m_pDevice,
+		CState_Kyojuro_Attack::Create(m_pDevice,
 			m_pContext,
 			m_pStateCom,
 			strAnimationName));
 
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01A_0");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01A_2");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_AtkCmbAW01");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_AtkCmbAW02");
 
 	m_pStateCom->Add_State(CCharacter::AIR_ATTACK,
-		CState_Zenitsu_Air_Attack::Create(m_pDevice,
+		CState_Kyojuro_Air_Attack::Create(m_pDevice,
 			m_pContext,
 			m_pStateCom,
 			strAnimationName));
@@ -316,26 +323,30 @@ HRESULT CKyojuro::Ready_States()
 
 
 	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_0");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_1");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_2");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_3");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_4");
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_AtkSkl01_Cut");
+	
 
 	m_pStateCom->Add_State(CCharacter::SKILL_0,
-		CState_Zenitsu_Skill_0::Create(m_pDevice,
+		CState_Kyojuro_Skill_0::Create(m_pDevice,
 			m_pContext,
 			m_pStateCom,
 			strAnimationName));
+
+
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_AtkSkl02");
 
 	m_pStateCom->Add_State(CCharacter::SKILL_1,
-		CState_Zenitsu_Skill_0::Create(m_pDevice,
+		CState_Kyojuro_Skill_1::Create(m_pDevice,
 			m_pContext,
 			m_pStateCom,
 			strAnimationName));
 
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_AtkSkl03_0");
+
 	m_pStateCom->Add_State(CCharacter::SKILL_2,
-		CState_Zenitsu_Skill_0::Create(m_pDevice,
+		CState_Kyojuro_Skill_2::Create(m_pDevice,
 			m_pContext,
 			m_pStateCom,
 			strAnimationName));
@@ -356,16 +367,20 @@ HRESULT CKyojuro::Ready_States()
 
 
 
-	strAnimationName.clear();
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_SplSnsReady01_0");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkAwake01_Cut");
-	strAnimationName.push_back(L"SK_P0003_V00_C00.ao|A_P0003_V00_C00_AtkSkl01_Cut");
-	
-	m_pStateCom->Add_State(CCharacter::SPECIAL,
-		CState_Zenitsu_Special::Create(m_pDevice,
-			m_pContext,
-			m_pStateCom,
-			strAnimationName));
+	//strAnimationName.clear();
+	//strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_SplRgk_c010_P0012");
+	//strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_SplRgk_c040_P0012");
+	//strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_SplRgk_c070_P0012");
+	//strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_SplRgk_c060_P0012");
+	//strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_SplRgk_c078_P0012");
+	//strAnimationName.push_back(L"SK_P0012_V00_C00.ao|A_P0012_V00_C00_SplRgk_c080_P0012");
+
+	//
+	//m_pStateCom->Add_State(CCharacter::SPECIAL,
+	//	CState_Zenitsu_Special::Create(m_pDevice,
+	//		m_pContext,
+	//		m_pStateCom,
+	//		strAnimationName));
 
 
 
@@ -412,12 +427,6 @@ HRESULT CKyojuro::Ready_Colliders()
 		return E_FAIL;
 
 
-	ColliderDesc.tSphere.Radius = .8f;
-	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"C_Spine_1");
-	ColliderDesc.vOffsetPosition = _float3(0.f, -0.25f, 0.f);
-	if (FAILED(__super::Add_Collider(LEVEL_STATIC, CCollider::COLLIDER_TYPE::SPHERE, CCollider::DETECTION_TYPE::ATTACK, &ColliderDesc)))
-		return E_FAIL;
-
 
 	ColliderDesc.tSphere.Radius = .1f;
 	ColliderDesc.pNode = m_pModelCom->Get_HierarchyNode(L"L_Foot_End");
@@ -457,7 +466,7 @@ HRESULT CKyojuro::Ready_Sockets()
 	TrailDesc.bTrail = true;
 	TrailDesc.fAccGenTrail = 0.f;
 	TrailDesc.fGenTrailTime = 0.01f;
-	TrailDesc.vDiffuseColor = { .8f, .8f, .2f, 0.5f };
+	TrailDesc.vDiffuseColor = { .8f, 0.f, 0.f, 0.5f };
 
 
 	// LeftFoot
@@ -495,17 +504,18 @@ HRESULT CKyojuro::Ready_Parts()
 	m_Parts.resize(PARTTYPE::PART_END);
 
 	CSweath::SWEATH_DESC			SweathDesc;
+	SweathDesc.eType = CSweath::SWEATH_TYPE::KYOJURO;
 	SweathDesc.pOwner = this;
 	SweathDesc.pParentTransform = m_pTransformCom;
 	SweathDesc.pSocketBone = m_Sockets[SOCKET_SWEATH];
 	XMStoreFloat3(&SweathDesc.vRotationDegree,
 		XMVectorSet(XMConvertToRadians(0.f),
-			XMConvertToRadians(179.f),
-			XMConvertToRadians(-89.f),
+			XMConvertToRadians(90.f),
+			XMConvertToRadians(0.f),
 			XMConvertToRadians(0.f)));
 	XMStoreFloat4x4(&SweathDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 
-	CGameObject* pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sweath_Zenitsu"), LAYER_TYPE::LAYER_CHARACTER, &SweathDesc);
+	CGameObject* pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sweath_Kyojuro"), LAYER_TYPE::LAYER_CHARACTER, &SweathDesc);
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
@@ -513,22 +523,23 @@ HRESULT CKyojuro::Ready_Parts()
 	m_Parts[PART_SWEATH] = (pGameObject);
 
 
+
 	CSword::SWORD_DESC			SwordDesc;
 
-	SwordDesc.eType = CSword::SWORD_TYPE::ZENITSU;
+	SwordDesc.eType = CSword::SWORD_TYPE::KYOJURO;
 	SwordDesc.pOwner = this;
 	SwordDesc.pParentTransform = m_pTransformCom;
 	SwordDesc.pSocketBone = m_Sockets[SOCKET_SWEATH];
 	XMStoreFloat3(&SwordDesc.vRotationDegree,
 		XMVectorSet(XMConvertToRadians(0.f),
-			XMConvertToRadians(179.f),
-			XMConvertToRadians(-89.f),
+			XMConvertToRadians(0.f),
+			XMConvertToRadians(90.f),
 			XMConvertToRadians(0.f)));
 
 	XMStoreFloat4x4(&SwordDesc.SocketPivot, m_pModelCom->Get_PivotMatrix());
 
 
-	pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sword_Zenitsu"), LAYER_TYPE::LAYER_CHARACTER, &SwordDesc);
+	pGameObject = GI->Clone_GameObject(TEXT("Prototype_GameObject_Sword_Kyojuro"), LAYER_TYPE::LAYER_CHARACTER, &SwordDesc);
 
 	if (nullptr == pGameObject)
 		return E_FAIL;

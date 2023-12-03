@@ -42,12 +42,15 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 
 	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
-
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
-
 	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, true);
-
 	m_pSword->SetUp_Trail_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, -1.5f, 1.f));
+
+
+	for (_uint i = 0; i < 5; ++i)
+	{
+		m_bSlashEffect[i] = false;
+	}
 
 }
 
@@ -79,9 +82,9 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 			if (false == m_bSlashEffect[m_iCurrAnimIndex])
 			{
 				m_bSlashEffect[m_iCurrAnimIndex] = true;
-				_matrix OffsetMatrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(180.f)) * XMMatrixRotationZ(XMConvertToRadians(270.f));
-				OffsetMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(-0.5f, 0.f, 0.f, 0.f);
-				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_1", OffsetMatrix, XMMatrixIdentity(), 2.f, m_pSword);
+				_matrix WorldMatrix = XMMatrixRotationZ(XMConvertToRadians(-120.f)) * m_pTransformCom->Get_WorldMatrix();
+				WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixIdentity(), WorldMatrix, 2.f);
 			}
 		}
 		if (fProgress > 0.5f)
@@ -101,9 +104,9 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 			if (false == m_bSlashEffect[m_iCurrAnimIndex])
 			{
 				m_bSlashEffect[m_iCurrAnimIndex] = true;
-				_matrix OffsetMatrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(180.f)) * XMMatrixRotationZ(XMConvertToRadians(270.f));
-				OffsetMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(-0.5f, 0.f, 0.f, 0.f);
-				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_1", OffsetMatrix, XMMatrixIdentity(), 2.f, m_pSword);
+				_matrix WorldMatrix = XMMatrixRotationZ(XMConvertToRadians(120.f)) * m_pTransformCom->Get_WorldMatrix();
+				WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + XMVectorSet(0.f, .5f, 0.f, 0.f);
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixIdentity(), WorldMatrix, 2.f);
 			}
 		}
 
@@ -121,14 +124,14 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 		break;
 
 	case 2:
-		if (fProgress > 0.2f)
+		if (fProgress > 0.4f)
 		{
 			if (false == m_bSlashEffect[m_iCurrAnimIndex])
 			{
 				m_bSlashEffect[m_iCurrAnimIndex] = true;
-				_matrix OffsetMatrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(180.f)) * XMMatrixRotationZ(XMConvertToRadians(270.f));
-				OffsetMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(-0.5f, 0.f, 0.f, 0.f);
-				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_1", OffsetMatrix, XMMatrixIdentity(), 2.f, m_pSword);
+				_matrix WorldMatrix = XMMatrixRotationZ(XMConvertToRadians(-120.f)) * m_pTransformCom->Get_WorldMatrix();
+				WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixIdentity(), WorldMatrix, 2.f);
 			}
 		}
 
@@ -151,9 +154,9 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 				if (false == m_bSlashEffect[m_iCurrAnimIndex])
 				{
 					m_bSlashEffect[m_iCurrAnimIndex] = true;
-					_matrix OffsetMatrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(180.f)) * XMMatrixRotationZ(XMConvertToRadians(270.f));
-					OffsetMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(-0.5f, 0.f, 0.f, 0.f);
-					CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_1", OffsetMatrix, XMMatrixIdentity(), 2.f, m_pSword);
+					_matrix WorldMatrix = XMMatrixRotationZ(XMConvertToRadians(120.f)) * m_pTransformCom->Get_WorldMatrix();
+					WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + XMVectorSet(0.f, .5f, 0.f, 0.f);
+					CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixIdentity(), WorldMatrix, 2.f);
 				}
 				m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 12.f, 0.1f, 1.f);
 				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 12.f, 0.1f, 1.f);
@@ -181,9 +184,9 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 			if (false == m_bSlashEffect[m_iCurrAnimIndex])
 			{
 				m_bSlashEffect[m_iCurrAnimIndex] = true;
-				_matrix OffsetMatrix = XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixRotationY(XMConvertToRadians(180.f)) * XMMatrixRotationZ(XMConvertToRadians(270.f));
-				OffsetMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(-0.5f, 0.f, 0.f, 0.f);
-				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_1", OffsetMatrix, XMMatrixIdentity(), 2.f, m_pSword);
+				_matrix WorldMatrix = XMMatrixRotationZ(XMConvertToRadians(20.f)) * m_pTransformCom->Get_WorldMatrix();
+				WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixIdentity(), WorldMatrix, 2.f);
 			}
 
 			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 10.f, 1.f);
@@ -223,6 +226,11 @@ void CState_Tanjiro_Attack::Exit_State()
 
 	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
 	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
+
+	for (_uint i = 0; i < 5; ++i)
+	{
+		m_bSlashEffect[i] = false;
+	}
 }
 
 

@@ -28,6 +28,8 @@ private:
 	class CSword* m_pSword = nullptr;
 	class CGameObject* m_pTarget = nullptr;
 
+	_bool m_bSlashEffect[8] = {};
+
 private:
 	void Input(_float fTimeDelta);
 	void Find_Near_Target();

@@ -147,7 +147,6 @@ private:
 	class CComponent_Manager*		m_pComponent_Manager = { nullptr };
 	class CPipeLine*				m_pPipeLine = { nullptr };
 	class CLight_Manager*			m_pLight_Manager = { nullptr };
-	// class CCamera_Manager*			m_pCamera_Manager = { nullptr };
 	class CKey_Manager*				m_pKey_Manager = { nullptr };
 	class CModel_Manager*			m_pModel_Manager = { nullptr };
 	class CFont_Manager*			m_pFont_Manager = { nullptr };

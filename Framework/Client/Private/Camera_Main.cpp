@@ -2,6 +2,7 @@
 #include "..\Public\Camera_Main.h"
 #include "GameInstance.h"
 #include "Key_Manager.h"
+#include "Utils.h"
 
 CCamera_Main::CCamera_Main(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, wstring strObjTag)
 	: CCamera(pDevice, pContext, strObjTag, OBJ_TYPE::OBJ_CAMERA)
@@ -9,7 +10,7 @@ CCamera_Main::CCamera_Main(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 }
 
 CCamera_Main::CCamera_Main(const CCamera_Main & rhs, CTransform::TRANSFORMDESC* pArg)
-	: CCamera(rhs, pArg)
+	: CCamera(rhs)
 {
 
 }
@@ -37,7 +38,67 @@ HRESULT CCamera_Main::Initialize(void * pArg)
 
 void CCamera_Main::Tick(_float fTimeDelta)
 {
+	__super::Tick(fTimeDelta);
+
+}
+
+void CCamera_Main::LateTick(_float fTimeDelta)
+{
 	
+
+	if (CCamera::CAMERA_STATE::BASIC == m_eCurrState)
+	{
+		// x, y 회전 행렬
+		_matrix mX = XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(m_vAngle.x));
+		_matrix mY = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_vAngle.y));
+
+		// 멀어질 방향
+		_vector vCamDir = XMVector3Normalize(XMVectorSet(0.f, 1.f, -1.f, 0.f));
+
+		// X, Y회전
+		vCamDir = XMVector3TransformNormal(vCamDir, mX);
+		vCamDir = XMVector3TransformNormal(vCamDir, mY);
+		_vector vCamPos = vCamDir * m_fOffsetDistance;
+
+		_vector vPlayerPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION);
+		_vector vDestPos = vPlayerPos + vCamPos;
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), vDestPos, m_fCamSpeed * fTimeDelta));
+
+		_float4 vLookAt;
+		XMStoreFloat4(&vLookAt, vPlayerPos);
+		vLookAt.y += 1.f;
+		m_pTransformCom->LookAt(XMLoadFloat4(&vLookAt));
+	}
+	
+
+	if (false == m_tShakeDesc.bEnd)
+	{
+		m_tShakeDesc.fAccTime += fTimeDelta;
+		if (m_tShakeDesc.fAccTime >= m_tShakeDesc.fDuration)
+			m_tShakeDesc.bEnd = true;
+
+		_float fForce = CUtils::Random_Float(-m_tShakeDesc.fForce, m_tShakeDesc.fForce);
+
+		_vector vShakeDir = XMVector3Normalize(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		vPosition += vShakeDir * fForce * fTimeDelta;
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
+	}
+
+	__super::LateTick(fTimeDelta);
+	
+}
+
+HRESULT CCamera_Main::Render()
+{
+	return S_OK;
+}
+
+void CCamera_Main::Tick_Basic(_float fTimeDelta)
+{
 	_long	MouseMove = 0;
 
 
@@ -58,62 +119,6 @@ void CCamera_Main::Tick(_float fTimeDelta)
 		else if (0.f >= m_vAngle.y)
 			m_vAngle.y = 360.f;
 	}
-
-	
-	
-	__super::Tick(fTimeDelta);
-}
-
-void CCamera_Main::LateTick(_float fTimeDelta)
-{
-	__super::LateTick(fTimeDelta);
-
-	// x, y 회전 행렬
-	_matrix mX = XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(m_vAngle.x));
-	_matrix mY = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(m_vAngle.y));
-
-	// 멀어질 방향
-	_vector vCamDir = XMVector3Normalize(XMVectorSet(0.f, 1.f, -1.f, 0.f));
-
-	// X, Y회전
-	vCamDir = XMVector3TransformNormal(vCamDir, mX);
-	vCamDir = XMVector3TransformNormal(vCamDir, mY);
-	_vector vCamPos = vCamDir * m_fOffsetDistance;
-
-	_vector vPlayerPos = m_pTargetTransform->Get_State(CTransform::STATE_POSITION);
-	_vector vDestPos = vPlayerPos + vCamPos;
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), vDestPos, m_fCamSpeed * fTimeDelta));
-
-	_float4 vLookAt;
-	XMStoreFloat4(&vLookAt, vPlayerPos);
-	vLookAt.y += 1.f;
-	m_pTransformCom->LookAt(XMLoadFloat4(&vLookAt));
-
-	if (false == m_tShakeDesc.bEnd)
-	{
-
-		srand(time(NULL) * rand() * rand());
-		m_tShakeDesc.fAccTime += fTimeDelta;
-		if (m_tShakeDesc.fAccTime >= m_tShakeDesc.fDuration)
-			m_tShakeDesc.bEnd = true;
-
-		_float fForce = (rand() % _uint(m_tShakeDesc.fForce)) - (m_tShakeDesc.fForce / 2.f);
-
-		_vector vShakeDir = XMVector3Normalize(XMVectorSet(1.f, 1.f, 1.f, 0.f));
-		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		vPosition += vShakeDir * fForce * fTimeDelta;
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-
-	}
-	
-	
-}
-
-HRESULT CCamera_Main::Render()
-{
-	return S_OK;
 }
 
 HRESULT CCamera_Main::Ready_Components()

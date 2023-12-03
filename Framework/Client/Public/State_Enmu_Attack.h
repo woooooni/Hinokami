@@ -48,6 +48,7 @@ private:
 	class CGameObject* Find_NearTarget(_float fTimeDelta);
 	_float Find_NearTarget_Distance(_float fTimeDelta);
 	void Follow_NearTarget(_float fTimeDelta);
+	void Trace_Near_Target();
 	
 public:
 	static CState_Enmu_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const vector<list<wstring>>& AnimationList);

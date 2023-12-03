@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "State_Tanjiro_Skill_2.h"
+#include "State_Kyojuro_Skill_0.h"
 #include "GameInstance.h"
 #include "Model.h"
 #include "Character.h"
@@ -11,14 +11,15 @@
 #include "Camera_Manager.h"
 #include "Monster.h"
 #include "Camera.h"
+#include "Utils.h"
 
-CState_Tanjiro_Skill_2::CState_Tanjiro_Skill_2(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
+CState_Kyojuro_Skill_0::CState_Kyojuro_Skill_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
 {
 
 }
 
-HRESULT CState_Tanjiro_Skill_2::Initialize(const list<wstring>& AnimationList)
+HRESULT CState_Kyojuro_Skill_0::Initialize(const list<wstring>& AnimationList)
 {
 	if (FAILED(__super::Initialize(AnimationList)))
 		return E_FAIL;
@@ -34,53 +35,75 @@ HRESULT CState_Tanjiro_Skill_2::Initialize(const list<wstring>& AnimationList)
 	return S_OK;
 }
 
-void CState_Tanjiro_Skill_2::Enter_State(void* pArg)
+void CState_Kyojuro_Skill_0::Enter_State(void* pArg)
 {
 
 	m_iCurrAnimIndex = 0;
+	m_bGenEffect = false;
 	m_pCharacter->DrawSword();
 	Use_Skill(GI->Get_TimeDelta(L"Timer_GamePlay"));
 }
 
-void CState_Tanjiro_Skill_2::Tick_State(_float fTimeDelta)
+void CState_Kyojuro_Skill_0::Tick_State(_float fTimeDelta)
 {
 	
 	_float fProgress = m_pModelCom->Get_CurrAnimation()->Get_AnimationProgress();
 	switch (m_iCurrAnimIndex)
 	{
 	case 0:
-		if (fProgress >= .4f && fProgress <= .42f)
-		{
-			_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-			WorldMatrix.r[CTransform::STATE_POSITION] += m_pTransformCom->Get_Look();			
-			CEffect_Manager::GetInstance()->Generate_Effect(L"Tanjiro_Water_Splash_0", XMMatrixIdentity(), WorldMatrix, 1.f);
-			CParticle_Manager::GetInstance()->Generate_Particle(L"Particle_White_Wave", WorldMatrix);
+		
 
-			CCamera* pCamera = CCamera_Manager::GetInstance()->Get_MainCamera();
-			if (nullptr != pCamera)
+		if (fProgress >= 0.25f)
+		{
+			m_pCharacter->Set_Infinite(999.f, true);
+			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, true);
+			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, true);
+
+			m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+			m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
+			m_pCharacter->Set_ActiveColliders(CCollider::BODY, false);
+		}
+
+		if (fProgress >= 0.35f)
+		{
+
+			if (m_bGenEffect == false)
 			{
-				pCamera->Cam_Shake(2.f, 10.f);
+				m_bGenEffect = true;
+				CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Kyojuro_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMMatrixIdentity(), 2.f, m_pSword);
+
+				CCamera* pCamera = CCamera_Manager::GetInstance()->Get_MainCamera();
+				if (nullptr != pCamera)
+					pCamera->Cam_Shake(1.f, 3.f);
 			}
 		}
 
-		if (fProgress >= .4f)
+		if (fProgress >= .7f)
+		{
+			m_pCharacter->Set_Infinite(0.f, false);
+			m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
+			m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
+			m_pCharacter->Set_ActiveColliders(CCollider::BODY, true);
+
+
+			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
+			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f);
+		}
+		else
 		{
 			m_fAccGenParticle += fTimeDelta;
 			if (m_fAccGenParticle >= m_fGenParticleTime)
 			{
 				m_fAccGenParticle = 0.f;
-				_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-				WorldMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(0.f, 1.f, 0.f, 0.f);
-				CParticle_Manager::GetInstance()->Generate_Particle(L"Tanjiro_Paritlcle_0", WorldMatrix);
-
-				WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-				WorldMatrix.r[CTransform::STATE_POSITION] += m_pTransformCom->Get_Look();
-				CParticle_Manager::GetInstance()->Generate_Particle(L"Particle_White_Wave", WorldMatrix);
+				_matrix WorldMatrix = m_pSword->Get_FinalWorldMatrix();
+				WorldMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(CUtils::Random_Float(-0.25f, 0.25f), CUtils::Random_Float(-0.25f, 0.25f), CUtils::Random_Float(-0.25f, 0.25f), 0.f);
+				CParticle_Manager::GetInstance()->Generate_Particle(L"Kyojuro_Paritlcle_0", WorldMatrix);
+				CParticle_Manager::GetInstance()->Generate_Particle(L"Kyojuro_Paritlcle_1", WorldMatrix);
 			}
 		}
 		
 
-		if (fProgress >= .8f)
+		if (fProgress >= .9f)
 		{
 			m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
 		}
@@ -91,12 +114,14 @@ void CState_Tanjiro_Skill_2::Tick_State(_float fTimeDelta)
 
 }
 
-void CState_Tanjiro_Skill_2::Exit_State()
+void CState_Kyojuro_Skill_0::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
+	m_bGenEffect = false;
 
 	m_pCharacter->SweathSword();
 	m_pSword->Stop_Trail();
+
 
 
 	m_pCharacter->Set_Infinite(0.f, false);
@@ -112,7 +137,7 @@ void CState_Tanjiro_Skill_2::Exit_State()
 }
 
 
-void CState_Tanjiro_Skill_2::Find_Near_Target()
+void CState_Kyojuro_Skill_0::Find_Near_Target()
 {
 	m_pTarget = nullptr;
 	_float fMinDistance = 9999999999.f;
@@ -141,7 +166,7 @@ void CState_Tanjiro_Skill_2::Find_Near_Target()
 	}
 }
 
-void CState_Tanjiro_Skill_2::Trace_Near_Target()
+void CState_Kyojuro_Skill_0::Trace_Near_Target()
 {
 	if (nullptr == m_pTarget)
 	{
@@ -168,42 +193,29 @@ void CState_Tanjiro_Skill_2::Trace_Near_Target()
 }
 
 
-void CState_Tanjiro_Skill_2::Use_Skill(_float fTimeDelta)
+void CState_Kyojuro_Skill_0::Use_Skill(_float fTimeDelta)
 {
 	m_iCurrAnimIndex = 0;
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 	Find_Near_Target();
-	Trace_Near_Target();
-
 
 	
-	
-
-	
-
-	m_pCharacter->Set_Infinite(999.f, true);
-	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, false);
-	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, false);
-
-	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
-	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
-	m_pCharacter->Set_ActiveColliders(CCollider::BODY, false);
 }
 
-CState_Tanjiro_Skill_2* CState_Tanjiro_Skill_2::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine, const list<wstring>& AnimationList)
+CState_Kyojuro_Skill_0* CState_Kyojuro_Skill_0::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine, const list<wstring>& AnimationList)
 {
-	CState_Tanjiro_Skill_2* pInstance = new CState_Tanjiro_Skill_2(pDevice, pContext, pStateMachine);
+	CState_Kyojuro_Skill_0* pInstance = new CState_Kyojuro_Skill_0(pDevice, pContext, pStateMachine);
 	if (FAILED(pInstance->Initialize(AnimationList)))
 	{
 		Safe_Release(pInstance);
-		MSG_BOX("Failed Create : CState_Tanjiro_Skill_2");
+		MSG_BOX("Failed Create : CState_Kyojuro_Skill_0");
 		return nullptr;
 	}
 
 	return pInstance;
 }
 
-void CState_Tanjiro_Skill_2::Free()
+void CState_Kyojuro_Skill_0::Free()
 {
 	__super::Free();
 }

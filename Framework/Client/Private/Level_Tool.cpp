@@ -7,7 +7,8 @@
 #include "Character.h"
 #include "Dummy.h"
 #include "Terrain.h"
-#include "Camera_Free.h"
+#include "Camera_Manager.h"
+
 #include "Network_Manager.h"
 
 
@@ -69,18 +70,9 @@ HRESULT CLevel_Tool::Initialize()
 	if (nullptr == pTerrain)
 		return E_FAIL;
 
+
 	m_pImGuiManager->Set_Terrain(pTerrain);
-
-
-	CGameObject* pTempCamera = GAME_INSTANCE->Find_GameObject(LEVEL_TOOL, _uint(LAYER_TYPE::LAYER_CAMERA), L"Free_Camera");
-	if (nullptr == pTempCamera)
-		return E_FAIL;
-
-	CCamera_Free* pCamera = dynamic_cast<CCamera_Free*>(pTempCamera);
-	if (nullptr == pCamera)
-		return E_FAIL;
-
-	m_pImGuiManager->Set_Camera(pCamera);
+	m_pImGuiManager->Set_Camera(dynamic_cast<CCamera_Free*>(CCamera_Manager::GetInstance()->Get_MainCamera()));
 
 
 
@@ -125,63 +117,50 @@ HRESULT CLevel_Tool::Ready_Lights()
 	
 
 
-	GAME_INSTANCE->Reset_Lights();
+	//GAME_INSTANCE->Reset_Lights();
 
-	LIGHTDESC			LightDesc;
+	//LIGHTDESC			LightDesc;
 
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(15.0f, 5.0f, 15.0f, 1.f);
-	LightDesc.fRange = 10.f;
-	LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
+	//ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	//LightDesc.eType = LIGHTDESC::TYPE_POINT;
+	//LightDesc.vPosition = _float4(15.0f, 5.0f, 15.0f, 1.f);
+	//LightDesc.fRange = 10.f;
+	//LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.f, 1.f);
+	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vSpecular = LightDesc.vDiffuse;
 
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
+	//if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	//	return E_FAIL;
 
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(25.0f, 5.0f, 15.0f, 1.f);
-	LightDesc.fRange = 10.f;
-	LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
+	//ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	//LightDesc.eType = LIGHTDESC::TYPE_POINT;
+	//LightDesc.vPosition = _float4(25.0f, 5.0f, 15.0f, 1.f);
+	//LightDesc.fRange = 10.f;
+	//LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.f, 1.f);
+	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vSpecular = LightDesc.vDiffuse;
 
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
+	//if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	//	return E_FAIL;
 
-	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
-	LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.5, 0.5, 0.5, 1.f);
-	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	//ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	//LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
+	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	//LightDesc.vDiffuse = _float4(0.5, 0.5, 0.5, 1.f);
+	//LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
+	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
-	if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
-		return E_FAIL;
+	//if (FAILED(GAME_INSTANCE->Add_Light(m_pDevice, m_pContext, LightDesc)))
+	//	return E_FAIL;
 
-	;
+
 
 	return S_OK;
 }
 
 HRESULT CLevel_Tool::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 {
-	CCamera::CAMERADESC			CameraDesc;
-
-	CameraDesc.vEye = _float4(0.f, 30.f, -30.f, 1.f);
-	CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
-	CameraDesc.fFovy = XMConvertToRadians(60.0f);
-	CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
-	CameraDesc.fNear = 0.2f;
-	CameraDesc.fFar = 1000.f;
-
-	CameraDesc.TransformDesc.fSpeedPerSec = 3.f;
-	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
-
-	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TOOL, _uint(eLayerType), TEXT("Prototype_GameObject_Camera_Free"), &CameraDesc)))
-		return E_FAIL;
+	CCamera_Manager::GetInstance()->Set_MainCamera(CCamera_Manager::CAMERA_TYPE::TOOL);
 
 
 	return S_OK;

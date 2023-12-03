@@ -8,11 +8,11 @@ END
 
 BEGIN(Client)
 
-class CState_Tanjiro_Attack final : public CState
+class CState_Kyojuro_Attack final : public CState
 {
 private:
-	CState_Tanjiro_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
-	virtual ~CState_Tanjiro_Attack() = default;
+	CState_Kyojuro_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
+	virtual ~CState_Kyojuro_Attack() = default;
 
 public:
 	HRESULT Initialize(const list<wstring>& AnimationList);
@@ -28,16 +28,15 @@ private:
 	class CSword* m_pSword = nullptr;
 	class CGameObject* m_pTarget = nullptr;
 
+	_bool m_bSlashEffect[8] = {};
+
 private:
 	void Input(_float fTimeDelta);
 	void Find_Near_Target();
 	void Trace_Near_Target();
 
-private:
-	_bool m_bSlashEffect[5] = {};
-
 public:
-	static CState_Tanjiro_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
+	static CState_Kyojuro_Attack* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);
 	virtual void Free() override;
 };
 

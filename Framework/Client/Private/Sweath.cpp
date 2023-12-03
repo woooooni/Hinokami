@@ -32,6 +32,8 @@ HRESULT CSweath::Initialize(void* pArg)
 
 		if (FAILED(__super::Initialize(pArg)))
 			return E_FAIL;
+
+		m_eType = pWeaponDesc->eType;
 	}
 
 	if (FAILED(Ready_Components()))
@@ -40,16 +42,12 @@ HRESULT CSweath::Initialize(void* pArg)
 
 	if (pWeaponDesc != nullptr)
 	{
-		m_pTransformCom->Set_Rotation(XMLoadFloat3(&pWeaponDesc->vRotationDegree));
-
 		m_vPrevRotation = pWeaponDesc->vRotationDegree;
-		m_OriginRotationTransform = m_pTransformCom->Get_WorldFloat4x4();
+
+		XMStoreFloat4x4(&m_OriginRotationTransform, XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(XMConvertToRadians(pWeaponDesc->vRotationDegree.x), XMConvertToRadians(pWeaponDesc->vRotationDegree.y), XMConvertToRadians(pWeaponDesc->vRotationDegree.z))));
 	}
 	else
 		return E_FAIL;
-
-	return S_OK;
-	
 
 	return S_OK;
 }
@@ -57,6 +55,24 @@ HRESULT CSweath::Initialize(void* pArg)
 void CSweath::Tick(_float fTimeDelta)
 {
 	_matrix		WorldMatrix = m_pSocketBone->Get_CombinedTransformation() * XMLoadFloat4x4(&m_SocketPivotMatrix);
+
+	_float3 vRotation = _float3(-90.f, 90.f, 90.f);
+
+	switch(m_eType)
+	{
+	case SWEATH_TYPE::TANJIRO:
+		vRotation = _float3(-90.f, 90.f, 90.f);
+		break;
+	case SWEATH_TYPE::ZENITSU:
+		vRotation = _float3(0.f, 180.f, -90.f);
+		break;
+	case SWEATH_TYPE::KYOJURO:
+		vRotation = _float3(0.f, 180.f, 0.f);
+		break;
+
+	}
+	XMStoreFloat4x4(&m_OriginRotationTransform, 
+		XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(XMConvertToRadians(vRotation.x), XMConvertToRadians(vRotation.y), XMConvertToRadians(vRotation.z))));
 
 	WorldMatrix.r[0] = XMVector3Normalize(WorldMatrix.r[0]);
 	WorldMatrix.r[1] = XMVector3Normalize(WorldMatrix.r[1]);

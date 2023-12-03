@@ -4,6 +4,9 @@
 #include "Camera.h"
 #include "Camera_Main.h"
 #include "Character.h"
+#include "Monster.h"
+#include "UI_Manager.h"
+#include "Camera_Manager.h"
 
 CLevel_Train_Boss::CLevel_Train_Boss(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -60,48 +63,48 @@ HRESULT CLevel_Train_Boss::Initialize()
 HRESULT CLevel_Train_Boss::Tick(_float fTimeDelta)
 {
 
-	//if (KEY_TAP(KEY::U))
-	//{
-	//	m_vFogStartEnd.x -= 1.f;
-	//	m_vFogStartEnd.x = max(0.f, m_vFogStartEnd.x);
-	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
-	//}
+	if (KEY_TAP(KEY::U))
+	{
+		m_vFogStartEnd.x -= 1.f;
+		m_vFogStartEnd.x = max(0.f, m_vFogStartEnd.x);
+		m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	}
 
-	//if (KEY_TAP(KEY::I))
-	//{
-	//	m_vFogStartEnd.x += 1.f;
-	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
-	//}
+	if (KEY_TAP(KEY::I))
+	{
+		m_vFogStartEnd.x += 1.f;
+		m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	}
 
-	//if (KEY_TAP(KEY::O))
-	//{
-	//	
-	//	if (KEY_HOLD(KEY::SHIFT))
-	//	{
-	//		m_vFogStartEnd.y -= 1.f;
-	//	}
-	//	else
-	//	{
-	//		m_vFogStartEnd.y -= 10.f;
-	//	}
-	//	m_vFogStartEnd.y = max(0.f, m_vFogStartEnd.y);
-	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
-	//}
+	if (KEY_TAP(KEY::O))
+	{
+		
+		if (KEY_HOLD(KEY::SHIFT))
+		{
+			m_vFogStartEnd.y -= 1.f;
+		}
+		else
+		{
+			m_vFogStartEnd.y -= 10.f;
+		}
+		m_vFogStartEnd.y = max(0.f, m_vFogStartEnd.y);
+		m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	}
 
-	//if (KEY_TAP(KEY::P))
-	//{
+	if (KEY_TAP(KEY::P))
+	{
 
-	//	if (KEY_HOLD(KEY::SHIFT))
-	//	{
-	//		m_vFogStartEnd.y -= 1.f;
-	//	}
-	//	else
-	//	{
-	//		m_vFogStartEnd.y += 10.f;
-	//	}
-	//	
-	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
-	//}
+		if (KEY_HOLD(KEY::SHIFT))
+		{
+			m_vFogStartEnd.y += 1.f;
+		}
+		else
+		{
+			m_vFogStartEnd.y += 10.f;
+		}
+		
+		m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	}
 
 
 	//if (KEY_TAP(KEY::R))
@@ -186,28 +189,9 @@ HRESULT CLevel_Train_Boss::Ready_Lights()
 HRESULT CLevel_Train_Boss::Ready_Layer_Camera(const LAYER_TYPE eLayerType)
 {
 	
-
-
-	CCamera::CAMERADESC			CameraDesc;
-
-	CameraDesc.vEye = _float4(0.f, 10.f, -10.f, 1.f);
-	CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
-	CameraDesc.fFovy = XMConvertToRadians(60.0f);
-	CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
-	CameraDesc.fNear = 0.2f;
-	CameraDesc.fFar = 1000.f;
-
-	CameraDesc.TransformDesc.fSpeedPerSec = 5.f;
-	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
-
- 	if(FAILED(GI->Add_GameObject(LEVELID::LEVEL_TRAIN_BOSS, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
-		return E_FAIL;
-
+	CCamera_Manager::GetInstance()->Set_MainCamera(CCamera_Manager::CAMERA_TYPE::GAME_PLAY);
 	if (FAILED(GI->Add_GameObject(LEVELID::LEVEL_TRAIN_BOSS, LAYER_BACKGROUND, TEXT("Prototype_GameObject_Sky_Night"))))
 		return E_FAIL;
-
-	/*if (FAILED(GI->Add_GameObject(LEVELID::LEVEL_GAMEPLAY, LAYER_CAMERA, TEXT("Prototype_GameObject_Camera_Main"), &CameraDesc)))
-		return E_FAIL;*/
 
 	
 
@@ -220,14 +204,6 @@ HRESULT CLevel_Train_Boss::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_BOSS, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Tanjiro"), nullptr, &pTanjiro)))
 		return E_FAIL;
 
-	CGameObject* pObject = GI->Find_GameObject(LEVELID::LEVEL_TRAIN_BOSS, LAYER_CAMERA, L"Main_Camera");
-	if (nullptr == pObject)
-		return E_FAIL;
-
-	CCamera_Main* pCamera = dynamic_cast<CCamera_Main*>(pObject);
-	if (nullptr == pCamera)
-		return E_FAIL;
-
 	CCharacter* pCharacter = dynamic_cast<CCharacter*>(pTanjiro);
 	if (nullptr == pCharacter)
 		return E_FAIL;*/
@@ -235,25 +211,21 @@ HRESULT CLevel_Train_Boss::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 
 
 
-	CGameObject* pZenitsu = nullptr;
-	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_BOSS, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Zenitsu"), nullptr, &pZenitsu)))
+	//CGameObject* pZenitsu = nullptr;
+	//if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_BOSS, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Zenitsu"), nullptr, &pZenitsu)))
+	//	return E_FAIL;
+
+	//CCharacter* pCharacter = dynamic_cast<CCharacter*>(pZenitsu);
+	//if (nullptr == pCharacter)
+	//	return E_FAIL;
+
+
+	CGameObject* pKyojuro = nullptr;
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_BOSS, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Kyojuro"), nullptr, &pKyojuro)))
 		return E_FAIL;
 
-	CGameObject* pObject = GI->Find_GameObject(LEVELID::LEVEL_TRAIN_BOSS, LAYER_CAMERA, L"Main_Camera");
-	if (nullptr == pObject)
-		return E_FAIL;
-
-	CCamera_Main* pCamera = dynamic_cast<CCamera_Main*>(pObject);
-	if (nullptr == pCamera)
-		return E_FAIL;
-
-	CCharacter* pCharacter = dynamic_cast<CCharacter*>(pZenitsu);
+	CCharacter* pCharacter = dynamic_cast<CCharacter*>(pKyojuro);
 	if (nullptr == pCharacter)
-		return E_FAIL;
-
-
-
-	if (FAILED(pCamera->Set_TargetTransform(pCharacter->Get_Component<CTransform>(L"Com_Transform"))))
 		return E_FAIL;
 
 	CNavigation* pNavigation = pCharacter->Get_Component<CNavigation>(L"Com_Navigation");
@@ -267,6 +239,13 @@ HRESULT CLevel_Train_Boss::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 
 		pCharacter->Get_Component<CTransform>(L"Com_Transform")->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pNavigation->Get_NaviDesc().vStartWorldPosition));
 	}
+
+	CCamera* pMainCamera = CCamera_Manager::GetInstance()->Get_MainCamera();
+	if (FAILED(pMainCamera->Set_TargetTransform(pCharacter->Get_Component<CTransform>(L"Com_Transform"))))
+		return E_FAIL;
+
+	if (FAILED(CUI_Manager::GetInstance()->Reserve_HpBar(CUI_Manager::GAUGE_BARTYPE::LEFT_HP, pCharacter, CCharacter::CHARACTER_TYPE::ZENITSU)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -284,8 +263,8 @@ HRESULT CLevel_Train_Boss::Ready_Layer_BackGround(const LAYER_TYPE eLayerType)
 
 HRESULT CLevel_Train_Boss::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 {
-	// CGameObject* pBoss = GI->Clone_GameObject(TEXT("Prototype_GameObject_Enmu"), LAYER_MONSTER);
-	CGameObject* pBoss = GI->Clone_GameObject(TEXT("Prototype_GameObject_Akaza"), LAYER_MONSTER);
+	CGameObject* pBoss = GI->Clone_GameObject(TEXT("Prototype_GameObject_Enmu"), LAYER_MONSTER);
+	// CGameObject* pBoss = GI->Clone_GameObject(TEXT("Prototype_GameObject_Akaza"), LAYER_MONSTER);
 
 
 	CTransform* pTransform = pBoss->Get_Component<CTransform>(L"Com_Transform");
@@ -304,10 +283,13 @@ HRESULT CLevel_Train_Boss::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 	else
 		pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&NaviDesc.vStartWorldPosition));
 
-	
 	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_BOSS, LAYER_TYPE::LAYER_MONSTER, pBoss)))
 		return E_FAIL;	
 
+	CMonster* pMonster = dynamic_cast<CMonster*>(pBoss);
+	if (nullptr == pMonster)
+		return E_FAIL;
+	CUI_Manager::GetInstance()->Reserve_HpBar(CUI_Manager::GAUGE_BARTYPE::RIGHT_HP, pMonster, CCharacter::CHARACTER_TYPE::ENMU);
 	
 
 	return S_OK;
@@ -343,12 +325,12 @@ void CLevel_Train_Boss::Reset_Scroll()
 				continue;
 
 			_vector vPosition = pTransform->Get_State(CTransform::STATE::STATE_POSITION);
-			vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) + fabs(m_fAccScroll));
+			vPosition = XMVectorSetZ(vPosition, XMVectorGetZ(vPosition) + fabs(m_fAccScroll) - 30.f);
 			pTransform->Set_State(CTransform::STATE::STATE_POSITION, vPosition);
 		}
 	}
 
-	m_fAccScroll = 0.f;
+	m_fAccScroll = -30.f;
 }
 
 void CLevel_Train_Boss::Scroll(_float fTimeDelta)

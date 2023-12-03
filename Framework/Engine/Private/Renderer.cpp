@@ -504,8 +504,8 @@ HRESULT CRenderer::Render_Shadow()
 
 	for (auto& iter : m_RenderObjects[RENDER_SHADOW])
 	{
-		if (FAILED(iter->Render_ShadowDepth()))
-			return E_FAIL;
+		/*if (FAILED(iter->Render_ShadowDepth()))
+			return E_FAIL;*/
 		Safe_Release(iter);
 	}
 	m_RenderObjects[RENDER_SHADOW].clear();
@@ -515,8 +515,8 @@ HRESULT CRenderer::Render_Shadow()
 		if (nullptr == Pair.second.pGameObject)
 			continue;
 
-		if (FAILED(Pair.second.pGameObject->Render_Instance_Shadow(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
-			return E_FAIL;
+		/*if (FAILED(Pair.second.pGameObject->Render_Instance_Shadow(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
+			return E_FAIL;*/
 
 		Safe_Release(Pair.second.pGameObject);
 		Pair.second.pGameObject = nullptr;

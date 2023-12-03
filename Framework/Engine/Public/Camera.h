@@ -9,6 +9,8 @@ BEGIN(Engine)
 
 class ENGINE_DLL CCamera abstract : public CGameObject
 {
+public:
+	enum CAMERA_STATE { BASIC, CUT_SCENE, SKILL, STATE_END };
 
 public:
 	typedef struct tagCameraDesc
@@ -17,7 +19,7 @@ public:
 		_float		fFovy, fAspect, fNear, fFar;
 
 		CTransform::TRANSFORMDESC		TransformDesc;
-	}CAMERADESC;
+	} CAMERADESC;
 
 	typedef struct tagCamShake
 	{
@@ -49,7 +51,21 @@ public:
 	virtual HRESULT Render() override;
 
 public:
+	virtual void Tick_Basic(_float fTimeDelta);
+	virtual void Tick_CutScene(_float fTimeDelta);
+	virtual void Tick_Skill(_float fTimeDelta);
+
+public:
 	void Cam_Shake(_float fDuration, _float fForce);
+	void Set_Camera_State(CCamera::CAMERA_STATE eState)
+	{
+		m_eCurrState = eState;
+	}
+
+	void Play_CutScene()
+	{
+		m_eCurrState = CCamera::CAMERA_STATE::CUT_SCENE;
+	}
 
 public:
 	HRESULT Set_TargetTransform(class CTransform* pTargetTransform) 
@@ -57,6 +73,7 @@ public:
 		if (nullptr == pTargetTransform)
 			return E_FAIL;
 
+		Safe_AddRef(m_pTargetTransform);
 		m_pTargetTransform = pTargetTransform; 
 		return S_OK;
 	}
@@ -70,6 +87,8 @@ protected:
 
 	CAMERADESC					m_CameraDesc;
 	CAM_SHAKE					m_tShakeDesc;
+
+	CAMERA_STATE				m_eCurrState = CAMERA_STATE::BASIC;
 
 	
 protected:

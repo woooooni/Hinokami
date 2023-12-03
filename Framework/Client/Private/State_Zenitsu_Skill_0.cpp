@@ -9,6 +9,7 @@
 #include "Effect.h"
 #include "Effect_Manager.h"
 #include "Particle_Manager.h"
+#include "Camera_Manager.h"
 #include "Monster.h"
 #include "Camera.h"
 
@@ -272,7 +273,7 @@ void CState_Zenitsu_Skill_0::Use_Skill(_float fTimeDelta)
 	m_pRigidBodyCom->Set_Friction_Scale(40.f);
 	m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vDir), 20.f);
 
-	CCamera* pCamera = dynamic_cast<CCamera*>(GI->Find_GameObject(GI->Get_CurrentLevel(), LAYER_CAMERA, L"Main_Camera"));
+	CCamera* pCamera = CCamera_Manager::GetInstance()->Get_MainCamera();
 	if (nullptr != pCamera)
 	{
 		pCamera->Cam_Shake(.5f, 10.f);

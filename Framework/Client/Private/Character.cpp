@@ -11,7 +11,9 @@
 #include "Monster.h"
 #include "Effect_Manager.h"
 #include "Particle_Manager.h"
+#include "Camera_Manager.h"
 #include "Camera.h"
+#include "Utils.h"
 
 USING(Client)
 CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, CHARACTER_TYPE eCharacterType)
@@ -310,6 +312,7 @@ void CCharacter::DrawSword()
 		XMQuaternionRotationRollPitchYaw(XMConvertToRadians(180.f), XMConvertToRadians(0.f), XMConvertToRadians(-90.f))));
 
 	pSword->Set_SocketBone(m_Sockets[SOCKET_SWORD]);
+	pSword->Set_Sweath(false);
 }
 
 void CCharacter::SweathSword()
@@ -326,6 +329,8 @@ void CCharacter::SweathSword()
 
 	pSword->Set_OriginRotation_Transform(XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(pSword->Get_PrevRotation().x, pSword->Get_PrevRotation().y, pSword->Get_PrevRotation().z)));
 	pSword->Set_SocketBone(m_Sockets[SOCKET_SWEATH]);
+
+	pSword->Set_Sweath(true);
 }
 
 void CCharacter::Set_Infinite(_float fInfiniteTime, _bool bInfinite)
@@ -354,9 +359,6 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 	if (CCharacter::STATE::ATTACK == m_pStateCom->Get_CurrState())
 		return;
 
-	CTransform* pAttackerTransform = tInfo.pOther->Get_Component<CTransform>(L"Com_Transform");
-	m_pTransformCom->LookAt_ForLandObject(pAttackerTransform->Get_State(CTransform::STATE_POSITION));
-
 	m_tStat.fHp -= tInfo.pOtherCollider->Get_Damage();
 	if (m_tStat.fHp <= 0.f)
 	{
@@ -365,9 +367,9 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 	}
 
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-
 	WorldMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(0.f, 0.5f, 0.f, 0.f) + XMVector3Normalize(XMVectorSetW(tInfo.pOtherCollider->Get_Position(), 1.f) - WorldMatrix.r[CTransform::STATE_POSITION]) * 0.5f;
-	_int iRandomEffect = (rand() + rand() + rand()) % 2;
+
+	_int iRandomEffect = CUtils::Random_Int(0, 1);
 
 	wstring strHitEffect = L"Basic_Damaged_" + to_wstring(iRandomEffect);
 	CEffect_Manager::GetInstance()->Generate_Effect(strHitEffect, XMMatrixIdentity(), WorldMatrix, .5f);
@@ -390,7 +392,7 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_Position() + XMVectorSet(0.f, .1f, 0.f, 0.f));
 	}
 
-	CCamera* pCamera = dynamic_cast<CCamera*>(GI->Find_GameObject(GI->Get_CurrentLevel(), LAYER_CAMERA, L"Main_Camera"));
+	CCamera* pCamera = CCamera_Manager::GetInstance()->Get_MainCamera();
 	
 	
 	switch (tInfo.pOtherCollider->Get_AttackType())

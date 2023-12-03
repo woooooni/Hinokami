@@ -45,9 +45,9 @@ HRESULT CSword::Initialize(void* pArg)
 
 	if (pWeaponDesc != nullptr)
 	{
-		m_pTransformCom->Set_Rotation(XMLoadFloat3(&pWeaponDesc->vRotationDegree));
 		m_vPrevRotation = pWeaponDesc->vRotationDegree;
-		m_OriginRotationTransform = m_pTransformCom->Get_WorldFloat4x4();
+
+		XMStoreFloat4x4(&m_OriginRotationTransform, XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(XMConvertToRadians(pWeaponDesc->vRotationDegree.x), XMConvertToRadians(pWeaponDesc->vRotationDegree.y), XMConvertToRadians(pWeaponDesc->vRotationDegree.z))));
 	}
 	else
 		return E_FAIL;
@@ -63,6 +63,26 @@ HRESULT CSword::Initialize(void* pArg)
 void CSword::Tick(_float fTimeDelta)
 {
 	GI->Add_CollisionGroup(COLLISION_GROUP::CHARACTER, this);
+
+	_float3 vRotation = _float3(0.f, 180.f, 90.f);
+	switch (m_eType)
+	{
+	case SWORD_TYPE::TANJIRO:
+		vRotation = m_bSweath ? _float3(-90.f, 90.f, 90.f) : _float3(0.f, 180.f, 90.f);
+		break;
+	case SWORD_TYPE::ZENITSU:
+		vRotation = m_bSweath ? _float3(0.f, 180.f, 270.f) : _float3(0.f, 180.f, 90.f);
+		break;
+	case SWORD_TYPE::KYOJURO:
+		vRotation = _float3(0.f, 180.f, 0.f);
+		break;
+	}
+	
+	XMStoreFloat4x4(&m_OriginRotationTransform,
+		XMMatrixRotationQuaternion(XMQuaternionRotationRollPitchYaw(XMConvertToRadians(vRotation.x), XMConvertToRadians(vRotation.y), XMConvertToRadians(vRotation.z))));
+	
+
+
 	_matrix		WorldMatrix = m_pSocketBone->Get_CombinedTransformation() * XMLoadFloat4x4(&m_SocketPivotMatrix);
 
 	WorldMatrix.r[0] = XMVector3Normalize(WorldMatrix.r[0]);
@@ -71,6 +91,8 @@ void CSword::Tick(_float fTimeDelta)
 	
 
 	Compute_RenderMatrix(WorldMatrix);
+
+
 	m_pTrailObject->Set_TransformMatrix(m_pTransformCom->Get_WorldMatrix());
 	m_pTrailObject->Tick(fTimeDelta);
 }
@@ -108,27 +130,7 @@ HRESULT CSword::Render()
 
 void CSword::Collision_Enter(const COLLISION_INFO& tInfo)
 {
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER)
-	{
-		if ((tInfo.pMyCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::ATTACK) && (tInfo.pOtherCollider->Get_DetectionType() == CCollider::DETECTION_TYPE::BODY))
-		{
-			_matrix WorldMatrix = XMMatrixIdentity();
-			WorldMatrix.r[CTransform::STATE::STATE_POSITION] = XMVectorSetW(tInfo.pOtherCollider->Get_Position(), 1.f);
 
-			switch (m_eType)
-			{
-			case SWORD_TYPE::TANJIRO:
-				// CParticle_Manager::GetInstance()->Generate_Particle(L"Tanjiro_Attack_Particle", WorldMatrix);
-				break;
-			case SWORD_TYPE::ZENITSU:
-				// CParticle_Manager::GetInstance()->Generate_Particle(L"Zenitsu_Attack_Particle", WorldMatrix);
-				break;
-			case SWORD_TYPE::KYOJURO:
-				// CParticle_Manager::GetInstance()->Generate_Particle(L"Kyojuro_Attack_Particle", WorldMatrix);
-				break;
-			}
-		}
-	}
 }
 
 void CSword::Collision_Continue(const COLLISION_INFO& tInfo)

@@ -9,6 +9,8 @@
 #include <fstream>
 #include <filesystem>
 #include "VIBuffer_Instancing.h"
+#include "GameObject.h"
+#include "Navigation.h"
 
 
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -356,7 +358,7 @@ HRESULT CModel::Play_Animation(CTransform* pTransform, _float fTimeDelta)
 		_float fDist = XMVectorGetX(XMVector3Length(vDir));
 
 		vPos += vWorldDir * fDist * fTimeDelta;
-		pTransform->Set_State(CTransform::STATE_POSITION, vPos);
+		pTransform->Set_Position(vPos, fTimeDelta, m_pOwner->Get_Component<CNavigation>(L"Com_Navigation"));
 	}
 	
 
