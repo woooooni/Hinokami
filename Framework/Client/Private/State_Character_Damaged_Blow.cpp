@@ -26,6 +26,7 @@ HRESULT CState_Character_Damaged_Blow::Initialize(const list<wstring>& Animation
 
 void CState_Character_Damaged_Blow::Enter_State(void* pArg)
 {
+
 	m_pOwnerCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	m_pOwnerCharacter->Set_Infinite(999.f, true);
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[0]);

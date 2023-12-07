@@ -40,6 +40,8 @@ void CState_Tanjiro_Skill_2::Enter_State(void* pArg)
 	m_iCurrAnimIndex = 0;
 	m_pCharacter->DrawSword();
 	Use_Skill(GI->Get_TimeDelta(L"Timer_GamePlay"));
+
+	GI->Play_Sound(L"Voice_Tanjiro_Skill_2_Use.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
 }
 
 void CState_Tanjiro_Skill_2::Tick_State(_float fTimeDelta)
@@ -59,7 +61,7 @@ void CState_Tanjiro_Skill_2::Tick_State(_float fTimeDelta)
 			CCamera* pCamera = CCamera_Manager::GetInstance()->Get_MainCamera();
 			if (nullptr != pCamera)
 			{
-				pCamera->Cam_Shake(2.f, 10.f);
+				pCamera->Cam_Shake(1.f, 3.f);
 			}
 		}
 
@@ -185,7 +187,6 @@ void CState_Tanjiro_Skill_2::Use_Skill(_float fTimeDelta)
 	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, false);
 	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, false);
 
-	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pCharacter->Set_ActiveColliders(CCollider::BODY, false);
 }

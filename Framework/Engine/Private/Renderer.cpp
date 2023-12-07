@@ -332,7 +332,6 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject * pGame
 		return E_FAIL;
 
 	m_RenderObjects[eRenderGroup].push_back(pGameObject);
-
 	Safe_AddRef(pGameObject);
 
 	return S_OK;
@@ -451,8 +450,6 @@ HRESULT CRenderer::Draw()
 	if (FAILED(Render_Final()))
 		return E_FAIL;
 
-	
-
 	if (FAILED(Render_Text()))
 		return E_FAIL;
 
@@ -504,8 +501,8 @@ HRESULT CRenderer::Render_Shadow()
 
 	for (auto& iter : m_RenderObjects[RENDER_SHADOW])
 	{
-		/*if (FAILED(iter->Render_ShadowDepth()))
-			return E_FAIL;*/
+		if (FAILED(iter->Render_ShadowDepth()))
+			return E_FAIL;
 		Safe_Release(iter);
 	}
 	m_RenderObjects[RENDER_SHADOW].clear();
@@ -515,8 +512,8 @@ HRESULT CRenderer::Render_Shadow()
 		if (nullptr == Pair.second.pGameObject)
 			continue;
 
-		/*if (FAILED(Pair.second.pGameObject->Render_Instance_Shadow(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
-			return E_FAIL;*/
+		if (FAILED(Pair.second.pGameObject->Render_Instance_Shadow(m_pIntancingShaders[Pair.second.eShaderType], m_pVIBuffer_Instancing, Pair.second.WorldMatrices)))
+			return E_FAIL;
 
 		Safe_Release(Pair.second.pGameObject);
 		Pair.second.pGameObject = nullptr;
@@ -1060,16 +1057,20 @@ HRESULT CRenderer::Render_Text()
 
 HRESULT CRenderer::Render_Debug()
 {
-	if (!m_bDebugDraw)
-		return S_OK;
+	
 
 	for (auto& pDebugCom : m_RenderDebug)
 	{
-		pDebugCom->Render();
+		if (true == m_bDebugDraw)
+			pDebugCom->Render();
+		
 		Safe_Release(pDebugCom);
 	}
 	m_RenderDebug.clear();
 	
+	if (false == m_bDebugDraw)
+		return S_OK;
+
 	wstring strPlayerPosition = L"";
 	strPlayerPosition += L"X : ";
 	strPlayerPosition += to_wstring(m_vPlayerPosition.x);
@@ -1082,6 +1083,7 @@ HRESULT CRenderer::Render_Debug()
 	strPlayerPosition += L'\n';
 	strPlayerPosition += L"W : ";
 	strPlayerPosition += to_wstring(m_vPlayerPosition.w);
+
 
 	GI->Render_Fonts(L"Basic", strPlayerPosition.c_str(), _float2(1600.f / 2.f, 0.f));
 

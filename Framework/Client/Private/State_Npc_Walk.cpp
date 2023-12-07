@@ -22,7 +22,6 @@ void CState_Npc_Walk::Enter_State(void* pArg)
 {
 	m_pStateMachineCom->Get_Owner()->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[0]);
-
 }
 
 void CState_Npc_Walk::Tick_State(_float fTimeDelta)

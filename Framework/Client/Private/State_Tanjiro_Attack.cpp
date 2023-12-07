@@ -7,6 +7,7 @@
 #include "Sword.h"
 #include "Effect_Manager.h"
 #include "Particle_Manager.h"
+#include "Utils.h"
 
 CState_Tanjiro_Attack::CState_Tanjiro_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
@@ -32,6 +33,7 @@ HRESULT CState_Tanjiro_Attack::Initialize(const list<wstring>& AnimationList)
 
 void CState_Tanjiro_Attack::Enter_State(void* pArg)
 {
+
 	m_iCurrAnimIndex = 0;
 
 	for (_uint i = 0; i < 5; ++i)
@@ -40,10 +42,9 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 	Find_Near_Target();
 	m_pCharacter->DrawSword();
 
-	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
-	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, true);
+	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 1.f, false);
 	m_pSword->SetUp_Trail_Position(XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 0.f, -1.5f, 1.f));
 
 
@@ -51,6 +52,8 @@ void CState_Tanjiro_Attack::Enter_State(void* pArg)
 	{
 		m_bSlashEffect[i] = false;
 	}
+
+
 
 }
 
@@ -74,6 +77,7 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 		return;
 	}
 	
+
 	switch (m_iCurrAnimIndex)
 	{
 	case 0:
@@ -85,6 +89,8 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 				_matrix WorldMatrix = XMMatrixRotationZ(XMConvertToRadians(-120.f)) * m_pTransformCom->Get_WorldMatrix();
 				WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f);
 				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixIdentity(), WorldMatrix, 2.f);
+
+				GI->Play_Sound(L"Slash_0.wav", CHANNELID::SOUND_SLASH, 0.3f);
 			}
 		}
 		if (fProgress > 0.5f)
@@ -107,6 +113,8 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 				_matrix WorldMatrix = XMMatrixRotationZ(XMConvertToRadians(120.f)) * m_pTransformCom->Get_WorldMatrix();
 				WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + XMVectorSet(0.f, .5f, 0.f, 0.f);
 				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixIdentity(), WorldMatrix, 2.f);
+
+				GI->Play_Sound(L"Slash_0.wav", CHANNELID::SOUND_SLASH, 0.3f);
 			}
 		}
 
@@ -132,6 +140,8 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 				_matrix WorldMatrix = XMMatrixRotationZ(XMConvertToRadians(-120.f)) * m_pTransformCom->Get_WorldMatrix();
 				WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f);
 				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixIdentity(), WorldMatrix, 2.f);
+
+				GI->Play_Sound(L"Slash_0.wav", CHANNELID::SOUND_SLASH, 0.3f);
 			}
 		}
 
@@ -157,6 +167,8 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 					_matrix WorldMatrix = XMMatrixRotationZ(XMConvertToRadians(120.f)) * m_pTransformCom->Get_WorldMatrix();
 					WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + XMVectorSet(0.f, .5f, 0.f, 0.f);
 					CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixIdentity(), WorldMatrix, 2.f);
+					GI->Play_Sound(L"Slash_0.wav", CHANNELID::SOUND_SLASH, 0.3f);
+
 				}
 				m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 12.f, 0.1f, 1.f);
 				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 12.f, 0.1f, 1.f);
@@ -166,9 +178,6 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 				m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BOUND, -5.f, 1.5f, 1.f, false);
 				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BOUND, -5.f, 1.5f, 1.f, false);
 			}
-				
-				
-			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		}
 		else
@@ -187,12 +196,12 @@ void CState_Tanjiro_Attack::Tick_State(_float fTimeDelta)
 				_matrix WorldMatrix = XMMatrixRotationZ(XMConvertToRadians(20.f)) * m_pTransformCom->Get_WorldMatrix();
 				WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f);
 				CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixIdentity(), WorldMatrix, 2.f);
+
+				GI->Play_Sound(L"Slash_0.wav", CHANNELID::SOUND_SLASH, 0.3f);
 			}
 
 			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 10.f, 1.f);
 			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 10.f, 1.f);
-
-			m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		}
 		else
@@ -231,6 +240,8 @@ void CState_Tanjiro_Attack::Exit_State()
 	{
 		m_bSlashEffect[i] = false;
 	}
+
+
 }
 
 
@@ -251,6 +262,10 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 			}
 
 				
+			TCHAR strSoundFileName[MAX_PATH] = L"Voice_Tanjiro_Attack_";
+			lstrcatW(strSoundFileName, to_wstring(CUtils::Random_Int(0, 15)).c_str());
+			lstrcatW(strSoundFileName, L".wav");
+			GI->Play_Sound(strSoundFileName, CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
 
 			if (m_iCurrAnimIndex != m_AnimIndices.size())
 				m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
@@ -262,12 +277,16 @@ void CState_Tanjiro_Attack::Input(_float fTimeDelta)
 				Find_Near_Target();
 				Trace_Near_Target();
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+
+				
 				break;
 
 			case 2:
 				Find_Near_Target();
 				Trace_Near_Target();
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+
+				
 				break;
 
 			case 3:

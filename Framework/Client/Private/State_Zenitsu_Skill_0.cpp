@@ -55,6 +55,8 @@ void CState_Zenitsu_Skill_0::Enter_State(void* pArg)
 		m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 		Safe_AddRef(m_pChargingEffect);
 	}
+
+	GI->Play_Sound(L"Voice_Zenitsu_Skill_0_Ready.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f, true);
 }
 
 void CState_Zenitsu_Skill_0::Tick_State(_float fTimeDelta)
@@ -74,6 +76,8 @@ void CState_Zenitsu_Skill_0::Tick_State(_float fTimeDelta)
 
 			CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_Sweath_0", XMMatrixIdentity(), SweathEffectMatrix, 1.f);
 			CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_Sweath_1", XMMatrixIdentity(), SweathEffectMatrix, 1.f);
+
+			GI->Play_Sound(L"Zenitsu_Skill0_Ready.wav", CHANNELID::SOUND_SKILL, 1.f, true);
 		}
 			
 		break;
@@ -266,7 +270,7 @@ void CState_Zenitsu_Skill_0::Use_Skill(_float fTimeDelta)
 	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, false);
 	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, false);
 
-	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+	
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pCharacter->Set_ActiveColliders(CCollider::BODY, false);
 
@@ -278,6 +282,9 @@ void CState_Zenitsu_Skill_0::Use_Skill(_float fTimeDelta)
 	{
 		pCamera->Cam_Shake(.5f, 10.f);
 	}
+
+	GI->Play_Sound(L"Voice_Zenitsu_Skill_0_Use.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f, true);
+	GI->Play_Sound(L"Zenitsu_Skill0_Use.wav", CHANNELID::SOUND_SKILL, 1.f, true);
 }
 
 CState_Zenitsu_Skill_0* CState_Zenitsu_Skill_0::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine, const list<wstring>& AnimationList)

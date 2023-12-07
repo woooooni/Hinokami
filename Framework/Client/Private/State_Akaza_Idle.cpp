@@ -49,7 +49,6 @@ void CState_Akaza_Idle::Tick_State(_float fTimeDelta)
 					m_pStateMachineCom->Change_State(CMonster::BOSS_ATTACK_0);
 				else
 				{
-					// m_pStateMachineCom->Change_State(CMonster::BOSS_ATTACK_1);
 					_int iRandomAttack = ((rand() + rand() + rand()) % 2) + 1;
 					if (iRandomAttack == 1)
 					{

@@ -40,6 +40,7 @@ void CState_Character_Battle_Idle::Enter_State(void* pArg)
 	else
 		m_pCharacter->SweathSword();
 
+	m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[0]);
 	m_fAccBaseNut = 0.f;

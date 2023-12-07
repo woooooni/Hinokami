@@ -31,16 +31,18 @@ HRESULT CState_Character_Down::Initialize(const list<wstring>& AnimationList)
 
 void CState_Character_Down::Enter_State(void* pArg)
 {
+
+	m_iCurrAnimIndex = 0;
 	m_pCharacter->DrawSword();
+
 	m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, false);
 	m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, false);
 	m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, false);
 	m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
-	m_pCharacter->Set_Infinite(999.f, true);
-	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, false);
-	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, false);
-	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, false);
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, true);
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, true);
+	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, true);
 	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
@@ -62,6 +64,7 @@ void CState_Character_Down::Tick_State(_float fTimeDelta)
 
 void CState_Character_Down::Exit_State()
 {
+	m_iCurrAnimIndex = 0;
 	m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, true);
 	m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, true);
 	m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, true);

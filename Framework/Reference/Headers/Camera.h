@@ -10,7 +10,7 @@ BEGIN(Engine)
 class ENGINE_DLL CCamera abstract : public CGameObject
 {
 public:
-	enum CAMERA_STATE { BASIC, CUT_SCENE, SKILL, STATE_END };
+	enum CAMERA_STATE { BASIC, CUTSCENE_START_DEFENCE, CUTSCENE_START_TRAIN_BOSS, CUTSCENE_START_FINAL_BOSS, CUTSCENE_KYOJURO_SKILL_0, CUTSCENE_ZENITSU_SKILL_0, STATE_END };
 
 public:
 	typedef struct tagCameraDesc
@@ -62,19 +62,15 @@ public:
 		m_eCurrState = eState;
 	}
 
-	void Play_CutScene()
-	{
-		m_eCurrState = CCamera::CAMERA_STATE::CUT_SCENE;
-	}
-
 public:
 	HRESULT Set_TargetTransform(class CTransform* pTargetTransform) 
 	{ 
 		if (nullptr == pTargetTransform)
 			return E_FAIL;
 
-		Safe_AddRef(m_pTargetTransform);
+		
 		m_pTargetTransform = pTargetTransform; 
+		Safe_AddRef(m_pTargetTransform);
 		return S_OK;
 	}
 

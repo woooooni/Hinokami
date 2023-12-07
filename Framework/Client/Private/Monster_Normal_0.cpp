@@ -65,6 +65,8 @@ HRESULT CMonster_Normal_0::Initialize(void* pArg)
  	if (FAILED(Ready_Colliders()))
 		return E_FAIL;
 
+	m_eMonsterType = MONSTER_TYPE::NORMAL_0;
+
 	return S_OK;
 }
 
@@ -88,7 +90,7 @@ HRESULT CMonster_Normal_0::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	m_pNavigationCom->Render();
+	
 
 	return S_OK;
 }

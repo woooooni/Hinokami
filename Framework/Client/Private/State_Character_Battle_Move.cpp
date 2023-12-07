@@ -5,6 +5,7 @@
 #include "StateMachine.h"
 #include "Character.h"
 #include "Sword.h"
+#include "Animation.h"
 
 
 
@@ -34,6 +35,7 @@ HRESULT CState_Character_Battle_Move::Initialize(const list<wstring>& AnimationL
 
 void CState_Character_Battle_Move::Enter_State(void* pArg)
 {
+
 	if (CSword::ZENITSU != m_pSword->Get_SwordType())
 		m_pCharacter->DrawSword();
 
@@ -48,20 +50,6 @@ void CState_Character_Battle_Move::Enter_State(void* pArg)
 void CState_Character_Battle_Move::Tick_State(_float fTimeDelta)
 {
 	_bool bKeyHolding = false;
-
-	//if (KEY_TAP(KEY::SHIFT))
-	//{
-	//	m_iCurrAnimIndex = m_AnimIndices[1];
-	//	m_pModelCom->Set_AnimIndex(m_AnimIndices[1]);
-	//	m_pTransformCom->Set_TickPerSecond(m_fMoveSpeed + 10.f);
-	//}
-
-	//if (KEY_AWAY(KEY::SHIFT))
-	//{
-	//	m_iCurrAnimIndex = m_AnimIndices[0];
-	//	m_pModelCom->Set_AnimIndex(m_AnimIndices[0]);
-	//	m_pTransformCom->Set_TickPerSecond(m_pTransformCom->Get_TickPerSecond() - 10.f);
-	//}
 	
 
 	if (KEY_HOLD(KEY::W))
@@ -178,6 +166,53 @@ void CState_Character_Battle_Move::Tick_State(_float fTimeDelta)
 		if (KEY_NONE(KEY::W) && KEY_NONE(KEY::A) && KEY_NONE(KEY::S) && KEY_NONE(KEY::D))		
 			m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
 	}
+
+	//_float fProgress = m_pModelCom->Get_CurrAnimation()->Get_AnimationProgress();
+	//fProgress *= 100.f;
+	//fProgress = round(fProgress) / 100.f;
+
+	//switch (GI->Get_CurrentLevel())
+	//{
+	//case LEVELID::LEVEL_TRAIN_STATION:
+	//case LEVELID::LEVEL_FINAL_BOSS:
+	//	if (fProgress >= 0.97f && fProgress <= 0.98f)
+	//	{
+	//		GI->Play_Sound(L"Foot_Dirt_0.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f, true);
+	//		break;
+	//	}
+	//	else if (fProgress >= 0.25f && fProgress <= 0.27f)
+	//	{
+	//		GI->Play_Sound(L"Foot_Dirt_1.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f, true);
+	//		break;
+	//	}
+	//	break;
+
+	//case LEVELID::LEVEL_TRAIN_BOSS:
+	//	if (fProgress >= 0.5f && fProgress <= 0.51f)
+	//	{
+	//		GI->Play_Sound(L"Foot_Train_1.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f, false);
+	//		break;
+	//	}
+	//	else if (fProgress >= 0.1f && fProgress <= 0.11f)
+	//	{
+	//		GI->Play_Sound(L"Foot_Train_0.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f, false);
+	//		break;
+	//	}
+	//	break;
+
+	//case LEVELID::LEVEL_TRAIN:
+	//	if (fProgress >= 0.6f && fProgress <= 0.61f)
+	//	{
+	//		GI->Play_Sound(L"Foot_Floor_1.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f, false);
+	//		break;
+	//	}
+	//	else if (fProgress >= 0.3f && fProgress <= 0.31f)
+	//	{
+	//		GI->Play_Sound(L"Foot_Floor_0.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f, false);
+	//		break;
+	//	}
+	//	break;
+	//}
 
 
 	if (KEY_TAP(KEY::NUM_1))

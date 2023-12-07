@@ -7,13 +7,13 @@
 
 BEGIN(Client)
 
-class CNpc_Stand_2 final : public CNpc
+class CNpc_PoliceMan_0 final : public CNpc
 {
 
 private:
-	CNpc_Stand_2(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CNpc_Stand_2(const CNpc_Stand_2& rhs);
-	virtual ~CNpc_Stand_2() = default;
+	CNpc_PoliceMan_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CNpc_PoliceMan_0(const CNpc_PoliceMan_0& rhs);
+	virtual ~CNpc_PoliceMan_0() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -38,7 +38,7 @@ public:
 
 
 public:
-	static CNpc_Stand_2* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CNpc_PoliceMan_0* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

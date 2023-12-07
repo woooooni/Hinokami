@@ -30,6 +30,7 @@ CGameInstance::CGameInstance()
 	, m_pCollision_Manager(CCollision_Manager::GetInstance())
 	, m_pTarget_Manager(CTarget_Manager::GetInstance())
 	, m_pFrustum(CFrustum::GetInstance())
+	, m_pSound_Manager(CSound_Manager::GetInstance())
 	// , m_pNetwork_Manager(CNetwork_Manager::GetInstance())
 	
 {
@@ -47,6 +48,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pModel_Manager);
 	Safe_AddRef(m_pCollision_Manager);
 	Safe_AddRef(m_pFrustum);
+	Safe_AddRef(m_pSound_Manager);
 	// Safe_AddRef(m_pNetwork_Manager);
 }
 
@@ -90,6 +92,8 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, _uint iNumLayerType,
 	if (FAILED(m_pFrustum->Initialize()))
 		return E_FAIL;
 
+	if (FAILED(m_pSound_Manager->Reserve_Manager()))
+		return E_FAIL;
 	
 
 	return S_OK;
@@ -516,6 +520,31 @@ _bool CGameInstance::Intersect_Frustum_World(_fvector vWorldPos, _float fRadius)
 	return m_pFrustum->Intersect_Frustum_World(vWorldPos, fRadius);
 }
 
+void CGameInstance::Play_Sound(TCHAR* pSoundKey, CHANNELID eID, _float fVolume, _bool bStop)
+{
+	m_pSound_Manager->Play_Sound(pSoundKey, eID, fVolume, bStop);
+}
+
+void CGameInstance::Play_BGM(TCHAR* pSoundKey, _float fVolume, _bool bStop)
+{
+	m_pSound_Manager->Play_BGM(pSoundKey, fVolume, bStop);
+}
+
+void CGameInstance::Stop_Sound(CHANNELID eID)
+{
+	m_pSound_Manager->Stop_Sound(eID);
+}
+
+void CGameInstance::Stop_All()
+{
+	m_pSound_Manager->Stop_All();
+}
+
+void CGameInstance::Set_ChannelVolume(CHANNELID eID, float fVolume)
+{
+	m_pSound_Manager->Set_ChannelVolume(eID, fVolume);
+}
+
 //void CGameInstance::Set_ServerSession(ServerSessionRef session)
 //{
 //	m_pNetwork_Manager->Set_ServerSession(session);
@@ -573,6 +602,7 @@ _bool CGameInstance::Intersect_Frustum_World(_fvector vWorldPos, _float fRadius)
 
 void CGameInstance::Release_Engine()
 {
+	CSound_Manager::GetInstance()->DestroyInstance();
 	CLevel_Manager::GetInstance()->DestroyInstance();
 	CTarget_Manager::GetInstance()->DestroyInstance();
 	CObject_Manager::GetInstance()->DestroyInstance();
@@ -588,6 +618,7 @@ void CGameInstance::Release_Engine()
 	CCollision_Manager::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
 	CGameInstance::GetInstance()->DestroyInstance();
+	
 }
 
 void CGameInstance::Free()
@@ -606,5 +637,6 @@ void CGameInstance::Free()
 	Safe_Release(m_pCollision_Manager);
 	Safe_Release(m_pTarget_Manager);
 	Safe_Release(m_pFrustum);
+	Safe_Release(m_pSound_Manager);
 	// Safe_Release(m_pNetwork_Manager);
 }

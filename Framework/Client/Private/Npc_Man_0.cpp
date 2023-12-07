@@ -1,25 +1,25 @@
 #include "stdafx.h"
 #include "GameInstance.h"
-#include "Npc_Stand_0.h"
+#include "Npc_Man_0.h"
 #include "State_Npc_Idle.h"
 
 
 
 USING(Client)
-CNpc_Stand_0::CNpc_Stand_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CNpc(pDevice, pContext, L"Npc_Stand_0")
+CNpc_Man_0::CNpc_Man_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CNpc(pDevice, pContext, L"Npc_Man_0")
 {
 	
 }
 
-CNpc_Stand_0::CNpc_Stand_0(const CNpc_Stand_0& rhs)
+CNpc_Man_0::CNpc_Man_0(const CNpc_Man_0& rhs)
 	: CNpc(rhs)	
 
 {	
 	
 }
 
-HRESULT CNpc_Stand_0::Initialize_Prototype()
+HRESULT CNpc_Man_0::Initialize_Prototype()
 {
 	if(FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -27,7 +27,7 @@ HRESULT CNpc_Stand_0::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CNpc_Stand_0::Initialize(void* pArg)
+HRESULT CNpc_Man_0::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -44,7 +44,7 @@ HRESULT CNpc_Stand_0::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CNpc_Stand_0::Tick(_float fTimeDelta)
+void CNpc_Man_0::Tick(_float fTimeDelta)
 {
 	if (m_bReserveDead)
 	{
@@ -54,7 +54,7 @@ void CNpc_Stand_0::Tick(_float fTimeDelta)
 	}
 }
 
-void CNpc_Stand_0::LateTick(_float fTimeDelta)
+void CNpc_Man_0::LateTick(_float fTimeDelta)
 {
 	if (nullptr == m_pRendererCom)
 		return;
@@ -70,7 +70,7 @@ void CNpc_Stand_0::LateTick(_float fTimeDelta)
 	}
 }
 
-HRESULT CNpc_Stand_0::Render()
+HRESULT CNpc_Man_0::Render()
 {
 	__super::Render();
 	 
@@ -115,7 +115,7 @@ HRESULT CNpc_Stand_0::Render()
 	return S_OK;
 }
 
-HRESULT CNpc_Stand_0::Render_ShadowDepth()
+HRESULT CNpc_Man_0::Render_ShadowDepth()
 {
 
 	if (nullptr == m_pShaderCom || nullptr == m_pTransformCom)
@@ -148,14 +148,14 @@ HRESULT CNpc_Stand_0::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CNpc_Stand_0::Collision_Enter(const COLLISION_INFO& tInfo)
+void CNpc_Man_0::Collision_Enter(const COLLISION_INFO& tInfo)
 {
 
 }
 
-void CNpc_Stand_0::Collision_Continue(const COLLISION_INFO& tInfo)
+void CNpc_Man_0::Collision_Continue(const COLLISION_INFO& tInfo)
 {
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_NPC || tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
+	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER || tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
 	{
 		CTransform* pOtherTransform = tInfo.pOther->Get_Component<CTransform>(L"Com_Transform");
 		_vector vTargetDir = XMVector3Normalize(pOtherTransform->Get_State(CTransform::STATE::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION));
@@ -182,10 +182,10 @@ void CNpc_Stand_0::Collision_Continue(const COLLISION_INFO& tInfo)
 	}
 }
 
-void CNpc_Stand_0::Collision_Exit(const COLLISION_INFO& tInfo)
+void CNpc_Man_0::Collision_Exit(const COLLISION_INFO& tInfo)
 {
 	
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_NPC
+	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER
 		|| tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
 	{
 		if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
@@ -206,12 +206,12 @@ void CNpc_Stand_0::Collision_Exit(const COLLISION_INFO& tInfo)
 
 
 
-void CNpc_Stand_0::On_Damaged(CGameObject* pAttacker, _uint eDamageType, _float fDamage)
+void CNpc_Man_0::On_Damaged(CGameObject* pAttacker, _uint eDamageType, _float fDamage)
 {
 	__super::On_Damaged(pAttacker, eDamageType, fDamage);
 }
 
-HRESULT CNpc_Stand_0::Ready_Components()
+HRESULT CNpc_Man_0::Ready_Components()
 {
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
@@ -232,7 +232,7 @@ HRESULT CNpc_Stand_0::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Npc_Boy_0"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Npc_Man_0"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	/* For.Com_StateMachine */
@@ -270,20 +270,21 @@ HRESULT CNpc_Stand_0::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CNpc_Stand_0::Ready_States()
+HRESULT CNpc_Man_0::Ready_States()
 {
 	list<wstring> strAnimationName;
-	strAnimationName.push_back(L"SK_N0034_V00_C00.ao|A_N0034_V00_C00_AdvNut01_1");
-
-	if(FAILED(m_pStateCom->Add_State(CNpc::NPC_STATE::IDLE, CState_Npc_Idle::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName))))
+	strAnimationName.push_back(L"SK_M0003_V01_C00.ao|A_M0003_V01_C00_AdvNut0");
+	if (FAILED(m_pStateCom->Add_State(CNpc::NPC_STATE::IDLE, CState_Npc_Idle::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName))))
 		return E_FAIL;
+	
 
 	m_pStateCom->Change_State(CNpc::NPC_STATE::IDLE);
+
 
 	return S_OK;
 }
 
-HRESULT CNpc_Stand_0::Ready_Colliders()
+HRESULT CNpc_Man_0::Ready_Colliders()
 {
 	CCollider_Sphere::SPHERE_COLLIDER_DESC ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
@@ -311,12 +312,12 @@ HRESULT CNpc_Stand_0::Ready_Colliders()
 }
 
 
-CNpc_Stand_0* CNpc_Stand_0::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CNpc_Man_0* CNpc_Man_0::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CNpc_Stand_0* pInstance = new CNpc_Stand_0(pDevice, pContext);
+	CNpc_Man_0* pInstance = new CNpc_Man_0(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Create Failed : CNpc_Stand_3");
+		MSG_BOX("Create Failed : CNpc_Man_0");
 		Safe_Release(pInstance);
 		return nullptr;
 	}
@@ -324,20 +325,20 @@ CNpc_Stand_0* CNpc_Stand_0::Create(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	return S_OK;
 }
 
-CGameObject* CNpc_Stand_0::Clone(void* pArg)
+CGameObject* CNpc_Man_0::Clone(void* pArg)
 {
-	CNpc_Stand_0* pInstance = new CNpc_Stand_0(*this);
+	CNpc_Man_0* pInstance = new CNpc_Man_0(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CNpc_Stand_3");
+		MSG_BOX("Failed to Cloned : CNpc_Man_0");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CNpc_Stand_0::Free()
+void CNpc_Man_0::Free()
 {
 	__super::Free();
 }

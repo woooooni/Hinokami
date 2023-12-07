@@ -68,8 +68,8 @@ public:
 #ifdef _DEBUG
 public:
 	HRESULT Add_Debug(class CComponent* pDebug) {
-		m_RenderDebug.push_back(pDebug);
-		Safe_AddRef(pDebug);
+		/*m_RenderDebug.push_back(pDebug);
+		Safe_AddRef(pDebug);*/
 		return S_OK;
 	}
 
@@ -146,7 +146,7 @@ private:
 
 	_float								m_fBias = 0.2f;
 	_float4								m_vPlayerPosition = {0.f, 0.f, 0.f, 1.f};
-	_bool m_bDebugDraw = true;
+	_bool m_bDebugDraw = false;
 
 
 	

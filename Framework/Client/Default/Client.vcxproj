@@ -108,13 +108,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CLIENT;_DEBUG;_WINDOWS;_HAS_STD_BYTE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/;../../Reference/Headers/Network/;../../Reference/Protobuf/;../../ThirdParty/;../../Reference/Headers/PhysX/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/;../../Reference/Headers/Network/;../../Reference/Protobuf/;../../ThirdParty/;../../Reference/Headers/PhysX/;../../Reference/Headers/Fmod/;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <CombineFilesOnlyFromTheSameFolder>false</CombineFilesOnlyFromTheSameFolder>
-      <MaxFilesInUnityFile>5</MaxFilesInUnityFile>
+      <MaxFilesInUnityFile>0</MaxFilesInUnityFile>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -184,6 +184,9 @@
     <ClInclude Include="..\..\ThirdParty\imstb_textedit.h" />
     <ClInclude Include="..\..\ThirdParty\imstb_truetype.h" />
     <ClInclude Include="..\Public\Akaza_Projectile.h" />
+    <ClInclude Include="..\Public\Akaza_Skill_Boundary.h" />
+    <ClInclude Include="..\Public\Akaza_Stone_0.h" />
+    <ClInclude Include="..\Public\Akaza_Stone_1.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Boss_Akaza.h" />
     <ClInclude Include="..\Public\Boss_Enmu.h" />
@@ -216,11 +219,16 @@
     <ClInclude Include="..\Public\Monster_Normal_1.h" />
     <ClInclude Include="..\Public\Monster_Normal_2.h" />
     <ClInclude Include="..\Public\Npc.h" />
+    <ClInclude Include="..\Public\Npc_Cat.h" />
     <ClInclude Include="..\Public\Npc_Defence_Zenitsu.h" />
-    <ClInclude Include="..\Public\Npc_Stand_0.h" />
-    <ClInclude Include="..\Public\Npc_Stand_1.h" />
-    <ClInclude Include="..\Public\Npc_Stand_2.h" />
-    <ClInclude Include="..\Public\Npc_Stand_3.h" />
+    <ClInclude Include="..\Public\Npc_Boy_0.h" />
+    <ClInclude Include="..\Public\Npc_Girl_0.h" />
+    <ClInclude Include="..\Public\Npc_Girl_1.h" />
+    <ClInclude Include="..\Public\Npc_Man_0.h" />
+    <ClInclude Include="..\Public\Npc_OldWoman_0.h" />
+    <ClInclude Include="..\Public\Npc_PoliceMan_0.h" />
+    <ClInclude Include="..\Public\Npc_Talk_PoliceMan_0.h" />
+    <ClInclude Include="..\Public\Npc_Woman_0.h" />
     <ClInclude Include="..\Public\Part.h" />
     <ClInclude Include="..\Public\Particle.h" />
     <ClInclude Include="..\Public\Particle_Manager.h" />
@@ -238,6 +246,7 @@
     <ClInclude Include="..\Public\State_Akaza_Attack_1.h" />
     <ClInclude Include="..\Public\State_Akaza_Attack_2.h" />
     <ClInclude Include="..\Public\State_Akaza_Idle.h" />
+    <ClInclude Include="..\Public\State_Akaza_Skill_0.h" />
     <ClInclude Include="..\Public\State_Boss_Battle_Dash.h" />
     <ClInclude Include="..\Public\State_Boss_Idle.h" />
     <ClInclude Include="..\Public\State_Character_Battle_AirDash.h" />
@@ -246,6 +255,7 @@
     <ClInclude Include="..\Public\State_Enmu_Attack.h" />
     <ClInclude Include="..\Public\State_Character_Damaged_Bound.h" />
     <ClInclude Include="..\Public\State_Enmu_Skill_0.h" />
+    <ClInclude Include="..\Public\State_Enmu_Skill_1.h" />
     <ClInclude Include="..\Public\State_Kyojuro_Air_Attack.h" />
     <ClInclude Include="..\Public\State_Kyojuro_Attack.h" />
     <ClInclude Include="..\Public\State_Kyojuro_Skill_0.h" />
@@ -296,9 +306,12 @@
     <ClInclude Include="..\Public\UI_BattleEnd.h" />
     <ClInclude Include="..\Public\UI_BattleStart.h" />
     <ClInclude Include="..\Public\UI_Cursor.h" />
+    <ClInclude Include="..\Public\UI_Enmu_Break.h" />
+    <ClInclude Include="..\Public\UI_Enmu_ToolTip.h" />
     <ClInclude Include="..\Public\UI_GaugeBar.h" />
     <ClInclude Include="..\Public\UI_Manager.h" />
     <ClInclude Include="..\Public\UI_WorldHp.h" />
+    <ClInclude Include="..\Public\UI_WorldQuest.h" />
     <ClInclude Include="..\Public\VIBuffer_Trail.h" />
     <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\UI.h" />
@@ -340,6 +353,9 @@
       <IncludeInUnityFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IncludeInUnityFile>
     </ClCompile>
     <ClCompile Include="..\Private\Akaza_Projectile.cpp" />
+    <ClCompile Include="..\Private\Akaza_Skill_Boundary.cpp" />
+    <ClCompile Include="..\Private\Akaza_Stone_0.cpp" />
+    <ClCompile Include="..\Private\Akaza_Stone_1.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Boss_Akaza.cpp" />
     <ClCompile Include="..\Private\Boss_Enmu.cpp" />
@@ -381,11 +397,16 @@
     <ClCompile Include="..\Private\Monster_Normal_2.cpp" />
     <ClCompile Include="..\Private\Network_Manager.cpp" />
     <ClCompile Include="..\Private\Npc.cpp" />
+    <ClCompile Include="..\Private\Npc_Cat.cpp" />
     <ClCompile Include="..\Private\Npc_Defence_Zenitsu.cpp" />
-    <ClCompile Include="..\Private\Npc_Stand_0.cpp" />
-    <ClCompile Include="..\Private\Npc_Stand_1.cpp" />
-    <ClCompile Include="..\Private\Npc_Stand_2.cpp" />
-    <ClCompile Include="..\Private\Npc_Stand_3.cpp" />
+    <ClCompile Include="..\Private\Npc_Boy_0.cpp" />
+    <ClCompile Include="..\Private\Npc_Girl_0.cpp" />
+    <ClCompile Include="..\Private\Npc_Girl_1.cpp" />
+    <ClCompile Include="..\Private\Npc_Man_0.cpp" />
+    <ClCompile Include="..\Private\Npc_OldWoman_0.cpp" />
+    <ClCompile Include="..\Private\Npc_PoliceMan_0.cpp" />
+    <ClCompile Include="..\Private\Npc_Talk_PoliceMan_0.cpp" />
+    <ClCompile Include="..\Private\Npc_Woman_0.cpp" />
     <ClCompile Include="..\Private\Part.cpp" />
     <ClCompile Include="..\Private\Particle.cpp" />
     <ClCompile Include="..\Private\Particle_Manager.cpp" />
@@ -407,6 +428,7 @@
     <ClCompile Include="..\Private\State_Akaza_Attack_1.cpp" />
     <ClCompile Include="..\Private\State_Akaza_Attack_2.cpp" />
     <ClCompile Include="..\Private\State_Akaza_Idle.cpp" />
+    <ClCompile Include="..\Private\State_Akaza_Skill_0.cpp" />
     <ClCompile Include="..\Private\State_Boss_Battle_Dash.cpp" />
     <ClCompile Include="..\Private\State_Boss_Idle.cpp" />
     <ClCompile Include="..\Private\State_Character_Battle_AirDash.cpp" />
@@ -414,6 +436,7 @@
     <ClCompile Include="..\Private\State_Character_Down.cpp" />
     <ClCompile Include="..\Private\State_Enmu_Attack.cpp" />
     <ClCompile Include="..\Private\State_Enmu_Skill_0.cpp" />
+    <ClCompile Include="..\Private\State_Enmu_Skill_1.cpp" />
     <ClCompile Include="..\Private\State_Kyojuro_Air_Attack.cpp" />
     <ClCompile Include="..\Private\State_Kyojuro_Attack.cpp" />
     <ClCompile Include="..\Private\State_Kyojuro_Skill_0.cpp" />
@@ -473,6 +496,8 @@
     <ClCompile Include="..\Private\UI_BattleEnd.cpp" />
     <ClCompile Include="..\Private\UI_BattleStart.cpp" />
     <ClCompile Include="..\Private\UI_Cursor.cpp" />
+    <ClCompile Include="..\Private\UI_Enmu_Break.cpp" />
+    <ClCompile Include="..\Private\UI_Enmu_ToolTip.cpp" />
     <ClCompile Include="..\Private\UI_GaugeBar.cpp" />
     <ClCompile Include="..\Private\UI_Loading_Anim.cpp" />
     <ClCompile Include="..\Private\UI_Loading_BackGround.cpp" />
@@ -484,6 +509,7 @@
     <ClCompile Include="..\Private\UI_Manager.cpp" />
     <ClCompile Include="..\Private\UI_NextFog.cpp" />
     <ClCompile Include="..\Private\UI_WorldHp.cpp" />
+    <ClCompile Include="..\Private\UI_WorldQuest.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Trail.cpp" />
     <ClCompile Include="..\Private\Zenitsu.cpp" />
     <ClCompile Include="Client.cpp" />

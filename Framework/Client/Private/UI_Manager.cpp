@@ -139,6 +139,15 @@ HRESULT CUI_Manager::Battle_End()
 	return S_OK;
 }
 
+HRESULT CUI_Manager::Reset_HpBar(GAUGE_BARTYPE eBarType)
+{
+	if (eBarType >= GAUGE_BARTYPE::TYPE_END)
+		return E_FAIL;
+
+	m_pGaugeBars[eBarType]->Reset();
+	return S_OK;
+}
+
 HRESULT CUI_Manager::Reserve_HpBar(GAUGE_BARTYPE eBarType, CCharacter* pCharacter, _uint iCharacterType)
 {
 	if (eBarType >= GAUGE_BARTYPE::TYPE_END)

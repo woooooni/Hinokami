@@ -35,6 +35,9 @@ protected:
 private:
 	HRESULT Ready_Sockets();
 	HRESULT Ready_Parts();
+
+private:
+	_uint m_iSkillCount = 3;
 	
 
 public:

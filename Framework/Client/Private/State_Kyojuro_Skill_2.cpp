@@ -9,6 +9,8 @@
 #include "Effect_Manager.h"
 #include "Particle_Manager.h"
 #include "Monster.h"
+#include "Camera_Manager.h"
+#include "Camera.h"
 
 CState_Kyojuro_Skill_2::CState_Kyojuro_Skill_2(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
@@ -40,6 +42,7 @@ void CState_Kyojuro_Skill_2::Enter_State(void* pArg)
 	m_pCharacter->DrawSword();
 
 	Use_Skill(GI->Get_TimeDelta(L"Timer_GamePlay"));
+	GI->Play_Sound(L"Voice_Kyojuro_Skill_2_Use.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
 }
 
 void CState_Kyojuro_Skill_2::Tick_State(_float fTimeDelta)
@@ -68,6 +71,15 @@ void CState_Kyojuro_Skill_2::Tick_State(_float fTimeDelta)
 				WorldMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(0.f, 1.f, 0.f, 0.f);
 				CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_02_Kyojuro_0", XMMatrixIdentity(), XMMatrixRotationX(-45.f) * WorldMatrix, 2.f);
 				CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_02_Kyojuro_1", XMMatrixIdentity(), XMMatrixRotationX(-45.f) * WorldMatrix, 2.f);
+
+				CCamera* pCamera = CCamera_Manager::GetInstance()->Get_MainCamera();
+				if (nullptr != pCamera)
+				{
+					pCamera->Cam_Shake(1.f, 3.f);
+					GI->Play_Sound(L"Shake.wav", CHANNELID::SOUND_SHAKE, 1.f);
+				}
+
+				GI->Play_Sound(L"Kyojuro_Skill2_Use.wav", CHANNELID::SOUND_SKILL, 1.f);
 			}
 		}
 		break;
@@ -92,8 +104,8 @@ void CState_Kyojuro_Skill_2::Exit_State()
 
 	m_pRigidBodyCom->Set_Friction_Scale(20.f);
 	m_pCharacter->Set_Infinite(0.f, false);
-	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
-	m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
+	
+	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pCharacter->Set_ActiveColliders(CCollider::BODY, true);
 
 
@@ -143,12 +155,11 @@ void CState_Kyojuro_Skill_2::Use_Skill(_float fTimeDelta)
 	
 
 	m_pCharacter->Set_Infinite(999.f, true);
-	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
-	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
+	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 10.f, 0.f, 1.f);
+	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 10.f, 0.f, 1.f);
 
-	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
-	m_pCharacter->Set_ActiveColliders(CCollider::BODY, false);
+	m_pCharacter->Set_ActiveColliders(CCollider::BODY, true);
 
 	m_pRigidBodyCom->Set_Friction_Scale(40.f);
 	m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(m_pTransformCom->Get_Look()), 15.f);

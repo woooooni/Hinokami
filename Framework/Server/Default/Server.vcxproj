@@ -121,7 +121,7 @@
       <PreprocessorDefinitions>_CONSOLE;_DEBUG;_HAS_STD_BYTE=0;_SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/;../../Reference/Headers/Network/;../../Reference/Protobuf/;../../Reference/Headers/PhysX/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Public/;../../Reference/Headers/;../../Reference/Headers/Network/;../../Reference/Protobuf/;../../Reference/Headers/PhysX/;../../Reference/Headers/Fmod/;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>

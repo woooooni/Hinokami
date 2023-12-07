@@ -7,6 +7,7 @@
 #include "Monster.h"
 #include "UI_Manager.h"
 #include "Camera_Manager.h"
+#include "Effect_Manager.h"
 
 CLevel_Train_Boss::CLevel_Train_Boss(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -16,13 +17,15 @@ CLevel_Train_Boss::CLevel_Train_Boss(ID3D11Device * pDevice, ID3D11DeviceContext
 HRESULT CLevel_Train_Boss::Initialize()
 {
 	GI->Lock_Mouse();
+	
+
 
 	m_pRendererCom = dynamic_cast<CRenderer*>(GI->Clone_Component(LEVEL_STATIC, L"Prototype_Component_Renderer"));
 	if (nullptr == m_pRendererCom)
 		return E_FAIL;
 	
-	m_vFogColor = { 0.f, 0.f, 0.f,1.f };
-	m_vFogStartEnd = { 0.f, 120.f };
+	m_vFogColor = { .1f, .1f, .1f,1.f };
+	m_vFogStartEnd = { 0.f, 58.f };
 	m_pRendererCom->Set_FogColor(m_vFogColor);
 	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
 
@@ -63,48 +66,48 @@ HRESULT CLevel_Train_Boss::Initialize()
 HRESULT CLevel_Train_Boss::Tick(_float fTimeDelta)
 {
 
-	if (KEY_TAP(KEY::U))
-	{
-		m_vFogStartEnd.x -= 1.f;
-		m_vFogStartEnd.x = max(0.f, m_vFogStartEnd.x);
-		m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
-	}
+	//if (KEY_TAP(KEY::U))
+	//{
+	//	m_vFogStartEnd.x -= 1.f;
+	//	m_vFogStartEnd.x = max(0.f, m_vFogStartEnd.x);
+	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	//}
 
-	if (KEY_TAP(KEY::I))
-	{
-		m_vFogStartEnd.x += 1.f;
-		m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
-	}
+	//if (KEY_TAP(KEY::I))
+	//{
+	//	m_vFogStartEnd.x += 1.f;
+	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	//}
 
-	if (KEY_TAP(KEY::O))
-	{
-		
-		if (KEY_HOLD(KEY::SHIFT))
-		{
-			m_vFogStartEnd.y -= 1.f;
-		}
-		else
-		{
-			m_vFogStartEnd.y -= 10.f;
-		}
-		m_vFogStartEnd.y = max(0.f, m_vFogStartEnd.y);
-		m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
-	}
+	//if (KEY_TAP(KEY::O))
+	//{
+	//	
+	//	if (KEY_HOLD(KEY::SHIFT))
+	//	{
+	//		m_vFogStartEnd.y -= 1.f;
+	//	}
+	//	else
+	//	{
+	//		m_vFogStartEnd.y -= 10.f;
+	//	}
+	//	m_vFogStartEnd.y = max(0.f, m_vFogStartEnd.y);
+	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	//}
 
-	if (KEY_TAP(KEY::P))
-	{
+	//if (KEY_TAP(KEY::P))
+	//{
 
-		if (KEY_HOLD(KEY::SHIFT))
-		{
-			m_vFogStartEnd.y += 1.f;
-		}
-		else
-		{
-			m_vFogStartEnd.y += 10.f;
-		}
-		
-		m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
-	}
+	//	if (KEY_HOLD(KEY::SHIFT))
+	//	{
+	//		m_vFogStartEnd.y += 1.f;
+	//	}
+	//	else
+	//	{
+	//		m_vFogStartEnd.y += 10.f;
+	//	}
+	//	
+	//	m_pRendererCom->Set_FogStartEnd(m_vFogStartEnd);
+	//}
 
 
 	//if (KEY_TAP(KEY::R))
@@ -152,6 +155,16 @@ HRESULT CLevel_Train_Boss::Tick(_float fTimeDelta)
 	//	m_pRendererCom->Set_FogColor(m_vFogColor);
 	//}
 
+	m_fGenSmoke = 0.5f;
+	m_fAccSmoke += fTimeDelta;
+	if (m_fAccSmoke >= m_fGenSmoke)
+	{
+		m_fAccSmoke = 0.f;
+		_matrix WorldMatrix = XMMatrixIdentity();
+		WorldMatrix.r[CTransform::STATE_POSITION] = XMVectorSet(0.f, 19.f, 424.35f, 1.f);
+		Client::CEffect_Manager::GetInstance()->Generate_Effect(L"Train_Smoke", XMMatrixIdentity(), WorldMatrix, 5.f, nullptr, nullptr);
+	}
+
 
 
 	m_fAccScroll -= m_fScrollSpeed * fTimeDelta;
@@ -171,6 +184,8 @@ HRESULT CLevel_Train_Boss::LateTick(_float fTimeDelta)
 
 HRESULT CLevel_Train_Boss::Enter_Level()
 {
+	GI->Stop_All();
+	GI->Play_BGM(L"Train_Boss.wav", 1.f, true);
 	return S_OK;
 }
 
@@ -211,22 +226,22 @@ HRESULT CLevel_Train_Boss::Ready_Layer_Player(const LAYER_TYPE eLayerType)
 
 
 
-	//CGameObject* pZenitsu = nullptr;
-	//if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_BOSS, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Zenitsu"), nullptr, &pZenitsu)))
-	//	return E_FAIL;
+	CGameObject* pZenitsu = nullptr;
+	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_BOSS, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Zenitsu"), nullptr, &pZenitsu)))
+		return E_FAIL;
 
-	//CCharacter* pCharacter = dynamic_cast<CCharacter*>(pZenitsu);
-	//if (nullptr == pCharacter)
-	//	return E_FAIL;
+	CCharacter* pCharacter = dynamic_cast<CCharacter*>(pZenitsu);
+	if (nullptr == pCharacter)
+		return E_FAIL;
 
 
-	CGameObject* pKyojuro = nullptr;
+	/*CGameObject* pKyojuro = nullptr;
 	if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_BOSS, LAYER_TYPE::LAYER_CHARACTER, TEXT("Prototype_GameObject_Kyojuro"), nullptr, &pKyojuro)))
 		return E_FAIL;
 
 	CCharacter* pCharacter = dynamic_cast<CCharacter*>(pKyojuro);
 	if (nullptr == pCharacter)
-		return E_FAIL;
+		return E_FAIL;*/
 
 	CNavigation* pNavigation = pCharacter->Get_Component<CNavigation>(L"Com_Navigation");
 	if (nullptr != pNavigation)
@@ -289,6 +304,7 @@ HRESULT CLevel_Train_Boss::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 	CMonster* pMonster = dynamic_cast<CMonster*>(pBoss);
 	if (nullptr == pMonster)
 		return E_FAIL;
+
 	CUI_Manager::GetInstance()->Reserve_HpBar(CUI_Manager::GAUGE_BARTYPE::RIGHT_HP, pMonster, CCharacter::CHARACTER_TYPE::ENMU);
 	
 

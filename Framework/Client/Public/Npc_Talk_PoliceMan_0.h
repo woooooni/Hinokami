@@ -7,13 +7,13 @@
 
 BEGIN(Client)
 
-class CNpc_Stand_0 final : public CNpc
+class CNpc_Talk_PoliceMan_0 final : public CNpc
 {
 
 private:
-	CNpc_Stand_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CNpc_Stand_0(const CNpc_Stand_0& rhs);
-	virtual ~CNpc_Stand_0() = default;
+	CNpc_Talk_PoliceMan_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CNpc_Talk_PoliceMan_0(const CNpc_Talk_PoliceMan_0& rhs);
+	virtual ~CNpc_Talk_PoliceMan_0() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -22,6 +22,9 @@ public:
 	virtual void LateTick(_float fTimeDelta);
 	virtual HRESULT Render();
 	HRESULT Render_ShadowDepth();
+
+public:
+	virtual void Talk() override;
 
 public:
 	virtual void Collision_Enter(const COLLISION_INFO& tInfo) override;
@@ -36,9 +39,13 @@ protected:
 public:
 	virtual void On_Damaged(CGameObject* pAttacker, _uint eDamageType, _float fDamage) override;
 
+private:
+	_bool m_bTalking = false;
+	_bool m_bComplete = false;
+
 
 public:
-	static CNpc_Stand_0* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CNpc_Talk_PoliceMan_0* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

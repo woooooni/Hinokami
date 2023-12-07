@@ -34,6 +34,7 @@ HRESULT CState_Character_Battle_Dash::Initialize(const list<wstring>& AnimationL
 
 void CState_Character_Battle_Dash::Enter_State(void* pArg)
 {
+
 	m_pCharacter->DrawSword();
 	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	

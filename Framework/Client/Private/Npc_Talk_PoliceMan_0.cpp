@@ -1,25 +1,26 @@
 #include "stdafx.h"
 #include "GameInstance.h"
-#include "Npc_Stand_3.h"
+#include "Npc_Talk_PoliceMan_0.h"
 #include "State_Npc_Idle.h"
+#include "UI_NextFog.h"
 
 
 
 USING(Client)
-CNpc_Stand_3::CNpc_Stand_3(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CNpc(pDevice, pContext, L"Npc_Stand_3")
+CNpc_Talk_PoliceMan_0::CNpc_Talk_PoliceMan_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CNpc(pDevice, pContext, L"Npc_Talk_PoliceMan_0")
 {
 	
 }
 
-CNpc_Stand_3::CNpc_Stand_3(const CNpc_Stand_3& rhs)
+CNpc_Talk_PoliceMan_0::CNpc_Talk_PoliceMan_0(const CNpc_Talk_PoliceMan_0& rhs)
 	: CNpc(rhs)	
 
 {	
 	
 }
 
-HRESULT CNpc_Stand_3::Initialize_Prototype()
+HRESULT CNpc_Talk_PoliceMan_0::Initialize_Prototype()
 {
 	if(FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -27,7 +28,7 @@ HRESULT CNpc_Stand_3::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CNpc_Stand_3::Initialize(void* pArg)
+HRESULT CNpc_Talk_PoliceMan_0::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -44,7 +45,7 @@ HRESULT CNpc_Stand_3::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CNpc_Stand_3::Tick(_float fTimeDelta)
+void CNpc_Talk_PoliceMan_0::Tick(_float fTimeDelta)
 {
 	if (m_bReserveDead)
 	{
@@ -52,9 +53,46 @@ void CNpc_Stand_3::Tick(_float fTimeDelta)
 		if (m_fDissolveWeight >= 1.f)
 			Set_Dead(true);
 	}
+
+	if (true == m_bTalking)
+	{
+		CRenderer::TEXT_DESC TextDesc;
+
+		TextDesc.strFontTag = L"Basic";
+		TextDesc.strText = L"[승강장 지키미]";
+		TextDesc.vPosition = { g_iWinSizeX / 2.f - (5.f * TextDesc.strText.size()), g_iWinSizeY - 130.f };
+		TextDesc.vColor = { 1.f, 1.f, 1.f, 1.f };
+
+		m_pRendererCom->Add_Text(TextDesc);
+
+
+		TextDesc.strFontTag = L"Basic";
+		TextDesc.strText = L"이 열차는 위험할 수도 있습니다. 그래도 탑승하시겠습니까?";
+		TextDesc.vPosition = { g_iWinSizeX / 2.f - (5.f * TextDesc.strText.size()), g_iWinSizeY - 100.f };
+		TextDesc.vColor = { 1.f, 1.f, 1.f, 1.f };
+
+		m_pRendererCom->Add_Text(TextDesc);
+
+		if (KEY_TAP(KEY::F))
+		{
+			m_bTalking = false;
+			m_bComplete = true;
+			CUI_NextFog::NEXT_INFO NextInfo;
+			NextInfo.eNextLevel = LEVELID::LEVEL_TRAIN;
+			NextInfo.strFolderName = "Train";
+			GI->Stop_All();
+
+			if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", &NextInfo)))
+				assert(nullptr);
+
+			
+
+			return;
+		}
+	}
 }
 
-void CNpc_Stand_3::LateTick(_float fTimeDelta)
+void CNpc_Talk_PoliceMan_0::LateTick(_float fTimeDelta)
 {
 	if (nullptr == m_pRendererCom)
 		return;
@@ -68,9 +106,11 @@ void CNpc_Stand_3::LateTick(_float fTimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOW, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this);
 	}
+
+	GI->Add_CollisionGroup(COLLISION_GROUP::NPC, this);
 }
 
-HRESULT CNpc_Stand_3::Render()
+HRESULT CNpc_Talk_PoliceMan_0::Render()
 {
 	__super::Render();
 	 
@@ -115,7 +155,7 @@ HRESULT CNpc_Stand_3::Render()
 	return S_OK;
 }
 
-HRESULT CNpc_Stand_3::Render_ShadowDepth()
+HRESULT CNpc_Talk_PoliceMan_0::Render_ShadowDepth()
 {
 
 	if (nullptr == m_pShaderCom || nullptr == m_pTransformCom)
@@ -148,70 +188,44 @@ HRESULT CNpc_Stand_3::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CNpc_Stand_3::Collision_Enter(const COLLISION_INFO& tInfo)
+void CNpc_Talk_PoliceMan_0::Talk()
+{
+	m_bTalking = true;
+}
+
+void CNpc_Talk_PoliceMan_0::Collision_Enter(const COLLISION_INFO& tInfo)
 {
 
 }
 
-void CNpc_Stand_3::Collision_Continue(const COLLISION_INFO& tInfo)
+void CNpc_Talk_PoliceMan_0::Collision_Continue(const COLLISION_INFO& tInfo)
 {
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER || tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
+
+
+	if (KEY_TAP(KEY::F) && false == m_bTalking && false == m_bComplete && tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
 	{
-		CTransform* pOtherTransform = tInfo.pOther->Get_Component<CTransform>(L"Com_Transform");
-		_vector vTargetDir = XMVector3Normalize(pOtherTransform->Get_State(CTransform::STATE::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION));
-
-		_float fTargetLen = XMVectorGetX(XMVector3Length(vTargetDir));
-		if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
-			&& tInfo.pMyCollider->Get_DetectionType() == CCollider::BODY)
-		{
-			if (fTargetLen <= 0.f)
-				vTargetDir = XMVectorSetX(vTargetDir, _float(rand() % 10 - 5));
-
-			vTargetDir = XMVectorSetY(vTargetDir, 0.f);
-			vTargetDir = XMVector3Normalize(vTargetDir);
-			vTargetDir *= -1.f;
-
-			_float fForce = (tInfo.pMyCollider->Get_Radius() + tInfo.pOtherCollider->Get_Radius()) - fTargetLen;
-
-			CRigidBody* pOtherRigidBody = tInfo.pOther->Get_Component<CRigidBody>(L"Com_RigidBody");
-			if (pOtherRigidBody)			
-				fForce += XMVectorGetX(XMVector3Length(XMLoadFloat3(&pOtherRigidBody->Get_Velocity())));
-
-			m_pRigidBodyCom->Add_Velocity_Acc(vTargetDir, fForce);
-		}
+		Talk();
+		CTransform* pPlayerTransform = tInfo.pOther->Get_Component<CTransform>(L"Com_Transform");
+		if (nullptr != pPlayerTransform)		
+			m_pTransformCom->LookAt_ForLandObject(pPlayerTransform->Get_Position());
 	}
 }
 
-void CNpc_Stand_3::Collision_Exit(const COLLISION_INFO& tInfo)
+void CNpc_Talk_PoliceMan_0::Collision_Exit(const COLLISION_INFO& tInfo)
 {
-	
-	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER
-		|| tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
-	{
-		if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
-			&& tInfo.pMyCollider->Get_DetectionType() == CCollider::BODY)
-		{
 
-			_float3 vVelocity = m_pRigidBodyCom->Get_Velocity();
-
-			vVelocity.x = 0.f;
-			vVelocity.z = 0.f;
-
-			m_pRigidBodyCom->Set_Velocity(vVelocity);
-		}
-	}
 }
 
 
 
 
 
-void CNpc_Stand_3::On_Damaged(CGameObject* pAttacker, _uint eDamageType, _float fDamage)
+void CNpc_Talk_PoliceMan_0::On_Damaged(CGameObject* pAttacker, _uint eDamageType, _float fDamage)
 {
 	__super::On_Damaged(pAttacker, eDamageType, fDamage);
 }
 
-HRESULT CNpc_Stand_3::Ready_Components()
+HRESULT CNpc_Talk_PoliceMan_0::Ready_Components()
 {
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
@@ -270,7 +284,7 @@ HRESULT CNpc_Stand_3::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CNpc_Stand_3::Ready_States()
+HRESULT CNpc_Talk_PoliceMan_0::Ready_States()
 {
 	list<wstring> strAnimationName;
 
@@ -285,7 +299,7 @@ HRESULT CNpc_Stand_3::Ready_States()
 	return S_OK;
 }
 
-HRESULT CNpc_Stand_3::Ready_Colliders()
+HRESULT CNpc_Talk_PoliceMan_0::Ready_Colliders()
 {
 	CCollider_Sphere::SPHERE_COLLIDER_DESC ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
@@ -313,12 +327,12 @@ HRESULT CNpc_Stand_3::Ready_Colliders()
 }
 
 
-CNpc_Stand_3* CNpc_Stand_3::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CNpc_Talk_PoliceMan_0* CNpc_Talk_PoliceMan_0::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CNpc_Stand_3* pInstance = new CNpc_Stand_3(pDevice, pContext);
+	CNpc_Talk_PoliceMan_0* pInstance = new CNpc_Talk_PoliceMan_0(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Create Failed : CNpc_Stand_3");
+		MSG_BOX("Create Failed : CNpc_Talk_PoliceMan_0");
 		Safe_Release(pInstance);
 		return nullptr;
 	}
@@ -326,20 +340,20 @@ CNpc_Stand_3* CNpc_Stand_3::Create(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	return S_OK;
 }
 
-CGameObject* CNpc_Stand_3::Clone(void* pArg)
+CGameObject* CNpc_Talk_PoliceMan_0::Clone(void* pArg)
 {
-	CNpc_Stand_3* pInstance = new CNpc_Stand_3(*this);
+	CNpc_Talk_PoliceMan_0* pInstance = new CNpc_Talk_PoliceMan_0(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CNpc_Stand_3");
+		MSG_BOX("Failed to Cloned : CNpc_Talk_PoliceMan_0");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CNpc_Stand_3::Free()
+void CNpc_Talk_PoliceMan_0::Free()
 {
 	__super::Free();
 }

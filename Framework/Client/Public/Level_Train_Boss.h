@@ -31,6 +31,11 @@ private:
 	_float m_fAccScroll = 0.f;
 	_float m_fLimitScroll = 290.f;
 
+private:
+	_float m_fAccSmoke = 0.f;
+	_float m_fGenSmoke = 0.01f;
+
+
 
 
 private:

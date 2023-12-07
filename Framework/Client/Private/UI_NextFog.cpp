@@ -47,6 +47,8 @@ HRESULT CUI_NextFog::Initialize(void* pArg)
 
 	m_fAccTime = 0.f;
 	m_iTextureIndex = 0;
+
+	GI->Play_Sound(L"NextFog.wav", CHANNELID::SOUND_UI, 1.f);
 	return S_OK;
 }
 

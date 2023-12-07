@@ -14,7 +14,7 @@ class CState_Enmu_Attack final : public CState
 {
 
 public:
-	enum ENMU_ATTACK_TYPE { NEAR_ATTACK_0, FAR_ATTACK_0, FAR_ATTACK_1, FAR_ATTACK_2, ATTACK_END };
+	enum ENMU_ATTACK_TYPE { NEAR_ATTACK_0, FAR_ATTACK_0, FAR_ATTACK_1, ATTACK_END };
 
 private:
 	CState_Enmu_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine);
@@ -33,7 +33,6 @@ private:
 	void Tick_Near_Attack_0(_float fTimeDelta);
 	void Tick_Far_Attack_0(_float fTimeDelta);
 	void Tick_Far_Attack_1(_float fTimeDelta);
-	void Tick_Far_Attack_2(_float fTimeDelta);
 
 private:
 	vector<_uint> m_AnimationsIndex[ENMU_ATTACK_TYPE::ATTACK_END];

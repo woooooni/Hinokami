@@ -9,6 +9,7 @@
 #include "Effect_Manager.h"
 #include "Particle_Manager.h"
 #include "Monster.h"
+#include "Camera_Manager.h"
 
 CState_Kyojuro_Skill_1::CState_Kyojuro_Skill_1(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
@@ -46,6 +47,8 @@ void CState_Kyojuro_Skill_1::Enter_State(void* pArg)
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 
 	Use_Skill(GI->Get_TimeDelta(L"Timer_GamePlay"));
+
+	GI->Play_Sound(L"Voice_Kyojuro_Skill_1_Use.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
 }
 
 void CState_Kyojuro_Skill_1::Tick_State(_float fTimeDelta)
@@ -64,6 +67,14 @@ void CState_Kyojuro_Skill_1::Tick_State(_float fTimeDelta)
 				if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_EFFECT, L"Prototype_GameObject_Kyojuro_Projectile", nullptr, &pGameObject)))
 					return;
 
+				CCamera* pCamera = CCamera_Manager::GetInstance()->Get_MainCamera();
+				if (nullptr != pCamera)
+				{
+					pCamera->Cam_Shake(1.f, 3.f);
+					GI->Play_Sound(L"Shake.wav", CHANNELID::SOUND_SHAKE, 1.f);
+				}
+				
+				GI->Play_Sound(L"Kyojuro_Skill1_Use.wav", CHANNELID::SOUND_SKILL, 1.f);
 				CTransform* pProjectileTransform = pGameObject->Get_Component<CTransform>(L"Com_Transform");
 				pProjectileTransform->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 				pProjectileTransform->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f));
@@ -92,7 +103,8 @@ void CState_Kyojuro_Skill_1::Exit_State()
 
 	m_pCharacter->Set_Infinite(0.f, false);
 	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
-	m_pSword->Set_ActiveColliders(CCollider::ATTACK, false);
+
+	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pCharacter->Set_ActiveColliders(CCollider::BODY, true);
 
 
@@ -151,7 +163,7 @@ void CState_Kyojuro_Skill_1::Use_Skill(_float fTimeDelta)
 	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f);
 	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f);
 
-	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, false);
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pCharacter->Set_ActiveColliders(CCollider::BODY, false);
 

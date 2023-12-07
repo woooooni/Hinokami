@@ -36,6 +36,7 @@ HRESULT CState_Character_Battle_Jump::Initialize(const list<wstring>& AnimationL
 
 void CState_Character_Battle_Jump::Enter_State(void* pArg)
 {
+
 	m_iCurrAnimIndex = 0;
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 
@@ -67,6 +68,21 @@ void CState_Character_Battle_Jump::Enter_State(void* pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
 	m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 12.f);
+
+	switch (m_pCharacter->Get_CharacterType())
+	{
+	case CCharacter::CHARACTER_TYPE::TANJIRO:
+		GI->Play_Sound(L"Voice_Tanjiro_Jump.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
+		break;
+
+	case CCharacter::CHARACTER_TYPE::ZENITSU:
+		GI->Play_Sound(L"Voice_Zenitsu_Jump.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
+		break;
+
+	case CCharacter::CHARACTER_TYPE::KYOJURO:
+		GI->Play_Sound(L"Voice_Kyojuro_Jump.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
+		break;
+	}
 }
 
 void CState_Character_Battle_Jump::Tick_State(_float fTimeDelta)
@@ -80,7 +96,24 @@ void CState_Character_Battle_Jump::Tick_State(_float fTimeDelta)
 
 	// if(m_pRigidBody->)
 	if (m_pRigidBodyCom->Is_Ground())
+	{
 		m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
+		if (LEVELID::LEVEL_TRAIN_STATION == GI->Get_CurrentLevel() || LEVELID::LEVEL_FINAL_BOSS == GI->Get_CurrentLevel())
+		{
+			GI->Play_Sound(L"Foot_Dirt_0.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f);
+		}
+		else if (LEVELID::LEVEL_TRAIN == GI->Get_CurrentLevel())
+		{
+			GI->Play_Sound(L"Foot_Floor_0.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f);
+		}
+		else if(LEVELID::LEVEL_TRAIN_BOSS == GI->Get_CurrentLevel())
+		{
+			GI->Play_Sound(L"Foot_Train_0.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f);
+		}
+
+		return;
+	}
+		
 
 	Input();
 }

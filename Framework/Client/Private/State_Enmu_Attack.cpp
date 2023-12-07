@@ -5,6 +5,9 @@
 #include "Monster.h"
 #include "Animation.h"
 #include "Utils.h"
+#include "Effect_Manager.h"
+
+
 
 CState_Enmu_Attack::CState_Enmu_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
@@ -55,7 +58,7 @@ void CState_Enmu_Attack::Enter_State(void* pArg)
 	if (Find_NearTarget_Distance(GI->Get_TimeDelta(L"Timer_GamePlay")) > 10.f)
 		m_iRandomAttackIndex = NEAR_ATTACK_0;
 	else
-		m_iRandomAttackIndex = (rand() + rand() + rand()) % (ENMU_ATTACK_TYPE::FAR_ATTACK_2 - ENMU_ATTACK_TYPE::FAR_ATTACK_0 + 1) + ENMU_ATTACK_TYPE::FAR_ATTACK_0;
+		m_iRandomAttackIndex = CUtils::Random_Int(FAR_ATTACK_0, FAR_ATTACK_1);
 
 
 
@@ -69,6 +72,12 @@ void CState_Enmu_Attack::Enter_State(void* pArg)
 	}
 	else if (ENMU_ATTACK_TYPE::FAR_ATTACK_0 == m_iRandomAttackIndex)
 	{
+		TCHAR strSoundFileName[MAX_PATH] = L"Voice_Enmu_Attack_";
+		lstrcatW(strSoundFileName, to_wstring(CUtils::Random_Int(0, 3)).c_str());
+		lstrcatW(strSoundFileName, L".wav");
+		GI->Play_Sound(strSoundFileName, CHANNELID::SOUND_VOICE_MONSTER1, 1.f);
+
+
 		_vector vLook = -1.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 		float fDirX = XMVectorGetX(vLook);
@@ -102,10 +111,6 @@ void CState_Enmu_Attack::Tick_State(_float fTimeDelta)
 
 	case ENMU_ATTACK_TYPE::FAR_ATTACK_1:
 		Tick_Far_Attack_1(fTimeDelta);
-		break;
-
-	case ENMU_ATTACK_TYPE::FAR_ATTACK_2:
-		Tick_Far_Attack_2(fTimeDelta);
 		break;
 	}
 
@@ -230,6 +235,11 @@ void CState_Enmu_Attack::Tick_Far_Attack_1(_float fTimeDelta)
 		{
 			_int iRandom = (rand() + rand() + rand()) % 3 - 1;
 			Shoot(Find_NearTarget(fTimeDelta), XMVectorSet(_float(iRandom), 0.f, 0.f, 0.f), fTimeDelta);
+
+			TCHAR strSoundFileName[MAX_PATH] = L"Voice_Enmu_Attack_";
+			lstrcatW(strSoundFileName, to_wstring(CUtils::Random_Int(0, 3)).c_str());
+			lstrcatW(strSoundFileName, L".wav");
+			GI->Play_Sound(strSoundFileName, CHANNELID::SOUND_VOICE_MONSTER1, 1.f);
 		}
 		if (fProgress >= .4f && fProgress <= .42f)
 		{
@@ -247,11 +257,14 @@ void CState_Enmu_Attack::Tick_Far_Attack_1(_float fTimeDelta)
 		{
 			_int iRandom = (rand() + rand() + rand()) % 3 - 1;
 			Shoot(Find_NearTarget(fTimeDelta), XMVectorSet(_float(iRandom), 0.f, 0.f, 0.f), fTimeDelta);
+
+			
 		}
 		if (fProgress >= .8f)
 		{
 			m_iCurrAnimIndex++;
 			m_pModelCom->Set_AnimIndex(m_AnimationsIndex[m_iRandomAttackIndex][m_iCurrAnimIndex]);
+
 			return;
 		}
 	}
@@ -262,79 +275,6 @@ void CState_Enmu_Attack::Tick_Far_Attack_1(_float fTimeDelta)
 		{
 			m_pStateMachineCom->Change_State(CMonster::MONSTER_STATE::IDLE);
 			return;
-		}
-	}
-}
-
-void CState_Enmu_Attack::Tick_Far_Attack_2(_float fTimeDelta)
-{
-	_float fProgress = m_pModelCom->Get_Animations()[m_AnimationsIndex[m_iRandomAttackIndex][m_iCurrAnimIndex]]->Get_AnimationProgress();
-	m_pOwnerMonster->Set_Infinite(999.f, true);
-
-	if (m_iCurrAnimIndex == 0)
-	{
-		if (fProgress >= .8f)
-		{
-			m_iCurrAnimIndex++;
-			m_pModelCom->Set_AnimIndex(m_AnimationsIndex[m_iRandomAttackIndex][m_iCurrAnimIndex]);
-			return;
-		}
-	}
-
-	if (m_iCurrAnimIndex == 1)
-	{
-		if (fProgress >= .8f)
-		{
-			m_iCurrAnimIndex++;
-			m_pModelCom->Set_AnimIndex(m_AnimationsIndex[m_iRandomAttackIndex][m_iCurrAnimIndex]);
-			return;
-		}
-	}
-
-	if (m_iCurrAnimIndex == 2)
-	{
-		if (fProgress >= .8f)
-		{
-			m_iCurrAnimIndex++;
-			m_pModelCom->Set_AnimIndex(m_AnimationsIndex[m_iRandomAttackIndex][m_iCurrAnimIndex]);
-			return;
-		}
-	}
-
-	if (m_iCurrAnimIndex == 3)
-	{
-		if (fProgress >= .8f)
-		{
-			m_iCurrAnimIndex++;
-			m_pModelCom->Set_AnimIndex(m_AnimationsIndex[m_iRandomAttackIndex][m_iCurrAnimIndex]);
-			return;
-		}
-	}
-
-	if (m_iCurrAnimIndex == 4)
-	{
-		if (fProgress >= 1.f)
-		{
-			m_pStateMachineCom->Change_State(CMonster::MONSTER_STATE::IDLE);
-			return;
-		}
-
-		if (fProgress >= 0.1f && fProgress <= 0.2f)
-		{
-			_vector vLook = -1.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-
-			float fDirX = XMVectorGetX(vLook);
-			fDirX = max(fDirX, -1.f);
-			fDirX = min(fDirX, 1.f);
-
-			float fDirZ = XMVectorGetZ(vLook);
-			fDirZ = max(fDirZ, -1.f);
-			fDirZ = min(fDirZ, 1.f);
-
-
-			_vector vJumpDir = XMVectorSet(fDirX, 0.25f, fDirZ, 0.f);
-			m_pTransformCom->Set_Position(m_pTransformCom->Get_Position() + XMVectorSet(0.f, 0.1f, 0.f, 0.f), GI->Get_TimeDelta(L"Timer_Default"), m_pNavigationCom);
-			m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 10.f);
 		}
 	}
 }
@@ -362,6 +302,10 @@ void CState_Enmu_Attack::Shoot(CGameObject* pTarget, _vector vOffsetPosition, _f
 	pProjectileTransform->Set_State(CTransform::STATE_RIGHT, XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), pProjectileTransform->Get_Look()));
 	pProjectileTransform->Set_State(CTransform::STATE_UP, XMVector3Cross(pProjectileTransform->Get_Look(), pProjectileTransform->Get_Right()));
 	pProjectileTransform->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMVectorSetY(vPosition, XMVectorGetY(vPosition) + 1.f) + vOffsetPosition, 1.f));
+
+	CEffect_Manager::GetInstance()->Generate_Effect(L"Enmu_Projectile_Effect", XMMatrixIdentity(), pProjectileTransform->Get_WorldMatrix(), 1.f);
+
+	GI->Play_Sound(L"Enmu_Projectile_0.wav", CHANNELID::SOUND_BOSS, 1.f, true);
 }
 
 CGameObject* CState_Enmu_Attack::Find_NearTarget(_float fTimeDelta)

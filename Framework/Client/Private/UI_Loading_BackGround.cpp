@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UI_Loading_Background.h"
 #include "GameInstance.h"
+#include "Utils.h"
 
 CUI_Loading_BackGround::CUI_Loading_BackGround(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext, L"UI_Loading_BackGround")
@@ -34,8 +35,7 @@ HRESULT CUI_Loading_BackGround::Initialize(void* pArg)
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.f));
 
-	srand(time(NULL) * rand() * rand() * rand());
-	m_iTextureIndex = (rand() + rand() + rand()) % m_pTextureCom->Get_TextureCount();
+	m_iTextureIndex = CUtils::Random_Int(0, m_pTextureCom->Get_TextureCount() - 1);
 
 	return S_OK;
 }

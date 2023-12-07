@@ -24,14 +24,13 @@ HRESULT CState_Character_Dead::Initialize(const list<wstring>& AnimationList)
 	m_pSword = m_pCharacter->Get_Part<CSword>(CCharacter::PART_SWORD);
 	if (nullptr == m_pSword)
 		return E_FAIL;
-
-	return S_OK;
 	
 	return S_OK;
 }
 
 void CState_Character_Dead::Enter_State(void* pArg)
 {
+
 	m_pCharacter->DrawSword();
 
 
@@ -48,7 +47,12 @@ void CState_Character_Dead::Tick_State(_float fTimeDelta)
 {
 	if (KEY_TAP(KEY::R))
 	{
+		CCharacter::CHARACTER_STAT StatDesc = m_pCharacter->Get_Stat();
+		StatDesc.fHp = StatDesc.fMaxHp;
 
+		m_pCharacter->Set_Stat(StatDesc);
+		m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
+		m_pCharacter->Set_Infinite(2.f, true);
 	}
 }
 

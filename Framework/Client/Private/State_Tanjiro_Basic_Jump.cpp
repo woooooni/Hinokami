@@ -59,6 +59,23 @@ void CState_Tanjiro_Basic_Jump::Enter_State(void* pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
 	m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(vJumpDir), 15.f);
+
+
+
+	switch (m_pCharacter->Get_CharacterType())
+	{
+	case CCharacter::CHARACTER_TYPE::TANJIRO:
+		GI->Play_Sound(L"Voice_Tanjiro_Jump.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
+		break;
+
+	case CCharacter::CHARACTER_TYPE::ZENITSU:
+		GI->Play_Sound(L"Voice_Zenitsu_Jump.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
+		break;
+
+	case CCharacter::CHARACTER_TYPE::KYOJURO:
+		GI->Play_Sound(L"Voice_Kyojuro_Jump.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
+		break;
+	}
 }
 
 void CState_Tanjiro_Basic_Jump::Tick_State(_float fTimeDelta)

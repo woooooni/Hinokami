@@ -42,6 +42,8 @@ void CState_Tanjiro_Skill_0::Enter_State(void* pArg)
 	Find_Near_Target();
 	m_pCharacter->DrawSword();
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
+
+	GI->Play_Sound(L"Voice_Tanjiro_Skill_0_Use.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
 }
 
 void CState_Tanjiro_Skill_0::Tick_State(_float fTimeDelta)
@@ -199,7 +201,6 @@ void CState_Tanjiro_Skill_0::Use_Skill(_float fTimeDelta)
 	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f);
 	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f);
 
-	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pCharacter->Set_ActiveColliders(CCollider::BODY, false);
 }

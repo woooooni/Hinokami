@@ -33,6 +33,7 @@ private:
 private:
 	_float m_fAttackEffect = .1f;
 	_float m_fAccAttackEffect = 0.f;
+	_bool m_bSound = false;
 
 private:
 	void Find_Near_Target();

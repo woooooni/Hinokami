@@ -35,7 +35,7 @@ void CState_Akaza_Attack_1::Enter_State(void* pArg)
 	m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f);
 	m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
-
+	m_bSound = false;
 	Find_Near_Target();
 }
 
@@ -58,6 +58,8 @@ void CState_Akaza_Attack_1::Tick_State(_float fTimeDelta)
 		break;
 	case 1:
 		// TODO EFFECT
+		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f, false);
+		m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		if (fProgress >= .6f)
 		{
 			Find_Near_Target();
@@ -68,6 +70,8 @@ void CState_Akaza_Attack_1::Tick_State(_float fTimeDelta)
 		break;
 	case 2:
 		// TODO EFFECT
+		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f, false);
+		m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		if (fProgress >= .7f)
 		{
 			Find_Near_Target();
@@ -98,10 +102,18 @@ void CState_Akaza_Attack_1::Tick_State(_float fTimeDelta)
 
 			m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 1.f, 1.f, false);
 			m_pOwner->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+
+			GI->Play_Sound(L"Voice_Akaza_Skill_0.wav", CHANNELID::SOUND_VOICE_MONSTER1, 1.f, true);
 		}
 		break;
 
 	case 5:
+		if (false == m_bSound)
+		{
+			GI->Play_Sound(L"Voice_Akaza_AttackCombo.wav", CHANNELID::SOUND_VOICE_MONSTER1, 1.f, true);
+			m_bSound = true;
+		}
+
 		if (fProgress <= .7f)
 		{
 			m_fAccAttackEffect += fTimeDelta;
@@ -141,6 +153,7 @@ void CState_Akaza_Attack_1::Tick_State(_float fTimeDelta)
 void CState_Akaza_Attack_1::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
+	m_bSound = false;
 	m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 0.f, 0.f);
 	m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 }

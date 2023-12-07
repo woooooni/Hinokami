@@ -42,6 +42,9 @@ void CState_Kyojuro_Skill_0::Enter_State(void* pArg)
 	m_bGenEffect = false;
 	m_pCharacter->DrawSword();
 	Use_Skill(GI->Get_TimeDelta(L"Timer_GamePlay"));
+	
+	
+	GI->Play_Sound(L"Voice_Kyojuro_Skill_0_Ready.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
 }
 
 void CState_Kyojuro_Skill_0::Tick_State(_float fTimeDelta)
@@ -51,15 +54,12 @@ void CState_Kyojuro_Skill_0::Tick_State(_float fTimeDelta)
 	switch (m_iCurrAnimIndex)
 	{
 	case 0:
-		
-
 		if (fProgress >= 0.25f)
 		{
 			m_pCharacter->Set_Infinite(999.f, true);
 			m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, true);
 			m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 9.f, 0.f, 1.f, true);
 
-			m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
 			m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 			m_pCharacter->Set_ActiveColliders(CCollider::BODY, false);
 		}
@@ -72,9 +72,15 @@ void CState_Kyojuro_Skill_0::Tick_State(_float fTimeDelta)
 				m_bGenEffect = true;
 				CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Kyojuro_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMMatrixIdentity(), 2.f, m_pSword);
 
+				GI->Play_Sound(L"Kyojuro_Skill0_Use.wav", CHANNELID::SOUND_SKILL, 1.f);
+				GI->Play_Sound(L"Voice_Kyojuro_Skill_0_Use.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
 				CCamera* pCamera = CCamera_Manager::GetInstance()->Get_MainCamera();
 				if (nullptr != pCamera)
+				{
 					pCamera->Cam_Shake(1.f, 3.f);
+					GI->Play_Sound(L"Shake.wav", CHANNELID::SOUND_SHAKE, 1.f);
+				}
+					
 			}
 		}
 
@@ -96,7 +102,7 @@ void CState_Kyojuro_Skill_0::Tick_State(_float fTimeDelta)
 			{
 				m_fAccGenParticle = 0.f;
 				_matrix WorldMatrix = m_pSword->Get_FinalWorldMatrix();
-				WorldMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(CUtils::Random_Float(-0.25f, 0.25f), CUtils::Random_Float(-0.25f, 0.25f), CUtils::Random_Float(-0.25f, 0.25f), 0.f);
+				WorldMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(CUtils::Random_Float(-1.f, 1.f), CUtils::Random_Float(-1.f, 1.f), CUtils::Random_Float(-1.f, 1.f), 0.f);
 				CParticle_Manager::GetInstance()->Generate_Particle(L"Kyojuro_Paritlcle_0", WorldMatrix);
 				CParticle_Manager::GetInstance()->Generate_Particle(L"Kyojuro_Paritlcle_1", WorldMatrix);
 			}

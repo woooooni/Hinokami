@@ -30,6 +30,7 @@ public:
 	HRESULT Battle_End();
 
 public:
+	HRESULT	Reset_HpBar(GAUGE_BARTYPE eBarType);
 	HRESULT Reserve_HpBar(GAUGE_BARTYPE eBarType, class CCharacter* pCharacter, _uint iCharacterType);
 	HRESULT Reserve_HpBar(GAUGE_BARTYPE eBarType, class CMonster* pMonster, _uint iCharacterType);
 

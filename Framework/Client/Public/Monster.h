@@ -31,7 +31,8 @@ public:
 		BOSS_ATTACK_0,
 		BOSS_ATTACK_1,
 		BOSS_ATTACK_2,
-		SKILL,
+		SKILL_0,
+		SKILL_1,
 		DASH,
 		DAMAGED_BASIC, 
 		DAMAGED_BLOW,
@@ -46,7 +47,7 @@ public:
 
 #pragma endregion
 	enum SOCKET_TYPE { SOCKET_LEFT_FIST, SOCKET_RIGHT_FIST, SOCKET_LEFT_FOOT, SOCKET_RIGHT_FOOT, SOCKET_END };
-
+	enum MONSTER_TYPE { NORMAL_0, NORMAL_1, NORMAL_2, ENMU, AKAZA, TYPE_END };
 public:
 	typedef struct tagMonsterStat
 	{
@@ -97,7 +98,8 @@ public:
 public:
 	virtual void On_Damaged(const COLLISION_INFO& tInfo);
 	
-
+public:
+	MONSTER_TYPE Get_Monster_Type() { return m_eMonsterType; }
 
 protected:
 	virtual HRESULT Ready_Components() PURE;
@@ -133,11 +135,11 @@ protected:
 
 protected:
 	_float m_fDissolveWeight = 0.f;
-
+	MONSTER_TYPE m_eMonsterType = MONSTER_TYPE::TYPE_END;
 
 private:
 	void LookAt_DamagedObject(CGameObject* pAttacker);
-
+	void Play_DamagedSound();
 
 
 public:

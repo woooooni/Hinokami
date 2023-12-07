@@ -37,6 +37,8 @@ HRESULT CCamera_Free::Initialize(void * pArg)
 
 void CCamera_Free::Tick(_float fTimeDelta)
 {
+	__super::Tick(fTimeDelta);
+
 	if (KEY_HOLD(KEY::RBTN))
 	{
 		if (KEY_HOLD(KEY::W))
@@ -89,13 +91,13 @@ void CCamera_Free::Tick(_float fTimeDelta)
 		}
 	}
 
-
-	__super::Tick(fTimeDelta);
+	__super::LateTick(fTimeDelta);
+	
 }
 
 void CCamera_Free::LateTick(_float fTimeDelta)
 {
-	__super::LateTick(fTimeDelta);
+	// __super::LateTick(fTimeDelta);
 }
 
 HRESULT CCamera_Free::Render()

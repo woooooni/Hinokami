@@ -57,10 +57,10 @@ public:
 public:
 	typedef struct tagCharacterStat
 	{
-		_float fHp = 1000.f;
+		_float fHp = 100.f;
 		_float fMp = 100.f;
 
-		_float fMaxHp = 1000.f;
+		_float fMaxHp = 100.f;
 		_float fMaxMp = 100.f;
 	}CHARACTER_STAT;
 
@@ -100,6 +100,10 @@ public:
 	void DrawSword();
 	void SweathSword();
 
+	void Generate_Trail(SOCKET_TYPE eSocketType);
+	void Stop_Trail(SOCKET_TYPE eSocketType);
+
+	void Play_Sound(CCollider::ATTACK_TYPE eAttackType);
 public:
 	virtual void Set_Infinite(_float fInfiniteTime, _bool bInfinite);
 	_bool Is_Infinite() { return m_bInfinite; }
@@ -107,8 +111,10 @@ public:
 public:
 	const CHARACTER_STAT& Get_Stat() { return m_tStat; }
 	void Set_Stat(const CHARACTER_STAT& StatDesc) { m_tStat = StatDesc; }
-
 	void LookAt_DamagedObject(CGameObject* pAttacker);
+
+public:
+	CHARACTER_TYPE Get_CharacterType() { return m_eCharacterType; }
 
 protected:
 	virtual HRESULT Ready_Components() PURE;

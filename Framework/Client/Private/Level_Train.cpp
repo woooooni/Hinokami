@@ -14,6 +14,7 @@ CLevel_Train::CLevel_Train(ID3D11Device * pDevice, ID3D11DeviceContext * pContex
 
 HRESULT CLevel_Train::Initialize()
 {
+	GI->Stop_All();
 	GI->Lock_Mouse();
 
 	m_pRendererCom = dynamic_cast<CRenderer*>(GI->Clone_Component(LEVEL_STATIC, L"Prototype_Component_Renderer"));

@@ -7,6 +7,7 @@
 #include "Sword.h"
 #include "Effect_Manager.h"
 #include "Particle_Manager.h"
+#include "Utils.h"
 
 CState_Zenitsu_Attack::CState_Zenitsu_Attack(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
 	: CState(pStateMachine)
@@ -93,6 +94,7 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 					_matrix WorldMatrix = XMMatrixRotationZ(XMConvertToRadians(20.f)) * m_pTransformCom->Get_WorldMatrix();
 					WorldMatrix.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f);
 					CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixIdentity(), WorldMatrix, 2.f);
+					GI->Play_Sound(L"Slash_0.wav", CHANNELID::SOUND_SLASH, 0.3f, true);
 				}
 			}
 		}
@@ -114,6 +116,7 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 				{
 					m_bSlashEffect[1] = true;
 					CEffect_Manager::GetInstance()->Generate_Effect(L"Zenitsu_Slash_0", XMMatrixRotationZ(XMConvertToRadians(30.f)), WorldMatrix, 1.f);
+					GI->Play_Sound(L"Slash_0.wav", CHANNELID::SOUND_SLASH, 0.3f, true);
 				}
 				if (false == m_bSlashEffect[2])
 				{
@@ -129,10 +132,9 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 
 				if (false == m_bSlashEffect[3])
 				{
-					
-					
 					m_bSlashEffect[3] = true;
 					CEffect_Manager::GetInstance()->Generate_Effect(L"Zenitsu_Slash_0", XMMatrixRotationZ(XMConvertToRadians(-15.f)), WorldMatrix, 1.f);
+					GI->Play_Sound(L"Slash_0.wav", CHANNELID::SOUND_SLASH, 0.3f, true);
 				}
 				if (false == m_bSlashEffect[4])
 				{
@@ -150,6 +152,7 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 				{
 					m_bSlashEffect[5] = true;
 					CEffect_Manager::GetInstance()->Generate_Effect(L"Zenitsu_Slash_0", XMMatrixRotationZ(XMConvertToRadians(30.f)), WorldMatrix, 1.f);
+					GI->Play_Sound(L"Slash_0.wav", CHANNELID::SOUND_SLASH, 0.3f, true);
 				}
 				if (false == m_bSlashEffect[6])
 				{
@@ -196,6 +199,7 @@ void CState_Zenitsu_Attack::Tick_State(_float fTimeDelta)
 				if (false == m_bSlashEffect[7])
 				{
 					m_bSlashEffect[7] = true;
+					GI->Play_Sound(L"Slash_0.wav", CHANNELID::SOUND_SLASH, 0.3f, true);
 					CEffect_Manager::GetInstance()->Generate_Effect(L"Slash_0", XMMatrixRotationX(XMConvertToRadians(180.f)) * XMMatrixRotationY(XMConvertToRadians(-270.f)), XMMatrixIdentity(), 2.f, m_pSword);
 				}
 			}
@@ -255,11 +259,19 @@ void CState_Zenitsu_Attack::Input(_float fTimeDelta)
 		switch (m_iCurrAnimIndex)
 		{
 		case 0:
+		{
+			TCHAR strSoundFileName[MAX_PATH] = L"Voice_Zenitsu_Attack_";
+			lstrcatW(strSoundFileName, to_wstring(CUtils::Random_Int(0, 2)).c_str());
+			lstrcatW(strSoundFileName, L".wav");
+			GI->Play_Sound(strSoundFileName, CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
 			Find_Near_Target();
 			Trace_Near_Target();
 			m_pCharacter->DrawSword();
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[++m_iCurrAnimIndex]);
+		}
 			
+
+
 			break;
 		case 1:
 			Find_Near_Target();
@@ -272,6 +284,9 @@ void CState_Zenitsu_Attack::Input(_float fTimeDelta)
 			Trace_Near_Target();
 			m_iCurrAnimIndex = 4;
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
+
+			GI->Play_Sound(L"Voice_Zenitsu_Attack_2.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
+
 			break;
 		//case 3:
 		//	Find_Near_Target();

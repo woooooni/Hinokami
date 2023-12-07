@@ -38,24 +38,33 @@ void CState_Kyojuro_Air_Attack::Enter_State(void* pArg)
 	
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 	Follow_Near_Target(GI->Get_TimeDelta(L"Timer_GamePlay"));
+
+	for (_uint i = 0; i < m_AnimIndices.size(); ++i)
+	{
+		m_bSlashEffect[i] = false;
+	}
+
 }
 
 void CState_Kyojuro_Air_Attack::Tick_State(_float fTimeDelta)
 {
 	Input(fTimeDelta);
-	_float fProgress = m_pModelCom->Get_Animations()[m_AnimIndices[m_iCurrAnimIndex]]->Get_AnimationProgress();
+	_float fProgress = m_pModelCom->Get_CurrAnimation()->Get_AnimationProgress();
 
 	if (m_iCurrAnimIndex == 0)
 	{
 		if (m_pRigidBodyCom->Is_Ground())
 		{
 			m_pStateMachineCom->Change_State(CCharacter::BATTLE_IDLE);
+			return;
 		}
 	}
 	else if (m_iCurrAnimIndex == 1)
 	{
 		if (fProgress >= 0.3f && fProgress <= 0.5f)
+		{
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+		}
 		else
 		{
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
@@ -66,13 +75,14 @@ void CState_Kyojuro_Air_Attack::Tick_State(_float fTimeDelta)
 		{
 			m_pRigidBodyCom->Set_Gravity(true);
 		}
-			
-
 	}
 	else if (m_iCurrAnimIndex == 2)
 	{
-		if (fProgress >= 0.3f && fProgress <= 0.5f)		
+		if (fProgress >= 0.3f && fProgress <= 0.5f)
+		{
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
+		}
+			
 		else		
 			m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 
@@ -91,6 +101,9 @@ void CState_Kyojuro_Air_Attack::Tick_State(_float fTimeDelta)
 void CState_Kyojuro_Air_Attack::Exit_State()
 {
 	m_iCurrAnimIndex = 0;
+
+	for (_uint i = 0; i < m_AnimIndices.size(); ++i)
+		m_bSlashEffect[i] = false;
 
 	m_pSword->Stop_Trail();
 	m_pSword->Set_ActiveColliders(CCollider::BODY, true);
@@ -125,7 +138,7 @@ void CState_Kyojuro_Air_Attack::Input(_float fTimeDelta)
 			switch (m_iCurrAnimIndex)
 			{
 			case 1:
-				Follow_Near_Target(fTimeDelta);
+				// Follow_Near_Target(fTimeDelta);
 				m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 5.f, 0.f, 1.f);
 				m_pSword->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 				m_pRigidBodyCom->Set_Gravity(false);

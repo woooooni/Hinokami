@@ -6,6 +6,7 @@
 #include "StateMachine.h"
 #include "Navigation.h"
 #include "Sword.h"
+#include "Animation.h"
 
 USING(Client)
 CState_Tanjiro_Basic_Move::CState_Tanjiro_Basic_Move(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CStateMachine* pStateMachine)
@@ -33,6 +34,7 @@ HRESULT CState_Tanjiro_Basic_Move::Initialize(const list<wstring>& AnimationList
 
 void CState_Tanjiro_Basic_Move::Enter_State(void* pArg)
 {
+
 	m_pCharacter->SweathSword();
 	m_pSword->Stop_Trail();
 
@@ -172,6 +174,52 @@ void CState_Tanjiro_Basic_Move::Tick_State(_float fTimeDelta)
 			m_pStateMachineCom->Change_State(CTanjiro::BASIC_IDLE);
 	}
 
+	_float fProgress = m_pModelCom->Get_CurrAnimation()->Get_AnimationProgress();
+	fProgress *= 100.f;
+	fProgress = round(fProgress) / 100.f;
+
+	switch (GI->Get_CurrentLevel())
+	{
+	case LEVELID::LEVEL_TRAIN_STATION:
+	case LEVELID::LEVEL_FINAL_BOSS:
+		if (fProgress >= 0.6f && fProgress <= 0.61f)
+		{
+			GI->Play_Sound(L"Foot_Dirt_1.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f, false);
+			break;
+		}
+		else if (fProgress >= 0.2f && fProgress <= 0.21f)
+		{
+			GI->Play_Sound(L"Foot_Dirt_0.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f, false);
+			break;
+		}
+		break;
+
+	case LEVELID::LEVEL_TRAIN_BOSS:
+		if (fProgress >= 0.6f && fProgress <= 0.61f)
+		{
+			GI->Play_Sound(L"Foot_Train_1.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f, false);
+			break;
+		}
+		else if (fProgress >= 0.2f && fProgress <= 0.21f)
+		{
+			GI->Play_Sound(L"Foot_Train_0.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f, false);
+			break;
+		}
+		break;
+
+	case LEVELID::LEVEL_TRAIN:
+		if (fProgress >= 0.6f && fProgress <= 0.61f)
+		{
+			GI->Play_Sound(L"Foot_Floor_1.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f, false);
+			break;
+		}
+		else if (fProgress >= 0.2f && fProgress <= 0.21f)
+		{
+			GI->Play_Sound(L"Foot_Floor_0.wav", CHANNELID::SOUND_FOOT_CHARACTER, 0.3f, false);
+			break;
+		}
+		break;
+	}
 	
 }
 

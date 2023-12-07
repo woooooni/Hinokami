@@ -30,22 +30,10 @@ public:
 
 
 public:
-	void Set_Owner(class CNpc* pOwner, CHARACTER_TYPE eType) { 
-		Reset();
-		m_pOwnerNpc = pOwner; 
-		m_eCharacterType = eType; 
-	}
-	void Set_Owner(class CMonster* pOwner, CHARACTER_TYPE eType) { 
-		Reset();
-		m_pOwnerMonster = pOwner; 
-		m_eCharacterType = eType;
-	}
-	void Set_Owner(class CCharacter* pOwner, CHARACTER_TYPE eType) { 
-		Reset();
-		m_pOwnerCharacter = pOwner; 
-		m_eCharacterType = eType;
-	}
-	
+	void Set_Owner(class CNpc* pOwner, CHARACTER_TYPE eType);
+	void Set_Owner(class CMonster* pOwner, CHARACTER_TYPE eType);
+	void Set_Owner(class CCharacter* pOwner, CHARACTER_TYPE eType);
+	void Reset();
 
 protected:
 	virtual HRESULT Ready_Components() override;
@@ -74,16 +62,7 @@ private:
 private:
 	_float m_fCurrRatio = 1.f;
 	_float m_fDestRatio = 1.f;
-
-private:
-	void Reset() { 
-		m_fCurrRatio = 0.f;
-		m_fDestRatio = 1.f;
-		m_pOwnerCharacter = nullptr; 
-		m_pOwnerMonster = nullptr; 
-		m_pOwnerNpc = nullptr; 
-
-	}
+	
 
 public:
 	static CUI_GaugeBar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, GAUGE_TYPE eGaugeType, GAUGE_BAR_POSITION ePosition);

@@ -22,6 +22,8 @@ public:
 	virtual void Tick_State(_float fTimeDelta) override;
 	virtual void Exit_State() override;
 
+private:
+	class CMonster* m_pOwnerMonster = nullptr;
 
 public:
 	static CState_Monster_Regen* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

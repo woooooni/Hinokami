@@ -34,6 +34,7 @@ HRESULT CState_Character_Battle_AirDash::Initialize(const list<wstring>& Animati
 
 void CState_Character_Battle_AirDash::Enter_State(void* pArg)
 {
+
 	m_pCharacter->DrawSword();
 
 	m_pCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, false);

@@ -4,10 +4,7 @@
 
 #include "Camera_Manager.h"
 #include "Character.h"
-#include "Npc_Stand_0.h"
-#include "Npc_Stand_1.h"
-#include "Npc_Stand_2.h"
-#include "Npc_Stand_3.h"
+
 
 
 CLevel_Train_Station::CLevel_Train_Station(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -18,6 +15,9 @@ CLevel_Train_Station::CLevel_Train_Station(ID3D11Device * pDevice, ID3D11DeviceC
 HRESULT CLevel_Train_Station::Initialize()
 {
 	GI->Lock_Mouse();
+	GI->Stop_All();
+	GI->Play_BGM(L"Train_Station.wav", 1.f);
+
 	if (FAILED(__super::Initialize()))
 		return E_FAIL;
 
@@ -135,7 +135,7 @@ HRESULT CLevel_Train_Station::Ready_Layer_Character(const LAYER_TYPE eLayerType)
 HRESULT CLevel_Train_Station::Ready_Layer_Npc(const LAYER_TYPE eLayerType)
 {
 	CGameObject* pNpc = nullptr;
-	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Stand_0"), nullptr, &pNpc)))
+	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Boy_0"), nullptr, &pNpc)))
 		return E_FAIL;
 
 	CNavigation* pNavigation = pNpc->Get_Component<CNavigation>(L"Com_Navigation");
@@ -158,7 +158,7 @@ HRESULT CLevel_Train_Station::Ready_Layer_Npc(const LAYER_TYPE eLayerType)
 	}
 
 
-	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Stand_1"), nullptr, &pNpc)))
+	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Girl_0"), nullptr, &pNpc)))
 		return E_FAIL;
 
 	pNavigation = pNpc->Get_Component<CNavigation>(L"Com_Navigation");
@@ -180,7 +180,7 @@ HRESULT CLevel_Train_Station::Ready_Layer_Npc(const LAYER_TYPE eLayerType)
 		}
 	}
 
-	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Stand_0"), nullptr, &pNpc)))
+	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Boy_0"), nullptr, &pNpc)))
 		return E_FAIL;
 
 	pNavigation = pNpc->Get_Component<CNavigation>(L"Com_Navigation");
@@ -202,7 +202,7 @@ HRESULT CLevel_Train_Station::Ready_Layer_Npc(const LAYER_TYPE eLayerType)
 		}
 	}
 
-	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Stand_2"), nullptr, &pNpc)))
+	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Girl_1"), nullptr, &pNpc)))
 		return E_FAIL;
 
 	pNavigation = pNpc->Get_Component<CNavigation>(L"Com_Navigation");
@@ -223,7 +223,7 @@ HRESULT CLevel_Train_Station::Ready_Layer_Npc(const LAYER_TYPE eLayerType)
 		}
 	}
 
-	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Stand_3"), nullptr, &pNpc)))
+	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_PoliceMan_0"), nullptr, &pNpc)))
 		return E_FAIL;
 
 	pNavigation = pNpc->Get_Component<CNavigation>(L"Com_Navigation");
@@ -245,7 +245,7 @@ HRESULT CLevel_Train_Station::Ready_Layer_Npc(const LAYER_TYPE eLayerType)
 		}
 	}
 
-	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Stand_3"), nullptr, &pNpc)))
+	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_PoliceMan_0"), nullptr, &pNpc)))
 		return E_FAIL;
 
 	pNavigation = pNpc->Get_Component<CNavigation>(L"Com_Navigation");
@@ -268,6 +268,130 @@ HRESULT CLevel_Train_Station::Ready_Layer_Npc(const LAYER_TYPE eLayerType)
 	}
 
 
+
+
+
+
+
+	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Boy_0"), nullptr, &pNpc)))
+		return E_FAIL;
+
+	pNavigation = pNpc->Get_Component<CNavigation>(L"Com_Navigation");
+	if (nullptr != pNavigation)
+	{
+		CNavigation::NAVIGATION_DESC NaviDesc;
+		NaviDesc.bInitialize_Index = true;
+		NaviDesc.vStartWorldPosition = _float4(43.5f, -0.5f, 33.8f, 1.f);
+
+		if (FAILED(pNavigation->Initialize(&NaviDesc)))
+			return E_FAIL;
+
+
+		CTransform* pTransform = pNpc->Get_Component<CTransform>(L"Com_Transform");
+		if (nullptr != pTransform)
+		{
+			pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+			pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pNavigation->Get_NaviDesc().vStartWorldPosition));
+		}
+	}
+
+
+	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Girl_1"), nullptr, &pNpc)))
+		return E_FAIL;
+
+	pNavigation = pNpc->Get_Component<CNavigation>(L"Com_Navigation");
+	if (nullptr != pNavigation)
+	{
+		CNavigation::NAVIGATION_DESC NaviDesc;
+		NaviDesc.bInitialize_Index = true;
+		NaviDesc.vStartWorldPosition = _float4(44.5f, -0.5f, 33.8f, 1.f);
+
+		if (FAILED(pNavigation->Initialize(&NaviDesc)))
+			return E_FAIL;
+
+
+		CTransform* pTransform = pNpc->Get_Component<CTransform>(L"Com_Transform");
+		if (nullptr != pTransform)
+		{
+			pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
+			pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pNavigation->Get_NaviDesc().vStartWorldPosition));
+		}
+	}
+
+
+
+	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_OldWoman_0"), nullptr, &pNpc)))
+		return E_FAIL;
+
+	pNavigation = pNpc->Get_Component<CNavigation>(L"Com_Navigation");
+	if (nullptr != pNavigation)
+	{
+		CNavigation::NAVIGATION_DESC NaviDesc;
+		NaviDesc.bInitialize_Index = true;
+		NaviDesc.vStartWorldPosition = _float4(-17.0f, -1.9f, -20.f, 1.f);
+
+		if (FAILED(pNavigation->Initialize(&NaviDesc)))
+			return E_FAIL;
+
+
+		CTransform* pTransform = pNpc->Get_Component<CTransform>(L"Com_Transform");
+		if (nullptr != pTransform)
+		{
+			pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(0.f));
+			pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pNavigation->Get_NaviDesc().vStartWorldPosition));
+		}
+	}
+
+	// ´ëÈ­ ¿£ÇÇ¾¾
+
+	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Talk_PoliceMan_0"), nullptr, &pNpc)))
+		return E_FAIL;
+
+	pNavigation = pNpc->Get_Component<CNavigation>(L"Com_Navigation");
+	if (nullptr != pNavigation)
+	{
+		CNavigation::NAVIGATION_DESC NaviDesc;
+		NaviDesc.bInitialize_Index = true;
+		NaviDesc.vStartWorldPosition = _float4(44.5f, -0.5f, 37.7f, 1.f);
+
+		if (FAILED(pNavigation->Initialize(&NaviDesc)))
+			return E_FAIL;
+
+
+		CTransform* pTransform = pNpc->Get_Component<CTransform>(L"Com_Transform");
+		if (nullptr != pTransform)
+		{
+			pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
+			pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pNavigation->Get_NaviDesc().vStartWorldPosition));
+		}
+	}
+
+	if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_NPC, TEXT("Prototype_GameObject_Npc_Cat_0"), nullptr, &pNpc)))
+		return E_FAIL;
+
+	pNavigation = pNpc->Get_Component<CNavigation>(L"Com_Navigation");
+	if (nullptr != pNavigation)
+	{
+		CNavigation::NAVIGATION_DESC NaviDesc;
+		NaviDesc.bInitialize_Index = true;
+		NaviDesc.vStartWorldPosition = _float4(-5.9f, -1.95f, -63.5f, 1.f);
+
+		if (FAILED(pNavigation->Initialize(&NaviDesc)))
+			return E_FAIL;
+
+
+		CTransform* pTransform = pNpc->Get_Component<CTransform>(L"Com_Transform");
+		if (nullptr != pTransform)
+		{
+			pTransform->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(45.f));
+			pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pNavigation->Get_NaviDesc().vStartWorldPosition));
+		}
+	}
+
+
+	
+
+
 	return S_OK;
 }
 
@@ -279,8 +403,8 @@ HRESULT CLevel_Train_Station::Ready_Layer_BackGround(const LAYER_TYPE eLayerType
 
 HRESULT CLevel_Train_Station::Ready_Layer_Monster(const LAYER_TYPE eLayerType)
 {
-	//if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_0"), nullptr)))
-	//	return E_FAIL;
+	/*if (FAILED(GI->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_0"), nullptr)))
+		return E_FAIL;*/
 
 	//if (FAILED(GAME_INSTANCE->Add_GameObject(LEVEL_TRAIN_STATION, LAYER_TYPE::LAYER_MONSTER, TEXT("Prototype_GameObject_NormalMonster_1"), nullptr)))
 	//	return E_FAIL;

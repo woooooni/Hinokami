@@ -9,6 +9,7 @@
 #include "Monster_Normal_2.h"
 #include "UI_Manager.h"
 #include "UI_NextFog.h"
+#include "Character.h"
 #include "Utils.h"
 
 USING(Client)
@@ -75,11 +76,13 @@ void CNpc_Defence_Zenitsu::Tick(_float fTimeDelta)
 		CUI_NextFog::NEXT_INFO NextInfo;
 		NextInfo.eNextLevel = LEVELID::LEVEL_TRAIN_BOSS;
 		NextInfo.strFolderName = "Train_Boss";
-
+		GI->Stop_All();
 		if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", &NextInfo)))
 			assert(nullptr);
 
+		
 		Set_Dead(true);
+		return;
 	}
 
 	if (m_bTalking)
@@ -386,12 +389,34 @@ void CNpc_Defence_Zenitsu::Start_Defence()
 {
 	m_bStartDefence = true;
 	m_iDefenceDifficulty = 0;
+
+	GI->Stop_All();
+	GI->Play_BGM(L"Train.wav", 1.f);
+
 	list<CGameObject*>& Monsters = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_MONSTER);
 	for (auto& pMonster : Monsters)
 		pMonster->Set_Dead(true);
 
 	if (FAILED(CUI_Manager::GetInstance()->Battle_Start()))
 		MSG_BOX("StartBattle Failed.");
+
+	list<CGameObject*>& Characters = GI->Find_GameObjects(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_CHARACTER);
+	for (auto& pCharacter : Characters)
+	{
+		CCharacter* pMainCharacter = dynamic_cast<CCharacter*>(pCharacter);
+		if (nullptr == pMainCharacter)
+		{
+			MSG_BOX("StartBattle Failed.");
+			return;
+		}
+
+		if (FAILED(CUI_Manager::GetInstance()->Reserve_HpBar(CUI_Manager::GAUGE_BARTYPE::LEFT_HP, pMainCharacter, pMainCharacter->Get_CharacterType())))
+		{
+			MSG_BOX("StartBattle Failed.");
+			return;
+		}
+	}
+	
 }
 
 void CNpc_Defence_Zenitsu::Tick_Defence(_float fTimeDelta)
@@ -425,7 +450,7 @@ void CNpc_Defence_Zenitsu::Tick_Defence(_float fTimeDelta)
 			{
 				for (_uint i = 0; i < 3 + m_iDefenceDifficulty; ++i)
 				{
-					_int iRandomNum = (rand() + rand() + rand()) % 3;
+					_int iRandomNum = CUtils::Random_Int(0, 2);
 					CGameObject* pMonster = nullptr;
 					switch (iRandomNum)
 					{

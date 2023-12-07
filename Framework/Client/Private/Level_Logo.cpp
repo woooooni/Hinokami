@@ -13,10 +13,15 @@
 CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 {
+
 }
 
 HRESULT CLevel_Logo::Initialize()
 {
+	GI->Stop_All();
+	GI->Play_BGM(L"Logo.wav", 1.f);
+	GI->Play_Sound(L"Logo_Enter.wav", CHANNELID::SOUND_UI, 1.f);
+
 	if (FAILED(Ready_Layer_BackGround()))
 		return E_FAIL;
 
@@ -124,13 +129,13 @@ HRESULT CLevel_Logo::Ready_Layer_UI()
 			return E_FAIL;
 
 		if (0 == i)
-			pUI->Set_Text(L"GameStart");
+			pUI->Set_Text(L"게임시작");
 		else if (1 == i)
-			pUI->Set_Text(L"Tool");
+			pUI->Set_Text(L"툴");
 		else if (2 == i)
-			pUI->Set_Text(L"Setting");
+			pUI->Set_Text(L"설정");
 		else if (3 == i)
-			pUI->Set_Text(L"Exit");
+			pUI->Set_Text(L"나가기");
 
 		if (FAILED(GI->Add_GameObject(LEVEL_LOGO, LAYER_TYPE::LAYER_UI, pUI)))
 			return E_FAIL;

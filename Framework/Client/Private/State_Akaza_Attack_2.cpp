@@ -36,6 +36,8 @@ void CState_Akaza_Attack_2::Enter_State(void* pArg)
 	_vector vDir = -1.f * m_pTransformCom->Get_Look();
 	m_pTransformCom->Set_Position(m_pTransformCom->Get_Position() + XMVectorSet(0.f, 0.1f, 0.f, 0.f), GI->Get_TimeDelta(L"Timer_GamePlay"), m_pNavigationCom);
 	m_pRigidBodyCom->Add_Velocity(XMVector3Normalize(XMVectorSetY(vDir, 0.8f)), 14.f);
+
+	GI->Play_Sound(L"Voice_Akaza_Skill_0.wav", CHANNELID::SOUND_VOICE_MONSTER2, 1.f, true);
 }
 
 void CState_Akaza_Attack_2::Tick_State(_float fTimeDelta)
@@ -131,6 +133,7 @@ void CState_Akaza_Attack_2::Find_Near_Target()
 
 void CState_Akaza_Attack_2::Shoot(_float fTimeDelta)
 {
+	Find_Near_Target();
 
 	CGameObject* pProjectile = nullptr;
 	if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_EFFECT, L"Prototype_GameObject_Akaza_Projectile", nullptr, &pProjectile)))

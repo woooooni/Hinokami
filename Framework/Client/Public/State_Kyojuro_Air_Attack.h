@@ -25,6 +25,9 @@ private:
 	class CSword* m_pSword = nullptr;
 
 private:
+	_bool m_bSlashEffect[3] = {};
+
+private:
 	void Input(_float fTimeDelta);
 	void Follow_Near_Target(_float fTimeDelta);
 

@@ -56,11 +56,8 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	/* 1-4. 게임내에서 사용할 레벨(씬)을 생성한다.   */
-	if (FAILED(Open_Level(LEVEL_TRAIN_BOSS, L"Train_Boss")))
+	if (FAILED(Open_Level(LEVEL_FINAL_BOSS, L"Final_Boss")))
 		return E_FAIL;
-
-
-	/* 1-4-1. 게임내에서 사용할 여러 자원(텍스쳐, 모델, 객체) 들을 준비한다.  */
 
 	return S_OK;
 }
@@ -88,7 +85,6 @@ HRESULT CMainApp::Render()
 
 	m_pRenderer_Com->Draw();
 	m_pGame_Instance->Render_Debug();
-	/* 초기화한 장면에 객체들을 그린다. */
 	m_pGame_Instance->Present();
 
 	++m_iNumDraw;
@@ -207,6 +203,7 @@ HRESULT CMainApp::Initialize_Client()
 	vEye = XMVectorSet(-100.f, 50.f, 400.f, 1.f);
 	vAt = XMVectorSet(100.f, -10.f, 0.f, 1.f);
 	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
 	if (FAILED(GI->Add_ShadowLight(LEVEL_TRAIN, vEye, vAt, vUp)))
 		return E_FAIL;
 
@@ -381,6 +378,25 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Sky/"), 0, true))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_WorldQuest */
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_WorldQuest"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Quest/"), 0, true))))
+		return E_FAIL;
+
+
+	/* For.Prototype_Component_Enmu_Sleep_Break */
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Enmu_Sleep_Break"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Enmu_Sleep_Break/"), 0, true))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Enmu_Sleep_ToolTip */
+	if (FAILED(GI->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Enmu_Sleep_ToolTip"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Enmu_Sleep_ToolTip/"), 0, true))))
+		return E_FAIL;
+
+
+
 	
 
 

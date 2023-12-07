@@ -26,12 +26,21 @@ public:
 private:
 	class CBoss_Enmu* m_pOwnerBoss = nullptr;
 	class CGameObject* m_pTarget = nullptr;
+
+
+private:
+	class CUI_Enmu_Break* m_pBreakUI = nullptr;
+	class CUI_Enmu_ToolTip* m_pToolTipUI = nullptr;
+
 private:
 	_uint m_iCurrCount = 0;
 	_uint m_iKeyTabCount = 30;
 
 private:
 	void Use_Skill();
+
+	void Find_Near_Target();
+
 
 public:
 	static CState_Enmu_Skill_0* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CStateMachine* pStateMachine, const list<wstring>& AnimationList);

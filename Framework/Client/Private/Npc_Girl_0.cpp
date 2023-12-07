@@ -1,25 +1,25 @@
 #include "stdafx.h"
 #include "GameInstance.h"
-#include "Npc_Stand_1.h"
+#include "Npc_Girl_0.h"
 #include "State_Npc_Idle.h"
 
 
 
 USING(Client)
-CNpc_Stand_1::CNpc_Stand_1(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CNpc(pDevice, pContext, L"Npc_Stand_1")
+CNpc_Girl_0::CNpc_Girl_0(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CNpc(pDevice, pContext, L"Npc_Girl_0")
 {
 	
 }
 
-CNpc_Stand_1::CNpc_Stand_1(const CNpc_Stand_1& rhs)
+CNpc_Girl_0::CNpc_Girl_0(const CNpc_Girl_0& rhs)
 	: CNpc(rhs)	
 
 {	
 	
 }
 
-HRESULT CNpc_Stand_1::Initialize_Prototype()
+HRESULT CNpc_Girl_0::Initialize_Prototype()
 {
 	if(FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -27,7 +27,7 @@ HRESULT CNpc_Stand_1::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CNpc_Stand_1::Initialize(void* pArg)
+HRESULT CNpc_Girl_0::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -44,7 +44,7 @@ HRESULT CNpc_Stand_1::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CNpc_Stand_1::Tick(_float fTimeDelta)
+void CNpc_Girl_0::Tick(_float fTimeDelta)
 {
 	if (m_bReserveDead)
 	{
@@ -54,7 +54,7 @@ void CNpc_Stand_1::Tick(_float fTimeDelta)
 	}
 }
 
-void CNpc_Stand_1::LateTick(_float fTimeDelta)
+void CNpc_Girl_0::LateTick(_float fTimeDelta)
 {
 	if (nullptr == m_pRendererCom)
 		return;
@@ -70,7 +70,7 @@ void CNpc_Stand_1::LateTick(_float fTimeDelta)
 	}
 }
 
-HRESULT CNpc_Stand_1::Render()
+HRESULT CNpc_Girl_0::Render()
 {
 	__super::Render();
 	 
@@ -115,7 +115,7 @@ HRESULT CNpc_Stand_1::Render()
 	return S_OK;
 }
 
-HRESULT CNpc_Stand_1::Render_ShadowDepth()
+HRESULT CNpc_Girl_0::Render_ShadowDepth()
 {
 
 	if (nullptr == m_pShaderCom || nullptr == m_pTransformCom)
@@ -148,12 +148,12 @@ HRESULT CNpc_Stand_1::Render_ShadowDepth()
 	return S_OK;
 }
 
-void CNpc_Stand_1::Collision_Enter(const COLLISION_INFO& tInfo)
+void CNpc_Girl_0::Collision_Enter(const COLLISION_INFO& tInfo)
 {
 
 }
 
-void CNpc_Stand_1::Collision_Continue(const COLLISION_INFO& tInfo)
+void CNpc_Girl_0::Collision_Continue(const COLLISION_INFO& tInfo)
 {
 	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER || tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
 	{
@@ -182,7 +182,7 @@ void CNpc_Stand_1::Collision_Continue(const COLLISION_INFO& tInfo)
 	}
 }
 
-void CNpc_Stand_1::Collision_Exit(const COLLISION_INFO& tInfo)
+void CNpc_Girl_0::Collision_Exit(const COLLISION_INFO& tInfo)
 {
 	
 	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER
@@ -206,12 +206,12 @@ void CNpc_Stand_1::Collision_Exit(const COLLISION_INFO& tInfo)
 
 
 
-void CNpc_Stand_1::On_Damaged(CGameObject* pAttacker, _uint eDamageType, _float fDamage)
+void CNpc_Girl_0::On_Damaged(CGameObject* pAttacker, _uint eDamageType, _float fDamage)
 {
 	__super::On_Damaged(pAttacker, eDamageType, fDamage);
 }
 
-HRESULT CNpc_Stand_1::Ready_Components()
+HRESULT CNpc_Girl_0::Ready_Components()
 {
 	/* For.Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
@@ -270,7 +270,7 @@ HRESULT CNpc_Stand_1::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CNpc_Stand_1::Ready_States()
+HRESULT CNpc_Girl_0::Ready_States()
 {
 	list<wstring> strAnimationName;
 	strAnimationName.push_back(L"SK_N0035_V00_C00.ao|A_N0035_V00_C00_AdvNut01_1");
@@ -284,7 +284,7 @@ HRESULT CNpc_Stand_1::Ready_States()
 	return S_OK;
 }
 
-HRESULT CNpc_Stand_1::Ready_Colliders()
+HRESULT CNpc_Girl_0::Ready_Colliders()
 {
 	CCollider_Sphere::SPHERE_COLLIDER_DESC ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
@@ -312,12 +312,12 @@ HRESULT CNpc_Stand_1::Ready_Colliders()
 }
 
 
-CNpc_Stand_1* CNpc_Stand_1::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CNpc_Girl_0* CNpc_Girl_0::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CNpc_Stand_1* pInstance = new CNpc_Stand_1(pDevice, pContext);
+	CNpc_Girl_0* pInstance = new CNpc_Girl_0(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Create Failed : CNpc_Stand_1");
+		MSG_BOX("Create Failed : CNpc_Girl_0");
 		Safe_Release(pInstance);
 		return nullptr;
 	}
@@ -325,20 +325,20 @@ CNpc_Stand_1* CNpc_Stand_1::Create(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	return S_OK;
 }
 
-CGameObject* CNpc_Stand_1::Clone(void* pArg)
+CGameObject* CNpc_Girl_0::Clone(void* pArg)
 {
-	CNpc_Stand_1* pInstance = new CNpc_Stand_1(*this);
+	CNpc_Girl_0* pInstance = new CNpc_Girl_0(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CNpc_Stand_1");
+		MSG_BOX("Failed to Cloned : CNpc_Girl_0");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CNpc_Stand_1::Free()
+void CNpc_Girl_0::Free()
 {
 	__super::Free();
 }

@@ -62,21 +62,21 @@ HRESULT CUI_GaugeBar::Initialize(void* pArg)
 	
 	m_pTransformCom->Set_Scale(XMLoadFloat3(&_float3(m_tInfo.fCX, m_tInfo.fCY, 1.f)));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION,
-		XMVectorSet(m_tInfo.fX - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
+		XMVectorSet(m_tInfo.fX - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.02f, 1.f));
 
 
 	m_pBackGroundTransform->Set_Scale(XMLoadFloat3(&_float3(m_tInfo.fCX + 10.f, m_tInfo.fCY + 10.f, 1.f)));
 	m_pBackGroundTransform->Set_State(CTransform::STATE_POSITION,
-		XMVectorSet(m_tInfo.fX - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
+		XMVectorSet(m_tInfo.fX - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.03f, 1.f));
 
 
 	_float3 vIconScale = _float3(360.f, 120.f, 1.f);
 	m_pIconTransformCom->Set_Scale(XMLoadFloat3(&vIconScale));
 	m_pIconTransformCom->Set_State(CTransform::STATE_POSITION,
-		XMVectorSet((m_tInfo.fX - 200.f) - g_iWinSizeX * 0.5f, -1.f * (m_tInfo.fY) + g_iWinSizeY * 0.5f, 0.f, 1.f));
+		XMVectorSet((m_tInfo.fX - 200.f) - g_iWinSizeX * 0.5f, -1.f * (m_tInfo.fY) + g_iWinSizeY * 0.5f, 0.02f, 1.f));
 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.f));
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.01f, 1.f));
 
 	// ShowCursor(false);
 
@@ -93,11 +93,24 @@ void CUI_GaugeBar::Tick(_float fTimeDelta)
 {
 	if (nullptr != m_pOwnerCharacter)
 	{
+		if (m_pOwnerCharacter->Is_Dead())
+		{
+			Safe_Release(m_pOwnerCharacter);
+			m_pOwnerCharacter = nullptr;
+			return;
+		}
 		const CCharacter::CHARACTER_STAT& CharacterStatDesc = m_pOwnerCharacter->Get_Stat();
 		m_fDestRatio = max(0.f, fabs(CharacterStatDesc.fHp / CharacterStatDesc.fMaxHp));
 	}
 	else if (nullptr != m_pOwnerMonster)
 	{
+		if (m_pOwnerMonster->Is_Dead())
+		{
+			Safe_Release(m_pOwnerMonster);
+			m_pOwnerMonster = nullptr;
+			return;
+		}
+
 		const CMonster::MONSTER_STAT& MonsterStatDesc = m_pOwnerMonster->Get_Stat();
 		m_fDestRatio = max(0.f, fabs(MonsterStatDesc.fHp / MonsterStatDesc.fMaxHp));
 	}
@@ -111,12 +124,12 @@ void CUI_GaugeBar::Tick(_float fTimeDelta)
 	if (m_eBarPositon == GAUGE_BAR_POSITION::LEFT_TOP || m_eBarPositon == GAUGE_BAR_POSITION::LEFT_TOP_BOTTOM)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION,
-			XMVectorSet((m_tInfo.fX - (fMovePosX / 2.f)) - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
+			XMVectorSet((m_tInfo.fX - (fMovePosX / 2.f)) - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.02f, 1.f));
 	}
 	else
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION,
-			XMVectorSet((m_tInfo.fX + (fMovePosX / 2.f)) - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
+			XMVectorSet((m_tInfo.fX + (fMovePosX / 2.f)) - g_iWinSizeX * 0.5f, -m_tInfo.fY + g_iWinSizeY * 0.5f, 0.02f, 1.f));
 	}
 	
 }
@@ -254,6 +267,20 @@ HRESULT CUI_GaugeBar::Bind_ShaderResources()
 	return S_OK;
 }
 
+void CUI_GaugeBar::Reset()
+{
+	m_fCurrRatio = 0.f;
+	m_fDestRatio = 1.f;
+
+	Safe_Release(m_pOwnerCharacter);
+	Safe_Release(m_pOwnerMonster);
+	Safe_Release(m_pOwnerNpc);
+
+	m_pOwnerCharacter = nullptr;
+	m_pOwnerMonster = nullptr;
+	m_pOwnerNpc = nullptr;
+}
+
 CUI_GaugeBar * CUI_GaugeBar::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, GAUGE_TYPE eGaugeType, GAUGE_BAR_POSITION ePosition)
 {
 	CUI_GaugeBar*	pInstance = new CUI_GaugeBar(pDevice, pContext);
@@ -265,6 +292,26 @@ CUI_GaugeBar * CUI_GaugeBar::Create(ID3D11Device * pDevice, ID3D11DeviceContext 
 	}
 
 	return pInstance;
+}
+
+
+void CUI_GaugeBar::Set_Owner(class CNpc* pOwner, CHARACTER_TYPE eType) {
+	Reset();
+	m_pOwnerNpc = pOwner;
+	Safe_AddRef(pOwner);
+	m_eCharacterType = eType;
+}
+void CUI_GaugeBar::Set_Owner(class CMonster* pOwner, CHARACTER_TYPE eType) {
+	Reset();
+	m_pOwnerMonster = pOwner;
+	Safe_AddRef(pOwner);
+	m_eCharacterType = eType;
+}
+void CUI_GaugeBar::Set_Owner(class CCharacter* pOwner, CHARACTER_TYPE eType) {
+	Reset();
+	m_pOwnerCharacter = pOwner;
+	Safe_AddRef(pOwner);
+	m_eCharacterType = eType;
 }
 
 CGameObject * CUI_GaugeBar::Clone(void* pArg)

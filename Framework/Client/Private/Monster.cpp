@@ -8,7 +8,8 @@
 #include "Camera.h"
 #include "Particle_Manager.h"
 #include "Camera_Manager.h"
-
+#include "UI_NextFog.h"
+#include "UI_Manager.h"
 USING(Client)
 CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const MONSTER_STAT& tStat)
 	: CGameObject(pDevice, pContext, strObjectTag, OBJ_TYPE::OBJ_MONSTER)
@@ -73,6 +74,18 @@ void CMonster::Tick(_float fTimeDelta)
 		m_fDissolveWeight += 0.2f * fTimeDelta;
 		if (m_fDissolveWeight >= 1.f)
 		{
+			if (m_eMonsterType == CMonster::ENMU || m_eMonsterType == CMonster::AKAZA)
+			{
+				CUI_NextFog::NEXT_INFO NextInfo;
+				NextInfo.eNextLevel = LEVELID::LEVEL_FINAL_BOSS;
+				NextInfo.strFolderName = "Final_Boss";
+				GI->Stop_All();
+				CUI_Manager::GetInstance()->Reset_HpBar(CUI_Manager::GAUGE_BARTYPE::LEFT_HP);
+				if (FAILED(GI->Add_GameObject(GI->Get_CurrentLevel(), LAYER_TYPE::LAYER_UI, L"Prototype_GameObject_UI_Logo_NextFog", &NextInfo)))
+					assert(nullptr);
+				
+			}
+
 			Set_ActiveColliders(CCollider::DETECTION_TYPE::BOUNDARY, false);
 			Set_ActiveColliders(CCollider::DETECTION_TYPE::HEAD, false);
 			Set_ActiveColliders(CCollider::DETECTION_TYPE::BODY, false);
@@ -232,7 +245,7 @@ void CMonster::Collision_Continue(const COLLISION_INFO& tInfo)
 			if (fForce > 0.f)
 			{
 				_float fTimeDelta = GI->Get_TimeDelta(L"Timer_GamePlay");
-				m_pRigidBodyCom->Set_PushVelocity(vTargetDir * fForce, fTimeDelta);
+				m_pRigidBodyCom->Set_PushVelocity(vTargetDir * (fForce / 2.f), fTimeDelta);
 			}
 		}
 	}
@@ -256,7 +269,7 @@ CHierarchyNode* CMonster::Get_Socket(const wstring& strSocketName)
 
 void CMonster::On_Damaged(const COLLISION_INFO& tInfo)
 {
-	if (m_bInfinite)
+	if (true == m_bInfinite)
 		return;
 
 	if (MONSTER_STATE::DIE == m_pStateCom->Get_CurrState())
@@ -268,6 +281,12 @@ void CMonster::On_Damaged(const COLLISION_INFO& tInfo)
 		m_bReserveDead = true;
 		m_fDissolveWeight = 0.f;
 		m_pStateCom->Change_State(MONSTER_STATE::DIE);
+
+		if (m_eMonsterType == MONSTER_TYPE::ENMU || m_eMonsterType == MONSTER_TYPE::AKAZA)
+		{
+			GI->Set_Slow(L"Timer_GamePlay", 1.f, 0.1f, true);
+			GI->Play_Sound(L"Battle_Finish.wav", CHANNELID::SOUND_UI, 1.f, true);
+		}
 		return;
 	}
 
@@ -278,16 +297,16 @@ void CMonster::On_Damaged(const COLLISION_INFO& tInfo)
 
 	
 
+	Play_DamagedSound();
 
 	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_WEAPON)
 	{
+		GI->Play_Sound(L"Slash_Hit.wav", CHANNELID::SOUND_SLASH_HIT, 1.f, true);
 		_float fRadianX = XMConvertToRadians(CUtils::Random_Float(-30.f, 30.f));
 		_float fRadianY = XMConvertToRadians(CUtils::Random_Float(-30.f, 30.f));
 		_float fRadianZ = XMConvertToRadians(CUtils::Random_Float(-30.f, 30.f));
 
 		_vector vQuaternion = XMQuaternionRotationRollPitchYaw(fRadianX, fRadianY, fRadianZ);
-
-
 
 		
 		_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
@@ -300,7 +319,7 @@ void CMonster::On_Damaged(const COLLISION_INFO& tInfo)
 	}
 	else
 	{
-		
+		GI->Play_Sound(L"Normal_Hit.wav", CHANNELID::SOUND_NORMAL_HIT, 1.f, true);
 		_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 		WorldMatrix.r[CTransform::STATE_POSITION] += XMVectorSet(0.f, 0.5f, 0.f, 0.f) + XMVector3Normalize(XMVectorSetW(tInfo.pOtherCollider->Get_Position(), 1.f) - WorldMatrix.r[CTransform::STATE_POSITION]) * 0.5f;
 		XMVectorSetW(WorldMatrix.r[CTransform::STATE_POSITION], 1.f);
@@ -375,6 +394,51 @@ void CMonster::LookAt_DamagedObject(CGameObject* pAttacker)
 		return;
 
 	m_pTransformCom->LookAt_ForLandObject(pOtherTransform->Get_State(CTransform::STATE_POSITION));
+}
+
+void CMonster::Play_DamagedSound()
+{
+	TCHAR strSoundFileName[MAX_PATH] = L"";
+
+	
+	
+
+	switch (m_eMonsterType)
+	{
+	case Client::CMonster::NORMAL_0:
+		lstrcatW(strSoundFileName, L"Voice_Normal_Monster_0_Damanged_Basic_");
+		lstrcatW(strSoundFileName, to_wstring(CUtils::Random_Int(0, 4)).c_str());
+		lstrcatW(strSoundFileName, L".wav");
+		GI->Play_Sound(strSoundFileName, CHANNELID::SOUND_VOICE_MONSTER1, 1.f);
+		break;
+	case Client::CMonster::NORMAL_1:
+		lstrcatW(strSoundFileName, L"Voice_Normal_Monster_1_Damanged_Basic_");
+		lstrcatW(strSoundFileName, to_wstring(CUtils::Random_Int(0, 5)).c_str());
+		lstrcatW(strSoundFileName, L".wav");
+		GI->Play_Sound(strSoundFileName, CHANNELID::SOUND_VOICE_MONSTER2, 1.f);
+		break;
+	case Client::CMonster::NORMAL_2:
+		lstrcatW(strSoundFileName, L"Voice_Normal_Monster_2_Damaged");
+		lstrcatW(strSoundFileName, L".wav");
+		GI->Play_Sound(strSoundFileName, CHANNELID::SOUND_VOICE_MONSTER3, 1.f);
+		break;
+	case Client::CMonster::ENMU:
+		lstrcatW(strSoundFileName, L"Voice_Enmu_Damaged_Basic_");
+		lstrcatW(strSoundFileName, to_wstring(CUtils::Random_Int(0, 1)).c_str());
+		lstrcatW(strSoundFileName, L".wav");
+		GI->Play_Sound(strSoundFileName, CHANNELID::SOUND_VOICE_MONSTER1, 1.f, true);
+		break;
+	case Client::CMonster::AKAZA:
+		lstrcatW(strSoundFileName, L"Voice_Akakza_Damaged_Basic_");
+		lstrcatW(strSoundFileName, to_wstring(CUtils::Random_Int(0, 3)).c_str());
+		lstrcatW(strSoundFileName, L".wav");
+		GI->Play_Sound(strSoundFileName, CHANNELID::SOUND_VOICE_MONSTER1, 1.f, true);
+		break;
+	default:
+		break;
+	}
+
+	
 }
 
 void CMonster::Free()

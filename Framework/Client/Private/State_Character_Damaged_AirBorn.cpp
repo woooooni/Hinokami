@@ -27,6 +27,7 @@ HRESULT CState_Character_Damaged_AirBorn::Initialize(const list<wstring>& Animat
 
 void CState_Character_Damaged_AirBorn::Enter_State(void* pArg)
 {
+
 	m_iCurrAnimIndex = 0;
 	m_fAccRecovery = 0.f;
 

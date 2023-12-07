@@ -355,18 +355,6 @@
     <Filter Include="02.GameObjects\11. NPC\00. Stand_Person">
       <UniqueIdentifier>{2f79fcca-670d-424e-a261-c98dfef3175e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\00">
-      <UniqueIdentifier>{2d481f1a-199e-459f-b002-43255ece3ed0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\01">
-      <UniqueIdentifier>{cf3ef552-5332-4580-aaa0-b95207949d00}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\02">
-      <UniqueIdentifier>{6c949536-7cf6-49a7-a54d-061b6d56cf94}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\11. NPC\01. Walking_Person">
-      <UniqueIdentifier>{9a843d9c-e5a1-4d66-84b9-394550a86ca4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\11. NPC\99. State">
       <UniqueIdentifier>{0e0123e2-e061-44f3-b357-554b10c897d7}</UniqueIdentifier>
     </Filter>
@@ -378,9 +366,6 @@
     </Filter>
     <Filter Include="02.GameObjects\11. NPC\99. State\Walk">
       <UniqueIdentifier>{9936b665-6a04-489f-91a8-241ea7671b50}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\03">
-      <UniqueIdentifier>{42bc9ee2-1f7c-4fd0-bf41-189f5f00e860}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\98. UI\06. WorldHP">
       <UniqueIdentifier>{2bc1e263-2705-4dc2-9cbc-8cca8b1fd589}</UniqueIdentifier>
@@ -414,6 +399,57 @@
     </Filter>
     <Filter Include="02.GameObjects\03. Character\02. Kyojuro\Projectile">
       <UniqueIdentifier>{0a5c6bd4-660e-4d94-8a4a-2e368d82c033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\Boy_0">
+      <UniqueIdentifier>{2d481f1a-199e-459f-b002-43255ece3ed0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\Girl_0">
+      <UniqueIdentifier>{cf3ef552-5332-4580-aaa0-b95207949d00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\Girl_1">
+      <UniqueIdentifier>{6c949536-7cf6-49a7-a54d-061b6d56cf94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\PoliceMan_0">
+      <UniqueIdentifier>{42bc9ee2-1f7c-4fd0-bf41-189f5f00e860}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\OldWoman">
+      <UniqueIdentifier>{e9cbca8e-f6e0-4ca9-994e-39b5d2267637}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\Woman">
+      <UniqueIdentifier>{18fb794a-7503-49ad-a1f4-56fc17591494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\Man">
+      <UniqueIdentifier>{50cf0921-b1d3-46d5-96ba-2cd083294474}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\Talk_PoliceMan">
+      <UniqueIdentifier>{f781ff77-1397-4a9e-a7ce-4c3f2ec27b47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\99. State\Talk">
+      <UniqueIdentifier>{33633a3a-6177-4b12-9a76-5dcf515221d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11. NPC\00. Stand_Person\Cat">
+      <UniqueIdentifier>{944298e0-d942-4d51-942e-63bbc625c953}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\07. WorldQuest">
+      <UniqueIdentifier>{e3af9d72-d4bd-4306-8c27-ad7b370c150c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\08. Enmu_Break">
+      <UniqueIdentifier>{0d847820-5132-4301-91ee-ac06994b4aec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\98. UI\09. Enmu_ToolTip">
+      <UniqueIdentifier>{02d40cf7-8a69-47c2-8bef-8cec646ec1cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Akaza\SkillObj">
+      <UniqueIdentifier>{34c7fd5b-4d28-4301-82a5-87f1af2b8dc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Akaza\Skill">
+      <UniqueIdentifier>{eabb8614-a723-4265-862c-df685824875d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Akaza\SkillObj\Boundary">
+      <UniqueIdentifier>{a7eeadd2-49ff-45df-84e4-126309b848ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Boss\Akaza\SkillObj\Stone">
+      <UniqueIdentifier>{91c26106-b097-4f48-b5cd-cf9f917ecca5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -714,8 +750,8 @@
     <ClInclude Include="..\Public\UI_GaugeBar.h">
       <Filter>02.GameObjects\98. UI\04. Gauge_Bar</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Npc_Stand_0.h">
-      <Filter>02.GameObjects\11. NPC\00. Stand_Person\00</Filter>
+    <ClInclude Include="..\Public\Npc_Boy_0.h">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Boy_0</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster_Normal_1.h">
       <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster1</Filter>
@@ -789,14 +825,14 @@
     <ClInclude Include="..\Public\State_Npc_Walk.h">
       <Filter>02.GameObjects\11. NPC\99. State\Walk</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Npc_Stand_1.h">
-      <Filter>02.GameObjects\11. NPC\00. Stand_Person\01</Filter>
+    <ClInclude Include="..\Public\Npc_Girl_0.h">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Girl_0</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Npc_Stand_2.h">
-      <Filter>02.GameObjects\11. NPC\00. Stand_Person\02</Filter>
+    <ClInclude Include="..\Public\Npc_Girl_1.h">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Girl_1</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Npc_Stand_3.h">
-      <Filter>02.GameObjects\11. NPC\00. Stand_Person\03</Filter>
+    <ClInclude Include="..\Public\Npc_PoliceMan_0.h">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\PoliceMan_0</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_WorldHp.h">
       <Filter>02.GameObjects\98. UI\06. WorldHP</Filter>
@@ -842,6 +878,45 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kyojuro_Projectile.h">
       <Filter>02.GameObjects\03. Character\02. Kyojuro\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Npc_OldWoman_0.h">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\OldWoman</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Npc_Woman_0.h">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Woman</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Npc_Man_0.h">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Man</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Npc_Talk_PoliceMan_0.h">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Talk_PoliceMan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Npc_Cat.h">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Cat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_WorldQuest.h">
+      <Filter>02.GameObjects\98. UI\07. WorldQuest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Enmu_Break.h">
+      <Filter>02.GameObjects\98. UI\08. Enmu_Break</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Enmu_ToolTip.h">
+      <Filter>02.GameObjects\98. UI\09. Enmu_ToolTip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Akaza_Skill_0.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Akaza_Skill_Boundary.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\SkillObj\Boundary</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Akaza_Stone_0.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\SkillObj\Stone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Akaza_Stone_1.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\SkillObj\Stone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\State_Enmu_Skill_1.h">
+      <Filter>02.GameObjects\05. Monster\Boss\Enmu\State\Skill</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1127,8 +1202,8 @@
     <ClCompile Include="..\Private\UI_GaugeBar.cpp">
       <Filter>02.GameObjects\98. UI\04. Gauge_Bar</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Npc_Stand_0.cpp">
-      <Filter>02.GameObjects\11. NPC\00. Stand_Person\00</Filter>
+    <ClCompile Include="..\Private\Npc_Boy_0.cpp">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Boy_0</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Normal_1.cpp">
       <Filter>02.GameObjects\05. Monster\Normal\Normal_Monster1</Filter>
@@ -1202,14 +1277,14 @@
     <ClCompile Include="..\Private\State_Npc_Walk.cpp">
       <Filter>02.GameObjects\11. NPC\99. State\Walk</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Npc_Stand_1.cpp">
-      <Filter>02.GameObjects\11. NPC\00. Stand_Person\01</Filter>
+    <ClCompile Include="..\Private\Npc_Girl_0.cpp">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Girl_0</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Npc_Stand_2.cpp">
-      <Filter>02.GameObjects\11. NPC\00. Stand_Person\02</Filter>
+    <ClCompile Include="..\Private\Npc_Girl_1.cpp">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Girl_1</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Npc_Stand_3.cpp">
-      <Filter>02.GameObjects\11. NPC\00. Stand_Person\03</Filter>
+    <ClCompile Include="..\Private\Npc_PoliceMan_0.cpp">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\PoliceMan_0</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_WorldHp.cpp">
       <Filter>02.GameObjects\98. UI\06. WorldHP</Filter>
@@ -1255,6 +1330,45 @@
     </ClCompile>
     <ClCompile Include="..\Private\Kyojuro_Projectile.cpp">
       <Filter>02.GameObjects\03. Character\02. Kyojuro\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Npc_OldWoman_0.cpp">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\OldWoman</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Npc_Woman_0.cpp">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Woman</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Npc_Man_0.cpp">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Man</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Npc_Talk_PoliceMan_0.cpp">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Talk_PoliceMan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Npc_Cat.cpp">
+      <Filter>02.GameObjects\11. NPC\00. Stand_Person\Cat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_WorldQuest.cpp">
+      <Filter>02.GameObjects\98. UI\07. WorldQuest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Enmu_Break.cpp">
+      <Filter>02.GameObjects\98. UI\08. Enmu_Break</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Enmu_ToolTip.cpp">
+      <Filter>02.GameObjects\98. UI\09. Enmu_ToolTip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Akaza_Skill_0.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Akaza_Skill_Boundary.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\SkillObj\Boundary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Akaza_Stone_0.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\SkillObj\Stone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Akaza_Stone_1.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Akaza\SkillObj\Stone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\State_Enmu_Skill_1.cpp">
+      <Filter>02.GameObjects\05. Monster\Boss\Enmu\State\Skill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -70,7 +70,7 @@ void CState_NormalMonster2_Attack::Tick_State(_float fTimeDelta)
 	{
 		if (fProgress >= 0.5f)
 		{
-			m_pOwner->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 5.f, 1.f, 1.f);
+			m_pOwner->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 12.f, 1.f, 1.f);
 		}
 
 		if (fProgress >= 0.8f)

@@ -36,6 +36,7 @@ protected:
 private:
 	_int m_iSkillCount = 3;
 	
+	
 
 private:
 	HRESULT Ready_Sockets();

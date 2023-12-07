@@ -25,13 +25,13 @@ HRESULT CState_Character_Damaged_Basic::Initialize(const list<wstring>& Animatio
 
 void CState_Character_Damaged_Basic::Enter_State(void* pArg)
 {
+
 	m_pOwnerCharacter->DrawSword();
 	m_pOwnerCharacter->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, false);
 	
 	m_iCurrAnimIndex = rand() % m_AnimIndices.size();
 	m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
 
-	m_pOwnerCharacter->Set_Infinite(.1f, true);
 }
 
 void CState_Character_Damaged_Basic::Tick_State(_float fTimeDelta)

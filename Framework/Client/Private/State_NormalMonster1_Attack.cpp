@@ -52,10 +52,10 @@ void CState_NormalMonster1_Attack::Tick_State(_float fTimeDelta)
 	if (0 == m_iCurrAnimIndex)
 	{
 		if(fProgress >= .3f && fProgress <= .55f)
-			m_pOwner->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 5.f, 0.f, 1.f);
+			m_pOwner->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 12.f, 0.f, 1.f);
 
 		else if (fProgress >= .5f)
-			m_pOwner->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 5.f, 1.f);
+			m_pOwner->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 10.f, 1.f);
 			
 		
 		if (fProgress >= .6f)
@@ -65,7 +65,7 @@ void CState_NormalMonster1_Attack::Tick_State(_float fTimeDelta)
 	else if (1 == m_iCurrAnimIndex)
 	{
 		if (fProgress >= 0.6f)
-			m_pOwner->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 5.f, 0.f, 1.f);
+			m_pOwner->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 12.f, 0.f, 1.f);
 			
 
 		if (fProgress >= 0.9f)

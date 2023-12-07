@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Sound_Manager.h"
 #include "Component_Manager.h"
 
 /* 클라이언트개발자가 엔진의 기능을 이용하고자할 때 접촉하는 객체.  */
@@ -137,6 +138,14 @@ public:
 //	bool Is_Connected();
 //	ServerSessionRef& Get_ServerSession();
 
+public:
+	void Play_Sound(TCHAR* pSoundKey, CHANNELID eID, _float fVolume, _bool bStop = false);
+	void Play_BGM(TCHAR* pSoundKey, _float fVolume, _bool bStop = false);
+	void Stop_Sound(CHANNELID eID);
+	void Stop_All();
+	void Set_ChannelVolume(CHANNELID eID, float fVolume);
+	FMOD_CHANNEL* Get_Channel(CHANNELID eID);
+
 
 private:
 	class CTimer_Manager*			m_pTimer_Manager = { nullptr };
@@ -154,6 +163,8 @@ private:
 	class CTarget_Manager*			m_pTarget_Manager = { nullptr };
 	class CFrustum*					m_pFrustum = { nullptr };
 	// class CNetwork_Manager*			m_pNetwork_Manager = { nullptr };
+	class CSound_Manager* m_pSound_Manager = { nullptr };
+
 public:
 	static void Release_Engine();
 	virtual void Free() override;

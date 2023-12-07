@@ -44,12 +44,7 @@ void CCamera::Tick(_float fTimeDelta)
 	case CCamera::BASIC:
 		Tick_Basic(fTimeDelta);
 		break;
-	case CCamera::CUT_SCENE:
-		Tick_CutScene(fTimeDelta);
-		break;
-	case CCamera::SKILL:
-		Tick_Skill(fTimeDelta);
-		break;
+
 	default:
 		break;
 	}

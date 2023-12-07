@@ -486,6 +486,9 @@
     <ClInclude Include="..\Public\Collider_OBB.h">
       <Filter>01.Utiltiy\03.Component\10. Collider\OBB</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Sound_Manager.h">
+      <Filter>01.Utiltiy\08. SoundManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -709,6 +712,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Collider_OBB.cpp">
       <Filter>01.Utiltiy\03.Component\10. Collider\OBB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sound_Manager.cpp">
+      <Filter>01.Utiltiy\08. SoundManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

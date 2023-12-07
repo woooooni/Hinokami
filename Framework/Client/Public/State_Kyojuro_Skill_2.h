@@ -30,7 +30,7 @@ private:
 	_float m_fGenParticleTime = 0.1f;
 
 private:
-	_float m_bGenEffect = false;
+	_bool m_bGenEffect = false;
 
 private:
 	void Find_Near_Target();

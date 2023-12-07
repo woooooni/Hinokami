@@ -27,7 +27,7 @@ public:
 private:
 	_float m_fDistance = 5.f;
 	_float m_fAccAttackCoolTime = 0.f;
-	_float m_fAttackCoolTime = 2.f;
+	_float m_fAttackCoolTime = 1.f;
 	
 	_bool m_bAttackable = false;
 

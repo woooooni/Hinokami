@@ -200,8 +200,6 @@ void CState_Zenitsu_Air_Attack::Use_Skill(_float fTimeDelta)
 	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_1", SkillMatrix, XMMatrixIdentity(), .8f, m_pCharacter);
 
 
-
-
 	EffectMatrix.r[CTransform::STATE_POSITION] = (m_pTransformCom->Get_Position() + XMVectorSet(0.f, 1.f, 0.f, 0.f)) + (-1.f * XMVector3Normalize(vDir));
 	CEffect_Manager::GetInstance()->Generate_Effect(L"Skl_01_Zenitsu_Dash_0", XMMatrixIdentity(), EffectMatrix, 1.f);
 
@@ -219,7 +217,7 @@ void CState_Zenitsu_Air_Attack::Use_Skill(_float fTimeDelta)
 	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
 	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
 
-	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+	
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pCharacter->Set_ActiveColliders(CCollider::BODY, false);
 

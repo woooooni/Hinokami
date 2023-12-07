@@ -59,6 +59,12 @@ void CBuilding::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
 
+	for (_uint i = 0; i < CCollider::DETECTION_TYPE::DETECTION_END; ++i)
+	{
+		for (auto& pCollider : m_Colliders[i])
+			m_pRendererCom->Add_Debug(pCollider);
+	}
+
 	m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDERGROUP::RENDER_SHADOW, CRenderer::SHADER_TYPE::MODEL, this, m_pTransformCom->Get_WorldFloat4x4());
 	m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDERGROUP::RENDER_NONBLEND, CRenderer::SHADER_TYPE::MODEL, this, m_pTransformCom->Get_WorldFloat4x4());
 	
@@ -66,7 +72,7 @@ void CBuilding::LateTick(_float fTimeDelta)
 
 HRESULT CBuilding::Render_Instance(CShader* pInstancingShader, CVIBuffer_Instancing* pInstancingBuffer, const vector<_float4x4>& WorldMatrices)
 {
-	__super::Render();
+	// __super::Render();
 
 	if (nullptr == m_pModelCom || nullptr == pInstancingShader)
 		return E_FAIL;

@@ -18,6 +18,7 @@
 #include "State_Akaza_Attack_0.h"
 #include "State_Akaza_Attack_1.h"
 #include "State_Akaza_Attack_2.h"
+#include "State_Akaza_Skill_0.h"
 
 #include "State_Boss_Battle_Dash.h"
 
@@ -25,6 +26,7 @@
 #include "State_Monster_Damaged_AirBorn.h"
 #include "State_Monster_Damaged_Blow.h"
 #include "State_Monster_Damaged_Bound.h"
+
 
 USING(Client)
 CBoss_Akaza::CBoss_Akaza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strObjectTag, const MONSTER_STAT& tStat)
@@ -66,6 +68,8 @@ HRESULT CBoss_Akaza::Initialize(void* pArg)
  	if (FAILED(Ready_Colliders()))
 		return E_FAIL;
 
+	m_eMonsterType = CMonster::AKAZA;
+
 	return S_OK;
 }
 
@@ -73,6 +77,27 @@ void CBoss_Akaza::Tick(_float fTimeDelta)
 {
 	m_pStateCom->Tick_State(fTimeDelta);
 	__super::Tick(fTimeDelta);
+
+
+	if (CMonster::IDLE == m_pStateCom->Get_CurrState() && m_iSkillCount > 0)
+	{
+		_float fRatio = m_tStat.fHp / m_tStat.fMaxHp;
+		if (fRatio <= .8f && m_iSkillCount == 3)
+		{
+			--m_iSkillCount;
+			m_pStateCom->Change_State(MONSTER_STATE::SKILL_0);
+		}
+		else if (fRatio <= .5f && m_iSkillCount == 2)
+		{
+			--m_iSkillCount;
+			m_pStateCom->Change_State(MONSTER_STATE::SKILL_0);
+		}
+		else if (fRatio <= .3f && m_iSkillCount == 1)
+		{
+			--m_iSkillCount;
+			m_pStateCom->Change_State(MONSTER_STATE::SKILL_0);
+		}
+	}
 
 
 	for (_uint i = 0; i < CMonster::SOCKET_END; ++i)
@@ -105,8 +130,58 @@ void CBoss_Akaza::LateTick(_float fTimeDelta)
 
 HRESULT CBoss_Akaza::Render()
 {
-	if (FAILED(__super::Render()))
+	if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
 		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", &GI->Get_CamPosition(), sizeof(_float4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_WorldMatrix", &m_pTransformCom->Get_WorldFloat4x4_TransPose(), sizeof(_float4x4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_ViewMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TransPose(CPipeLine::D3DTS_VIEW), sizeof(_float4x4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_ProjMatrix", &GAME_INSTANCE->Get_TransformFloat4x4_TransPose(CPipeLine::D3DTS_PROJ), sizeof(_float4x4))))
+		return E_FAIL;
+
+
+	_float4 vRimColor = { 0.f, 0.f, 0.f, 0.f };
+	if (m_bInfinite)
+		vRimColor = { 1.f, 0.f, 0.f, 1.f };
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vRimColor", &vRimColor, sizeof(_float4))))
+		return E_FAIL;
+
+	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		_uint		iPassIndex = 0;
+		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_DIFFUSE, "g_DiffuseTexture")))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->SetUp_OnShader(m_pShaderCom, m_pModelCom->Get_MaterialIndex(i), aiTextureType_NORMALS, "g_NormalTexture")))
+			iPassIndex = 0;
+		else
+			iPassIndex++;
+
+		if (true == m_bReserveDead)
+		{
+			iPassIndex = 2;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveWeight", &m_fDissolveWeight, sizeof(_float))))
+				return E_FAIL;
+
+			if (FAILED(m_pDissoveTexture->Bind_ShaderResource(m_pShaderCom, "g_DissolveTexture")))
+				return E_FAIL;
+		}
+		else
+			iPassIndex = 3;
+
+		if (FAILED(m_pModelCom->Render(m_pShaderCom, i, iPassIndex)))
+			return E_FAIL;
+	}
+
+	return S_OK;
 
 	return S_OK;
 }
@@ -273,15 +348,20 @@ HRESULT CBoss_Akaza::Ready_States()
 	
 	m_pStateCom->Add_State(CMonster::BOSS_ATTACK_2, CState_Akaza_Attack_2::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
-
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P1012_V01_C00.ao|A_P0000_V00_C00_DmgStrikeF01_0");
 	strAnimationName.push_back(L"SK_P1012_V01_C00.ao|A_P0000_V00_C00_DmgStrikeF01_1");
 	strAnimationName.push_back(L"SK_P1012_V01_C00.ao|A_P0000_V00_C00_DmgDown01_1");
 	m_pStateCom->Add_State(CMonster::DAMAGED_BLOW, CState_Monster_Damaged_Blow::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
+	
 
-
+	strAnimationName.clear();
+	strAnimationName.push_back(L"SK_P1012_V01_C00.ao|A_P1012_V00_C00_AtkUniqueAct01");
+	strAnimationName.push_back(L"SK_P1012_V01_C00.ao|A_P1012_V00_C00_AtkSkl04_0");
+	strAnimationName.push_back(L"SK_P1012_V01_C00.ao|A_P1012_V00_C00_AtkSkl04_1");
+	strAnimationName.push_back(L"SK_P1012_V01_C00.ao|A_P1012_V00_C00_AtkSkl04_2");
+	m_pStateCom->Add_State(CMonster::SKILL_0, CState_Akaza_Skill_0::Create(m_pDevice, m_pContext, m_pStateCom, strAnimationName));
 
 	strAnimationName.clear();
 	strAnimationName.push_back(L"SK_P1012_V01_C00.ao|A_P0000_V00_C00_DmgBound01_0");
@@ -388,7 +468,7 @@ HRESULT CBoss_Akaza::Ready_Parts()
 	if (FAILED(m_pTrails[CMonster::SOCKET_TYPE::SOCKET_LEFT_FOOT]->Initialize(nullptr)))
 		return E_FAIL;
 
-	m_pTrails[CMonster::SOCKET_TYPE::SOCKET_LEFT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.025f, 1.f), XMVectorSet(0.f, 0.0f, 0.025f, 1.f));
+	m_pTrails[CMonster::SOCKET_TYPE::SOCKET_LEFT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.015f, 1.f), XMVectorSet(0.f, 0.0f, 0.015f, 1.f));
 	m_pTrails[CMonster::SOCKET_TYPE::SOCKET_LEFT_FOOT]->Set_VtxCount(66);
 
 
@@ -401,7 +481,7 @@ HRESULT CBoss_Akaza::Ready_Parts()
 	if (FAILED(m_pTrails[CMonster::SOCKET_TYPE::SOCKET_RIGHT_FOOT]->Initialize(nullptr)))
 		return E_FAIL;
 
-	m_pTrails[CMonster::SOCKET_TYPE::SOCKET_RIGHT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.025f, 1.f), XMVectorSet(0.f, 0.0f, 0.025f, 1.f));
+	m_pTrails[CMonster::SOCKET_TYPE::SOCKET_RIGHT_FOOT]->SetUp_Position(XMVectorSet(0.f, 0.0f, -0.015f, 1.f), XMVectorSet(0.f, 0.0f, 0.015f, 1.f));
 	m_pTrails[CMonster::SOCKET_TYPE::SOCKET_RIGHT_FOOT]->Set_VtxCount(66);
 
 	return S_OK;

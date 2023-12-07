@@ -5,6 +5,9 @@ Texture2D	g_DiffuseTexture;
 Texture2D	g_NormalTexture;
 float4		g_vCamPosition;
 
+Texture2D		g_DissolveTexture;
+float			g_fDissolveWeight;
+float4			g_vDissolveColor = { 0.6f, 0.039f, 0.039f, 1.f };
 
 struct VS_IN
 {
@@ -121,6 +124,35 @@ PS_OUT PS_MAIN_NORMAL(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_DISSOLVE_DEAD(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	vector vDissolve = g_DissolveTexture.Sample(ModelSampler, In.vTexUV);
+
+	if (vDissolve.r <= g_fDissolveWeight)
+		discard;
+
+	if ((vDissolve.r - g_fDissolveWeight) < 0.1f)
+		Out.vDiffuse = g_vDissolveColor;
+	else if ((vDissolve.r - g_fDissolveWeight) < 0.115f)
+		Out.vDiffuse = g_vDissolveColor - 0.1f;
+	else if ((vDissolve.r - g_fDissolveWeight) < 0.125f)
+		Out.vDiffuse = g_vDissolveColor - 0.1f;
+	else
+		Out.vDiffuse = g_DiffuseTexture.Sample(ModelSampler, In.vTexUV);
+
+
+
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.0f, 0.0f);
+
+	if (0 == Out.vDiffuse.a)
+		discard;
+
+	return Out;
+}
+
 
 // ±×¸²ÀÚ ÇÈ¼¿ ½¦ÀÌ´õ
 PS_OUT_SHADOW_DEPTH PS_SHADOW_DEPTH(PS_IN In)
@@ -162,7 +194,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_NORMAL();
 	}
 
-	pass Temp2
+	pass DissolveDead
 	{
 		// 2
 		SetRasterizerState(RS_Default);
@@ -171,7 +203,7 @@ technique11 DefaultTechnique
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN();
+		PixelShader = compile ps_5_0 PS_DISSOLVE_DEAD();
 	}
 
 	pass Temp3

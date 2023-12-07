@@ -54,7 +54,7 @@ void CGrass::LateTick(_float fTimeDelta)
 {
 	__super::LateTick(fTimeDelta);
 	m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDER_NONBLEND, CRenderer::SHADER_TYPE::MODEL, this, m_pTransformCom->Get_WorldFloat4x4());
-	m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDER_SHADOW, CRenderer::SHADER_TYPE::MODEL, this, m_pTransformCom->Get_WorldFloat4x4());
+	// m_pRendererCom->Add_RenderGroup_Instancing(CRenderer::RENDER_SHADOW, CRenderer::SHADER_TYPE::MODEL, this, m_pTransformCom->Get_WorldFloat4x4());
 }
 
 HRESULT CGrass::Render_Instance(CShader* pInstancingShader, CVIBuffer_Instancing* pInstancingBuffer, const vector<_float4x4>& WorldMatrices)

@@ -39,6 +39,9 @@ void CState_Tanjiro_Skill_1::Enter_State(void* pArg)
 	m_pCharacter->DrawSword();
 
 	Use_Skill(GI->Get_TimeDelta(L"Timer_GamePlay"));
+	
+	GI->Play_Sound(L"Zenitsu_Skill0_Ready.wav", CHANNELID::SOUND_SKILL, 1.f);
+	GI->Play_Sound(L"Voice_Tanjiro_Skill_1_Use.wav", CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
 }
 
 void CState_Tanjiro_Skill_1::Tick_State(_float fTimeDelta)
@@ -159,7 +162,7 @@ void CState_Tanjiro_Skill_1::Use_Skill(_float fTimeDelta)
 	m_pCharacter->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
 	m_pSword->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::AIR_BORN, 4.f, 0.f, 1.f);
 
-	m_pCharacter->Set_ActiveColliders(CCollider::ATTACK, true);
+	
 	m_pSword->Set_ActiveColliders(CCollider::ATTACK, true);
 	m_pCharacter->Set_ActiveColliders(CCollider::BODY, false);
 

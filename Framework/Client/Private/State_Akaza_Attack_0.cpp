@@ -59,35 +59,37 @@ void CState_Akaza_Attack_0::Tick_State(_float fTimeDelta)
 		{
 			m_iCurrAnimIndex++;
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
+			Find_Near_Target();
+			Trace_Near_Target();
 		}
 		
 		break;
 
 	case 2:
-		Find_Near_Target();
-		Trace_Near_Target();
+		
 		if (fProgress >= 0.9f)
 		{
 			m_iCurrAnimIndex++;
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
+			Find_Near_Target();
+			Trace_Near_Target();
 		}
 		break;
 
 	case 3:
-		Find_Near_Target();
-		Trace_Near_Target();
+		
 		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f, false);
 		m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 		if (fProgress >= 0.9f)
 		{
 			m_iCurrAnimIndex++;
 			m_pModelCom->Set_AnimIndex(m_AnimIndices[m_iCurrAnimIndex]);
+			Find_Near_Target();
+			Trace_Near_Target();
 		}
 		break;
 
 	case 4:
-		Find_Near_Target();
-		Trace_Near_Target();
 		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BASIC, 0.f, 4.f, 1.f, false);
 		m_pOwnerMonster->Set_ActiveColliders(CCollider::DETECTION_TYPE::ATTACK, true);
 
@@ -100,9 +102,6 @@ void CState_Akaza_Attack_0::Tick_State(_float fTimeDelta)
 		break;
 
 	case 5:
-		Find_Near_Target();
-		Trace_Near_Target();
-
 		m_pOwnerMonster->Set_Collider_AttackMode(CCollider::ATTACK_TYPE::BLOW, 0.f, 10.f, 1.f, false);
 		if (fProgress >= 0.9f)
 		{

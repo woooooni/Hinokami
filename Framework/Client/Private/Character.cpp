@@ -232,32 +232,35 @@ void CCharacter::Collision_Enter(const COLLISION_INFO& tInfo)
 
 void CCharacter::Collision_Continue(const COLLISION_INFO& tInfo)
 {
-	//_vector vTargetDir = tInfo.pOtherCollider->Get_Position() - tInfo.pMyCollider->Get_Position();
-	//_float fTargetLen = XMVectorGetX(XMVector3Length(vTargetDir));
+	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER || tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
+	{
+		CTransform* pOtherTransform = tInfo.pOther->Get_Component<CTransform>(L"Com_Transform");
+		_vector vTargetDir = pOtherTransform->Get_State(CTransform::STATE::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE::STATE_POSITION);
 
-	//if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
-	//	&& tInfo.pMyCollider->Get_DetectionType() == CCollider::BODY)
-	//{
-	//	vTargetDir = XMVectorSetY(vTargetDir, 0.f);
-	//	vTargetDir = XMVector3Normalize(vTargetDir);
-	//	vTargetDir *= -1.f;
+		_float fTargetLen = XMVectorGetX(XMVector3Length(vTargetDir));
+		if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
+			&& tInfo.pMyCollider->Get_DetectionType() == CCollider::BODY)
+		{
+			vTargetDir = XMVectorSetY(vTargetDir, 0.f);
+			vTargetDir = XMVector3Normalize(vTargetDir);
+			vTargetDir *= -1.f;
 
-	//
-	//	_float fForce = tInfo.pMyCollider->Get_Radius() + tInfo.pOtherCollider->Get_Radius() - fTargetLen;
+			_float fForce = tInfo.pMyCollider->Get_Radius() + tInfo.pOtherCollider->Get_Radius() - (fTargetLen);
 
-	//	CRigidBody* pOtherRigidBody = tInfo.pOther->Get_Component<CRigidBody>(L"Com_RigidBody");
-	//	if (pOtherRigidBody)
-	//		fForce += XMVectorGetX(XMVector3Length(XMLoadFloat3(&pOtherRigidBody->Get_Velocity())));
-
-	//	m_pRigidBodyCom->Set_PushVelocity(vTargetDir * fForce);
-	//}
+			if (fForce / 2.f > 0.f)
+			{
+				_float fTimeDelta = GI->Get_TimeDelta(L"Timer_GamePlay");
+				m_pRigidBodyCom->Set_PushVelocity(vTargetDir * (fForce / 2.f), fTimeDelta);
+			}
+		}
+	}
 
 
 }
 
 void CCharacter::Collision_Exit(const COLLISION_INFO& tInfo)
 {
-	/*if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER
+	if (tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_MONSTER
 		|| tInfo.pOther->Get_ObjectType() == OBJ_TYPE::OBJ_CHARACTER)
 	{
 		if (tInfo.pOtherCollider->Get_DetectionType() == CCollider::BODY
@@ -273,7 +276,7 @@ void CCharacter::Collision_Exit(const COLLISION_INFO& tInfo)
 
 			m_pRigidBodyCom->Set_Velocity(vVelocity);
 		}
-	}*/
+	}
 }
 
 
@@ -333,6 +336,55 @@ void CCharacter::SweathSword()
 	pSword->Set_Sweath(true);
 }
 
+
+
+void CCharacter::Generate_Trail(SOCKET_TYPE eSocketType)
+{
+	if (eSocketType >= SOCKET_TYPE::SOCKET_END)
+		return;
+
+	if (nullptr != m_pTrails[eSocketType])
+		m_pTrails[eSocketType]->Start_Trail(m_pTransformCom->Get_WorldMatrix());
+}
+
+void CCharacter::Stop_Trail(SOCKET_TYPE eSocketType)
+{
+	if (eSocketType >= SOCKET_TYPE::SOCKET_END)
+		return;
+
+	if (nullptr != m_pTrails[eSocketType])
+		m_pTrails[eSocketType]->Stop_Trail();
+
+}
+
+void CCharacter::Play_Sound(CCollider::ATTACK_TYPE eAttackType)
+{
+	
+	if (m_eCharacterType == CCharacter::CHARACTER_TYPE::TANJIRO)
+	{
+		TCHAR strSoundFileName[MAX_PATH] = L"Voice_Tanjiro_Damaged_Basic_";
+		lstrcatW(strSoundFileName, to_wstring(CUtils::Random_Int(0, 2)).c_str());
+		lstrcatW(strSoundFileName, L".wav");
+		GI->Play_Sound(strSoundFileName, CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
+	}
+
+	else if (m_eCharacterType == CCharacter::CHARACTER_TYPE::ZENITSU)
+	{
+		TCHAR strSoundFileName[MAX_PATH] = L"Voice_Zenitsu_Damaged_Basic_";
+		lstrcatW(strSoundFileName, to_wstring(CUtils::Random_Int(0, 2)).c_str());
+		lstrcatW(strSoundFileName, L".wav");
+		GI->Play_Sound(strSoundFileName, CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
+	}
+
+	else if (m_eCharacterType == CCharacter::CHARACTER_TYPE::KYOJURO)
+	{
+		TCHAR strSoundFileName[MAX_PATH] = L"Voice_Kyojuro_Damaged_Basic_";
+		lstrcatW(strSoundFileName, to_wstring(CUtils::Random_Int(0, 2)).c_str());
+		lstrcatW(strSoundFileName, L".wav");
+		GI->Play_Sound(strSoundFileName, CHANNELID::SOUND_VOICE_CHARACTER, 1.f);
+	}
+}
+
 void CCharacter::Set_Infinite(_float fInfiniteTime, _bool bInfinite)
 {
 	m_bInfinite = bInfinite;
@@ -353,10 +405,7 @@ void CCharacter::LookAt_DamagedObject(CGameObject* pAttacker)
 
 void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 {
-	if (m_bInfinite || m_bReserveDead)
-		return;
-
-	if (CCharacter::STATE::ATTACK == m_pStateCom->Get_CurrState())
+	if (m_bInfinite || m_bReserveDead || m_pStateCom->Get_CurrState() == CCharacter::STATE::DIE)
 		return;
 
 	m_tStat.fHp -= tInfo.pOtherCollider->Get_Damage();
@@ -393,15 +442,25 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 	}
 
 	CCamera* pCamera = CCamera_Manager::GetInstance()->Get_MainCamera();
+	if (nullptr != pCamera)
+	{
+		pCamera->Cam_Shake(1.f, 3.f);
+		GI->Play_Sound(L"Shake.wav", CHANNELID::SOUND_SHAKE, 1.f, true);
+	}
+		
 	
+	Play_Sound(tInfo.pOtherCollider->Get_AttackType());
+	GI->Play_Sound(L"Normal_Hit.wav", CHANNELID::SOUND_NORMAL_HIT, 1.f, true);
 	
+
 	switch (tInfo.pOtherCollider->Get_AttackType())
 	{
 	case CCollider::ATTACK_TYPE::BASIC:
 		m_pRigidBodyCom->Add_Velocity(
 			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
 			tInfo.pOtherCollider->Get_PushPower());
-		m_pStateCom->Change_State(STATE::DAMAGED_BASIC);
+		if(m_pStateCom->Get_CurrState() != CCharacter::STATE::KNOCKDOWN)
+			m_pStateCom->Change_State(STATE::DAMAGED_BASIC);
 		break;
 
 	case CCollider::ATTACK_TYPE::AIR_BORN:
@@ -410,9 +469,8 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
 			tInfo.pOtherCollider->Get_PushPower());
 
-		if (nullptr != pCamera)
-			pCamera->Cam_Shake(1.f, 3.f);
-		m_pStateCom->Change_State(STATE::DAMAGED_AIRBORN);
+		if (m_pStateCom->Get_CurrState() != CCharacter::STATE::KNOCKDOWN)
+			m_pStateCom->Change_State(STATE::DAMAGED_AIRBORN);
 
 		break;
 
@@ -421,7 +479,8 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
 
 			tInfo.pOtherCollider->Get_PushPower());
-		m_pStateCom->Change_State(STATE::DAMAGED_BLOW);
+		if (m_pStateCom->Get_CurrState() != CCharacter::STATE::KNOCKDOWN)
+			m_pStateCom->Change_State(STATE::DAMAGED_BLOW);
 		break;
 
 	case CCollider::ATTACK_TYPE::BOUND:
@@ -429,8 +488,8 @@ void CCharacter::On_Damaged(const COLLISION_INFO& tInfo)
 		m_pRigidBodyCom->Add_Velocity_Acc(
 			-1.f * XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f)),
 			tInfo.pOtherCollider->Get_PushPower());
-
-		m_pStateCom->Change_State(STATE::DAMAGED_BOUND);
+		if (m_pStateCom->Get_CurrState() != CCharacter::STATE::KNOCKDOWN)
+			m_pStateCom->Change_State(STATE::DAMAGED_BOUND);
 		break;
 	}
 }
